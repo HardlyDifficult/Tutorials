@@ -9,23 +9,23 @@ public class Feet : MonoBehaviour
   {
     get
     {
-      return collisionCount > 0;
+      return lastFloorHit != null;
     }
   }
   public Collider2D lastFloorHit
   {
     get; private set;
   }
-  int collisionCount;
+  Collider2D currentFloorHit;
 
-  void OnTriggerEnter2D(Collider2D collision)
+  private void OnTriggerStay2D(Collider2D collision)
   {
-    collisionCount++;
-    lastFloorHit = collision;
+    currentFloorHit = collision;
   }
-
-  void OnTriggerExit2D(Collider2D collision)
+  
+  private void FixedUpdate()
   {
-    collisionCount--;
+    lastFloorHit = currentFloorHit;
+    currentFloorHit = null;
   }
 }
