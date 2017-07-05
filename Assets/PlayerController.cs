@@ -8,37 +8,52 @@ public class PlayerController : MonoBehaviour
   float speed = 1;
   [SerializeField]
   float jumpSpeed = 1;
-
+  [SerializeField]
+  float characterHeight = 1;
   Rigidbody2D rigidBody;
 
-  public bool isGrounded
-  {
-    get
-    {
-      if(Mathf.Abs(rigidBody.velocity.y) < .0001f)
-      {
-        return true;
-      }
-      return false;
-    }
-  }
+  Feet feet;
+  Vector2 previousWalkVelocity;
+  float lastJumpTime;
 
   void Awake()
   {
     rigidBody = GetComponent<Rigidbody2D>();
+    feet = GetComponentInChildren<Feet>();
+  }
+
+  void Update()
+  {
+    if(feet.isGrounded)
+    {
+      Quaternion targetRotation = feet.lastFloorHit.transform.rotation;
+      transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, .4f);
+    }
   }
 
   void FixedUpdate()
   {
-    Vector2 velocity = rigidBody.velocity; ;
+    Vector2 velocity = rigidBody.velocity;
+    if(velocity.x > 0 && velocity.x > previousWalkVelocity.x
+      || velocity.x < 0 && velocity.x < previousWalkVelocity.x)
+    {
+      velocity.x -= previousWalkVelocity.x;
+    }
+    if(velocity.y > 0 && velocity.y > previousWalkVelocity.y
+     || velocity.y < 0 && velocity.y < previousWalkVelocity.y)
+    {
+      velocity.y -= previousWalkVelocity.y;
+    }
 
-    float horizontal = Input.GetAxis("Horizontal");
-    velocity.x = horizontal * speed * Time.fixedDeltaTime;
+    previousWalkVelocity = new Vector2(Input.GetAxis("Horizontal") * speed * Time.fixedDeltaTime, 0);
+    velocity += previousWalkVelocity;
 
     if(Input.GetButtonDown("Jump")
-      && isGrounded)
+      && feet.isGrounded
+      && Time.timeSinceLevelLoad - lastJumpTime > .5f)
     {
-      velocity.y += jumpSpeed;
+      velocity += (Vector2)transform.up * jumpSpeed;
+      lastJumpTime = Time.timeSinceLevelLoad;
     }
 
     rigidBody.velocity = velocity;
