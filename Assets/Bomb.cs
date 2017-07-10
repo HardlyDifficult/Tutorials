@@ -39,12 +39,18 @@ public class Bomb : MonoBehaviour
 
   private void FixedUpdate()
   {
+    // TODO this for all
     if(transform.position.y < -12)
     { // Fell out of bounds
       Destroy(gameObject);
       return;
     }
 
+    FixedUpdate_GetOnLadder();
+  }
+
+  void FixedUpdate_GetOnLadder()
+  {
     Ladder ladder = climbLadder.currentLadder;
     if(ladder == null)
     {
@@ -63,10 +69,6 @@ public class Bomb : MonoBehaviour
         climbLadder.isOnLadder = true;
         myBody.velocity = Vector2.zero; // Stop all current momentum
       }
-      else
-      { // Still not on ladder
-        return;
-      }
     }
   }
 
@@ -77,7 +79,6 @@ public class Bomb : MonoBehaviour
     {
       return;
     }
-   
 
     if(climbLadder.isOnLadder)
     {
@@ -88,9 +89,8 @@ public class Bomb : MonoBehaviour
         climbLadder.isOnLadder = false;
         myBody.angularVelocity = -previousAngularVelocity;
         myBody.velocity = new Vector2(-previousXVelocity, myBody.velocity.y);
-      }
-      else
-      { // Else move up/down ladder 
+      } else
+      {
         climbLadder.Climb(-1);
       }
     }

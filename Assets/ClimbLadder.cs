@@ -26,24 +26,16 @@ public class ClimbLadder : MonoBehaviour
     }
     set
     {
-      print(value);
       _isOnLadder = value;
 
-      // TODO this is weird
       if(isOnLadder)
       {
         myBody.GetComponent<Collider2D>().isTrigger = true;
-        //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Feet"), LayerMask.NameToLayer("Floor"), true);
-        //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Body"), LayerMask.NameToLayer("Floor"), true);
-        //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Floor"), true);
         myBody.gravityScale = 0;
       }
       else
       {
         myBody.GetComponent<Collider2D>().isTrigger = false;
-        //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Feet"), LayerMask.NameToLayer("Floor"), false);
-        //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Body"), LayerMask.NameToLayer("Floor"), false);
-        //Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Floor"), true);
         myBody.gravityScale = 1;
       }
     }
@@ -94,5 +86,6 @@ public class ClimbLadder : MonoBehaviour
   {
     myBody.velocity = new Vector2(myBody.velocity.x, verticalDirection * climbSpeed);
   }
+
   #endregion
 }

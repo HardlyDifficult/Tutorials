@@ -11,15 +11,19 @@ public class PlayerController : MonoBehaviour
   public static PlayerController instance;
 
   public float maxSpeed = 1;
-  public float speed = 1;
   public float jumpSpeed = 1;
   public float characterHeight = 1;
 
+  [NonSerialized]
+  public Hammer currentWeapon;
+
   public Rigidbody2D myBody;
   Feet feet;
-  [NonSerialized]
-  public float lastJumpTime;
   ClimbLadder climbLadder;
+  Animator animator;
+  bool hasJumpedSinceLastUpdate;
+
+  MoveStandard moveController;
   #endregion
 
   #region Init
@@ -29,6 +33,8 @@ public class PlayerController : MonoBehaviour
     myBody = GetComponent<Rigidbody2D>();
     climbLadder = GetComponent<ClimbLadder>();
     feet = GetComponentInChildren<Feet>();
+    animator = GetComponentInChildren<Animator>();
+    moveController = GetComponent<MoveStandard>();
   }
 
   void OnDestroy()
@@ -42,57 +48,58 @@ public class PlayerController : MonoBehaviour
     if(feet.isGrounded)
     {
       Update_Jump();
-      Update_RotateCharacterToMatchPlatform();
     }
     Update_ClimbLadder();
+    Update_KeepInBounds();
+    Update_Animation();
+  }
+
+  void FixedUpdate()
+  {
+    moveController.walkSpeed = Input.GetAxis("Horizontal"); // For reliable results, execution order should be before move standard
+
+    if(hasJumpedSinceLastUpdate)
+    {
+      myBody.AddForce((Vector2)transform.up * jumpSpeed, ForceMode2D.Impulse);
+      hasJumpedSinceLastUpdate = false;
+    }
   }
 
   void Update_ClimbLadder()
   { // TODO separate player controls from movement (for bad guys)
-    Ladder ladder = climbLadder.currentLadder;
-    if(ladder == null)
-    {
-      return;
+    if(currentWeapon != null)
+    { // You can't climb while swinging a hammer
+      moveController.climbDirection = 0;
     }
-    float vertical = Input.GetAxis("Vertical");
-    if(climbLadder.isOnLadder == false
-      && Mathf.Abs(vertical) > 0.01
-      && ((vertical < 0 && myBody.position.y > ladder.bounds.center.y)
-        || (vertical > 0 && myBody.position.y < ladder.bounds.center.y)))
-    { // Get on if moving up and on lower half or moving down and on upper half
-      climbLadder.isOnLadder = true;
-    }
-
-    if(climbLadder.isOnLadder)
+    else
     {
-      float currentVerticalVelocity = myBody.velocity.y;
-      if(feet.distanceToGround > .1f && feet.distanceToGround < .3f
-        && ((currentVerticalVelocity > 0 && myBody.position.y > ladder.bounds.center.y)
-          || (currentVerticalVelocity < 0 && myBody.position.y < ladder.bounds.center.y)
-        ))
-      { // Get off if feet near ground and moving towards end of ladder
-        climbLadder.isOnLadder = false;
-      }
-      else
-      { // Else move up/down ladder or hold current location
-        climbLadder.Climb(vertical);
-      }
+      float vertical = Input.GetAxis("Vertical");
+      moveController.climbDirection = vertical;
     }
   }
+
 
   void Update_Jump()
   {
-    if(Input.GetButtonDown("Jump")
-            && Time.timeSinceLevelLoad - lastJumpTime > .1f)
+    if(Input.GetButtonDown("Jump"))
     {
-      myBody.AddForce((Vector2)transform.up * jumpSpeed, ForceMode2D.Impulse);
-      lastJumpTime = Time.timeSinceLevelLoad;
+      hasJumpedSinceLastUpdate = true;
     }
   }
 
-  void Update_RotateCharacterToMatchPlatform()
+  void Update_KeepInBounds()
   {
-    Quaternion targetRotation = feet.floorRotation; //floor.transform.rotation;
-    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, .4f);
+    if(GameController.screenBounds.Contains(transform.position) == false)
+    { // Player is out of bounds
+      transform.position = GameController.screenBounds.ClosestPoint(transform.position);
+    }
+  }
+
+  void Update_Animation()
+  {
+    animator.SetFloat("Speed", myBody.velocity.magnitude);
+    animator.SetBool("isGrounded", feet.isGrounded);
+    animator.SetBool("isClimbing", climbLadder.isOnLadder);
+    animator.SetBool("hasWeapon", currentWeapon != null);
   }
 }

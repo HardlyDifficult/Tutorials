@@ -6,9 +6,9 @@ using UnityEngine;
 public class Feet : MonoBehaviour
 {
   #region Data
-  LayerMask layerMaskFloor;
-  Collider2D myCollider;
+  Collider2D playerFeetCollider;
   Rigidbody2D myBody;
+  ContactFilter2D filter;
   #endregion
 
   #region Properties
@@ -28,24 +28,53 @@ public class Feet : MonoBehaviour
       { // Not grounded when climbing a ladder
         return null;
       }
-      ContactFilter2D filter = new ContactFilter2D()
-      {
-        layerMask = layerMaskFloor,
-        useLayerMask = true
-      };
 
-      Collider2D[] results = new Collider2D[1];
-      if(Physics2D.OverlapCollider(myCollider, filter, results) == 0)
+      Collider2D[] results = new Collider2D[10];
+      if(Physics2D.OverlapCollider(playerFeetCollider, filter, results) == 0)
       {
         return null;
       }
-      if(Vector2.Dot(Vector2.up, results[0].Distance(myCollider).normal) < 0)
+      Collider2D foundFloor = null;
+      for(int i = 0; i < results.Length; i++)
       {
-        return null;
+        Collider2D collider = results[i];
+        if(collider == null)
+        {
+          continue;
+        }
+        ColliderDistance2D distance = collider.Distance(playerFeetCollider);
+        if(distance.distance >= -.1f && Vector2.Dot(Vector2.up, distance.normal) > 0)
+        {
+          foundFloor = collider;
+          break;
+        } else {
+          print(distance.distance);
+        }
       }
-      return results[0];
+
+      return foundFloor;
     }
   }
+
+  public Vector2 floorUp
+  {
+    get
+    {
+      Collider2D floor = currentFloor;
+      if(floor == null)
+      {
+        RaycastHit2D[] result = new RaycastHit2D[1];
+        if(Physics2D.Raycast(myBody.transform.position, Vector2.down, filter, result) == 0)
+        {
+          print("No floor");
+          return Vector2.up;
+        }
+        floor = result[0].collider;
+      }
+      return floor.transform.up;
+    }
+  }
+
 
   public Quaternion floorRotation
   {
@@ -64,12 +93,12 @@ public class Feet : MonoBehaviour
   {
     get
     {
-      RaycastHit2D hit = Physics2D.Raycast(myCollider.bounds.center, Vector2.down, 1, layerMaskFloor);
-      if(hit.collider == null)
+      RaycastHit2D[] result = new RaycastHit2D[1];
+      if(Physics2D.Raycast(playerFeetCollider.bounds.center, Vector2.down, filter, result) == 0) 
       {
         return null;
       }
-      return hit.distance;
+      return result[0].distance;
     }
   }
   #endregion
@@ -77,9 +106,13 @@ public class Feet : MonoBehaviour
   #region Events
   void Awake()
   {
-    layerMaskFloor = LayerMask.GetMask(new[] { "Floor" });
+    filter = new ContactFilter2D()
+    {
+      layerMask = LayerMask.GetMask(new[] { "Floor" }),
+      useLayerMask = true
+    };
     myBody = GetComponentInParent<Rigidbody2D>();
-    myCollider = GetComponent<Collider2D>();
+    playerFeetCollider = GetComponent<Collider2D>();
   }
   #endregion
 }
