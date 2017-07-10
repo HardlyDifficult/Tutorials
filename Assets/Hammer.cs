@@ -12,6 +12,8 @@ public class Hammer : MonoBehaviour
 
   PlayerController currentPlayer;
   SpriteRenderer sprite;
+  [SerializeField]
+  int pointsPerHammerKill;
 
   void Awake()
   {
@@ -47,8 +49,10 @@ public class Hammer : MonoBehaviour
       Time.timeScale = i * (1f / slowLoopCount);
       yield return new WaitForSecondsRealtime(.001f);
     }
+    Explosion.ExplodeAt(gameObject.transform.position);
     yield return new WaitForSecondsRealtime(.1f);
     Destroy(gameObject);
+    GameController.instance.points += pointsPerHammerKill;
     yield return new WaitForSecondsRealtime(.25f);
     const int speedUpLoopCount = 30;
     for(int i = 0; i < speedUpLoopCount; i++)

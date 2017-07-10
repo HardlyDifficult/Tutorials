@@ -10,14 +10,8 @@ public class WinArea : MonoBehaviour
   {
     if(collision.gameObject.CompareTag("Player"))
     {
-      StartCoroutine(PlayEnding());
+      GameController.instance.YouWin();
     }
   }
 
-  IEnumerator PlayEnding()
-  {
-    // TODO start animation
-    yield return new WaitForSeconds(2);
-    SceneManager.LoadScene("BetweenLevels");
-  }
 }

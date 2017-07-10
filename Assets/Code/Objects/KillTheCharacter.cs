@@ -21,6 +21,7 @@ public class KillTheCharacter : MonoBehaviour
   {
     if(gameObjectWeJustHit.CompareTag("Player"))
     {
+      Explosion.ExplodeAt(gameObjectWeJustHit.transform.position);
       Destroy(gameObjectWeJustHit);
     }
   }

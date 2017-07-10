@@ -47,9 +47,7 @@ public class Feet : MonoBehaviour
         {
           foundFloor = collider;
           break;
-        } else {
-          print(distance.distance);
-        }
+        } 
       }
 
       return foundFloor;

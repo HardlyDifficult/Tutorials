@@ -37,9 +37,9 @@ public class FlyGuy : MonoBehaviour
 
   void Update_KeepInBounds()
   {
-    if(GameController.screenBounds.Contains(transform.position) == false)
+    if(GameController.instance.screenBounds.Contains(transform.position) == false)
     { // Player is out of bounds
-      transform.position = GameController.screenBounds.ClosestPoint(transform.position);
+      transform.position = GameController.instance.screenBounds.ClosestPoint(transform.position);
       moveController.walkSpeed = -moveController.walkSpeed;
     }
   }

@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 {
   #region Data
   public static PlayerController instance;
+  public static event Action onDeath;
 
   public float maxSpeed = 1;
   public float jumpSpeed = 1;
@@ -35,11 +36,28 @@ public class PlayerController : MonoBehaviour
     feet = GetComponentInChildren<Feet>();
     animator = GetComponentInChildren<Animator>();
     moveController = GetComponent<MoveStandard>();
+
+    AppearInSeconds appearIn = GetComponent<AppearInSeconds>();
+    if(appearIn != null)
+    {
+      enabled = false;
+      appearIn.onComplete += () => enabled = true;
+    }
+  }
+
+  void OnDisable()
+  { // End of level
+    Update_Animation(shouldFreeze: true);
   }
 
   void OnDestroy()
   {
-    instance = null;
+    instance = null; // Must be first
+
+    if(onDeath != null)
+    {
+      onDeath();
+    }
   }
   #endregion
 
@@ -78,7 +96,6 @@ public class PlayerController : MonoBehaviour
     }
   }
 
-
   void Update_Jump()
   {
     if(Input.GetButtonDown("Jump"))
@@ -89,17 +106,18 @@ public class PlayerController : MonoBehaviour
 
   void Update_KeepInBounds()
   {
-    if(GameController.screenBounds.Contains(transform.position) == false)
+    if(GameController.instance.screenBounds.Contains(transform.position) == false)
     { // Player is out of bounds
-      transform.position = GameController.screenBounds.ClosestPoint(transform.position);
+      transform.position = GameController.instance.screenBounds.ClosestPoint(transform.position);
     }
   }
 
-  void Update_Animation()
+  void Update_Animation(
+    bool shouldFreeze = false)
   {
-    animator.SetFloat("Speed", myBody.velocity.magnitude);
-    animator.SetBool("isGrounded", feet.isGrounded);
-    animator.SetBool("isClimbing", climbLadder.isOnLadder);
-    animator.SetBool("hasWeapon", currentWeapon != null);
+    animator.SetFloat("Speed", shouldFreeze ? 0 : myBody.velocity.magnitude);
+    animator.SetBool("isGrounded", shouldFreeze ? false : feet.isGrounded);
+    animator.SetBool("isClimbing", shouldFreeze ? false : climbLadder.isOnLadder);
+    animator.SetBool("hasWeapon", shouldFreeze ? false : currentWeapon != null);
   }
 }
