@@ -26,6 +26,9 @@ GameObject:
   - component: {fileID: 114391005208129432}
   - component: {fileID: 114546743997908830}
   - component: {fileID: 114480786253875128}
+  - component: {fileID: 114114557180498132}
+  - component: {fileID: 114807040921656320}
+  - component: {fileID: 114186624242096040}
   m_Layer: 10
   m_Name: Bomb
   m_TagString: Untagged
@@ -213,6 +216,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   numberOfPointsToAward: 1000
+  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!114 &114114557180498132
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1219344522177142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 889392ac26498594ba43db989df7c209, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114186624242096040
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1219344522177142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e22c5b15d0c69b749a7da822600e9185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeTillPaused: 0.1
+  timePausedTillSpeedUp: 0.5
+  timeForSpeedUp: 0.5
+  pointsPerDeath: 100
 --- !u!114 &114320223591268060
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -224,6 +256,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f836995cf444f8143b6a2d2cac4840f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layersToKill:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!114 &114391005208129432
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -237,7 +272,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startingAngularSpeed: -500
   startingSpeed: 3
-  climbLadderOddsBiggerIsLessLikely: 10
+  oddsOfClimbingLadder: 0.2
 --- !u!114 &114480786253875128
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -260,7 +295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5939073248480f48b1a67894bb439f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  climbSpeed: 1
+  climbSpeed: 45
   canClimbBrokenLadders: 1
 --- !u!114 &114616573955460392
 MonoBehaviour:
@@ -271,6 +306,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2f63a7e6705041043b3d2e4fe14bd18f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114807040921656320
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1219344522177142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65797a08ba661c54bbe65619c2fba08c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!212 &212598337719961534
