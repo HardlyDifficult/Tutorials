@@ -16,16 +16,38 @@ public class LadderMovement : MonoBehaviour
   float climbSpeed = 1;
   [SerializeField]
   bool canClimbBrokenLadders;
-  public Ladder currentLadder
-  {
-    get; private set;
-  }
+  
   bool _isOnLadder;
 
   SetTriggerCommand triggerCommand;
+  List<Ladder> currentLadderList;
   #endregion
 
   #region Properties
+  public Ladder currentLadder
+  {
+    get
+    {
+      if(currentLadderList.Count == 0)
+      {
+        return null;
+      }
+
+      Ladder closestLadder = null;
+      for(int i = 0; i < currentLadderList.Count; i++)
+      {
+        Ladder ladder = currentLadderList[i];
+        if(closestLadder == null || 
+          (ladder.transform.position - transform.position).sqrMagnitude < (closestLadder.transform.position - transform.position).sqrMagnitude)
+        {
+          closestLadder = ladder;
+        }
+      }
+
+      return closestLadder;
+    }
+  }
+
   public bool isOnLadder
   {
     get
@@ -70,6 +92,7 @@ public class LadderMovement : MonoBehaviour
   #region Init
   void Awake()
   {
+    currentLadderList = new List<Ladder>();
     myBody = GetComponent<Rigidbody2D>();
     feet = GetComponentInChildren<Feet>();
   }
@@ -86,7 +109,7 @@ public class LadderMovement : MonoBehaviour
     }
     if(canClimbBrokenLadders || ladder.isBroken == false)
     {
-      currentLadder = ladder;
+      currentLadderList.Add(ladder);
     }
   }
 
@@ -98,12 +121,11 @@ public class LadderMovement : MonoBehaviour
     {
       return;
     }
-    if(currentLadder != ladder)
-    { // Exiting a different trigger than the one we are tracking ATM
-      return;
+    currentLadderList.Remove(ladder);
+    if(currentLadderList.Count == 0)
+    {
+      isOnLadder = false;
     }
-    currentLadder = null;
-    isOnLadder = false;
   }
 
   void FixedUpdate()

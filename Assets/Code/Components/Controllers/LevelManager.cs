@@ -12,6 +12,7 @@ public abstract class LevelManager : MonoBehaviour
   [SerializeField]
   protected float timeToWaitAtEnd = 3;
   Player playerPrefab;
+  protected bool isGameOver;
   #endregion
 
   #region Init
@@ -29,6 +30,12 @@ public abstract class LevelManager : MonoBehaviour
   #region Public API
   public virtual void YouWin()
   {
+    if(isGameOver == true)
+    { // You already won
+      return;
+    }
+
+    isGameOver = true;
     if(onWin != null)
     {
       onWin();
@@ -54,6 +61,7 @@ public abstract class LevelManager : MonoBehaviour
     }
     else
     {
+      isGameOver = true;
       StartCoroutine(PlayEndingYouLose());
     }
   }

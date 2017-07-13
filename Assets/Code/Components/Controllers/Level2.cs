@@ -19,6 +19,7 @@ public class Level2 : LevelManager
 
     BreakawayOnTrigger.onBreakaway += BreakawayOnTrigger_onBreakaway;
     cloud = GameObject.Find("EvilCloud");
+    Debug.Assert(cloud != null);
     cloudAnimator = cloud.GetComponentInChildren<Animator>();
   }
 
@@ -45,9 +46,14 @@ public class Level2 : LevelManager
 
   public override void YouWin()
   {
-    if(BreakawayOnTrigger.numberOfInTactBlocks > 0)
+    if(BreakawayOnTrigger.numberOfInTactBlocks > 0
+      || TouchMeToWin.numberActive > 0)
     { // You didn't really win yet
      return;
+    }
+    if(isGameOver)
+    { // Already over
+      return;
     }
 
     base.YouWin();
