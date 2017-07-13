@@ -8,14 +8,32 @@ using UnityEngine.SceneManagement;
 public abstract class LevelManager : MonoBehaviour
 {
   #region Data
+  public event Action onWin;
   [SerializeField]
   protected float timeToWaitAtEnd = 3;
-  [SerializeField]
   Player playerPrefab;
   #endregion
-  
+
+  #region Init
+  protected virtual void Awake()
+  {
+    playerPrefab = Resources.Load<Player>("Character");
+  }
+
+  protected virtual void Start()
+  {
+    SpawnPlayer();
+  }
+  #endregion
+
   #region Public API
-  public abstract void YouWin();
+  public virtual void YouWin()
+  {
+    if(onWin != null)
+    {
+      onWin();
+    }
+  }
 
   public void YouDied()
   {

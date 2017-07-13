@@ -18,7 +18,10 @@ public class Spawner : MonoBehaviour, ICareWhenPlayerDies
   float enemyImpactMultiple;
   [SerializeField]
   float timeImpactMultiple;
- 
+
+  [SerializeField]
+  EnemySpawnConfig enemyConfigValue;
+
   Coroutine routine;
   #endregion
 
@@ -80,7 +83,12 @@ public class Spawner : MonoBehaviour, ICareWhenPlayerDies
       if(Player.instance != null 
         && (Player.instance.transform.position - transform.position).sqrMagnitude > 3)
       { // Don't spawn if the player is standing right there
-        Instantiate(thingToSpawn, transform.position, Quaternion.identity);
+        GameObject spawnedEnemy = Instantiate(thingToSpawn, transform.position, Quaternion.identity);
+        IConfigOnSpawn iConfig = spawnedEnemy.GetComponent<IConfigOnSpawn>();
+        if(iConfig != null)
+        {
+          iConfig.Config(enemyConfigValue);
+        }
       }
     }
   }

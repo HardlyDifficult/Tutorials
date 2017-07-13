@@ -218,7 +218,7 @@ MonoBehaviour:
   numberOfPointsToAward: 1000
   maskOfPlayerPlusObstaclesWhichMayBlockPoints:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2305
 --- !u!114 &114114557180498132
 MonoBehaviour:
   m_ObjectHideFlags: 1

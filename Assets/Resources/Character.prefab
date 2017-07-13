@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5939073248480f48b1a67894bb439f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  climbSpeed: 30
+  climbSpeed: 60
   canClimbBrokenLadders: 0
 --- !u!114 &114313593001759686
 MonoBehaviour:

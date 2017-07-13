@@ -102,6 +102,11 @@ public class Player : MonoBehaviour, IDie
   void Update_Animation(
     bool shouldFreeze = false)
   {
+    if(animator.isActiveAndEnabled == false)
+    {
+      return;
+    }
+
     animator.SetFloat("Speed", shouldFreeze ? 0 : myBody.velocity.magnitude);
     animator.SetBool("isGrounded", shouldFreeze ? false : feet.isGrounded);
     animator.SetBool("isClimbing", shouldFreeze ? false : climbMovement.isOnLadder);

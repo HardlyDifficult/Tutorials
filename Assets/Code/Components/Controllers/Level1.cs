@@ -7,16 +7,31 @@ using UnityEngine.SceneManagement;
 
 public class Level1 : LevelManager
 {
+  #region Data
+  Animator cloudAnimator;
+  #endregion
+
   #region Init
-  void Start()
+  protected override void Awake()
   {
-    SpawnPlayer();
+    base.Awake();
+
+    cloudAnimator = GameObject.Find("EvilCloud").GetComponent<Animator>();
+  }
+
+  protected override void Start()
+  {
+    base.Start();
+
+    cloudAnimator.Play("Level1Start");
   }
   #endregion
 
   #region API
   public override void YouWin()
   {
+    base.YouWin();
+
     StartCoroutine(PlayEndingYouWin());
   }
   #endregion
@@ -30,8 +45,7 @@ public class Level1 : LevelManager
     Player.instance.myBody.constraints = RigidbodyConstraints2D.FreezeAll;
     Player.instance.enabled = false;
 
-    GameObject cloud = GameObject.Find("EvilCloud");
-    cloud.GetComponent<Animator>().Play("EvilCloudEnd");
+    cloudAnimator.Play("Level1End");
 
     yield return new WaitForSeconds(timeToWaitAtEnd);
 

@@ -21,6 +21,8 @@ public class LadderMovement : MonoBehaviour
     get; private set;
   }
   bool _isOnLadder;
+
+  SetTriggerCommand triggerCommand;
   #endregion
 
   #region Properties
@@ -42,11 +44,15 @@ public class LadderMovement : MonoBehaviour
 
       if(isOnLadder)
       {
-        myBody.GetComponent<Collider2D>().isTrigger = true;
+        Debug.Assert(triggerCommand == null);
+
+        triggerCommand = new SetTriggerCommand(gameObject);
         myBody.gravityScale = 0;
       }
       else
       {
+        triggerCommand.Undo();
+        triggerCommand = null;
         climbDirection = 0;
         myBody.GetComponent<Collider2D>().isTrigger = false;
         myBody.gravityScale = 1;
@@ -65,7 +71,7 @@ public class LadderMovement : MonoBehaviour
   void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-    feet = GetComponent<Feet>();
+    feet = GetComponentInChildren<Feet>();
   }
   #endregion
 

@@ -6,7 +6,7 @@ using UnityEngine;
 /// <summary>
 /// For reliable results, execution order should be before movement scripts
 /// </summary>
-public class FlyGuy : MonoBehaviour, ICareWhenPlayerDies
+public class FlyGuy : MonoBehaviour, ICareWhenPlayerDies, IConfigOnSpawn
 {
   #region Data
   public static int flyGuyCount;
@@ -25,6 +25,7 @@ public class FlyGuy : MonoBehaviour, ICareWhenPlayerDies
   Feet feet;
   LadderMovement ladderMovement;
   WalkMovement moveController;
+  bool shouldRandomizeStartingMovement;
   #endregion
 
   #region Init
@@ -65,6 +66,17 @@ public class FlyGuy : MonoBehaviour, ICareWhenPlayerDies
   }
   #endregion
 
+  #region API
+  void IConfigOnSpawn.Config(
+    EnemySpawnConfig config)
+  {
+    if(config == EnemySpawnConfig.RandomStart)
+    {
+      shouldRandomizeStartingMovement = true;
+    }
+  }
+  #endregion
+
   #region Private helpers
   void FixedUpdate_GetOnLadder()
   {
@@ -80,11 +92,13 @@ public class FlyGuy : MonoBehaviour, ICareWhenPlayerDies
       {
         if(transform.position.y < ladder.bounds.center.y && UnityEngine.Random.value <= oddsOfClimbingLadderUp)
         {
+          print("Go up");
           ladderMovement.climbDirection = 1;
           moveController.inputWalkDirection = 0;
         }
         else if(transform.position.y > ladder.bounds.center.y && UnityEngine.Random.value <= oddsOfClimbingLadderDown)
         {
+          print("Go down");
           ladderMovement.climbDirection = -1;
           moveController.inputWalkDirection = 0;
         }
@@ -94,8 +108,11 @@ public class FlyGuy : MonoBehaviour, ICareWhenPlayerDies
 
   IEnumerator Wander()
   {
-    moveController.inputWalkDirection = 1;
-    yield return new WaitForSeconds(timeBeforeFirstWander);
+    if(shouldRandomizeStartingMovement == false)
+    {
+      moveController.inputWalkDirection = 1;
+      yield return new WaitForSeconds(timeBeforeFirstWander);
+    }
 
     while(true)
     {
@@ -109,9 +126,27 @@ public class FlyGuy : MonoBehaviour, ICareWhenPlayerDies
 
   void SelectARandomWalkDirection()
   {
-    if(GameController.instance.screenBounds.SqrDistance(transform.position) <= 1)
-    { // If at edge of map choices are limited
-      if(transform.position.x < 0)
+    // If at edge of map choices are limited
+    if(GameController.instance.screenBounds.min.x >= transform.position.x)
+    {
+      moveController.inputWalkDirection = 1;
+    }
+    else if(GameController.instance.screenBounds.max.x <= transform.position.x)
+    {
+      moveController.inputWalkDirection = -1;
+    }
+    else
+    {
+      float dot = Vector2.Dot(feet.floorUp, Vector2.right);
+      if(dot < 0)
+      {
+        moveController.inputWalkDirection = UnityEngine.Random.value >= oddsOfGoingUpHill ? 1 : -1;
+      }
+      else if(dot > 0)
+      {
+        moveController.inputWalkDirection = UnityEngine.Random.value >= oddsOfGoingUpHill ? -1 : 1;
+      }
+      else if(UnityEngine.Random.Range(0, 2) == 0)
       {
         moveController.inputWalkDirection = 1;
       }
@@ -119,25 +154,6 @@ public class FlyGuy : MonoBehaviour, ICareWhenPlayerDies
       {
         moveController.inputWalkDirection = -1;
       }
-      return;
-    }
-
-    float dot = Vector2.Dot(feet.floorUp, Vector2.right);
-    if(dot < 0)
-    {
-      moveController.inputWalkDirection = UnityEngine.Random.value >= oddsOfGoingUpHill ? 1 : -1;
-    }
-    else if(dot > 0)
-    {
-      moveController.inputWalkDirection = UnityEngine.Random.value >= oddsOfGoingUpHill ? -1 : 1;
-    }
-    else if(UnityEngine.Random.Range(0, 2) == 0)
-    {
-      moveController.inputWalkDirection = 1;
-    }
-    else
-    {
-      moveController.inputWalkDirection = -1;
     }
   }
   #endregion
