@@ -29,6 +29,8 @@ GameObject:
   - component: {fileID: 114114557180498132}
   - component: {fileID: 114807040921656320}
   - component: {fileID: 114186624242096040}
+  - component: {fileID: 114270349867939828}
+  - component: {fileID: 114603381275745420}
   m_Layer: 10
   m_Name: Bomb
   m_TagString: Untagged
@@ -245,6 +247,19 @@ MonoBehaviour:
   timePausedTillSpeedUp: 0.5
   timeForSpeedUp: 0.5
   pointsPerDeath: 100
+--- !u!114 &114270349867939828
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1219344522177142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e991e7f807c83e4caeeadfa154cedbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  oddsOfClimbingLadderUp: 0
+  oddsOfClimbingLadderDown: 0.1
 --- !u!114 &114320223591268060
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -272,7 +287,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startingAngularSpeed: -500
   startingSpeed: 3
-  oddsOfClimbingLadder: 0.2
 --- !u!114 &114480786253875128
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -297,6 +311,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   climbSpeed: 45
   canClimbBrokenLadders: 1
+--- !u!114 &114603381275745420
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1219344522177142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca64161803415c54790dc8f2420fe149, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114616573955460392
 MonoBehaviour:
   m_ObjectHideFlags: 1

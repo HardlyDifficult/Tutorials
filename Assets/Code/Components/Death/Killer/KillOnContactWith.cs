@@ -1,59 +1,65 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 
+/// <summary>
+/// Kills anything on contact which matches the provided LayerMask.
+/// </summary>
 public class KillOnContactWith : MonoBehaviour
 {
+  #region Data
+  /// <summary>
+  /// Defines which layers will be killed on contact.
+  /// </summary>
   [SerializeField]
   LayerMask layersToKill;
+  #endregion
 
-  public event Action<GameObject> onHit;
+  #region Init
+  /// <summary>
+  /// Unity Hack to allow enable/disable (used by the collision/trigger events).
+  /// </summary>
+  void Start() { }
+  #endregion
 
+  #region Events
+  /// <summary>
+  /// On collision, consider killing the thing we touched.
+  /// </summary>
+  /// <param name="collision">The thing we touched.</param>
   void OnCollisionEnter2D(
     Collision2D collision)
   {
-    if(enabled == false)
-    {
-      return;
-    }
-    if(layersToKill.Includes(collision.gameObject.layer))
-    {
-      TryKilling(collision.gameObject);
-    }
-  }
-
-  void OnTriggerEnter2D(
-    Collider2D collision)
-  {
-    if(enabled == false)
-    {
-      return;
-    }
-    if(layersToKill.Includes(collision.gameObject.layer))
-    {
-      TryKilling(collision.gameObject);
-    }
+    TryKilling(collision.gameObject);
   }
 
   /// <summary>
-  /// Unity Hack to allow enable/disable
+  /// On trigger, consider killing the thing we touched.
   /// </summary>
-  void Start() {}
+  /// <param name="collision">The thing we touched.</param>
+  void OnTriggerEnter2D(
+    Collider2D collision)
+  {
+    TryKilling(collision.gameObject);
+  }
+  #endregion
 
+  #region Helpers
+  /// <summary>
+  /// Checks if we should kill the object just touched, if so trigger death effects and Destroy it.
+  /// </summary>
+  /// <param name="gameObjectWeJustHit">The gameObject just touched</param>
   void TryKilling(
     GameObject gameObjectWeJustHit)
   {
-    if(onHit != null)
-    {
-      onHit(gameObjectWeJustHit);
+    if(enabled == false
+      || layersToKill.Includes(gameObjectWeJustHit.layer) == false)
+    { // This object gets to live.
+      return;
     }
+
+    // Explode and trigger death effects.
     Explosion.ExplodeAt(gameObjectWeJustHit.transform.position);
-    IDie[] iDieList = gameObjectWeJustHit.GetComponents<IDie>();
-    for(int i = 0; i < iDieList.Length; i++)
-    {
-      IDie iDie = iDieList[i];
-      iDie.Die();
-    }
+    gameObjectWeJustHit.CallIDie();
   }
+  #endregion
 }

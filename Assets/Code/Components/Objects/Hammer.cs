@@ -12,15 +12,9 @@ public class Hammer : MonoBehaviour
   Vector3 rotationWhenEquiptInEuler;
 
   Player currentPlayer;
-  SpriteRenderer sprite;
   #endregion
 
   #region Init
-  void Awake()
-  {
-    sprite = GetComponent<SpriteRenderer>();
-  }
-
   void OnDestroy()
   {
     if(currentPlayer != null)
@@ -48,8 +42,8 @@ public class Hammer : MonoBehaviour
       transform.localRotation = Quaternion.Euler(rotationWhenEquiptInEuler);
 
       // Start effects
-      GetComponent<Animator>().enabled = true; 
-      GetComponent<DieOverTimeWithSpriteFlash>().enabled = true;
+      GetComponent<Animator>().enabled = true;
+      gameObject.CallIDie();
     }
   }
   #endregion

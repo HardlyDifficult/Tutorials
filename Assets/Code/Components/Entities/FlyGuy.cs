@@ -4,42 +4,70 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// For reliable results, execution order should be before movement scripts
+/// The main FlyGuy enemy entity component.  Keeps count of total active fly guys in the world.
+/// Drives random movement.
 /// </summary>
-public class FlyGuy : MonoBehaviour, ICareWhenPlayerDies, IConfigOnSpawn
+public class FlyGuy : MonoBehaviour
 {
   #region Data
+  /// <summary>
+  /// The total number of active fly guys in the world.
+  /// </summary>
   public static int flyGuyCount;
 
-  SpriteRenderer sprite;
-  [SerializeField]
-  float oddsOfClimbingLadderUp, oddsOfClimbingLadderDown;
+  /// <summary>
+  /// When selecting a new direction to walk, this is the odds of selecting up vs down (when on an incline).
+  /// </summary>
   [SerializeField]
   float oddsOfGoingUpHill = .8f;
-  float timeOfLastClimb;
-  [SerializeField]
-  float minLengthBetweenClimbs = 3;
+
+  /// <summary>
+  /// How long to wait before picking a new random direction.
+  /// </summary>
   [SerializeField]
   float timeBeforeFirstWander = 5;
 
+  /// <summary>
+  /// Used to determine if we are on the ground.
+  /// </summary>
   Feet feet;
+
+  /// <summary>
+  /// Used to know when we are on a ladder.
+  /// </summary>
   LadderMovement ladderMovement;
-  WalkMovement moveController;
-  bool shouldRandomizeStartingMovement;
+
+  /// <summary>
+  /// Used to control the entity walk.
+  /// </summary>
+  WalkMovement walkMovement;
+
+  /// <summary>
+  /// If the starting direction should be random vs always walk to the right.
+  /// </summary>
+  [SerializeField]
+  bool shouldRandomizeStartingMovement = false;
   #endregion
 
   #region Init
+  /// <summary>
+  /// On awake, populate variables and register for ladder events.
+  /// Disable this component until fade completes (preventing movement).
+  /// </summary>
   void Awake()
   {
-    moveController = GetComponent<WalkMovement>();
-    sprite = GetComponent<SpriteRenderer>();
+    walkMovement = GetComponent<WalkMovement>();
     ladderMovement = GetComponent<LadderMovement>();
     feet = GetComponentInChildren<Feet>();
+
     ladderMovement.onGettingOffLadder += LadderMovement_onGettingOffLadder;
 
     AppearInSecondsAndFadeInSprite.DisableMeTillComplete(this);
   }
 
+  /// <summary>
+  /// On start, add to the total active flyGuy count and start random movement.
+  /// </summary>
   void Start()
   {
     flyGuyCount++;
@@ -49,73 +77,30 @@ public class FlyGuy : MonoBehaviour, ICareWhenPlayerDies, IConfigOnSpawn
   #endregion
 
   #region Events
-  void FixedUpdate()
-  {
-    FixedUpdate_GetOnLadder();
-  }
-
+  /// <summary>
+  /// Anytime we get off a ladder, pick a new random direction.
+  /// </summary>
   void LadderMovement_onGettingOffLadder()
   {
-    timeOfLastClimb = Time.timeSinceLevelLoad;
     SelectARandomWalkDirection();
-  }
-
-  void ICareWhenPlayerDies.OnPlayerDeath()
-  {
-    Destroy(gameObject);
-  }
-  #endregion
-
-  #region API
-  void IConfigOnSpawn.Config(
-    EnemySpawnConfig config)
-  {
-    if(config == EnemySpawnConfig.RandomStart)
-    {
-      shouldRandomizeStartingMovement = true;
-    }
   }
   #endregion
 
   #region Private helpers
-  void FixedUpdate_GetOnLadder()
-  {
-    Ladder ladder = ladderMovement.currentLadder;
-    if(ladder == null)
-    {
-      return;
-    }
-    if(ladderMovement.isOnLadder == false)
-    { // If not climbing, roll the dice to see if we should start
-      if(Mathf.Abs(ladder.bounds.center.x - transform.position.x) < .1f
-        && Time.timeSinceLevelLoad - timeOfLastClimb > minLengthBetweenClimbs)
-      {
-        if(transform.position.y < ladder.bounds.center.y && UnityEngine.Random.value <= oddsOfClimbingLadderUp)
-        {
-          print("Go up");
-          ladderMovement.climbDirection = 1;
-          moveController.inputWalkDirection = 0;
-        }
-        else if(transform.position.y > ladder.bounds.center.y && UnityEngine.Random.value <= oddsOfClimbingLadderDown)
-        {
-          print("Go down");
-          ladderMovement.climbDirection = -1;
-          moveController.inputWalkDirection = 0;
-        }
-      }
-    }
-  }
-
+  /// <summary>
+  /// Executes the random movement script, periodically changing walk direction.
+  /// </summary>
+  /// <returns>Used by corountines to manage time.</returns>
   IEnumerator Wander()
   {
     if(shouldRandomizeStartingMovement == false)
-    {
-      moveController.inputWalkDirection = 1;
+    { // Walk to the right for the first few seconds
+      walkMovement.inputWalkDirection = 1;
       yield return new WaitForSeconds(timeBeforeFirstWander);
     }
 
     while(true)
-    {
+    { // Every so often, if not currently on a ladder, pick a new walk direction.
       if(ladderMovement.isOnLadder == false)
       {
         SelectARandomWalkDirection();
@@ -124,35 +109,36 @@ public class FlyGuy : MonoBehaviour, ICareWhenPlayerDies, IConfigOnSpawn
     }
   }
 
+  /// <summary>
+  /// Sets a direction to walk, considering the edge of the screen and the angle of the platform we are on.
+  /// </summary>
   void SelectARandomWalkDirection()
   {
-    // If at edge of map choices are limited
     if(GameController.instance.screenBounds.min.x >= transform.position.x)
-    {
-      moveController.inputWalkDirection = 1;
+    { // Past left edge of screen, walk right
+      walkMovement.inputWalkDirection = 1;
     }
     else if(GameController.instance.screenBounds.max.x <= transform.position.x)
-    {
-      moveController.inputWalkDirection = -1;
+    { // Past right edge of screen, walk left
+      walkMovement.inputWalkDirection = -1;
     }
     else
-    {
+    { // Not on edge of screen, check for inclines
+      // Use dot to determine if the floor is has an incline facing the right (where 0 means a flat surface)
       float dot = Vector2.Dot(feet.floorUp, Vector2.right);
-      if(dot < 0)
-      {
-        moveController.inputWalkDirection = UnityEngine.Random.value >= oddsOfGoingUpHill ? 1 : -1;
+      if(dot < -.1f)
+      { // Negative dot means that the slope is down and to the left
+        // If odds say go up hill, travel right
+        walkMovement.inputWalkDirection = UnityEngine.Random.value >= oddsOfGoingUpHill ? 1 : -1;
       }
-      else if(dot > 0)
-      {
-        moveController.inputWalkDirection = UnityEngine.Random.value >= oddsOfGoingUpHill ? -1 : 1;
+      else if(dot > .1f)
+      { // Positive dot means that the slot is down and to the right
+        // If odds say go up hill, travel left
+        walkMovement.inputWalkDirection = UnityEngine.Random.value >= oddsOfGoingUpHill ? -1 : 1;
       }
-      else if(UnityEngine.Random.Range(0, 2) == 0)
-      {
-        moveController.inputWalkDirection = 1;
-      }
-      else
-      {
-        moveController.inputWalkDirection = -1;
+      else 
+      { // On a flat surface, roll the dice to pick a direction
+        walkMovement.inputWalkDirection = UnityEngine.Random.value >= .5f ? 1 : -1;
       }
     }
   }

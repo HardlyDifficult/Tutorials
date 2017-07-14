@@ -12,7 +12,7 @@ public class LifeLine : MonoBehaviour, ICareWhenPlayerDies
   {
      if(GameController.instance.lifeCounter < lifeCount)
     {
-      GetComponent<IDie>().Die();
+      gameObject.CallIDie();
     }
   }
 }

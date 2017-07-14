@@ -1,46 +1,72 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-[RequireComponent(typeof(LadderMovement))]
-[RequireComponent(typeof(Feet))]
+/// <summary>
+/// The main bomb enemy entity component.  This tracks total bombCount in the world and assists with spawn configuration.
+/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-public class Bomb : MonoBehaviour , ICareWhenPlayerDies
+[RequireComponent(typeof(LadderMovement))]
+public class Bomb : MonoBehaviour
 {
   #region Data
+  /// <summary>
+  /// The total number of bombs still alive in the game.
+  /// </summary>
   public static int bombCount;
 
+  /// <summary>
+  /// When spawned, add this angular speed to the object.  This causes the bomb to spin.
+  /// </summary>
   [SerializeField]
-  float startingAngularSpeed;
-  [SerializeField]
-  float startingSpeed;
-  [SerializeField]
-  float oddsOfClimbingLadder;
+  float startingAngularSpeed = -500;
 
+  /// <summary>
+  /// When spawned, apply this to the velocity.x
+  /// </summary>
+  [SerializeField]
+  float startingSpeed = 3;
+
+  /// <summary>
+  /// Cache of the rigidBody, for performance.
+  /// </summary>
   Rigidbody2D myBody;
-  LadderMovement climbLadder;
-  Feet feet;
 
-  float previousAngularVelocity, previousXVelocity; 
+  /// <summary>
+  /// Cache of the angular velocity when getting on a ladder, applied to the object again when getting off.
+  /// </summary>
+  float previousAngularVelocity;
+
+  /// <summary>
+  /// Cache of the x velocity when getting on a ladder, applied to the object again when getting off.
+  /// </summary>
+  float previousXVelocity;
   #endregion
 
   #region Init
+  /// <summary>
+  /// On awake, populate vars.
+  /// </summary>
   void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-    climbLadder = GetComponent<LadderMovement>();
-    feet = GetComponent<Feet>();
-    climbLadder.onGettingOffLadder += ClimbLadder_onGettingOffLadder;
+    LadderMovement ladderMovement = GetComponent<LadderMovement>();
+    ladderMovement.onGettingOffLadder += ClimbLadder_onGettingOffLadder;
+    ladderMovement.onGettingOnLadder += LadderMovement_onGettingOnLadder;
   }
 
+  /// <summary>
+  /// On start, increment the total active bomb count and start movement.
+  /// </summary>
   void Start()
   {
     bombCount++;
+
     myBody.angularVelocity = startingAngularSpeed;
     myBody.velocity = new Vector2(startingSpeed, 0);
   }
 
+  /// <summary>
+  /// On destroy, decrement the total active bomb count.
+  /// </summary>
   void OnDestroy()
   {
     bombCount--;
@@ -48,69 +74,22 @@ public class Bomb : MonoBehaviour , ICareWhenPlayerDies
   #endregion
 
   #region Events
-  void FixedUpdate()
+  /// <summary>
+  /// When getting on a ladder, store momentum.
+  /// </summary>
+  void LadderMovement_onGettingOnLadder()
   {
-    FixedUpdate_GetOnLadder();
-    FixedUpdate_ClimbLadder();
+    previousAngularVelocity = myBody.angularVelocity;
+    previousXVelocity = myBody.velocity.x;
   }
 
+  /// <summary>
+  /// When getting off a ladder, resume moving in the opposite direction you were when getting on the ladder.
+  /// </summary>
   void ClimbLadder_onGettingOffLadder()
-  {
-    // Resume momentum
+  { 
     myBody.angularVelocity = -previousAngularVelocity;
     myBody.velocity = new Vector2(-previousXVelocity, myBody.velocity.y);
-  }
-
-  void ICareWhenPlayerDies.OnPlayerDeath()
-  {
-    Destroy(gameObject);
-  }
-  #endregion
-
-  #region Private helpers
-  void FixedUpdate_GetOnLadder()
-  {
-    Ladder ladder = climbLadder.currentLadder;
-    if(ladder == null)
-    {
-      return;
-    }
-    if(climbLadder.isOnLadder == false)
-    { // If not climbing, roll the dice to see if we should start
-      if(feet.isGrounded // Not in air / bouncing
-        && (myBody.position.y > ladder.bounds.center.y) // At top of ladder
-        && Mathf.Abs(ladder.transform.position.x - transform.position.x) < .1f // Near center of ladder
-        && UnityEngine.Random.value <= oddsOfClimbingLadder) // Rng
-      {
-        // Get on
-        climbLadder.climbDirection = -1;
-
-        // Store momentum 
-        previousAngularVelocity = myBody.angularVelocity;
-        previousXVelocity = myBody.velocity.x;
-
-        // Stop movement
-        myBody.velocity = Vector2.zero; 
-      }
-    }
-  }
-
-  void FixedUpdate_ClimbLadder()
-  { 
-    Ladder ladder = climbLadder.currentLadder;
-    if(ladder == null)
-    {
-      return;
-    }
-
-    if(climbLadder.isOnLadder)
-    {
-      if(myBody.position.y < ladder.bounds.min.y)
-      {
-        // Get off
-        climbLadder.isOnLadder = false;
-      }
-    }
   }
   #endregion
 }

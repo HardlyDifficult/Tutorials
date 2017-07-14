@@ -1,33 +1,54 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// A base for each specific level manager.  Every level should have a level manager object in the scene.
+/// </summary>
 public abstract class LevelManager : MonoBehaviour
 {
   #region Data
-  public event Action onWin;
+  /// <summary>
+  /// How long to sleep after a win was reported before changing scenes.
+  /// </summary>
   [SerializeField]
   protected float timeToWaitAtEnd = 3;
+
+  /// <summary>
+  /// Stores the player prefab.
+  /// Loaded from the Resources directory / "Player".
+  /// </summary>
   Player playerPrefab;
+
+  /// <summary>
+  /// True if the game has ended (may be in a final animation state before the scene closes).
+  /// </summary>
   protected bool isGameOver;
   #endregion
 
   #region Init
+  /// <summary>
+  /// On awake, load the player prefab.
+  /// </summary>
   protected virtual void Awake()
   {
-    playerPrefab = Resources.Load<Player>("Character");
+    playerPrefab = Resources.Load<Player>("Player");
   }
 
+  /// <summary>
+  /// When the level starts, spawn a player.  The level subclass may implement more.
+  /// </summary>
   protected virtual void Start()
   {
-    SpawnPlayer();
+    Instantiate(playerPrefab);
   }
   #endregion
 
   #region Public API
+  /// <summary>
+  /// Report that the player has won the game.
+  /// This method just jots a note, the level subclass should implement more.
+  /// </summary>
   public virtual void YouWin()
   {
     if(isGameOver == true)
@@ -36,17 +57,18 @@ public abstract class LevelManager : MonoBehaviour
     }
 
     isGameOver = true;
-    if(onWin != null)
-    {
-      onWin();
-    }
   }
 
+  /// <summary>
+  /// Report that the player has just died.  This may indicate the end of the game as well.
+  /// If lives remain, notify other interested objects (via ICareWhenPlayerDies).
+  /// If out of lives, start the end sequence.
+  /// </summary>
   public void YouDied()
   {
     GameController.instance.lifeCounter--;
     if(GameController.instance.lifeCounter >= 0)
-    {
+    { // Report the death to other interested objects
       GameObject[] gameObjectList = GameObject.FindObjectsOfType<GameObject>();
       for(int i = 0; i < gameObjectList.Length; i++)
       {
@@ -57,10 +79,11 @@ public abstract class LevelManager : MonoBehaviour
           care.OnPlayerDeath();
         }
       }
-      SpawnPlayer();
+      // Spawn another player
+      Instantiate(playerPrefab);
     }
     else
-    {
+    { // Start end sequence
       isGameOver = true;
       StartCoroutine(PlayEndingYouLose());
     }
@@ -68,16 +91,13 @@ public abstract class LevelManager : MonoBehaviour
   #endregion
 
   #region Helpers
-  protected void SpawnPlayer()
-  {
-    Instantiate(playerPrefab);
-  }
-
+  /// <summary>
+  /// The you lost sequence: A brief pause followed by a scene change.
+  /// </summary>
   IEnumerator PlayEndingYouLose()
   {
     yield return new WaitForSeconds(1);
     SceneManager.LoadScene("YouLose");
   }
-
   #endregion
 }

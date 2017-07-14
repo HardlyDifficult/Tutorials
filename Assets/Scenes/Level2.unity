@@ -1958,7 +1958,7 @@ Prefab:
     - target: {fileID: 224687108647066178, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -12.2
       objectReference: {fileID: 0}
     - target: {fileID: 224879260476424944, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
@@ -1978,7 +1978,7 @@ Prefab:
     - target: {fileID: 224879260476424944, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -12.2
       objectReference: {fileID: 0}
     - target: {fileID: 224618516541013834, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
@@ -1998,7 +1998,7 @@ Prefab:
     - target: {fileID: 224618516541013834, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -12.2
       objectReference: {fileID: 0}
     - target: {fileID: 224852673429169446, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
@@ -2018,7 +2018,7 @@ Prefab:
     - target: {fileID: 224852673429169446, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 224391203263391356, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
@@ -2038,7 +2038,7 @@ Prefab:
     - target: {fileID: 224391203263391356, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -28.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d91384faccaa90c4bb637493df5d14d5, type: 2}
@@ -5731,7 +5731,7 @@ Prefab:
         type: 2}
       propertyPath: thingToSpawn
       value: 
-      objectReference: {fileID: 1665199501607298, guid: 0aae2afb9b1831e49b784874d95d66f4,
+      objectReference: {fileID: 1780672324770952, guid: e1ed5167faf84c347abba69e59a6e27c,
         type: 2}
     - target: {fileID: 114397674021800050, guid: 982ea3dd48de2e342958a5dacc260a33,
         type: 2}
@@ -5753,6 +5753,16 @@ Prefab:
     - target: {fileID: 1618258729542716, guid: 982ea3dd48de2e342958a5dacc260a33, type: 2}
       propertyPath: m_Name
       value: Art
+      objectReference: {fileID: 0}
+    - target: {fileID: 114397674021800050, guid: 982ea3dd48de2e342958a5dacc260a33,
+        type: 2}
+      propertyPath: enemyImpactMultiple
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 114397674021800050, guid: 982ea3dd48de2e342958a5dacc260a33,
+        type: 2}
+      propertyPath: maxTimeBetweenSpawns
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114137127955551158, guid: 982ea3dd48de2e342958a5dacc260a33, type: 2}

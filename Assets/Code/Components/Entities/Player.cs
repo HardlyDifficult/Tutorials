@@ -1,116 +1,102 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// For reliable results, execution order should be before movement scripts
+/// The main component for the Player entity.  
+/// Provides an interface to the player logic for various interested components.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(LadderMovement))] 
-public class Player : MonoBehaviour, IDie
+[RequireComponent(typeof(LadderMovement))]
+public class Player : MonoBehaviour, IHaveDeathEffect
 {
   #region Data
+  /// <summary>
+  /// A reference to the current player.  There is never more than one player at a time.
+  /// </summary>
   public static Player instance;
 
+  /// <summary>
+  /// The current weapon, if any.  Used to ensure that the player does not equipt multiple hammers at the same time.
+  /// </summary>
   [NonSerialized]
   public Hammer currentWeapon;
 
-  public Rigidbody2D myBody;
-  Feet feet;
-  Animator animator;
-  WalkMovement walkMovement;
-  JumpMovement jumpMovement;
-  LadderMovement climbMovement;
+  /// <summary>
+  /// Used to control physics on this object.
+  /// </summary>
+  public Rigidbody2D myBody
+  {
+    get; private set;
+  }
+
+  /// <summary>
+  /// Used to determine if we are on the ground.
+  /// </summary>
+  public Feet feet
+  {
+    get; private set;
+  }
+
+  /// <summary>
+  /// Used to control character walking.
+  /// </summary>
+  public WalkMovement walkMovement
+  {
+    get; private set;
+  }
+
+  /// <summary>
+  /// Used to control character jumping.
+  /// </summary>
+  public JumpMovement jumpMovement
+  {
+    get; private set;
+  }
+
+  /// <summary>
+  /// Used to control climbing ladders.
+  /// </summary>
+  public LadderMovement ladderMovement
+  {
+    get; private set;
+  }
   #endregion
 
   #region Init
+  /// <summary>
+  /// On awake, populate variables.
+  /// </summary>
   void Awake()
   {
+    Debug.Assert(instance == null);
+
     instance = this;
+
     myBody = GetComponent<Rigidbody2D>();
     feet = GetComponent<Feet>();
-    animator = GetComponentInChildren<Animator>();
     walkMovement = GetComponent<WalkMovement>();
     jumpMovement = GetComponent<JumpMovement>();
-    climbMovement = GetComponent<LadderMovement>();
-
-    AppearInSecondsAndFadeInSprite.DisableMeTillComplete(this);
+    ladderMovement = GetComponent<LadderMovement>();
   }
 
-  void OnDisable()
-  { // End of level
-    Update_Animation(shouldFreeze: true);
-  }
-
+  /// <summary>
+  /// On destroy, clear singleton instance.
+  /// </summary>
   void OnDestroy()
   {
-    if(instance == this)
-    {
-      instance = null;
-    }
+    Debug.Assert(instance == this);
+
+    instance = null;
   }
   #endregion
 
   #region Events
-  void FixedUpdate()
-  {
-    FixedUpdate_MoveLeftRight();
-    FixedUpdate_ClimbLadder();
-  }
-
-  void Update()
-  {
-    Update_Jump();
-    Update_Animation();
-  }
-
-  public void Die()
+  /// <summary>
+  /// When the player dies, report it to the level manager (which may re-distribute the event to others).
+  /// </summary>
+  void IHaveDeathEffect.Die()
   {
     GameObject.FindObjectOfType<LevelManager>().YouDied();
-  }
-  #endregion
-
-  #region Private helpers
-  void FixedUpdate_MoveLeftRight()
-  {
-    walkMovement.inputWalkDirection = Input.GetAxis("Horizontal");
-  }
-
-  void FixedUpdate_ClimbLadder()
-  { 
-    if(currentWeapon != null)
-    { // You can't climb while swinging a hammer
-      climbMovement.climbDirection = 0;
-    }
-    else
-    {
-      float vertical = Input.GetAxis("Vertical");
-      climbMovement.climbDirection = vertical;
-    }
-  }
-
-  void Update_Jump()
-  {
-    if(feet.isGrounded
-      && Input.GetButtonDown("Jump"))
-    {
-      jumpMovement.hasJumpedSinceLastUpdate = true;
-    }
-  }
-  
-  void Update_Animation(
-    bool shouldFreeze = false)
-  {
-    if(animator.isActiveAndEnabled == false)
-    {
-      return;
-    }
-
-    animator.SetFloat("Speed", shouldFreeze ? 0 : myBody.velocity.magnitude);
-    animator.SetBool("isGrounded", shouldFreeze ? false : feet.isGrounded);
-    animator.SetBool("isClimbing", shouldFreeze ? false : climbMovement.isOnLadder);
-    animator.SetBool("hasWeapon", shouldFreeze ? false : currentWeapon != null);
   }
   #endregion
 }

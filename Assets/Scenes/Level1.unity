@@ -403,7 +403,7 @@ Prefab:
     - target: {fileID: 224687108647066178, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -12.2
       objectReference: {fileID: 0}
     - target: {fileID: 224879260476424944, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
@@ -423,7 +423,7 @@ Prefab:
     - target: {fileID: 224879260476424944, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -12.2
       objectReference: {fileID: 0}
     - target: {fileID: 224618516541013834, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
@@ -443,7 +443,7 @@ Prefab:
     - target: {fileID: 224618516541013834, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -12.2
       objectReference: {fileID: 0}
     - target: {fileID: 224852673429169446, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
@@ -463,7 +463,7 @@ Prefab:
     - target: {fileID: 224852673429169446, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 224391203263391356, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
@@ -483,7 +483,7 @@ Prefab:
     - target: {fileID: 224391203263391356, guid: d91384faccaa90c4bb637493df5d14d5,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -28.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d91384faccaa90c4bb637493df5d14d5, type: 2}
@@ -3140,9 +3140,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1038681575}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0663b4fbb0dbcc04b8b2a570513b1745, type: 3}
+  m_Script: {fileID: 11500000, guid: d0e885e15a26f884b9f3b0044ba14594, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layerToTriggerOn:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!61 &1038681578
 BoxCollider2D:
   m_ObjectHideFlags: 0

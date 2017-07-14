@@ -9,6 +9,7 @@ public class LadderMovement : MonoBehaviour
   [NonSerialized]
   public float climbDirection;
 
+  public event Action onGettingOnLadder;
   public event Action onGettingOffLadder;
   Rigidbody2D myBody;
   Feet feet;
@@ -16,7 +17,7 @@ public class LadderMovement : MonoBehaviour
   float climbSpeed = 1;
   [SerializeField]
   bool canClimbBrokenLadders;
-  
+
   bool _isOnLadder;
 
   SetTriggerCommand triggerCommand;
@@ -37,7 +38,7 @@ public class LadderMovement : MonoBehaviour
       for(int i = 0; i < currentLadderList.Count; i++)
       {
         Ladder ladder = currentLadderList[i];
-        if(closestLadder == null || 
+        if(closestLadder == null ||
           (ladder.transform.position - transform.position).sqrMagnitude < (closestLadder.transform.position - transform.position).sqrMagnitude)
         {
           closestLadder = ladder;
@@ -85,6 +86,10 @@ public class LadderMovement : MonoBehaviour
       {
         onGettingOffLadder();
       }
+      else if(isOnLadder && onGettingOnLadder != null)
+      {
+        onGettingOnLadder();
+      }
     }
   }
   #endregion
@@ -121,11 +126,11 @@ public class LadderMovement : MonoBehaviour
     {
       return;
     }
-    currentLadderList.Remove(ladder);
-    if(currentLadderList.Count == 0)
+    if(ladder == currentLadder)
     {
       isOnLadder = false;
     }
+    currentLadderList.Remove(ladder);
   }
 
   void FixedUpdate()
@@ -162,7 +167,7 @@ public class LadderMovement : MonoBehaviour
       }
       else
       { // Else move up/down ladder or hold current location
-        myBody.velocity = new Vector2(myBody.velocity.x, climbDirection * climbSpeed * Time.fixedDeltaTime);
+        myBody.velocity = new Vector2(0, climbDirection * climbSpeed * Time.fixedDeltaTime);
       }
     }
   }
