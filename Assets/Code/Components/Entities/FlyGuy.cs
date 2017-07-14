@@ -7,6 +7,8 @@ using UnityEngine;
 /// The main FlyGuy enemy entity component.  Keeps count of total active fly guys in the world.
 /// Drives random movement.
 /// </summary>
+[RequireComponent(typeof(LadderMovement))]
+[RequireComponent(typeof(WalkMovement))]
 public class FlyGuy : MonoBehaviour
 {
   #region Data
@@ -54,8 +56,11 @@ public class FlyGuy : MonoBehaviour
   /// On awake, populate variables and register for ladder events.
   /// Disable this component until fade completes (preventing movement).
   /// </summary>
-  void Awake()
+  protected void Awake()
   {
+    Debug.Assert(oddsOfGoingUpHill >= 0);
+    Debug.Assert(timeBeforeFirstWander >= 0);
+
     walkMovement = GetComponent<WalkMovement>();
     ladderMovement = GetComponent<LadderMovement>();
     feet = GetComponentInChildren<Feet>();
@@ -63,16 +68,26 @@ public class FlyGuy : MonoBehaviour
     ladderMovement.onGettingOffLadder += LadderMovement_onGettingOffLadder;
 
     AppearInSecondsAndFadeInSprite.DisableMeTillComplete(this);
+
+    Debug.Assert(walkMovement != null);
+    Debug.Assert(feet != null);
   }
 
   /// <summary>
   /// On start, add to the total active flyGuy count and start random movement.
   /// </summary>
-  void Start()
+  protected void Start()
   {
     flyGuyCount++;
 
     StartCoroutine(Wander());
+  }
+
+  protected void OnDestroy()
+  {
+    flyGuyCount--;
+
+    Debug.Assert(flyGuyCount >= 0);
   }
   #endregion
 

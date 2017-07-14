@@ -1,14 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// Causes an entity to walk with a static speed.  
+/// The KeepMovementOnScreen will cause the entity to bounce back/forth, creating a pacing effect.
+/// </summary>
+[RequireComponent(typeof(WalkMovement))]
 public class Pace : MonoBehaviour
 {
-  WalkMovement walkMovement;
-  protected void Awake()
+  #region Init
+  /// <summary>
+  /// On start, start walking
+  /// </summary>
+  protected void Start()
   {
-    walkMovement = GetComponent<WalkMovement>();
+    WalkMovement walkMovement = GetComponent<WalkMovement>();
     walkMovement.inputWalkDirection = 1;
   }
+  #endregion
 }

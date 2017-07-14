@@ -45,18 +45,21 @@ public class Bomb : MonoBehaviour
   /// <summary>
   /// On awake, populate vars.
   /// </summary>
-  void Awake()
+  protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
+
     LadderMovement ladderMovement = GetComponent<LadderMovement>();
     ladderMovement.onGettingOffLadder += ClimbLadder_onGettingOffLadder;
     ladderMovement.onGettingOnLadder += LadderMovement_onGettingOnLadder;
+
+    Debug.Assert(myBody != null);
   }
 
   /// <summary>
   /// On start, increment the total active bomb count and start movement.
   /// </summary>
-  void Start()
+  protected void Start()
   {
     bombCount++;
 
@@ -67,9 +70,15 @@ public class Bomb : MonoBehaviour
   /// <summary>
   /// On destroy, decrement the total active bomb count.
   /// </summary>
-  void OnDestroy()
+  /// <remarks>
+  /// We don't deregister the ladder events because it's assumed both components died with the gameObject.
+  /// If that may not be true, deregister to avoid leaks and unexpected issues.
+  /// </remarks>
+  protected void OnDestroy()
   {
     bombCount--;
+
+    Debug.Assert(bombCount >= 0);
   }
   #endregion
 

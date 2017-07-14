@@ -23,6 +23,8 @@ public class Level1 : LevelManager
     base.Awake();
 
     cloudAnimator = GameObject.Find("EvilCloud").GetComponent<Animator>();
+
+    Debug.Assert(cloudAnimator != null);
   }
 
   /// <summary>

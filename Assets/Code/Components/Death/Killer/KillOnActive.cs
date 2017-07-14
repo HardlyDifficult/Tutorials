@@ -18,8 +18,10 @@ public class KillOnActive : MonoBehaviour
   /// <summary>
   /// On enable, kill the game object.
   /// </summary>
-  void OnEnable()
+  protected void OnEnable()
   {
+    Debug.Assert(gameObjectToDestroy != null);
+
     Destroy(gameObjectToDestroy);
   }
   #endregion

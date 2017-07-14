@@ -221,6 +221,8 @@ MonoBehaviour:
   maskOfPlayerPlusObstaclesWhichMayBlockPoints:
     serializedVersion: 2
     m_Bits: 2305
+  myTriggerCollider: {fileID: 61011691247201288}
+  myEntityBoundsCollider: {fileID: 58016798851770332}
 --- !u!114 &114114557180498132
 MonoBehaviour:
   m_ObjectHideFlags: 1

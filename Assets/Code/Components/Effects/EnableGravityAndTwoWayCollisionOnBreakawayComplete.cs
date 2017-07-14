@@ -9,7 +9,7 @@ public class EnableGravityAndTwoWayCollisionOnBreakawayComplete  : MonoBehaviour
   /// <summary>
   /// On awake, register for events.
   /// </summary>
-  void Awake()
+  protected void Awake()
   {
     BreakawayOnTrigger.onBreakaway += BreakawayOnTrigger_onBreakaway;
   }
@@ -17,7 +17,7 @@ public class EnableGravityAndTwoWayCollisionOnBreakawayComplete  : MonoBehaviour
   /// <summary>
   /// On destroy, deregister events.
   /// </summary>
-  void OnDestroy()
+  protected void OnDestroy()
   {
     BreakawayOnTrigger.onBreakaway -= BreakawayOnTrigger_onBreakaway;
   }

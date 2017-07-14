@@ -31,6 +31,8 @@ public class DeathEffectScale : MonoBehaviour, IHaveDeathEffect
   /// <returns>Used by coroutines to manage time.</returns>
   IEnumerator ScaleToDeath()
   {
+    Debug.Assert(timeTillDeath > 0);
+
     // Cache the original scale to manipulate in the loop
     Vector3 originalScale = transform.localScale;
 

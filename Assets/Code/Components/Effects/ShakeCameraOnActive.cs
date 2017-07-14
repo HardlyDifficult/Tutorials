@@ -31,7 +31,7 @@ public class ShakeCameraOnActive : MonoBehaviour
   /// <summary>
   /// On start, begine the shake animation.
   /// </summary>
-  void Start()
+  protected void Start()
   {
     StartCoroutine(ShakeCamera());
   }
@@ -44,6 +44,10 @@ public class ShakeCameraOnActive : MonoBehaviour
   /// <returns>Used by coroutines to manage time.</returns>
   IEnumerator ShakeCamera()
   {
+    Debug.Assert(timeToShakeFor > 0);
+    Debug.Assert(maxTimeBetweenShakes > 0);
+    Debug.Assert(shakeMagnitude > 0);
+
     Camera camera = Camera.main;
     Vector3 startingPosition = camera.transform.position;
 

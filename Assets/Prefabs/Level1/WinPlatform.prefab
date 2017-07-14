@@ -133,9 +133,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1852881477383456}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0663b4fbb0dbcc04b8b2a570513b1745, type: 3}
+  m_Script: {fileID: 11500000, guid: d0e885e15a26f884b9f3b0044ba14594, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layerToTriggerOn:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!212 &212592775073399964
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -1,10 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// Provides additional convenience methods for Unity's SpriteRenderer.
+/// </summary>
 public static class SpriteExtensions
 {
+  /// <summary>
+  /// Sets the color for each of the sprites provided.
+  /// </summary>
+  /// <param name="spriteList">The list of sprites to color.</param>
+  /// <param name="color">The color to set.</param>
   public static void SetColor(
     this SpriteRenderer[] spriteList,
     Color color)
@@ -16,6 +21,11 @@ public static class SpriteExtensions
     }
   }
 
+  /// <summary>
+  /// Sets the alpha, preserving any color the sprite may have, for each of the sprites provided.
+  /// </summary>
+  /// <param name="spriteList">The list of sprites to color.</param>
+  /// <param name="alpha">The alpha to set.</param>
   public static void SetAlpha(
     this SpriteRenderer[] spriteList, 
     float alpha)

@@ -7,6 +7,7 @@ using UnityEngine;
 /// Requires a child object with it's own Kinematic Rigidbody2D.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class AwardPointsWhenJumpOver : MonoBehaviour
 {
   #region Data
@@ -25,19 +26,29 @@ public class AwardPointsWhenJumpOver : MonoBehaviour
   LayerMask maskOfPlayerPlusObstaclesWhichMayBlockPoints;
 
   /// <summary>
-  /// A cache of this object's collider for performance.
+  /// The collider used to trigger awarding points.
   /// </summary>
-  BoxCollider2D myCollider;
+  BoxCollider2D myTriggerCollider;
+
+  /// <summary>
+  /// The collider that defines the bounds for this entity.
+  /// </summary>
+  Collider2D myEntityBoundsCollider;
   #endregion
 
-  #region Init 
+  #region Init
   /// <summary>
-  /// On awake, populate variables.
+  /// Initialize variables.
   /// </summary>
-  void Awake()
+  protected void Awake()
   {
-    myCollider = GetComponent<BoxCollider2D>();
-    Debug.Assert(myCollider != null);
+    Debug.Assert(numberOfPointsToAward >= 0);
+
+    myTriggerCollider = GetComponent<BoxCollider2D>();
+    myEntityBoundsCollider = transform.parent.GetComponent<Collider2D>();
+
+    Debug.Assert(myTriggerCollider != null);
+    Debug.Assert(myEntityBoundsCollider != null);
   }
   #endregion
 
@@ -46,13 +57,13 @@ public class AwardPointsWhenJumpOver : MonoBehaviour
   /// On trigger enter (which c/o the physics matrix will only occur for the player),
   /// check if there is anything between this object and the player... if not - award points and prevent future use.
   /// </summary>
-  /// <param name="collision"></param>
-  void OnTriggerEnter2D(
+  /// <param name="collision">The gameObject we just hit</param>
+  protected void OnTriggerEnter2D(
     Collider2D collision)
   {
     const float boxCastHeight = .01f;
-    Vector2 rayStart = new Vector2(myCollider.bounds.center.x, myCollider.bounds.max.y + myCollider.edgeRadius + boxCastHeight * 2);
-    RaycastHit2D hit = Physics2D.BoxCast(rayStart, new Vector2((myCollider.bounds.extents.x + myCollider.edgeRadius) * 2, boxCastHeight), 0, Vector2.up, 10, maskOfPlayerPlusObstaclesWhichMayBlockPoints);
+    Vector2 rayStart = new Vector2(myEntityBoundsCollider.bounds.center.x, myEntityBoundsCollider.bounds.max.y + boxCastHeight * 2 + .15f); // .15f is a small buffer to ensure we don't hit ourselves
+    RaycastHit2D hit = Physics2D.BoxCast(rayStart, new Vector2((myTriggerCollider.bounds.extents.x + myTriggerCollider.edgeRadius + .1f) * 2, boxCastHeight), 0, Vector2.up, 10, maskOfPlayerPlusObstaclesWhichMayBlockPoints);
     if(hit.collider != collision)
     { // There is something between me and the player
       return;
@@ -60,7 +71,7 @@ public class AwardPointsWhenJumpOver : MonoBehaviour
 
     GameController.instance.points += numberOfPointsToAward;
 
-    Destroy(this); // Single use
+    Destroy(this); // Single use (prevents this event from being fired again but does not destroy the gameObject)
   }
   #endregion
 }

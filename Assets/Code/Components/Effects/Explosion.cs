@@ -21,6 +21,7 @@ public static class Explosion
       if(_explosion == null)
       {
         _explosion = Resources.Load<GameObject>("Explosion");
+
         Debug.Assert(_explosion != null);
       }
 

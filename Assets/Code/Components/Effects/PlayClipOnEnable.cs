@@ -17,9 +17,12 @@ public class PlayClipOnEnable : MonoBehaviour
   /// <summary>
   /// On enable, play the specified clip using the Camera's AudioSource.
   /// </summary>
-  void OnEnable()
+  protected void OnEnable()
   {
-    Camera.main.GetComponent<AudioSource>().PlayOneShot(clip);
+    Debug.Assert(clip != null);
+
+    AudioSource audioSource = Camera.main.GetComponent<AudioSource>();
+    audioSource.PlayOneShot(clip);
   }
   #endregion
 }

@@ -198,8 +198,6 @@ GameObject:
   - component: {fileID: 30835450}
   - component: {fileID: 30835449}
   - component: {fileID: 30835448}
-  - component: {fileID: 30835447}
-  - component: {fileID: 30835452}
   m_Layer: 8
   m_Name: Breakaway (2)
   m_TagString: Untagged
@@ -221,17 +219,6 @@ Transform:
   m_Father: {fileID: 590126444}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &30835447
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 30835445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &30835448
 Rigidbody2D:
   serializedVersion: 4
@@ -337,21 +324,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!114 &30835452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 30835445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfPointsToAward: 150
-  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
-    serializedVersion: 2
-    m_Bits: 2305
 --- !u!1 &33354998
 GameObject:
   m_ObjectHideFlags: 0
@@ -364,8 +336,6 @@ GameObject:
   - component: {fileID: 33355003}
   - component: {fileID: 33355002}
   - component: {fileID: 33355001}
-  - component: {fileID: 33355000}
-  - component: {fileID: 33355005}
   m_Layer: 8
   m_Name: Breakaway (1)
   m_TagString: Untagged
@@ -387,17 +357,6 @@ Transform:
   m_Father: {fileID: 682150464}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &33355000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 33354998}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &33355001
 Rigidbody2D:
   serializedVersion: 4
@@ -503,21 +462,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!114 &33355005
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 33354998}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfPointsToAward: 150
-  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
-    serializedVersion: 2
-    m_Bits: 2305
 --- !u!1 &44276811
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,6 +787,9 @@ GameObject:
   m_Component:
   - component: {fileID: 158543911}
   - component: {fileID: 158543912}
+  - component: {fileID: 158543914}
+  - component: {fileID: 158543913}
+  - component: {fileID: 158543915}
   m_Layer: 15
   m_Name: Trigger
   m_TagString: Untagged
@@ -888,6 +835,52 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.68, y: 2.91}
   m_EdgeRadius: 0
+--- !u!114 &158543913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 158543910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfPointsToAward: 150
+  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
+    serializedVersion: 2
+    m_Bits: 2305
+--- !u!50 &158543914
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 158543910}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!114 &158543915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 158543910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &170430641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1720,6 +1713,9 @@ GameObject:
   m_Component:
   - component: {fileID: 493174118}
   - component: {fileID: 493174119}
+  - component: {fileID: 493174122}
+  - component: {fileID: 493174121}
+  - component: {fileID: 493174120}
   m_Layer: 15
   m_Name: Trigger
   m_TagString: Untagged
@@ -1765,6 +1761,52 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.68, y: 2.91}
   m_EdgeRadius: 0
+--- !u!114 &493174120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 493174117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfPointsToAward: 150
+  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
+    serializedVersion: 2
+    m_Bits: 2305
+--- !u!50 &493174121
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 493174117}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!114 &493174122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 493174117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &570116909
 GameObject:
   m_ObjectHideFlags: 0
@@ -2146,6 +2188,9 @@ GameObject:
   m_Component:
   - component: {fileID: 621222543}
   - component: {fileID: 621222544}
+  - component: {fileID: 621222545}
+  - component: {fileID: 621222547}
+  - component: {fileID: 621222546}
   m_Layer: 15
   m_Name: Trigger
   m_TagString: Untagged
@@ -2191,6 +2236,52 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.68, y: 2.91}
   m_EdgeRadius: 0
+--- !u!114 &621222545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 621222542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &621222546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 621222542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfPointsToAward: 150
+  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
+    serializedVersion: 2
+    m_Bits: 2305
+--- !u!50 &621222547
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 621222542}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &682150463
 GameObject:
   m_ObjectHideFlags: 0
@@ -2618,8 +2709,6 @@ GameObject:
   - component: {fileID: 762988942}
   - component: {fileID: 762988941}
   - component: {fileID: 762988940}
-  - component: {fileID: 762988939}
-  - component: {fileID: 762988944}
   m_Layer: 8
   m_Name: Breakaway (1)
   m_TagString: Untagged
@@ -2641,17 +2730,6 @@ Transform:
   m_Father: {fileID: 277591537}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &762988939
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 762988937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &762988940
 Rigidbody2D:
   serializedVersion: 4
@@ -2757,21 +2835,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!114 &762988944
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 762988937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfPointsToAward: 150
-  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
-    serializedVersion: 2
-    m_Bits: 2305
 --- !u!1 &765449368
 GameObject:
   m_ObjectHideFlags: 0
@@ -3142,6 +3205,9 @@ GameObject:
   m_Component:
   - component: {fileID: 884741198}
   - component: {fileID: 884741199}
+  - component: {fileID: 884741200}
+  - component: {fileID: 884741202}
+  - component: {fileID: 884741201}
   m_Layer: 15
   m_Name: Trigger
   m_TagString: Untagged
@@ -3187,6 +3253,52 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.68, y: 2.91}
   m_EdgeRadius: 0
+--- !u!114 &884741200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 884741197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &884741201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 884741197}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfPointsToAward: 150
+  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
+    serializedVersion: 2
+    m_Bits: 2305
+--- !u!50 &884741202
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 884741197}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &892078684
 GameObject:
   m_ObjectHideFlags: 0
@@ -3443,8 +3555,6 @@ GameObject:
   - component: {fileID: 1010911913}
   - component: {fileID: 1010911912}
   - component: {fileID: 1010911911}
-  - component: {fileID: 1010911910}
-  - component: {fileID: 1010911915}
   m_Layer: 8
   m_Name: Breakaway (1)
   m_TagString: Untagged
@@ -3466,17 +3576,6 @@ Transform:
   m_Father: {fileID: 2064813645}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1010911910
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1010911908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &1010911911
 Rigidbody2D:
   serializedVersion: 4
@@ -3582,21 +3681,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!114 &1010911915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1010911908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfPointsToAward: 150
-  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
-    serializedVersion: 2
-    m_Bits: 2305
 --- !u!1 &1014289277
 GameObject:
   m_ObjectHideFlags: 0
@@ -4048,6 +4132,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1115017062}
   - component: {fileID: 1115017063}
+  - component: {fileID: 1115017064}
+  - component: {fileID: 1115017066}
+  - component: {fileID: 1115017065}
   m_Layer: 15
   m_Name: Trigger
   m_TagString: Untagged
@@ -4093,6 +4180,52 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.68, y: 2.91}
   m_EdgeRadius: 0
+--- !u!114 &1115017064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1115017061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1115017065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1115017061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfPointsToAward: 150
+  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
+    serializedVersion: 2
+    m_Bits: 2305
+--- !u!50 &1115017066
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1115017061}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1001 &1126374773
 Prefab:
   m_ObjectHideFlags: 0
@@ -4665,8 +4798,6 @@ GameObject:
   - component: {fileID: 1196380666}
   - component: {fileID: 1196380665}
   - component: {fileID: 1196380664}
-  - component: {fileID: 1196380663}
-  - component: {fileID: 1196380668}
   m_Layer: 8
   m_Name: Breakaway (2)
   m_TagString: Untagged
@@ -4688,17 +4819,6 @@ Transform:
   m_Father: {fileID: 277591537}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1196380663
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1196380661}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &1196380664
 Rigidbody2D:
   serializedVersion: 4
@@ -4804,21 +4924,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!114 &1196380668
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1196380661}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfPointsToAward: 150
-  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
-    serializedVersion: 2
-    m_Bits: 2305
 --- !u!1 &1214551317
 GameObject:
   m_ObjectHideFlags: 0
@@ -4906,8 +5011,6 @@ GameObject:
   - component: {fileID: 1270346275}
   - component: {fileID: 1270346274}
   - component: {fileID: 1270346273}
-  - component: {fileID: 1270346272}
-  - component: {fileID: 1270346277}
   m_Layer: 8
   m_Name: Breakaway (2)
   m_TagString: Untagged
@@ -4929,17 +5032,6 @@ Transform:
   m_Father: {fileID: 2064813645}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1270346272
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1270346270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &1270346273
 Rigidbody2D:
   serializedVersion: 4
@@ -5045,21 +5137,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!114 &1270346277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1270346270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfPointsToAward: 150
-  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
-    serializedVersion: 2
-    m_Bits: 2305
 --- !u!1001 &1323728992
 Prefab:
   m_ObjectHideFlags: 0
@@ -5111,6 +5188,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1381403620}
   - component: {fileID: 1381403621}
+  - component: {fileID: 1381403622}
+  - component: {fileID: 1381403624}
+  - component: {fileID: 1381403623}
   m_Layer: 15
   m_Name: Trigger
   m_TagString: Untagged
@@ -5156,6 +5236,52 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.68, y: 2.91}
   m_EdgeRadius: 0
+--- !u!114 &1381403622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1381403619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1381403623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1381403619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfPointsToAward: 150
+  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
+    serializedVersion: 2
+    m_Bits: 2305
+--- !u!50 &1381403624
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1381403619}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1399938596
 GameObject:
   m_ObjectHideFlags: 0
@@ -5165,6 +5291,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1399938597}
   - component: {fileID: 1399938598}
+  - component: {fileID: 1399938599}
+  - component: {fileID: 1399938601}
+  - component: {fileID: 1399938600}
   m_Layer: 15
   m_Name: Trigger
   m_TagString: Untagged
@@ -5210,6 +5339,52 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.68, y: 2.91}
   m_EdgeRadius: 0
+--- !u!114 &1399938599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1399938596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1399938600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1399938596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfPointsToAward: 150
+  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
+    serializedVersion: 2
+    m_Bits: 2305
+--- !u!50 &1399938601
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1399938596}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1438029560
 GameObject:
   m_ObjectHideFlags: 0
@@ -6079,6 +6254,7 @@ GameObject:
   - component: {fileID: 1806706213}
   - component: {fileID: 1806706212}
   - component: {fileID: 1806706215}
+  - component: {fileID: 1806706216}
   m_Layer: 0
   m_Name: EvilCloud
   m_TagString: Untagged
@@ -6144,6 +6320,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lengthOfEffectInSeconds: 1
   numberOfPulses: 5
+--- !u!114 &1806706216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1806706211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e73d8a93e01f1d340bbffe53e978e858, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1810089606
 Prefab:
   m_ObjectHideFlags: 0
@@ -6291,8 +6478,6 @@ GameObject:
   - component: {fileID: 1821994013}
   - component: {fileID: 1821994012}
   - component: {fileID: 1821994011}
-  - component: {fileID: 1821994015}
-  - component: {fileID: 1821994016}
   m_Layer: 8
   m_Name: Breakaway (1)
   m_TagString: Untagged
@@ -6419,32 +6604,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!114 &1821994015
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1821994009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1821994016
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1821994009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfPointsToAward: 150
-  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
-    serializedVersion: 2
-    m_Bits: 2305
 --- !u!1001 &1847324751
 Prefab:
   m_ObjectHideFlags: 0
@@ -6718,8 +6877,6 @@ GameObject:
   - component: {fileID: 1986997204}
   - component: {fileID: 1986997203}
   - component: {fileID: 1986997202}
-  - component: {fileID: 1986997201}
-  - component: {fileID: 1986997206}
   m_Layer: 8
   m_Name: Breakaway (2)
   m_TagString: Untagged
@@ -6741,17 +6898,6 @@ Transform:
   m_Father: {fileID: 682150464}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1986997201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1986997199}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &1986997202
 Rigidbody2D:
   serializedVersion: 4
@@ -6857,21 +7003,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!114 &1986997206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1986997199}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfPointsToAward: 150
-  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
-    serializedVersion: 2
-    m_Bits: 2305
 --- !u!1 &2007237248
 GameObject:
   m_ObjectHideFlags: 0
@@ -6988,6 +7119,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2094384397}
   - component: {fileID: 2094384398}
+  - component: {fileID: 2094384401}
+  - component: {fileID: 2094384400}
+  - component: {fileID: 2094384399}
   m_Layer: 15
   m_Name: Trigger
   m_TagString: Untagged
@@ -7033,6 +7167,52 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.68, y: 2.91}
   m_EdgeRadius: 0
+--- !u!114 &2094384399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2094384396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7ca8e63421e6a4b83eb693cea9bcb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2094384400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2094384396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fbe6d8ee8aec134188f22392023a7cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfPointsToAward: 150
+  maskOfPlayerPlusObstaclesWhichMayBlockPoints:
+    serializedVersion: 2
+    m_Bits: 2305
+--- !u!50 &2094384401
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2094384396}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &2123901060
 GameObject:
   m_ObjectHideFlags: 0

@@ -103,7 +103,7 @@ MonoBehaviour:
     type: 2}
   initialWaitTime: 2
   minTimeBetweenSpawns: 0.5
-  maxTimeBetweenSpawns: 3
+  maxTimeBetweenSpawns: 10
   enemyImpactMultiple: 30
   timeImpactMultiple: 0.02
 --- !u!114 &114792653940191510

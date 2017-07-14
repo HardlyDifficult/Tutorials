@@ -5,6 +5,7 @@
 /// These directly impact the animations playing, either triggering state transitions or changing playback speed.
 /// </summary>
 [RequireComponent(typeof(Player))]
+[RequireComponent(typeof(Animator))]
 public class PlayerAnimator : MonoBehaviour
 {
   #region Data
@@ -23,16 +24,19 @@ public class PlayerAnimator : MonoBehaviour
   /// <summary>
   /// On awake, populate variables.
   /// </summary>
-  void Awake()
+  protected void Awake()
   {
     player = GetComponent<Player>();
     animator = GetComponentInChildren<Animator>();
+
+    Debug.Assert(player != null);
+    Debug.Assert(animator != null);
   }
 
   /// <summary>
   /// On disable, tell the animator to freeze movement.  Used to freeze the player at the end of the level.
   /// </summary>
-  void OnDisable()
+  protected void OnDisable()
   { 
     Update_Animation(shouldFreeze: true);
   }
@@ -42,7 +46,7 @@ public class PlayerAnimator : MonoBehaviour
   /// <summary>
   /// On update, update the animator with variables such as current speed.
   /// </summary>
-  void Update()
+  protected void Update()
   {
     Update_Animation();
   }

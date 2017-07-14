@@ -37,6 +37,12 @@ public class DeathEffectSlowMo : MonoBehaviour, IHaveDeathEffect
   /// </summary>
   void IHaveDeathEffect.Die()
   {
+    Debug.Assert(timeTillPaused >= 0);
+    Debug.Assert(timePausedTillSpeedUp >= 0);
+    Debug.Assert(timeForSpeedUp >= 0);
+    Debug.Assert(timeTillPaused + timePausedTillSpeedUp + timeForSpeedUp > 0);
+    Debug.Assert(pointsPerDeath >= 0);
+
     GameController.instance.timeController.SlowDownAndSpeedUp(timeTillPaused, timePausedTillSpeedUp, timeForSpeedUp);
     GameController.instance.points += pointsPerDeath;
     Destroy(gameObject);

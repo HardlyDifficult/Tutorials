@@ -1,80 +1,82 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Causes an entity to roll the dice to consider getting on a ladder everytime it walks near one.
+/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(LadderMovement))]
 public class RandomlyClimbLadder : MonoBehaviour
 {
   #region Data
+  /// <summary>
+  /// When near a ladder going up, this is the odds that we start climbing.
+  /// </summary>
+  /// <remarks>You can set this to zero to disable going up ladders (used for the bombs).</remarks>
   [SerializeField]
   float oddsOfClimbingLadderUp = .5f;
+
+  /// <summary>
+  /// When near a ladder going down, this is the odds that we start climbing.
+  /// </summary>
   [SerializeField]
   float oddsOfClimbingLadderDown = .1f;
 
-  Rigidbody2D myBody;
-  Feet feet;
-  LadderMovement ladderMovement;
+  /// <summary>
+  /// Used to stop walking when we get on a ladder.  This is not required and may be null.
+  /// </summary>
   WalkMovement walkMovement;
-
+  
+  /// <summary>
+  /// Used to get on/off ladders.
+  /// </summary>
+  LadderMovement ladderMovement;
   #endregion
 
   #region Init
-  void Awake()
+  /// <summary>
+  /// On awake, initialize varaibles.
+  /// </summary>
+  protected void Awake()
   {
-    myBody = GetComponent<Rigidbody2D>();
-    walkMovement = GetComponent<WalkMovement>();
-    feet = GetComponentInChildren<Feet>();
-    Debug.Assert(feet != null);
+    Debug.Assert(oddsOfClimbingLadderUp >= 0);
+    Debug.Assert(oddsOfClimbingLadderDown >= 0);
+
+    walkMovement = GetComponent<WalkMovement>(); 
     ladderMovement = GetComponent<LadderMovement>();
 
+    Debug.Assert(ladderMovement != null);
   }
   #endregion
 
   #region Events
-  void FixedUpdate()
-  {
-    FixedUpdate_GetOffLadder();
-    FixedUpdate_GetOnLadder();
-  }
-  #endregion
-
-  #region Private helpers
-  void FixedUpdate_GetOnLadder()
-  {
-    Ladder ladder = ladderMovement.currentLadder;
-    if(ladder == null)
-    {
-      return;
-    }
-    if(ladderMovement.isOnLadder == false)
-    { // If not climbing, roll the dice to see if we should start
-      if(Mathf.Abs(ladder.bounds.center.x - transform.position.x) < .1f)
-      {
-        if(transform.position.y < ladder.bounds.center.y && UnityEngine.Random.value <= oddsOfClimbingLadderUp)
-        {
-          ladderMovement.climbDirection = 1;
-          walkMovement.inputWalkDirection = 0;
-        }
-        else if(transform.position.y > ladder.bounds.center.y && UnityEngine.Random.value <= oddsOfClimbingLadderDown)
-        {
-          ladderMovement.climbDirection = -1;
-          walkMovement.inputWalkDirection = 0;
-        }
-      }
-    }
-  }
-
-  void FixedUpdate_GetOffLadder()
+  /// <summary>
+  /// Consider getting on a ladder based on RNG and proximity.
+  /// </summary>
+  protected void FixedUpdate()
   {
     Ladder ladder = ladderMovement.currentLadder;
     if(ladder == null
-      || ladderMovement.isOnLadder == false)
-    {
+      || Mathf.Abs(ladder.bounds.center.x - transform.position.x) > .1f
+      || ladderMovement.isOnLadder)
+    { // Nothing to do if not near a ladder's center or already on one.
       return;
     }
 
-    if(myBody.position.y < ladder.bounds.min.y)
-    { // Get off
-      ladderMovement.isOnLadder = false;
+    if(transform.position.y < ladder.bounds.center.y && UnityEngine.Random.value <= oddsOfClimbingLadderUp)
+    { // Climb up and stop walking
+      ladderMovement.climbDirection = 1;
+      if(walkMovement != null)
+      {
+        walkMovement.inputWalkDirection = 0;
+      }
+    }
+    else if(transform.position.y > ladder.bounds.center.y && UnityEngine.Random.value <= oddsOfClimbingLadderDown)
+    { // Climb down and stop walking
+      ladderMovement.climbDirection = -1;
+      if(walkMovement != null)
+      {
+        walkMovement.inputWalkDirection = 0;
+      }
     }
   }
   #endregion

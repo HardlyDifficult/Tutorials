@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
     player = GetComponent<Player>();
 
     AppearInSecondsAndFadeInSprite.DisableMeTillComplete(this);
+
+    Debug.Assert(player != null);
   }
   #endregion
 
@@ -34,7 +36,7 @@ public class PlayerController : MonoBehaviour
   /// FixedUpdate since physics also runs on FixedUpdate, 
   /// so trying to do this on update would require an extra cache (w/o benefit).
   /// </remarks>
-  void FixedUpdate()
+  protected void FixedUpdate()
   {
     FixedUpdate_MoveLeftRight();
     FixedUpdate_ClimbLadder();
@@ -46,7 +48,7 @@ public class PlayerController : MonoBehaviour
   /// <remarks>
   /// Jumping uses an input event, and therefore must be captured on Update (vs fixed).
   /// </remarks>
-  void Update()
+  protected void Update()
   {
     Update_Jump();
   }
@@ -82,10 +84,9 @@ public class PlayerController : MonoBehaviour
   /// </summary>
   void Update_Jump()
   {
-    if(player.feet.isGrounded
-      && Input.GetButtonDown("Jump"))
+    if(Input.GetButtonDown("Jump"))
     {
-      player.jumpMovement.hasJumpedSinceLastUpdate = true;
+      player.jumpMovement.Jump();
     }
   }
   #endregion

@@ -18,9 +18,9 @@ public class BreakawayOnTrigger : MonoBehaviour
   public static event Action onBreakaway;
 
   /// <summary>
-  /// A cache of the rigidbody, for performance.
+  /// The parent's rigidbody, used to enable gravity.
   /// </summary>
-  Rigidbody2D myBody;
+  Rigidbody2D myParentBody;
   #endregion
 
   #region Init
@@ -29,7 +29,11 @@ public class BreakawayOnTrigger : MonoBehaviour
   /// </summary>
   protected void Awake()
   {
-    myBody = GetComponent<Rigidbody2D>();
+    Debug.Assert(transform.parent != null);
+
+    myParentBody = transform.parent.GetComponent<Rigidbody2D>();
+
+    Debug.Assert(myParentBody != null);
   }
 
   /// <summary>
@@ -43,13 +47,15 @@ public class BreakawayOnTrigger : MonoBehaviour
   /// <summary>
   /// On disable or destroy, remove this from the number of in-tact blocks.  And fire breakaway event.
   /// </summary>
-  void OnDisable()
+  protected void OnDisable()
   {
     numberOfInTactBlocks--;
     if(onBreakaway != null)
     {
       onBreakaway();
     }
+
+    Debug.Assert(numberOfInTactBlocks >= 0);
   }
   #endregion
 
@@ -59,18 +65,19 @@ public class BreakawayOnTrigger : MonoBehaviour
   /// Only called for the player c/o of the Physics matrix.
   /// </summary>
   /// <param name="collision">The thing which hit us (the player).</param>
-  void OnTriggerEnter2D(
+  protected void OnTriggerEnter2D(
     Collider2D collision)
   {
     // Enable physics
-    myBody.constraints = RigidbodyConstraints2D.None;
+    myParentBody.constraints = RigidbodyConstraints2D.None;
 
     // Disable one-way platformer effect
-    PlatformEffector2D effector = GetComponent<PlatformEffector2D>();
+    PlatformEffector2D effector = GetComponentInParent<PlatformEffector2D>();
     if(effector != null)
     {
       effector.useOneWay = false;
     }
+    enabled = false; // Disable this script, triggering the breakaway event
   }
   #endregion
 }

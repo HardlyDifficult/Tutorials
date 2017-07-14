@@ -9,7 +9,7 @@ public class SuicideOutOfBounds : MonoBehaviour
   /// <summary>
   /// On fixedUpdate, check if the object has fallen off screen.
   /// </summary>
-  void FixedUpdate()
+  protected void FixedUpdate()
   {
     if(transform.position.y < -12)
     { // Fell out of bounds

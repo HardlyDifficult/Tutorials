@@ -49,6 +49,11 @@ public class DeathEffectSpriteFlash : MonoBehaviour, IHaveDeathEffect
   /// <returns>Used by coroutines to manage time.</returns>
   IEnumerator FlashToDeath()
   {
+    Debug.Assert(lengthBeforeFlash >= 0);
+    Debug.Assert(lengthBeforeFlash > 0);
+    Debug.Assert(timePerColorChange > 0);
+    Debug.Assert(colorChangeTimeFactorPerFlash > 0);
+
     // Wait before starting flash
     yield return new WaitForSeconds(lengthBeforeFlash);
 

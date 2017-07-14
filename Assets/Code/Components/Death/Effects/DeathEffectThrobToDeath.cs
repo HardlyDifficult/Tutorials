@@ -37,6 +37,9 @@ public class DeathEffectThrobToDeath : MonoBehaviour, IHaveDeathEffect
   /// <returns>Used by coroutine to manage time.</returns>
   IEnumerator ThrobToDeath()
   {
+    Debug.Assert(lengthOfEffectInSeconds > 0);
+    Debug.Assert(numberOfPulses > 0);
+
     // Throb over time
     float timePerPulse = lengthOfEffectInSeconds / numberOfPulses;
     float timeRun = 0;

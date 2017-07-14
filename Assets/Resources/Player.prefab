@@ -252,6 +252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03313017787904d4284d6c24439bc4c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumpSound: {fileID: 8300000, guid: 40c4c5222ed345149aaa34f97a92c950, type: 3}
   jumpSpeed: 6.5
 --- !u!212 &212505813324005714
 SpriteRenderer:

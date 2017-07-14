@@ -7,6 +7,9 @@ using UnityEngine;
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(LadderMovement))]
+[RequireComponent(typeof(WalkMovement))]
+[RequireComponent(typeof(JumpMovement))]
+[RequireComponent(typeof(Feet))]
 public class Player : MonoBehaviour, IHaveDeathEffect
 {
   #region Data
@@ -66,10 +69,8 @@ public class Player : MonoBehaviour, IHaveDeathEffect
   /// <summary>
   /// On awake, populate variables.
   /// </summary>
-  void Awake()
+  protected void Awake()
   {
-    Debug.Assert(instance == null);
-
     instance = this;
 
     myBody = GetComponent<Rigidbody2D>();
@@ -77,16 +78,23 @@ public class Player : MonoBehaviour, IHaveDeathEffect
     walkMovement = GetComponent<WalkMovement>();
     jumpMovement = GetComponent<JumpMovement>();
     ladderMovement = GetComponent<LadderMovement>();
+
+    Debug.Assert(myBody != null);
+    Debug.Assert(feet != null);
+    Debug.Assert(walkMovement != null);
+    Debug.Assert(jumpMovement != null);
+    Debug.Assert(ladderMovement != null);
   }
 
   /// <summary>
   /// On destroy, clear singleton instance.
   /// </summary>
-  void OnDestroy()
+  protected void OnDestroy()
   {
-    Debug.Assert(instance == this);
-
-    instance = null;
+    if(instance == this)
+    { // Only clear the instance if there isn't already a new player in the world
+      instance = null;
+    }
   }
   #endregion
 
@@ -96,7 +104,8 @@ public class Player : MonoBehaviour, IHaveDeathEffect
   /// </summary>
   void IHaveDeathEffect.Die()
   {
-    GameObject.FindObjectOfType<LevelManager>().YouDied();
+    LevelManager levelManager = GameObject.FindObjectOfType<LevelManager>();
+    levelManager.YouDied();
   }
   #endregion
 }

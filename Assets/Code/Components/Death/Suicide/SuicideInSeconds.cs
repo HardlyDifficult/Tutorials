@@ -10,15 +10,17 @@ public class SuicideInSeconds : MonoBehaviour
   /// How long till this object should be destroyed.
   /// </summary>
   [SerializeField]
-  float timeTillDeath;
+  float timeTillDeath = 5;
   #endregion
 
   #region Init
   /// <summary>
   /// On start, begin the countdown till Destroy.
   /// </summary>
-  void Start()
+  protected void Start()
   {
+    Debug.Assert(timeTillDeath > 0);
+
     Destroy(gameObject, timeTillDeath);
   }
   #endregion

@@ -12,13 +12,13 @@ public class RotateOvertimeFromIdentityToOriginalRotation : MonoBehaviour
   /// How long before the rotation effect begins.
   /// </summary>
   [SerializeField]
-  float initialWaitTime;
+  float initialWaitTime = 2;
 
   /// <summary>
   /// How to rotate each jitter (a randomish amount of time).
   /// </summary>
   [SerializeField]
-  float rotationTimeFactor;
+  float rotationTimeFactor = 1;
 
   /// <summary>
   /// Select a random time 0->this value to sleep between each jiffer.
@@ -31,7 +31,7 @@ public class RotateOvertimeFromIdentityToOriginalRotation : MonoBehaviour
   /// <summary>
   /// On start, kick off the rotation animation.
   /// </summary>
-  void Start()
+  protected void Start()
   {
     StartCoroutine(AnimateRotation());
   }
@@ -44,6 +44,10 @@ public class RotateOvertimeFromIdentityToOriginalRotation : MonoBehaviour
   /// <returns>Used by coroutines to manage time.</returns>
   IEnumerator AnimateRotation()
   {
+    Debug.Assert(initialWaitTime >= 0);
+    Debug.Assert(rotationTimeFactor > 0);
+    Debug.Assert(maxTimeBetweenRotations > 0);
+
     // Start with no rotation
     Quaternion targetRotation = transform.rotation;
     transform.rotation = Quaternion.identity;

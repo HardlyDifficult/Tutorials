@@ -1693,6 +1693,11 @@ Prefab:
       propertyPath: gameObjectToDestroy
       value: 
       objectReference: {fileID: 1500709004}
+    - target: {fileID: 114397674021800050, guid: 982ea3dd48de2e342958a5dacc260a33,
+        type: 2}
+      propertyPath: initialWaitTime
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 982ea3dd48de2e342958a5dacc260a33, type: 2}
   m_IsPrefabParent: 0

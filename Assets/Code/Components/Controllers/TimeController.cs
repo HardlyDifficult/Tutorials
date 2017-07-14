@@ -11,13 +11,6 @@ using UnityEngine;
 [RequireComponent(typeof(GameController))]
 public class TimeController : MonoBehaviour
 {
-  #region Data
-  /// <summary>
-  /// The currently running time manipulation routine, if any.
-  /// </summary>
-  Coroutine routine;
-  #endregion
-
   #region API
   /// <summary>
   /// Manipulates time, for a brief pause effect in-game.
@@ -31,12 +24,13 @@ public class TimeController : MonoBehaviour
     float timePausedTillSpeedUp,
     float timeForSpeedUp)
   {
-    if(routine != null)
-    { // Only one time effect at a time
-      return;
-    }
+    Debug.Assert(timeTillPaused >= 0);
+    Debug.Assert(timePausedTillSpeedUp >= 0);
+    Debug.Assert(timeForSpeedUp >= 0);
+    Debug.Assert(timeTillPaused + timePausedTillSpeedUp + timeForSpeedUp > 0);
 
-    routine = StartCoroutine(AnimateTime(timeTillPaused, timePausedTillSpeedUp, timeForSpeedUp));
+    StopAllCoroutines(); // If there is already a time-effect in progress, cancel it and play this instead.
+    StartCoroutine(AnimateTime(timeTillPaused, timePausedTillSpeedUp, timeForSpeedUp));
   }
   #endregion
 
@@ -53,6 +47,11 @@ public class TimeController : MonoBehaviour
     float timePausedTillSpeedUp,
     float timeForSpeedUp)
   {
+    Debug.Assert(timeTillPaused >= 0);
+    Debug.Assert(timePausedTillSpeedUp >= 0);
+    Debug.Assert(timeForSpeedUp >= 0);
+    Debug.Assert(timeTillPaused + timePausedTillSpeedUp + timeForSpeedUp > 0);
+
     // Slowly pause game
     float timePassed = 0;
     while(timePassed < timeTillPaused)
@@ -80,7 +79,6 @@ public class TimeController : MonoBehaviour
 
     // Cleanup
     Time.timeScale = 1;
-    routine = null;
   }
   #endregion
 }

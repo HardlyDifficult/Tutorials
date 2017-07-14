@@ -9,13 +9,18 @@ public class TouchMeToWin : MonoBehaviour
   /// <summary>
   /// The number of touch to win objects remaining in this world.
   /// </summary>
-  public static int numberActive;
+  public static int totalNumberActive;
 
   /// <summary>
   /// A LayerMask to define which objects to trigger a win condition on.
   /// </summary>
   [SerializeField]
   LayerMask layerToTriggerOn;
+
+  /// <summary>
+  /// Tracks if this object has already been decremented from the totalNumberActive.
+  /// </summary>
+  bool isActive;
   #endregion
 
   #region Init
@@ -24,7 +29,8 @@ public class TouchMeToWin : MonoBehaviour
   /// </summary>
   protected void Start()
   {
-    numberActive++;
+    totalNumberActive++;
+    isActive = true;
   }
 
   /// <summary>
@@ -32,7 +38,12 @@ public class TouchMeToWin : MonoBehaviour
   /// </summary>
   protected void OnDestroy()
   {
-    numberActive--;
+    if(isActive)
+    {
+      totalNumberActive--;
+    }
+
+    Debug.Assert(totalNumberActive >= 0);
   }
   #endregion
 
@@ -41,14 +52,37 @@ public class TouchMeToWin : MonoBehaviour
   /// On collision, trigger a win if the object which hit us matches the LayerMask.
   /// </summary>
   /// <param name="collision">The thing that hit us.</param>
+  protected void OnTriggerEnter2D(
+    Collider2D collision)
+  {
+    CheckForWin(collision.gameObject);
+  }
+
   protected void OnCollisionEnter2D(
     Collision2D collision)
   {
-    if(layerToTriggerOn.Includes(collision.gameObject.layer))
-    {
-      GameObject.FindObjectOfType<LevelManager>().YouWin();
+    CheckForWin(collision.gameObject);
+  }
+  #endregion
 
-      Destroy(this); // Prevent this script from responding to another collision.
+  #region Helpers
+  /// <summary>
+  /// Checks if the gameObject is included in the layerMask, if so call YouWin on the levelManager;
+  /// </summary>
+  /// <param name="gameObject">The gameObject we just touched.</param>
+  void CheckForWin(
+    GameObject gameObject)
+  {
+    if(isActive == false)
+    { // Already triggered this object
+      return;
+    }
+
+    if(layerToTriggerOn.Includes(gameObject.layer))
+    {
+      isActive = false;
+      totalNumberActive--;
+      GameObject.FindObjectOfType<LevelManager>().YouWin();
     }
   }
   #endregion

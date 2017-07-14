@@ -1,14 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// Added to ladders in the world, providing data for other components (e.g. if it's a broken ladder).
+/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class Ladder : MonoBehaviour
 {
   #region Data
+  /// <summary>
+  /// Some entities cannot climb broken ladders.
+  /// </summary>
   [SerializeField]
   bool isBrokenLadder;
 
+  /// <summary>
+  /// This is the trigger bounds for the ladder, used to determine when to get on/off.
+  /// </summary>
   public Bounds bounds
   {
     get; private set;
@@ -16,6 +23,10 @@ public class Ladder : MonoBehaviour
   #endregion
 
   #region Properties
+  /// <summary>
+  /// Some entities cannot climb broken ladders.
+  /// </summary>
+  /// <remarks>This is a public read-only view of the SerializeField above.</remarks>
   public bool isBroken
   {
     get
@@ -26,9 +37,13 @@ public class Ladder : MonoBehaviour
   #endregion
 
   #region Init
+  /// <summary>
+  /// Initialize variables.
+  /// </summary>
   protected void Awake()
   {
-    bounds = GetComponent<Collider2D>().bounds;
+    Collider2D collider = GetComponent<Collider2D>();
+    bounds = collider.bounds;
   }
   #endregion
 }

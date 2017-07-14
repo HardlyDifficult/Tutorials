@@ -37,6 +37,9 @@ public class DeathEffectSpin : MonoBehaviour, IHaveDeathEffect
   /// <returns>Used by coroutines to manage time.</returns>
   IEnumerator SpinToDeath()
   {
+    Debug.Assert(timeTillDeath > 0);
+    Debug.Assert(rotationSpeed > 0);
+
     float currentRotation = 0;
     float timeRun = 0;
     while(timeRun < timeTillDeath)

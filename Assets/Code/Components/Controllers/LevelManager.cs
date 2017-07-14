@@ -33,6 +33,8 @@ public abstract class LevelManager : MonoBehaviour
   protected virtual void Awake()
   {
     playerPrefab = Resources.Load<Player>("Player");
+
+    Debug.Assert(playerPrefab != null);
   }
 
   /// <summary>

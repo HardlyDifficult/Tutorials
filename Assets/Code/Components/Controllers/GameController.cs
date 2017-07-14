@@ -57,6 +57,8 @@ public class GameController : MonoBehaviour
   /// </summary>
   protected void Awake()
   {
+    Debug.Assert(lifeCounter > 0);
+
     if(instance != null)
     {
       Destroy(gameObject);
@@ -74,6 +76,9 @@ public class GameController : MonoBehaviour
     Reset();
 
     SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+
+    Debug.Assert(timeController != null);
+    Debug.Assert(screenBounds.size.magnitude > 0);
   }
   #endregion
 
@@ -102,6 +107,8 @@ public class GameController : MonoBehaviour
   {
     lifeCounter = originalLifeCount;
     points = 0;
+
+    Debug.Assert(lifeCounter > 0);
   }
   #endregion
 }

@@ -28,8 +28,10 @@ public class Level2 : LevelManager
     base.Awake();
 
     cloud = GameObject.Find("EvilCloud");
-    Debug.Assert(cloud != null);
     cloudAnimator = cloud.GetComponentInChildren<Animator>();
+
+    Debug.Assert(cloud != null);
+    Debug.Assert(cloudAnimator != null);
   }
 
   /// <summary>
@@ -52,7 +54,7 @@ public class Level2 : LevelManager
   public override void YouWin()
   {
     if(BreakawayOnTrigger.numberOfInTactBlocks > 0
-      || TouchMeToWin.numberActive > 0)
+      || TouchMeToWin.totalNumberActive > 0)
     { // You didn't really win yet
       return;
     }

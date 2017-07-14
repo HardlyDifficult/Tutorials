@@ -18,7 +18,7 @@ public class SuicidePostSceneChange : MonoBehaviour
   /// <summary>
   /// On awake, set this object to DontDestroyOnLoad and register for scene change events.
   /// </summary>
-  void Awake()
+  protected void Awake()
   {
     DontDestroyOnLoad(gameObject);
     SceneManager.sceneUnloaded += SceneManager_sceneUnloaded;
@@ -27,7 +27,7 @@ public class SuicidePostSceneChange : MonoBehaviour
   /// <summary>
   /// Deregister events.
   /// </summary>
-  void OnDestroy()
+  protected void OnDestroy()
   {
     SceneManager.sceneUnloaded -= SceneManager_sceneUnloaded;
   }

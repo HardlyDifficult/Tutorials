@@ -3,6 +3,7 @@
 /// <summary>
 /// When enabled (e.g. via an animation), play the specified animation.
 /// </summary>
+[RequireComponent(typeof(Animator))]
 public class PlayAnimationOnEnable : MonoBehaviour
 {
   #region Data
@@ -17,9 +18,12 @@ public class PlayAnimationOnEnable : MonoBehaviour
   /// <summary>
   /// On enable, start the animation playback.
   /// </summary>
-  void OnEnable()
+  protected void OnEnable()
   {
-    GetComponent<Animator>().Play(animationToPlay);
+    Debug.Assert(animationToPlay != null);
+
+    Animator animator = GetComponent<Animator>();
+    animator.Play(animationToPlay);
   }
   #endregion
 }

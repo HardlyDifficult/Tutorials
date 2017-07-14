@@ -4,6 +4,7 @@ using System;
 /// <summary>
 /// Kills anything on contact which matches the provided LayerMask.
 /// </summary>
+[RequireComponent(typeof(Collider2D))]
 public class KillOnContactWith : MonoBehaviour
 {
   #region Data
@@ -18,7 +19,7 @@ public class KillOnContactWith : MonoBehaviour
   /// <summary>
   /// Unity Hack to allow enable/disable (used by the collision/trigger events).
   /// </summary>
-  void Start() { }
+  protected void Start() {}
   #endregion
 
   #region Events
@@ -26,7 +27,7 @@ public class KillOnContactWith : MonoBehaviour
   /// On collision, consider killing the thing we touched.
   /// </summary>
   /// <param name="collision">The thing we touched.</param>
-  void OnCollisionEnter2D(
+  protected void OnCollisionEnter2D(
     Collision2D collision)
   {
     TryKilling(collision.gameObject);
@@ -36,7 +37,7 @@ public class KillOnContactWith : MonoBehaviour
   /// On trigger, consider killing the thing we touched.
   /// </summary>
   /// <param name="collision">The thing we touched.</param>
-  void OnTriggerEnter2D(
+  protected void OnTriggerEnter2D(
     Collider2D collision)
   {
     TryKilling(collision.gameObject);
