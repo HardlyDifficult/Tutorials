@@ -5,31 +5,31 @@
 <summary>How</summary>
 https://store.unity.com/download
 
-<img src="https://i.imgur.com/T2iZrmK.png" width=50% />
 
-TODO
-</details>
+<img src="https://i.imgur.com/T2iZrmK.png" width=50% /></details>
+
 <details>
 <summary>Why</summary>
-TODO
 Unity is a 3D engine.  2D just sets default settings.
 </details>
 
+
+
+
+
 # Create a platform with collider to walk on
+
 
 ## Import sprite art
 
 <details>
 <summary>How</summary>
 <img src="https://i.imgur.com/lvN6QmZ.png" width=20% />
-<ul>
-<li>Right click in the Project Assets directory
-<li> Create new folder
-<li>
-<ul>
-<li> You can rename folders by selecting and pressing F2
-</ul>
-<li>Drag/drop the sprite sheet (or entire folder of art) into the folder you just created
+
+ - Right click in the Project Assets directory
+ - Create new folder
+   - You can rename folders by selecting and pressing F2
+ - Drag/drop the sprite sheet (or entire folder of art) into the folder you just created
 </ul>
 
 </details>
@@ -44,19 +44,19 @@ aoeu
 <details>
 <summary>How</summary>
 
-<img src="http://i.imgur.com/zMEQnAF.png">
-<ul>
-<li>Set Sprite Mode to Multiple
-<li>Set Mesh Type to Full Rect
-<li>Click Sprite Editor (apply changes when prompted)
-<li>Click the "Slice" menu item
-<li> - Type: Grid By Cell Count
-<li> - Column & Row: 8 & 16
-<li>Click "Slice" button
-<li>Click "Apply" and close the Sprite Editor
+<img src="http://i.imgur.com/duYuVMy.png">
+
+- Set Sprite Mode to Multiple
+- Click Sprite Editor (apply changes when prompted)
+
 <img src="http://i.imgur.com/hA2cMfv.png">
-<li>
-</ul>
+
+- Click the "Slice" menu item
+  - Type: Grid By Cell Count
+  - Column & Row: 8 & 16
+- Click "Slice" button
+- Click "Apply" and close the Sprite Editor
+
 </details>
 <details>
 <summary>Why</summary>
@@ -64,10 +64,43 @@ Full Rect is needed for the tiling effect we will be applying to platform sprite
 </details>
 
 ## Update sprite sheet Mesh Type to Full Rect
--- Why
+
+<details>
+<summary>
+How
+</summary>
+ - Set Mesh Type to Full Rect
+<img src="http://i.imgur.com/Dhe3Nzt.png">
+</details>
+
+<details>
+<summary>
+Why
+</summary>
+Prevents artifacts when creating tiled sprites.
+http://i.imgur.com/e9jE83B.png
+</details>
 
 ## Update sprite sheet Filter Mode to Point
---Why
+
+<details>
+<summary>
+How
+</summary>
+ - Set Mesh Type to Full Rect
+<img src="
+http://i.imgur.com/B0nqf75.png">
+</details>
+
+
+<details>
+<summary>
+Why
+</summary>
+Random lines will show up on screen without this
+<img src="http://i.imgur.com/ZKqg5JP.png">
+</details>
+
 
 ## Add a platform sprite to the scene
 <img src="http://i.imgur.com/E2lLY3h.png">
