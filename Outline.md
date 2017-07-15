@@ -19,7 +19,7 @@ Unity is a 3D engine.  2D just sets default settings.
 
 <details>
 <summary>How</summary>
-<img src="https://i.imgur.com/lvN6QmZ.png" width=50% />
+<img src="https://i.imgur.com/lvN6QmZ.png" width=20% />
 <ul>
 <li>Right click in the Project Assets directory</li>
 <li> Create new folder</li>
