@@ -19,6 +19,7 @@ Unity is a 3D engine.  2D just sets default settings.
 
 # Create a platform with collider to walk on
 
+Goal: TODO
 
 ## Import sprite art
 
@@ -69,7 +70,6 @@ Full Rect is needed for the tiling effect we will be applying to platform sprite
 <summary>
 How
 </summary>
- - Set Mesh Type to Full Rect
 <img src="http://i.imgur.com/Dhe3Nzt.png">
 </details>
 
@@ -78,7 +78,7 @@ How
 Why
 </summary>
 Prevents artifacts when creating tiled sprites.
-http://i.imgur.com/e9jE83B.png
+<img src="http://i.imgur.com/e9jE83B.png">
 </details>
 
 ## Update sprite sheet Filter Mode to Point
@@ -103,9 +103,33 @@ Random lines will show up on screen without this
 
 
 ## Add a platform sprite to the scene
+
+<details>
+<summary>
+How
+</summary>
 <img src="http://i.imgur.com/E2lLY3h.png">
-<li>Click the arrow on the spritesheet in your Assets/Art directory (this displays each individual sliced image)
-<li>Click and drag the platform sprite you want to use into the Hierarchy
+
+ - Click the arrow on the spritesheet in your Assets/Art directory (this displays each individual sliced image)
+ - Click and drag the platform sprite you want to use into the Hierarchy
+
+</details>
+
+
+## Disable Anti Aliasing
+<details>
+<summary>
+How
+</summary>
+<img src="http://i.imgur.com/omFI4DD.png">
+Not different levels for different build types
+</details>
+<details>
+<summary>
+Why
+</summary>
+<img src="http://i.imgur.com/vY5YmVj.png">
+</details>
 
 ## Change draw mode to Tiled and extend Width
 
