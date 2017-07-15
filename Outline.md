@@ -4,7 +4,7 @@
 <details>
 <summary>How</summary>
 
-<img src="https://i.imgur.com/T2iZrmK.png" width:50% align:center/>
+<img src="https://i.imgur.com/T2iZrmK.png" width=50% align=center/>
 
 TODO
 </details>
