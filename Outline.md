@@ -66,15 +66,17 @@ Full Rect is needed for the tiling effect we will be applying to platform sprite
 <li>Click the arrow on the spritesheet in your Assets/Art directory (this displays each individual sliced image)
 <li>Click and drag the platform sprite you want to use into the Hierarchy
 
-# Add platforms to the world
+# Change draw mode to Tiled and extend Width
 
 <details>
 <summary>How</summary>
-* Import art
-TODO
+<li>Draw Mode: Tiled
+<li>Width: 10-ish, no change to height
+http://i.imgur.com/MIgzjdO.png
 </details>
 <details>
 <summary>Why</summary>
 TODO
 
+# 
 </details>
