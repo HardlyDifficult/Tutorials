@@ -8,22 +8,20 @@ Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://j
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-```markdown
-Syntax highlighted code block
+```csharp
+void Update_Animation(
+    bool shouldFreeze = false)
+  {
+    if(animator.isActiveAndEnabled == false)
+    {
+      return;
+    }
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+    animator.SetFloat("Speed", shouldFreeze ? 0 : player.myBody.velocity.magnitude);
+    animator.SetBool("isGrounded", shouldFreeze ? false : player.feet.isGrounded);
+    animator.SetBool("isClimbing", shouldFreeze ? false : player.ladderMovement.isOnLadder);
+    animator.SetBool("hasWeapon", shouldFreeze ? false : player.currentWeapon != null);
+  }
 ```
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
