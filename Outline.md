@@ -225,7 +225,7 @@ Allows us to modify all platforms in the game easily.
  - Drag the edge sprites into the hierarchy under the 'Platform' gameObject
  - Vertex snap by holding V, a box appears for each anchor point.  Hover over the top right and click and drag the box which appears.  It will snap perfectly with other anchor points in the world
 
-<img src="http://i.imgur.com/MYqFzYq.gifv">
+<img src="http://i.imgur.com/MYqFzYq.gif">
 
 http://i.imgur.com/CnC6ZXA.png
 
