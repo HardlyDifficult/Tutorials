@@ -8,13 +8,13 @@ Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://j
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-[Test](/Test)
+[Test](/Test.md)
 
 
 <div style="font-size:5em">This is a test</div>
 <details><summary>Hi</summary>You rock!
 
-[Test]
+[Test](/Test.md)
 
 ```csharp
 void Update_Animation(
