@@ -21,9 +21,13 @@ Unity is a 3D engine.  2D just sets default settings.
 <summary>How</summary>
 <img src="https://i.imgur.com/lvN6QmZ.png" width=20% />
 <ul>
-<li>Right click in the Project Assets directory</li>
-<li> Create new folder</li>
-** You can rename folders by selecting and pressing F2
+<li>Right click in the Project Assets directory
+<li> Create new folder
+<li>
+<ul>
+<li> You can rename folders by selecting and pressing F2
+</ul>
+</ul>
 
 </details>
 
