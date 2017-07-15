@@ -15,7 +15,9 @@ TODO
 Unity is a 3D engine.  2D just sets default settings.
 </details>
 
-# Import sprite art
+# Create a platform with collider to walk on
+
+## Import sprite art
 
 <details>
 <summary>How</summary>
@@ -37,7 +39,7 @@ Unity is a 3D engine.  2D just sets default settings.
 aoeu
 </details>
 
-# Slice sprite sheets and update Mesh Type to Full Rect
+## Slice sprite sheet
 
 <details>
 <summary>How</summary>
@@ -61,12 +63,18 @@ aoeu
 Full Rect is needed for the tiling effect we will be applying to platform sprites.
 </details>
 
-# Add a platform sprite to the scene
+## Update sprite sheet Mesh Type to Full Rect
+-- Why
+
+## Update sprite sheet Filter Mode to Point
+--Why
+
+## Add a platform sprite to the scene
 <img src="http://i.imgur.com/E2lLY3h.png">
 <li>Click the arrow on the spritesheet in your Assets/Art directory (this displays each individual sliced image)
 <li>Click and drag the platform sprite you want to use into the Hierarchy
 
-# Change draw mode to Tiled and extend Width
+## Change draw mode to Tiled and extend Width
 
 <details>
 <summary>How</summary>
@@ -78,5 +86,3 @@ http://i.imgur.com/MIgzjdO.png
 <summary>Why</summary>
 TODO
 
-# 
-</details>
