@@ -14,3 +14,32 @@ TODO
 TODO
 Unity is a 3D engine.  2D just sets default settings.
 </details>
+
+# Import sprite art
+
+<details>
+<summary>How</summary>
+<img src="https://i.imgur.com/lvN6QmZ.png" width=50% />
+* Right click in the Project Assets directory
+* Create new folder
+** You can rename folders by selecting and pressing F2
+
+</details>
+
+<details>
+<summary>Why</summary>
+aoeu
+</details>
+
+# Add platforms to the world
+
+<details>
+<summary>How</summary>
+* Import art
+TODO
+</details>
+<details>
+<summary>Why</summary>
+TODO
+
+</details>
