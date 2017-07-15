@@ -12,7 +12,7 @@ Markdown is a lightweight and easy-to-use syntax for styling your writing. It in
 <div style="font-size:5em">This is a test</div>
 <details><summary>Hi</summary>You rock!
 
-[[Test]]
+[Test]
 
 ```csharp
 void Update_Animation(
