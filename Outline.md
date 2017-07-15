@@ -15,12 +15,22 @@ Unity is a 3D engine.  2D just sets default settings.
 
 
 
+## Save scene
+File -> Save Scene
+Create a Scenes directory, call it Level1
 
-Auto save script
+
+## Auto save script
+<details>
+<summary>
+Crashes happen.
+</summary>
+</details>
 
 
 
-# Create a platform with collider to walk on
+
+# Create platforms 
 
 Goal: Create the platforms for level 1
 
@@ -195,7 +205,7 @@ With the two locked, we can design a scene without any camera movement and be su
 </details>
 
 
-## Create Prefab
+## Create Platform 
 
 
 <details>
@@ -208,41 +218,127 @@ With the two locked, we can design a scene without any camera movement and be su
 <img src="http://i.imgur.com/FAkZf1H.png">
 
  - Drag and drop the sprite onto 'Platform' (it should appear indented under 'Platform' and also have a default transform)
- - Create a 'Prefabs' directory under "Project" -> "Assets"
- - Drag the 'Platform' object from the "Hierarchy" to the 'Prefabs' directory.
+ 
 
 <img src="http://i.imgur.com/UB6JDgt.png">
 </details>
 
 <details>
 <summary>Why</summary>
-Allows us to modify all platforms in the game easily.
+aoeu
 </details>
 
 
 
-## Add Edge sprites to prefab
- - Drag the edge sprites into the hierarchy under the 'Platform' gameObject
+## Add edges
+<details>
+<summary>
+How?
+</summary>
+
+ - Rename the gameObject to 'PlatformWithEdges'
+ - Drag drop into the Prefabs folder to create a new prefab
+
+ - Drag the edge sprites into the hierarchy under the 'PlatformWithEdges' gameObject 
+ -- When you do this, it will warn you that you will 'break' the prefab
  - Vertex snap by holding V, a box appears for each anchor point.  Hover over the top right and click and drag the box which appears.  It will snap perfectly with other anchor points in the world
-
-<img src="http://i.imgur.com/MYqFzYq.gif">
-
-http://i.imgur.com/CnC6ZXA.png
-
  - Apply prefab
 
+<img src="http://i.imgur.com/GNMGb0w.gif">
+ - Apply prefab
+ </details>
 
 
 
-## Add a copy of the prefab
+<details>
+<summary>How</summary>
+ - Rename
+  - Drag drop new prefab
+  - Delete one side
+  - Drag in a new copy of PlatformWithEdges and repeat for the other side
+
+Should have a total of 4 prefabs.
+You can delete them all from the scene.
+
+<img src="http://i.imgur.com/j1cz0aZ.png">
+</details>
+
+<details>
+<summary>
+Why?
+</summary>
+When something on the prefab changes we can revert the instances in the scene.  This applies any new settings or components we may have added without disturbing the transform it uses in the scene.  Unfortunately it would also reset things like the missing edge sprites - so one for each.
+</details>
+
+## Create a connected platform
+<details>
+<summary>
+How?
+</summary>
+
+Copy paste, delete the edges we don't need
+ - Use a copy of PlatformWithRightEdge and PlatformWithLeftEdge
 
 
-## Modify each copies transform / width
- - Rotations
+Adjust the 
+
+ - Drag and drop the prefab to the hierarchy to instanciate a copy
+ - Position side by side
+ - Remove edges so each prefab can touch the other's middle segment
+ (i.e. no rounded corner)
+
+
+ - Rotations on the z axis (2d doesn't respond well to x or y rotations --- but remember that Unity is a 3D engine)
  - Use the tile mode width for the middle segment only
+</details>
 
-## Go nuts, make the level
 
+## Copy paste to complete Level1 platforms
+<details>
+<summary>
+How?
+</summary>
+
+When moving things around be sure the parent is selected.
+
+Aim to have platforms extending off the screen a bit
+
+
+Rinse and repeat of steps x,y,z
+ - Note the white box in the scene view shows what will be visible in game.
+
+ Can also look at the game tab anytime to see what the camera sees
+</details>
+ 
+
+
+
+## Debugging
+
+* Check the children gameObjects in the prefab.  They should all be at 0 position (except for the edge segments which have an x value), 0 rotation, and 1 scale.
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 
 
