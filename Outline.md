@@ -27,6 +27,7 @@ Unity is a 3D engine.  2D just sets default settings.
 <ul>
 <li> You can rename folders by selecting and pressing F2
 </ul>
+<li>Drag/drop the sprite sheet (or entire folder of art) into the folder you just created
 </ul>
 
 </details>
@@ -35,6 +36,31 @@ Unity is a 3D engine.  2D just sets default settings.
 <summary>Why</summary>
 aoeu
 </details>
+
+# Slice sprite sheets and update Mesh Type to Full Rect
+
+<details>
+<summary>How</summary>
+
+<img src="http://i.imgur.com/zMEQnAF.png">
+<ul>
+<li>Set Sprite Mode to Multiple
+<li>Set Mesh Type to Full Rect
+<li>Click Sprite Editor (apply changes when prompted)
+<li>Click the "Slice" menu item
+<li> - Type: Grid By Cell Count
+<li> - Column & Row: 8 & 16
+<li>Click "Slice" button
+<li>Click "Apply" and close the Sprite Editor
+http://i.imgur.com/hA2cMfv.png
+<li>
+</ul>
+</details>
+<details>
+<summary>Why</summary>
+Full Rect is needed for the tiling effect we will be applying to platform sprites.
+</details>
+
 
 # Add platforms to the world
 
