@@ -52,7 +52,7 @@ aoeu
 <li> - Column & Row: 8 & 16
 <li>Click "Slice" button
 <li>Click "Apply" and close the Sprite Editor
-http://i.imgur.com/hA2cMfv.png
+<img src="http://i.imgur.com/hA2cMfv.png">
 <li>
 </ul>
 </details>
@@ -61,6 +61,10 @@ http://i.imgur.com/hA2cMfv.png
 Full Rect is needed for the tiling effect we will be applying to platform sprites.
 </details>
 
+# Add a platform sprite to the scene
+<img src="http://i.imgur.com/E2lLY3h.png">
+<li>Click the arrow on the spritesheet in your Assets/Art directory (this displays each individual sliced image)
+<li>Click and drag the platform sprite you want to use into the Hierarchy
 
 # Add platforms to the world
 
