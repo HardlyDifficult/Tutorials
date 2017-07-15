@@ -21,7 +21,10 @@ Unity is a 3D engine.  2D just sets default settings.
 
 Goal: TODO
 
-## Import sprite art
+<details>
+<summary style="font-size:100px">
+Import sprite art
+</summary>
 
 <details>
 <summary>How</summary>
@@ -38,6 +41,7 @@ Goal: TODO
 <details>
 <summary>Why</summary>
 aoeu
+</details>
 </details>
 
 ## Slice sprite sheet
