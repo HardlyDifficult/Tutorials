@@ -3,7 +3,7 @@
 
 <details>
 <summary>How</summary>
-<img src="https://i.imgur.com/T2iZrmK.png" />
+<img src="https://i.imgur.com/T2iZrmK.png" width=50% />
 TODO
 </details>
 <details>
