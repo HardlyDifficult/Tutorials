@@ -144,7 +144,7 @@ Create platforms and lay them out for Level1.  After this section, the game shou
 
 ## Import art
 
-Add a sprite sheet for the platform to the Asset directory.  We are using [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) 'sprite sheets/sprite sheet_ground.png'.
+Add a sprite sheet for the platform to the Asset directory.  We are using [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) 'spritesheets/spritesheet_ground.png'.
 
 <details><summary>How</summary>
 
@@ -223,18 +223,66 @@ The goal is to slice the sprite sheet, any method your comfortable with is fine.
 
 ## Drag sprite into scene
 
-Add a sprite to the scene representing the middle segment of a platform.
+Add a sprite to the scene representing the middle segment of a platform.  We are using 'spritesheet_ground/spritesheet_ground_72'.
+
+Note: there may be visual artifacts which we will address below.
 
 <details><summary>How</summary>
 
-<img src="http://i.imgur.com/E2lLY3h.png" width=50% />
+ - Click the arrow on the sprite sheet in your Assets/Art directory (this displays each individual sliced image).
+ - Click and drag the platform sprite you want to use into the Hierarchy.  We are using 'spritesheet_ground_72'. This creates a GameObject with a SpriteRenderer component for that sprite.
 
- - Click the arrow on the sprite sheet in your Assets/Art directory (this displays each individual sliced image)
- - Click and drag the platform sprite you want to use into the Hierarchy
+<img src="http://i.imgur.com/kZC4i6d.png" width=50% />
+
+<hr></details>
+<details><summary>What's a GameObject?</summary>
+
+A GameObject is something which appears in the game's Hierarchy.  Every GameObject has a transform.  It may also hold other GameObjects and it may includes various components.  
+
+<hr></details>
+<details><summary>What's a Component?</summary>
+
+A component is a set of logic (i.e. code) which may be added to a GameObject and is exposed in the Inspector.  A GameObject may have any number of components and those components may expose various properties to customize the behaviour for a specific object.  Unity has a number of components available out of the box, we will be using several Unity components in this tutorial and will be making many custom components as well.
+
+<hr></details>
+<details><summary>What's a SpriteRenderer?</summary>
+
+SpriteRenderer is a Unity component which takes a sprite asset to render on screen.  Select the game object in the Hierarchy to view the component in the Inspector.  Here sereval options are available for modifying how the sprite is rendered.  For example:
+
+ - Sprite: This is the sprite image to render.  It was populated automatically when you created the game object with drag/drop.
+ - Color: White is the default, displaying the sprite as it was created by the artist.  Changing this color modifies the sprite's appearance.  You can also use the Alpha value here to make a sprite transparent.
+ - Order in Layer: When multiple sprites are overlapping, this is used to determine which one is on top of the other.
+
+<img src="http://i.imgur.com/4w3P1nx.png" width=50% />
 
 <hr></details>
 
 
+
+## Sprite Draw Mode: Tiled
+
+In the scene, update the SpriteRenderer to Draw Mode: Tiled and adjust the width so we can begin to design the level's platforms.
+
+Note: there may be visual artifacts which we will address below.
+
+<details><summary>How</summary>
+
+ - Select the 'spritesheet_ground_72' game object.
+ - In the Inspector, under the SpriteRenderer component:
+   - Change Draw Mode to Tiled 
+   - An option for width appears, try increasing this to about 10 (but don't change height).
+
+<img src="http://i.imgur.com/MIgzjdO.png" width=50% />
+
+<hr></details>
+<details>
+<summary>Why not use Transform scale?</summary>
+
+Using transform scale to change the width cause the sprite displayed to stretch.  We are using tiling so the sprite repeats instead.
+
+<img src="http://i.imgur.com/ejbs3RK.png" width=50% />
+
+<hr></details>
 
 
 
@@ -305,22 +353,6 @@ Random lines will show up on screen without this
 
 
 
-
-## Sprite Draw Mode: Tiled
-
-In the scene, update the sprite to draw mode tiled and change the width so we can begin to design the level.
-
-<details>
-<summary>How</summary>
- - Draw Mode: Tiled
- - Width: 10-ish, no change to height
-<img src="http://i.imgur.com/MIgzjdO.png" width=50% />
-<hr></details>
-<details>
-<summary>Why</summary>
-TODO
-For tiling vs stretching.
-<hr></details>
 
 
 
