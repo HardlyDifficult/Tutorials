@@ -18,7 +18,8 @@ Get Unity, start a 2D project and save before we get started.
 <img src="https://i.imgur.com/T2iZrmK.png" width=50% />
 
 <hr></details>
- <details><summary>Why 2D?</summary>
+<details><summary>Why 2D?</summary>
+
 Presenting the 2D vs 3D option when you create a new project suggests this is a significant choice.  It's not really... 2D just changes default settings on things like your camera.   Unity is a 3D engine, when creating 2D games your actually creating a 3D world where everything is very flat but the camera looks straight ahead and the only rotation in the world is around the z axis.  
 
 <hr></details>
@@ -33,32 +34,29 @@ When you created a project, a default scene was created as well.  Save it as 'Le
 
 <details><summary>How</summary>
 
-File -> Save Scene
-Create a Scenes directory, call it Level1
+ - File -> Save Scenes.
+ - Create a "Scenes" directory, call it 'Level1'.
 
 <hr></details>
 <details><summary>What's a scene?</summary>
 
-The Scene represents a collection of game objects and components configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial.
+The Scene represents a collection of game objects and components configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial. [TODO link to switch scene section]
 
 <hr></details>
 
 
 
 
-## Auto save script
+## Auto save script (optional)
 
 Unity may crash.  I recommend adding an editor script which automatically saves everytime you hit play.
 
 <details><summary>How</summary>
 
- - Right click in the Project Assets folder -> Create -> Folder and name it "Editor"
- - Create -> C# Script and name it "AutoSave.cs"
- - Copy the AutoSave.cs source code below or create your own.
-
-<hr></details>
-<details><summary>AutoSave.cs source code</summary>
-
+ - Right click in the Project Assets folder -> Create -> Folder and name it "Editor".
+ - Create -> C# Script and name it "AutoSave.cs".
+ - Paste in the source code below.
+ 
 Unity APIs used:
 
 - [InitializeOnLoad](https://docs.unity3d.com/ScriptReference/InitializeOnLoadAttribute.html) attribute enables the script
@@ -73,17 +71,20 @@ using UnityEditor.SceneManagement;
 /// <summary>
 /// Auto saves the scene and project everytime you click play.
 /// 
-/// This happens before the game runs so even if that run causes a crash, your work is safe.
+/// This happens before the game runs so even if that run causes 
+/// a crash, your work is safe.
 /// </summary>
 [InitializeOnLoad]
 public class AutoSave
 {
   /// <summary>
-  /// Called automatically c/o InitializeOnLoad.  Registers for play mode events.
+  /// Called automatically c/o InitializeOnLoad.  Registers for
+  /// play mode events.
   /// </summary>
   static AutoSave()
   {
-    EditorApplication.playmodeStateChanged += OnPlaymodeStateChanged;
+    EditorApplication.playmodeStateChanged 
+      += OnPlaymodeStateChanged;
   }
 
   /// <summary>
@@ -103,11 +104,6 @@ public class AutoSave
 ```
 
 <hr></details>
-<details><summary>Why?</summary>
-
-It's not unusual to see Unity crash several times per day.  This script has been a lifesaver.  It's saved me hours that would have been wasted re-configuring gameObjects.
-
-<hr></details>
 <details><summary>What about performance?</summary>
 
 As an editor script, this logic is not included in the game you release.  Saving is incremental, so there is very little time wasted when there is nothing new to save.  Unless you're one of the lucky ones who never sees Unity crash, this script is absolutely worth the time tradeoff.
@@ -115,6 +111,8 @@ As an editor script, this logic is not included in the game you release.  Saving
 
 <hr></details>
 <details><summary>Can I put this in a different folder?</summary>
+
+
 
 Editor folders --- general special folder name weirdness in Unity.  Could be Assets/Editor/AutoSave.cs or Assets/Code/Editor/Utils/AutoSave.cs
 
