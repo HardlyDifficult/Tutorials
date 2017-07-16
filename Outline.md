@@ -354,6 +354,10 @@ Using transform scale to change the width cause the sprite displayed to stretch.
 <hr></details>
 
 
+
+
+<br><br><br><br><br>^^^^ ReadyForReview ^^^^ (below is WIP)<br><br><br><br><br>
+
 ## Sprite Filter Mode: Point
 
 Update the sprite sheet's import settings to use filter mode point, again prevent some visual artifacts that appear when using sprite sheets.
