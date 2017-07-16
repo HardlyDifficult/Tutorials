@@ -3,15 +3,13 @@
 This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
 
 
-> Presenting the 2D vs 3D option when you create a new project suggests this is a significant choice.  It's not really... 2D just changes default settings on things like your camera.   Unity is a 3D engine, when creating 2D games your actually creating a 3D world where everything is very flat but the camera looks straight ahead and the only rotation in the world is around the z axis.  
-
 # 1) Create a new 2D project
 
 Get Unity, start a 2D project and save before we get started.
 
 <details><summary>Where to get Unity</summary>
 
- - [Download Unity](https://store.unity.com/download), the free Personal edition has everything you need. 
+ - [Download Unity](https://unity3d.com/), the free Personal edition has everything you need. 
  - Select "2D" when creating a new project.
  - Enter a name/directory - the other options can be left at defaults.
 
@@ -110,11 +108,22 @@ As an editor script, this logic is not included in the game you release.  Saving
 
 
 <hr></details>
-<details><summary>Can I put this in a different folder?</summary>
+<details><summary>Why is the folder name important?</summary>
 
+Unity uses [special folder names](https://docs.unity3d.com/Manual/SpecialFolders.html) for various features.  
 
+Everything under a folder named "Editor" is an editor script, including files in any subdirectories.  e.g. this script could be saved as Assets/Editor/AutoSave.cs or Assets/Code/Editor/Utils/AutoSave.cs  There are two special folder names that work anywhere in your folder hierarchy like this:
+ - "[Editor](https://docs.unity3d.com/Manual/ExtendingTheEditor.html)": These scripts are only executed when in the Unity Editor (vs built into the game).
+ - "[Resources](https://docs.unity3d.com/ScriptReference/Resources.html)": Assets bundled with the game, available for loading via code.  Note Unity [recommends using resources only for prototypes](https://unity3d.com/learn/tutorials/temas/best-practices/resources-folder) - the preferred solution is [AssetBundles](https://docs.unity3d.com/Manual/AssetBundlesIntro.html). 
+ 
+The following are additional special folder names only considered when in the root Assets directory. e.g. Assets/Gizmos is a special directory but Assets/Code/Gizmos could hold anything.
+ - "[Standard Assets](https://docs.unity3d.com/Manual/HOWTO-InstallStandardAssets.html)": These are optional assets and scripts available from Unity you can add to your project anytime.
+ - "[Editor Default Resources](https://docs.unity3d.com/ScriptReference/EditorGUIUtility.Load.html)": A resources directory only available to Editor scripts so you can have assets appear in the editor for debugging without increasing the game's built size.
+ - "[Gizmos](https://docs.unity3d.com/ScriptReference/Gizmos.html)": Editor-only visualizations to aid level design and debugging.
+ - "[Plugins](https://docs.unity3d.com/Manual/Plugins.html)": Dlls to include, typically from 3rd party libraries.
+ - "[StreamingAssets](https://docs.unity3d.com/Manual/StreamingAssets.html)": Videos or other archives for your game to stream.
 
-Editor folders --- general special folder name weirdness in Unity.  Could be Assets/Editor/AutoSave.cs or Assets/Code/Editor/Utils/AutoSave.cs
+Be sure you do not use folders with these names anywhere in your project unless specifically for that Unity use case. e.g. Assets/Code/Editor/InGameMapEditor.cs may be intended to be part of the game but would be flagged as an Editor only script instead.
 
 <hr></details>
 
