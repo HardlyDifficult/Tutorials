@@ -2,6 +2,9 @@
 
 This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
 
+[TODO some intro and link to the demo]
+[TODO image size how to manage this well????]
+
 
 # 1) Create a new 2D project
 
@@ -131,32 +134,35 @@ Be sure you do not use folders with these names anywhere in your project unless 
 
 
 
-# Create platforms 
+# 2) Create platforms 
 
-Goal: Create the platforms for level 1
+Create platforms and lay them out for Level1.  After this section, the game should look something like this:
 
-
+[TODO screenshot]
 
 
 
 ## Import art
 
-Add your sprite image files to the Asset directory.
+Add a sprite sheet for the platform to the Asset directory.  We are using [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) 'sprite sheets/sprite sheet_ground.png'.
 
 <details><summary>How</summary>
 
-<img src="https://i.imgur.com/lvN6QmZ.png" width=50% />
 
- - Right click in the Project Assets directory
- - Create new folder
+ - Right click in the Project Assets directory -> Create Folder named 'Art'  (optional)
    - You can rename folders by selecting and pressing F2
- - Drag/drop the sprite sheet (or entire folder of art) into the folder you just created
-
+ - Drag/drop the sprite sheet (or an entire folder of art) into the folder you just created
+   - If you have a zip file, you may need to unzip to a temp directory before drag/drop will work.
 
 <hr></details>
-<details><summary>Why</summary>
+<details><summary>What's a sprite sheet?</summary>
 
-aoeu
+A sprite sheet is a single image file that contains multiple individual sprites.  The sheet may use these sprites to represent different frames for an animation or to hold a collection of various object types (as is the case here).
+
+<hr></details>
+<details><summary>Can I use my own art?</summary>
+
+Of course, this tutorial only assumes that you are using sprites.  You can build your own sprite sheet or use individual sprites, but this tutorial is geared towards a 2D game and some things may not work out well if you try using 3D models instead.
 
 <hr></details>
 
@@ -166,16 +172,15 @@ aoeu
 
 ## Slice sprite sheet
 
-Slice the sprite sheet in order to access each sprite within.
+Slice the sprite sheet in order to access each individual sprite within.
 
 <details><summary>How</summary>
 
-<img src="http://i.imgur.com/duYuVMy.png" width=50% />
-
-- Set Sprite Mode to Multiple
+- Select the sprite sheet in the Project tab (Assets/Art/spritesheet_ground)
+- In the Inspector, set Sprite Mode to Multiple
 - Click Sprite Editor (apply changes when prompted)
 
-<img src="http://i.imgur.com/hA2cMfv.png" width=50% />
+<img src="http://i.imgur.com/duYuVMy.png" width=50% />
 
 - Click the "Slice" menu item
   - Type: Grid By Cell Count
@@ -183,13 +188,35 @@ Slice the sprite sheet in order to access each sprite within.
 - Click "Slice" button
 - Click "Apply" and close the Sprite Editor
 
-<hr></details>
-<details><summary>Why</summary>
-
-Full Rect is needed for the tiling effect we will be applying to platform sprites.
+<img src="http://i.imgur.com/hA2cMfv.png" width=50% />
 
 <hr></details>
+<details><summary>What does slicing achieve?</summary>
 
+Slicing is the process of defining each individual sprite in a sprite sheet.  Once sliced, you can access each sprite as if it were a unique asset.
+
+<hr></details>
+<details><summary>Could I use other slice method Types?</summary>
+
+The goal is to slice the sprite sheet, any method your comfortable with is fine.  Options include:
+
+ - "Automatic" which sometimes works (but does not for the spritesheet used in this example).
+ - "Grid By Cell Size" allows you to enter the size of each sprite in the sheet directly, e.g. 128x128.
+ - "Grid By Cell Count" allows you to simply count how many rows and columns you see in the sheet (vs maybe guess and checking the Cell Size).
+
+
+<hr></details>
+<details><summary>How do I know I've sliced correctly?</summary>
+
+ - After you have sliced, white lines appear in the "Sprite Editor".  These lines show you how the sprite sheet is cut, boxing in each individual sprite.  Any whitespace as shown in this example is ignored (i.e. it does not generate blank sprites as well).
+
+<img src="http://i.imgur.com/NawupLS.png" width=50% />
+
+ - After closing the "Sprite Editor" and Applying changes you can expand the sprite sheet in Assets and see each sprite it created.
+
+<img src="http://i.imgur.com/Qq0nn2B.png" width=50% />
+
+<hr></details>
 
 
 
@@ -202,7 +229,7 @@ Add a sprite to the scene representing the middle segment of a platform.
 
 <img src="http://i.imgur.com/E2lLY3h.png" width=50% />
 
- - Click the arrow on the spritesheet in your Assets/Art directory (this displays each individual sliced image)
+ - Click the arrow on the sprite sheet in your Assets/Art directory (this displays each individual sliced image)
  - Click and drag the platform sprite you want to use into the Hierarchy
 
 <hr></details>
@@ -213,7 +240,7 @@ Add a sprite to the scene representing the middle segment of a platform.
 
 ## Disable Anti Aliasing
 
-Update "Quality" settings, disabling Anti-Aliasing to prevent some visual artifacts that happen when using spritesheets.
+Update "Quality" settings, disabling Anti-Aliasing to prevent some visual artifacts that happen when using sprite sheets.
 
 <details><summary>How</summary>
 
