@@ -3,8 +3,9 @@
 
 <details>
 <summary>How</summary>
-https://store.unity.com/download
 
+[Download Unity](https://store.unity.com/download)
+![Test](https://i.imgur.com/T2iZrmK.png)
 
 <img src="https://i.imgur.com/T2iZrmK.png" width=50% /></details>
 
@@ -21,10 +22,58 @@ Create a Scenes directory, call it Level1
 
 
 ## Auto save script
+
+Unity may crash.  I recommend adding an editor script which automatically saves everytime you hit play.
+
 <details>
 <summary>
-Crashes happen.
+How?
 </summary>
+
+```csharp
+using UnityEditor;
+using UnityEditor.SceneManagement;
+
+/// <summary>
+/// Auto saves the scene and project everytime you click play.
+/// </summary>
+[InitializeOnLoad]
+public class AutoSave
+{
+  /// <summary>
+  /// Called automatically c/o InitializeOnLoad.  Registers for play mode events.
+  /// </summary>
+  static AutoSave()
+  {
+    EditorApplication.playmodeStateChanged += AutoSaveOsStateChanged;
+  }
+
+  /// <summary>
+  /// When the play mode changes, consider saving.
+  /// </summary>
+  static void AutoSaveOsStateChanged()
+  {
+    if(EditorApplication.isPlaying)
+    { // If currently playing, don't save
+      return;
+    }
+
+    // Save!  
+    // This happens every time you click play, before the game runs.  
+    // So even if that run causes a crash, your work is safe.
+    EditorSceneManager.SaveOpenScenes();
+  }
+}
+```
+</details>
+
+<details>
+<summary>
+Why?
+</summary>
+It's not unusual to see Unity crash several times per day.  This script has been a lifesaver.  It's saved me hours that would have been wasted re-configuring gameObjects.
+
+As an editor script, this logic is not included in the game you release.  
 </details>
 
 
@@ -100,7 +149,7 @@ How
 
 ## Disable Anti Aliasing
 
-Update "Quality" settings, disabling Anti-Aliasing.
+Update "Quality" settings, disabling Anti-Aliasing to prevent some visual artifacts.
 
 <details>
 <summary>
@@ -121,7 +170,7 @@ Why
 
 ## Sprite Mesh Type: Full Rect
 
-Update the sprite sheet's import settings to use mesh type full rect.
+Update the sprite sheet's import settings to use mesh type full rect since we will be using tiling.
 
 <details>
 <summary>
