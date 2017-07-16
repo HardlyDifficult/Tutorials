@@ -413,7 +413,7 @@ SpriteRenderer is a Unity component which takes a sprite asset to render on scre
 
 In the scene, update the SpriteRenderer to Draw Mode: Tiled and adjust the width so we can begin to design the level's platforms.
 
-Note: there may be visual artifacts which we will address below.
+Note: a warning will appear in the inspector and there may be visual artifacts which we will address below.
 
 <details><summary>How</summary>
 
@@ -436,28 +436,24 @@ Using transform scale to change the width cause the sprite displayed to stretch.
 
 
 
-
-<br><br><br><br><br>^^^^ ReadyForReview ^^^^ (below is WIP)<br><br><br><br><br>
-
 ## Sprite Filter Mode: Point
 
-Update the sprite sheet's import settings to use filter mode point, again prevent some visual artifacts that appear when using sprite sheets.
+Update the sprite sheet's import settings to use filter mode point, preventing some visual artifacts.
 
-<details>
-<summary>
-How
-</summary>
- - Set Mesh Type to Full Rect
+<details><summary>How</summary>
+
+ - Select the sprite sheet in the "Project" tab (Assets/Art/spritesheet_ground)
+ - In the "Inspector", set "Filter Mode" to "Point (no filter)"
+
 <img src="http://i.imgur.com/B0nqf75.png" width=50% />
+
 <hr></details>
+<details><summary>Why use Point and not the default?</summary>
 
+This (and most) sprite sheets have each object touching the one next to it.  Filter Mode Point prevents blending happening between one sprite and it's neighbor.  The blending that occurs with other modes besides Point may lead to random lines showing up on screen.  For example:
 
-<details>
-<summary>
-Why
-</summary>
-Random lines will show up on screen without this
 <img src="http://i.imgur.com/ZKqg5JP.png" width=50% />
+
 <hr></details>
 
 
@@ -465,38 +461,93 @@ Random lines will show up on screen without this
 
 Update the sprite sheet's import settings to use mesh type full rect since we will be using tiling.
 
-<details>
-<summary>
-How
-</summary>
+<details><summary>How</summary>
+
+ - Select the sprite sheet in the "Project" tab (Assets/Art/spritesheet_ground)
+ - In the "Inspector", set "Mesh Type" to "Full Rect"
+
 <img src="http://i.imgur.com/Dhe3Nzt.png" width=50% />
+
 <hr></details>
 
-<details>
-<summary>
-Why
-</summary>
-Prevents artifacts when creating tiled sprites.
+<details><summary>Why use Full Rect and not the default?</summary>
+
+When using tiling on a sprite, Unity recommends updating the sprite sheet to use "Full Rect".  I don't have an example of issues that may arrise from using "Tight" instead, but here is the warning from Unity recommending "Full Rect":
+
 <img src="http://i.imgur.com/e9jE83B.png" width=50% />
+
 <hr></details>
 
 
 
 ## Disable Anti Aliasing
 
-Update "Quality" settings, disabling Anti-Aliasing to prevent some visual artifacts that happen when using sprite sheets.
+Disable Anti-Aliasing, preventing some visual artifacts.
 
 <details><summary>How</summary>
 
+ - Menu "Edit" -> "Project Settings" -> "Quality"
+ - In the "Inspector" change "Anti Aliasing" to "Disabled"
+ - Repeat this for each quality level supported
+   - Click on the row to modify (e.g. "Ultra")
+   - Update "Anti Aliasing" if needed
+
+The currently highlighted 'Level' is what you are testing with ATM.  It will default to Ultra.  The green checkboxs represent the default quality level for different build types.  In this example I'm testing with Ultra, using Ultra by default for PC builds, and High by default for WebGL builds.  To avoid artifacts, I disable Anti Aliasing in every level and then switch back to Ultra.
+
 <img src="http://i.imgur.com/omFI4DD.png" width=50% />
-Not different levels for different build types
+
 
 <hr></details>
-<details><summary>Why</summary>
+<details><summary>What is Anti Aliasing and why disable it?</summary>
+
+Anti Aliasing is a technique used to smooth jagged edges. 
+
+When working with sprites, we often want control over images down to the pixel.  Anti-aliasing may lead to unexpected gaps or distortions.  Here is an example that appears when using tiling:
 
 <img src="http://i.imgur.com/vY5YmVj.png" width=50% />
 
 <hr></details>
+
+
+
+
+
+
+
+
+
+
+<br><br><br><br><br>^^^^ ReadyForReview ^^^^ (below is WIP)<br><br><br><br><br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
