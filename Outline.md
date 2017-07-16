@@ -186,12 +186,93 @@ public class MyClassName
 <hr></details>
 <details><summary>What's a C# static method?</summary>
 
-aoeu
+A static method in C# is one that may be called without first instantiating an object for that class.  Static methods may only access static data in that class (static data is data which is shared across all objects).
+
+```csharp
+public class MyClassName
+{
+  static int callCount;
+  public static void MyMethod()
+  {
+    callCount++; 
+  }
+}
+
+public class AnotherClass
+{
+  public void Run()
+  {
+    // Call MyMethod without creating 
+    // an object for MyClassName.
+    MyClassName.MyMethod();
+  }
+}
+```
 
 <hr></details>
 <details><summary>What's a C# delegate?</summary>
 
-multicast += ,and why not deregister
+A delegate in C# is an object representing method(s) to call at a later time.  Events, Action, Func, and delegates are implemented as a 'multicast delegate'.  This means that any number of methods may subscribe to the same delegate.
+
+We use += when registering for an event so not to overwrite any other subscribers.
+
+```csharp
+EditorApplication.playmodeStateChanged += OnPlaymodeStateChanged;
+```
+
+If the owner of the delegate (in the example above that's EditorApplication) may outlive the subscriber you should unsubcribe from the event OnDestroy, or any time you are no longer interested in future updates.  We do this with -= to remove our method and leave the remaining methods in-tact (if there are any).
+
+```csharp
+EditorApplication.playmodeStateChanged -= OnPlaymodeStateChanged;
+```
+
+Events are a common use case.  You may have a GameManager tracking points include an event onPointsChange.  Other components/systems in the game, such as Achievements and the points UI, may subscribe to onPointsChange.  When a player earns points, a method in Achievements is then called which can consider awarding a high score achievement and a method in the points UI is called to refresh what the player sees on-screen.  This way those components only need to refresh when something changed as opposed to checking the current state each frame.
+
+```csharp
+using System;
+using UnityEngine;
+
+public static class GameManager
+{
+  public static event Action onPointsChange;
+  static int _points;
+  public static int points
+  {
+    get
+    {
+      return _points;
+    }
+    set
+    {
+      _points = value;
+      if(onPointsChange != null)
+      {
+        onPointsChange();
+      }
+    }
+  }
+}
+
+public class MyCustomComponent : MonoBehaviour
+{
+  protected void Awake()
+  {
+    GameManager.onPointsChange 
+      += GameManager_onPointsChange; 
+  }
+
+  protected void OnDestroy()
+  {
+    GameManager.onPointsChange
+      -= GameManager_onPointsChange;
+  }
+
+  void GameManager_onPointsChange()
+  {
+    // React to points changing
+  }
+}
+```
 
 <hr></details>
 
@@ -491,7 +572,9 @@ Create a new parent game object for the child.
 
 <details>
 <summary>Why</summary>
-aoeu
+
+TODO
+
 <hr></details>
 
 
@@ -581,7 +664,7 @@ Rinse and repeat of steps x,y,z
 
 ## Debugging
 
-<details><summary>aoeu?</summary>
+<details><summary>TODO</summary>
 
 * Check the children gameObjects in the prefab.  They should all be at 0 position (except for the edge segments which have an x value), 0 rotation, and 1 scale.
 
