@@ -36,6 +36,7 @@ Goal: Create the platforms for level 1
 
 ## Import art
 
+Add your sprite image files to the Asset directory.
 
 <details>
 <summary>How</summary>
@@ -55,6 +56,8 @@ aoeu
 </details>
 
 ## Slice sprite sheet
+
+Slice the sprite sheet in order to access each sprite within.
 
 <details>
 <summary>How</summary>
@@ -81,6 +84,8 @@ Full Rect is needed for the tiling effect we will be applying to platform sprite
 
 ## Drag sprite into scene
 
+Add a sprite to the scene representing the middle segment of a platform.
+
 <details>
 <summary>
 How
@@ -94,6 +99,9 @@ How
 
 
 ## Disable Anti Aliasing
+
+Update "Quality" settings, disabling Anti-Aliasing.
+
 <details>
 <summary>
 How
@@ -113,6 +121,8 @@ Why
 
 ## Sprite Mesh Type: Full Rect
 
+Update the sprite sheet's import settings to use mesh type full rect.
+
 <details>
 <summary>
 How
@@ -130,6 +140,8 @@ Prevents artifacts when creating tiled sprites.
 
 
 ## Sprite Filter Mode: Point
+
+Update the sprite sheet's import settings to use filter mode point.
 
 <details>
 <summary>
@@ -152,6 +164,8 @@ Random lines will show up on screen without this
 
 ## Sprite Draw Mode: Tiled
 
+In the scene, update the sprite to draw mode tiled and change the width.
+
 <details>
 <summary>How</summary>
  - Draw Mode: Tiled
@@ -166,6 +180,8 @@ For tiling vs stretching.
 
 
 ## Set a 5:4 Aspect ratio
+
+On the game tab, change the aspect ratio to 5:4.
 
 <details>
 <summary>How</summary>
@@ -182,6 +198,7 @@ When laying the scene for an aspect ratio, it will automatically scale for diffe
 
 ## Camera Size: 10
 
+Select the camera in the scene and update the size to 10.
 
 <details>
 <summary>How</summary>
@@ -205,7 +222,9 @@ With the two locked, we can design a scene without any camera movement and be su
 </details>
 
 
-## Create Platform 
+## Create Platform with child sprites
+
+Create a new parent game object for the child.
 
 
 <details>
@@ -231,6 +250,9 @@ aoeu
 
 
 ## Add edges
+
+Add sprites with rounded edges to the left and right of the platform.
+
 <details>
 <summary>
 How?
@@ -271,6 +293,9 @@ When something on the prefab changes we can revert the instances in the scene.  
 </details>
 
 ## Create a connected platform
+
+
+
 <details>
 <summary>
 How?
