@@ -1,4 +1,7 @@
-This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at twitch.tv/HardlyDifficult or email nick@HardlyDifficult.com
+# 2D Platformer Tutorial for Unity 2017
+
+This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
+
 
 
 
@@ -30,6 +33,8 @@ Presenting the 2D vs 3D option when you create a new project suggests this is a 
 
 ## Save scene
 
+When you created a project, a default scene was created as well.  Save it as 'Level1', as that's where this tutorial begins.
+
 <details><summary>How</summary>
 
 File -> Save Scene
@@ -51,7 +56,17 @@ Unity may crash.  I recommend adding an editor script which automatically saves 
 
 <details><summary>How</summary>
 
-An editor script like this must be saved in Assets under a folder named "Editor".  
+ - Right click in the Project Assets folder -> Create -> Folder and name it "Editor"
+ - Create -> C# Script and name it "AutoSave.cs"
+
+ Copy the AutoSave.cs source code below or create your own, here are the key points of the script:
+ - The InitializeOnLoad attribute enables the script
+ - On EditorApplication.playmodeStateChanged events:
+   - Save with EditorSceneManager.SaveOpenScenes()
+   - You can do nothing if EditorApplication.isPlaying, avoiding extra save calls
+
+</details>
+<details><summary>AutoSave.cs source code</summary>
 
 ```csharp
 using UnityEditor;
@@ -94,7 +109,14 @@ public class AutoSave
 
 It's not unusual to see Unity crash several times per day.  This script has been a lifesaver.  It's saved me hours that would have been wasted re-configuring gameObjects.
 
-As an editor script, this logic is not included in the game you release.  
+</details>
+<details><summary>What about performance?</summary>
+
+As an editor script, this logic is not included in the game you release.  Saving is incremental, so there is very little time wasted when there is nothing new to save.  Unless you're one of the lucky ones who never sees Unity crash, this script is absolutely worth the time tradeoff.
+
+
+</details>
+<details><summary>Can I put this in a different folder?</summary>
 
 Editor folders --- general special folder name weirdness in Unity.  Could be Assets/Editor/AutoSave.cs or Assets/Code/Editor/Utils/AutoSave.cs
 
@@ -118,7 +140,7 @@ Add your sprite image files to the Asset directory.
 
 <details><summary>How</summary>
 
-<img src="https://i.imgur.com/lvN6QmZ.png" width=20% />
+<img src="https://i.imgur.com/lvN6QmZ.png" width=50% />
 
  - Right click in the Project Assets directory
  - Create new folder
@@ -143,12 +165,12 @@ Slice the sprite sheet in order to access each sprite within.
 
 <details><summary>How</summary>
 
-<img src="http://i.imgur.com/duYuVMy.png">
+<img src="http://i.imgur.com/duYuVMy.png" width=50% />
 
 - Set Sprite Mode to Multiple
 - Click Sprite Editor (apply changes when prompted)
 
-<img src="http://i.imgur.com/hA2cMfv.png">
+<img src="http://i.imgur.com/hA2cMfv.png" width=50% />
 
 - Click the "Slice" menu item
   - Type: Grid By Cell Count
@@ -173,7 +195,7 @@ Add a sprite to the scene representing the middle segment of a platform.
 
 <details><summary>How</summary>
 
-<img src="http://i.imgur.com/E2lLY3h.png">
+<img src="http://i.imgur.com/E2lLY3h.png" width=50% />
 
  - Click the arrow on the spritesheet in your Assets/Art directory (this displays each individual sliced image)
  - Click and drag the platform sprite you want to use into the Hierarchy
@@ -190,13 +212,13 @@ Update "Quality" settings, disabling Anti-Aliasing to prevent some visual artifa
 
 <details><summary>How</summary>
 
-<img src="http://i.imgur.com/omFI4DD.png">
+<img src="http://i.imgur.com/omFI4DD.png" width=50% />
 Not different levels for different build types
 
 </details>
 <details><summary>Why</summary>
 
-<img src="http://i.imgur.com/vY5YmVj.png">
+<img src="http://i.imgur.com/vY5YmVj.png" width=50% />
 
 </details>
 
@@ -212,7 +234,7 @@ Update the sprite sheet's import settings to use mesh type full rect since we wi
 <summary>
 How
 </summary>
-<img src="http://i.imgur.com/Dhe3Nzt.png">
+<img src="http://i.imgur.com/Dhe3Nzt.png" width=50% />
 </details>
 
 <details>
@@ -220,7 +242,7 @@ How
 Why
 </summary>
 Prevents artifacts when creating tiled sprites.
-<img src="http://i.imgur.com/e9jE83B.png">
+<img src="http://i.imgur.com/e9jE83B.png" width=50% />
 </details>
 
 
@@ -236,8 +258,7 @@ Update the sprite sheet's import settings to use filter mode point, again preven
 How
 </summary>
  - Set Mesh Type to Full Rect
-<img src="
-http://i.imgur.com/B0nqf75.png">
+<img src="http://i.imgur.com/B0nqf75.png" width=50% />
 </details>
 
 
@@ -246,7 +267,7 @@ http://i.imgur.com/B0nqf75.png">
 Why
 </summary>
 Random lines will show up on screen without this
-<img src="http://i.imgur.com/ZKqg5JP.png">
+<img src="http://i.imgur.com/ZKqg5JP.png" width=50% />
 </details>
 
 
@@ -261,7 +282,7 @@ In the scene, update the sprite to draw mode tiled and change the width so we ca
 <summary>How</summary>
  - Draw Mode: Tiled
  - Width: 10-ish, no change to height
-<img src="http://i.imgur.com/MIgzjdO.png">
+<img src="http://i.imgur.com/MIgzjdO.png" width=50% />
 </details>
 <details>
 <summary>Why</summary>
@@ -280,7 +301,7 @@ On the game tab, change the aspect ratio to 5:4 as we want to simplify and alway
 <details>
 <summary>How</summary>
 
-<img src="http://i.imgur.com/MTnZtu4.png">
+<img src="http://i.imgur.com/MTnZtu4.png" width=50% />
 </details>
 <details>
 <summary>Why</summary>
@@ -299,7 +320,7 @@ Select the camera in the scene and update the size to 10, effectively zooming ou
 
 <details>
 <summary>How</summary>
-<img src="http://i.imgur.com/PmeoqG7.png">
+<img src="http://i.imgur.com/PmeoqG7.png" width=50% />
 </details>
 
 <details>
@@ -324,12 +345,12 @@ Create a new parent game object for the child.
  - Rename to 'Platform'
  - Ensure the transform is at defaults (position 0, rotation 0, scale 1)
 
-<img src="http://i.imgur.com/FAkZf1H.png">
+<img src="http://i.imgur.com/FAkZf1H.png" width=50% />
 
  - Drag and drop the sprite onto 'Platform' (it should appear indented under 'Platform' and also have a default transform)
  
 
-<img src="http://i.imgur.com/UB6JDgt.png">
+<img src="http://i.imgur.com/UB6JDgt.png" width=50% />
 </details>
 
 <details>
@@ -356,7 +377,7 @@ How?
  - Vertex snap by holding V, a box appears for each anchor point.  Hover over the top right and click and drag the box which appears.  It will snap perfectly with other anchor points in the world
  - Apply prefab
 
-<img src="http://i.imgur.com/GNMGb0w.gif">
+<img src="http://i.imgur.com/GNMGb0w.gif" width=50% />
  - Apply prefab
  </details>
 
@@ -372,7 +393,7 @@ How?
 Should have a total of 4 prefabs.
 You can delete them all from the scene.
 
-<img src="http://i.imgur.com/j1cz0aZ.png">
+<img src="http://i.imgur.com/j1cz0aZ.png" width=50% />
 </details>
 
 <details>
@@ -521,7 +542,7 @@ Rinse and repeat of steps x,y,z
 How
 </summary>
 Open player settings via "File"->"Build Settings".  Select the platform you want to build for and then click "Player Settings..."
-<img src="http://i.imgur.com/nWDCAwX.png">
+<img src="http://i.imgur.com/nWDCAwX.png" width=50% />
 For PC, we can select specific supported aspect ratios 
-<img src="http://i.imgur.com/Xoxw0Xs.png">
+<img src="http://i.imgur.com/Xoxw0Xs.png" width=50% />
 </details>
