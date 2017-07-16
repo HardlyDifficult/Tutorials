@@ -2,8 +2,14 @@
 
 This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
 
-[TODO some intro and link to the demo]
+[TODO some intro]
+
+[Demo of the game](https://hardlydifficult.com/Kong/index.html) we are creating.
+
+Target audience: we expect you know some coding and can follow along with C# examples.  New concepts are introduced along the way to help beginners and intermediate developers.  No experience with Unity or other game engines is required.
+
 [TODO image size how to manage this well????]
+todo review consistent use of GameObject
 
 
 # 1) Create a new 2D project
@@ -129,9 +135,65 @@ The following are additional special folder names only considered when in the ro
 Be sure you do not use folders with these names anywhere in your project unless specifically for that Unity use case. e.g. Assets/Code/Editor/InGameMapEditor.cs may be intended to be part of the game but would be flagged as an Editor only script instead.
 
 <hr></details>
+<details><summary>What's a C# attribute?</summary>
+
+Attributes in C# are metadata added to classes, fields, or methods that may be queried by other classes.  In this example InitializeOnLoad, a Unity specific attribute, is used to ensure the static constructor on our AutoSave class is called when the game begins.
+
+There are many [standard C# attributes](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/attributes/index) and [Unity specific attributes](http://www.tallior.com/unity-attributes/) that may be used.  Here are a few random examples:
+
+```csharp
+using UnityEngine;
+using UnityEngine.Networking;
+
+// Tells unity that this component only works
+// if the game object also has a SpriteRenderer
+[RequireComponent(typeof(SpriteRenderer))]
+public class MyClassName : MonoBehaviour
+{
+  // Tells unity this field can be modified
+  // in the inspector
+  [SerializeField]
+  // Limits the values you can enter 
+  // in the inspector
+  [Range(1, 10)]
+  int count;
+
+  // Used for multiplayer games to sync 
+  // method calls
+  [ClientRpc]
+  void MyMethod() { }
+}
+```
 
 
+<hr></details>
+<details><summary>What's a C# static constructor?</summary>
 
+Every object in C# may include a static constructor, this applies to static and non-static classes.  A static constructor is guaranteed to be called once (and only once).  The constructor will run before the first object is instantiated, a field is accessed, or a method is called (i.e. it happens before you touch the class).  You never call the static constructor directly.
+
+A static constructor is a private static method named the same as the class, with no parameters and no return type.
+
+```csharp
+public class MyClassName 
+{
+  static MyClassName() 
+  {
+    // This is executed once automatically, before we do 
+    // anything else with MyClassName.
+  }
+}
+```
+<hr></details>
+<details><summary>What's a C# static method?</summary>
+
+aoeu
+
+<hr></details>
+<details><summary>What's a C# delegate?</summary>
+
+multicast += ,and why not deregister
+
+<hr></details>
 
 
 # 2) Create platforms 
@@ -153,6 +215,11 @@ Add a sprite sheet for the platform to the Asset directory.  We are using [Kenne
    - You can rename folders by selecting and pressing F2
  - Drag/drop the sprite sheet (or an entire folder of art) into the folder you just created
    - If you have a zip file, you may need to unzip to a temp directory before drag/drop will work.
+
+<hr></details>
+<details><summary>What's a sprite?</summary>
+
+A sprite is an image, used in 2D games and for UI.  They may represent an object, part of an object, or a frame of an entity's animation, etc.  
 
 <hr></details>
 <details><summary>What's a sprite sheet?</summary>
@@ -239,10 +306,12 @@ Note: there may be visual artifacts which we will address below.
 
 A GameObject is something which appears in the game's Hierarchy.  Every GameObject has a transform.  It may also hold other GameObjects and it may includes various components.  
 
+Everything you see and interact with in a game is driven by game objects.  Typically a game object represents a single logical object in the world.  It may be composed of child game objects, each responsible for part of the display and/or behaviour.
+
 <hr></details>
 <details><summary>What's a Component?</summary>
 
-A component is a set of logic (i.e. code) which may be added to a GameObject and is exposed in the Inspector.  A GameObject may have any number of components and those components may expose various properties to customize the behaviour for a specific object.  Unity has a number of components available out of the box, we will be using several Unity components in this tutorial and will be making many custom components as well.
+A component is a set of logic (i.e. code) which may be added to a GameObject (or child GameObject) and is exposed in the Inspector.  A GameObject may have any number of components and those components may expose various properties to customize the behaviour for a specific object.  Unity has a number of components available out of the box, we will be using several Unity components in this tutorial and will be making many custom components as well.
 
 <hr></details>
 <details><summary>What's a SpriteRenderer?</summary>
@@ -285,25 +354,26 @@ Using transform scale to change the width cause the sprite displayed to stretch.
 <hr></details>
 
 
+## Sprite Filter Mode: Point
 
-## Disable Anti Aliasing
+Update the sprite sheet's import settings to use filter mode point, again prevent some visual artifacts that appear when using sprite sheets.
 
-Update "Quality" settings, disabling Anti-Aliasing to prevent some visual artifacts that happen when using sprite sheets.
-
-<details><summary>How</summary>
-
-<img src="http://i.imgur.com/omFI4DD.png" width=50% />
-Not different levels for different build types
-
-<hr></details>
-<details><summary>Why</summary>
-
-<img src="http://i.imgur.com/vY5YmVj.png" width=50% />
-
+<details>
+<summary>
+How
+</summary>
+ - Set Mesh Type to Full Rect
+<img src="http://i.imgur.com/B0nqf75.png" width=50% />
 <hr></details>
 
 
-
+<details>
+<summary>
+Why
+</summary>
+Random lines will show up on screen without this
+<img src="http://i.imgur.com/ZKqg5JP.png" width=50% />
+<hr></details>
 
 
 ## Sprite Mesh Type: Full Rect
@@ -327,28 +397,26 @@ Prevents artifacts when creating tiled sprites.
 
 
 
+## Disable Anti Aliasing
 
+Update "Quality" settings, disabling Anti-Aliasing to prevent some visual artifacts that happen when using sprite sheets.
 
-## Sprite Filter Mode: Point
+<details><summary>How</summary>
 
-Update the sprite sheet's import settings to use filter mode point, again prevent some visual artifacts that appear when using sprite sheets.
+<img src="http://i.imgur.com/omFI4DD.png" width=50% />
+Not different levels for different build types
 
-<details>
-<summary>
-How
-</summary>
- - Set Mesh Type to Full Rect
-<img src="http://i.imgur.com/B0nqf75.png" width=50% />
+<hr></details>
+<details><summary>Why</summary>
+
+<img src="http://i.imgur.com/vY5YmVj.png" width=50% />
+
 <hr></details>
 
 
-<details>
-<summary>
-Why
-</summary>
-Random lines will show up on screen without this
-<img src="http://i.imgur.com/ZKqg5JP.png" width=50% />
-<hr></details>
+
+
+
 
 
 
@@ -514,6 +582,8 @@ Rinse and repeat of steps x,y,z
 * Check the children gameObjects in the prefab.  They should all be at 0 position (except for the edge segments which have an x value), 0 rotation, and 1 scale.
 
 <hr></details>
+
+TODO link to web build and git / source for the example up to here
 
 <br>
 <br>
