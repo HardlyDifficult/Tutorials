@@ -1,34 +1,57 @@
+This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at twitch.tv/HardlyDifficult or email nick@HardlyDifficult.com
+
+
+
+
+
 
 # Create a new 2D project
 
-<details>
-<summary>How</summary>
+<details><summary>How</summary>
 
-[Download Unity](https://store.unity.com/download)
-![Test](https://i.imgur.com/T2iZrmK.png)
+ - [Download Unity](https://store.unity.com/download), the free Personal edition has everything you need. 
+ - Select "2D" when creating a new project.
 
-<img src="https://i.imgur.com/T2iZrmK.png" width=50% /></details>
+<img src="https://i.imgur.com/T2iZrmK.png" width=50% />
 
-<details>
-<summary>Why</summary>
-Unity is a 3D engine.  2D just sets default settings.
+*The new project screen*
+
+
+</details>
+<details><summary>Why 2D?</summary>
+
+Presenting the 2D vs 3D option when you create a new project suggests this is a significant choice.  It's not really... 2D just changes default settings on things like your camera.   Unity is a 3D engine, when creating 2D games your actually creating a 3D world where everything is very flat but the camera looks straight ahead and the only rotation in the world is around the z axis.  
+
 </details>
 
 
 
+
+
 ## Save scene
+
+<details><summary>How</summary>
+
 File -> Save Scene
 Create a Scenes directory, call it Level1
+
+</details>
+<details><summary>What's a scene?</summary>
+
+The Scene represents a collection of game objects and components configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial.
+
+</details>
+
+
 
 
 ## Auto save script
 
 Unity may crash.  I recommend adding an editor script which automatically saves everytime you hit play.
 
-<details>
-<summary>
-How?
-</summary>
+<details><summary>How</summary>
+
+An editor script like this must be saved in Assets under a folder named "Editor".  
 
 ```csharp
 using UnityEditor;
@@ -36,6 +59,8 @@ using UnityEditor.SceneManagement;
 
 /// <summary>
 /// Auto saves the scene and project everytime you click play.
+/// 
+/// This happens before the game runs so even if that run causes a crash, your work is safe.
 /// </summary>
 [InitializeOnLoad]
 public class AutoSave
@@ -45,13 +70,13 @@ public class AutoSave
   /// </summary>
   static AutoSave()
   {
-    EditorApplication.playmodeStateChanged += AutoSaveOsStateChanged;
+    EditorApplication.playmodeStateChanged += OnPlaymodeStateChanged;
   }
 
   /// <summary>
   /// When the play mode changes, consider saving.
   /// </summary>
-  static void AutoSaveOsStateChanged()
+  static void OnPlaymodeStateChanged()
   {
     if(EditorApplication.isPlaying)
     { // If currently playing, don't save
@@ -59,22 +84,22 @@ public class AutoSave
     }
 
     // Save!  
-    // This happens every time you click play, before the game runs.  
-    // So even if that run causes a crash, your work is safe.
     EditorSceneManager.SaveOpenScenes();
   }
 }
 ```
-</details>
 
-<details>
-<summary>
-Why?
-</summary>
+</details>
+<details><summary>Why?</summary>
+
 It's not unusual to see Unity crash several times per day.  This script has been a lifesaver.  It's saved me hours that would have been wasted re-configuring gameObjects.
 
 As an editor script, this logic is not included in the game you release.  
+
+Editor folders --- general special folder name weirdness in Unity.  Could be Assets/Editor/AutoSave.cs or Assets/Code/Editor/Utils/AutoSave.cs
+
 </details>
+
 
 
 
@@ -83,12 +108,16 @@ As an editor script, this logic is not included in the game you release.
 
 Goal: Create the platforms for level 1
 
+
+
+
+
 ## Import art
 
 Add your sprite image files to the Asset directory.
 
-<details>
-<summary>How</summary>
+<details><summary>How</summary>
+
 <img src="https://i.imgur.com/lvN6QmZ.png" width=20% />
 
  - Right click in the Project Assets directory
@@ -98,18 +127,21 @@ Add your sprite image files to the Asset directory.
 
 
 </details>
+<details><summary>Why</summary>
 
-<details>
-<summary>Why</summary>
 aoeu
+
 </details>
+
+
+
+
 
 ## Slice sprite sheet
 
 Slice the sprite sheet in order to access each sprite within.
 
-<details>
-<summary>How</summary>
+<details><summary>How</summary>
 
 <img src="http://i.imgur.com/duYuVMy.png">
 
@@ -125,20 +157,22 @@ Slice the sprite sheet in order to access each sprite within.
 - Click "Apply" and close the Sprite Editor
 
 </details>
-<details>
-<summary>Why</summary>
+<details><summary>Why</summary>
+
 Full Rect is needed for the tiling effect we will be applying to platform sprites.
+
 </details>
+
+
+
 
 
 ## Drag sprite into scene
 
 Add a sprite to the scene representing the middle segment of a platform.
 
-<details>
-<summary>
-How
-</summary>
+<details><summary>How</summary>
+
 <img src="http://i.imgur.com/E2lLY3h.png">
 
  - Click the arrow on the spritesheet in your Assets/Art directory (this displays each individual sliced image)
@@ -147,23 +181,25 @@ How
 </details>
 
 
+
+
+
 ## Disable Anti Aliasing
 
-Update "Quality" settings, disabling Anti-Aliasing to prevent some visual artifacts.
+Update "Quality" settings, disabling Anti-Aliasing to prevent some visual artifacts that happen when using spritesheets.
 
-<details>
-<summary>
-How
-</summary>
+<details><summary>How</summary>
+
 <img src="http://i.imgur.com/omFI4DD.png">
 Not different levels for different build types
+
 </details>
-<details>
-<summary>
-Why
-</summary>
+<details><summary>Why</summary>
+
 <img src="http://i.imgur.com/vY5YmVj.png">
+
 </details>
+
 
 
 
@@ -188,9 +224,12 @@ Prevents artifacts when creating tiled sprites.
 </details>
 
 
+
+
+
 ## Sprite Filter Mode: Point
 
-Update the sprite sheet's import settings to use filter mode point.
+Update the sprite sheet's import settings to use filter mode point, again prevent some visual artifacts that appear when using sprite sheets.
 
 <details>
 <summary>
@@ -211,9 +250,12 @@ Random lines will show up on screen without this
 </details>
 
 
+
+
+
 ## Sprite Draw Mode: Tiled
 
-In the scene, update the sprite to draw mode tiled and change the width.
+In the scene, update the sprite to draw mode tiled and change the width so we can begin to design the level.
 
 <details>
 <summary>How</summary>
@@ -228,9 +270,12 @@ For tiling vs stretching.
 </details>
 
 
+
+
+
 ## Set a 5:4 Aspect ratio
 
-On the game tab, change the aspect ratio to 5:4.
+On the game tab, change the aspect ratio to 5:4 as we want to simplify and always show the same amount of the world on screen.
 
 <details>
 <summary>How</summary>
@@ -245,16 +290,17 @@ When laying the scene for an aspect ratio, it will automatically scale for diffe
 </details>
 
 
+
+
+
 ## Camera Size: 10
 
-Select the camera in the scene and update the size to 10.
+Select the camera in the scene and update the size to 10, effectively zooming out a bit.
 
 <details>
 <summary>How</summary>
 <img src="http://i.imgur.com/PmeoqG7.png">
 </details>
-
-
 
 <details>
 <summary>Why</summary>
@@ -264,11 +310,6 @@ With the two locked, we can design a scene without any camera movement and be su
 </details>
 
 
-
-<details>
-<summary>Additional considerations</summary>
- - Background color
-</details>
 
 
 ## Create Platform with child sprites
@@ -343,12 +384,7 @@ When something on the prefab changes we can revert the instances in the scene.  
 
 ## Create a connected platform
 
-
-
-<details>
-<summary>
-How?
-</summary>
+<details><summary>How?</summary>
 
 Copy paste, delete the edges we don't need
  - Use a copy of PlatformWithRightEdge and PlatformWithLeftEdge
@@ -364,14 +400,13 @@ Adjust the
 
  - Rotations on the z axis (2d doesn't respond well to x or y rotations --- but remember that Unity is a 3D engine)
  - Use the tile mode width for the middle segment only
+
 </details>
 
 
 ## Copy paste to complete Level1 platforms
-<details>
-<summary>
-How?
-</summary>
+
+<details><summary>How?</summary>
 
 When moving things around be sure the parent is selected.
 
@@ -382,15 +417,18 @@ Rinse and repeat of steps x,y,z
  - Note the white box in the scene view shows what will be visible in game.
 
  Can also look at the game tab anytime to see what the camera sees
+
 </details>
  
 
 
-
 ## Debugging
+
+<details><summary>aoeu?</summary>
 
 * Check the children gameObjects in the prefab.  They should all be at 0 position (except for the edge segments which have an x value), 0 rotation, and 1 scale.
 
+</details>
 
 <br>
 <br>
