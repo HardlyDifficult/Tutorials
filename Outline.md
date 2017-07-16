@@ -8,24 +8,25 @@ This is very much a WIP.  I'm trying to make a tutorial helpful to a range of ex
 
 
 
-# Create a new 2D project
+# 1) Create a new 2D project
 
-<details><summary>How</summary>
+Get Unity, start a 2D project and save before we get started.
+
+<details><summary>Where to get Unity</summary>
 
  - [Download Unity](https://store.unity.com/download), the free Personal edition has everything you need. 
  - Select "2D" when creating a new project.
+ - Enter a name/directory - the other options can be left at defaults.
 
 <img src="https://i.imgur.com/T2iZrmK.png" width=50% />
 
-*The new project screen*
-
-
-</details>
+<hr></details>
 <details><summary>Why 2D?</summary>
 
 Presenting the 2D vs 3D option when you create a new project suggests this is a significant choice.  It's not really... 2D just changes default settings on things like your camera.   Unity is a 3D engine, when creating 2D games your actually creating a 3D world where everything is very flat but the camera looks straight ahead and the only rotation in the world is around the z axis.  
 
-</details>
+
+<hr></details>
 
 
 
@@ -40,12 +41,12 @@ When you created a project, a default scene was created as well.  Save it as 'Le
 File -> Save Scene
 Create a Scenes directory, call it Level1
 
-</details>
+<hr></details>
 <details><summary>What's a scene?</summary>
 
 The Scene represents a collection of game objects and components configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial.
 
-</details>
+<hr></details>
 
 
 
@@ -58,15 +59,17 @@ Unity may crash.  I recommend adding an editor script which automatically saves 
 
  - Right click in the Project Assets folder -> Create -> Folder and name it "Editor"
  - Create -> C# Script and name it "AutoSave.cs"
+ - Copy the AutoSave.cs source code below or create your own.
 
- Copy the AutoSave.cs source code below or create your own, here are the key points of the script:
- - The InitializeOnLoad attribute enables the script
- - On EditorApplication.playmodeStateChanged events:
-   - Save with EditorSceneManager.SaveOpenScenes()
-   - You can do nothing if EditorApplication.isPlaying, avoiding extra save calls
-
-</details>
+<hr></details>
 <details><summary>AutoSave.cs source code</summary>
+
+Unity APIs used:
+
+- [InitializeOnLoad](https://docs.unity3d.com/ScriptReference/InitializeOnLoadAttribute.html) attribute enables the script
+ - On [EditorApplication.playmodeStateChanged](https://docs.unity3d.com/ScriptReference/EditorApplication-playmodeStateChanged.html) events:
+   - Save with [EditorSceneManager.SaveOpenScenes()](https://docs.unity3d.com/ScriptReference/SceneManagement.EditorSceneManager.SaveOpenScenes.html)
+   - You can do nothing if [EditorApplication.isPlaying](https://docs.unity3d.com/ScriptReference/EditorApplication-isPlaying.html), avoiding extra save calls
 
 ```csharp
 using UnityEditor;
@@ -104,23 +107,23 @@ public class AutoSave
 }
 ```
 
-</details>
+<hr></details>
 <details><summary>Why?</summary>
 
 It's not unusual to see Unity crash several times per day.  This script has been a lifesaver.  It's saved me hours that would have been wasted re-configuring gameObjects.
 
-</details>
+<hr></details>
 <details><summary>What about performance?</summary>
 
 As an editor script, this logic is not included in the game you release.  Saving is incremental, so there is very little time wasted when there is nothing new to save.  Unless you're one of the lucky ones who never sees Unity crash, this script is absolutely worth the time tradeoff.
 
 
-</details>
+<hr></details>
 <details><summary>Can I put this in a different folder?</summary>
 
 Editor folders --- general special folder name weirdness in Unity.  Could be Assets/Editor/AutoSave.cs or Assets/Code/Editor/Utils/AutoSave.cs
 
-</details>
+<hr></details>
 
 
 
@@ -148,12 +151,12 @@ Add your sprite image files to the Asset directory.
  - Drag/drop the sprite sheet (or entire folder of art) into the folder you just created
 
 
-</details>
+<hr></details>
 <details><summary>Why</summary>
 
 aoeu
 
-</details>
+<hr></details>
 
 
 
@@ -178,12 +181,12 @@ Slice the sprite sheet in order to access each sprite within.
 - Click "Slice" button
 - Click "Apply" and close the Sprite Editor
 
-</details>
+<hr></details>
 <details><summary>Why</summary>
 
 Full Rect is needed for the tiling effect we will be applying to platform sprites.
 
-</details>
+<hr></details>
 
 
 
@@ -200,7 +203,7 @@ Add a sprite to the scene representing the middle segment of a platform.
  - Click the arrow on the spritesheet in your Assets/Art directory (this displays each individual sliced image)
  - Click and drag the platform sprite you want to use into the Hierarchy
 
-</details>
+<hr></details>
 
 
 
@@ -215,12 +218,12 @@ Update "Quality" settings, disabling Anti-Aliasing to prevent some visual artifa
 <img src="http://i.imgur.com/omFI4DD.png" width=50% />
 Not different levels for different build types
 
-</details>
+<hr></details>
 <details><summary>Why</summary>
 
 <img src="http://i.imgur.com/vY5YmVj.png" width=50% />
 
-</details>
+<hr></details>
 
 
 
@@ -235,7 +238,7 @@ Update the sprite sheet's import settings to use mesh type full rect since we wi
 How
 </summary>
 <img src="http://i.imgur.com/Dhe3Nzt.png" width=50% />
-</details>
+<hr></details>
 
 <details>
 <summary>
@@ -243,7 +246,7 @@ Why
 </summary>
 Prevents artifacts when creating tiled sprites.
 <img src="http://i.imgur.com/e9jE83B.png" width=50% />
-</details>
+<hr></details>
 
 
 
@@ -259,7 +262,7 @@ How
 </summary>
  - Set Mesh Type to Full Rect
 <img src="http://i.imgur.com/B0nqf75.png" width=50% />
-</details>
+<hr></details>
 
 
 <details>
@@ -268,7 +271,7 @@ Why
 </summary>
 Random lines will show up on screen without this
 <img src="http://i.imgur.com/ZKqg5JP.png" width=50% />
-</details>
+<hr></details>
 
 
 
@@ -283,12 +286,12 @@ In the scene, update the sprite to draw mode tiled and change the width so we ca
  - Draw Mode: Tiled
  - Width: 10-ish, no change to height
 <img src="http://i.imgur.com/MIgzjdO.png" width=50% />
-</details>
+<hr></details>
 <details>
 <summary>Why</summary>
 TODO
 For tiling vs stretching.
-</details>
+<hr></details>
 
 
 
@@ -302,13 +305,13 @@ On the game tab, change the aspect ratio to 5:4 as we want to simplify and alway
 <summary>How</summary>
 
 <img src="http://i.imgur.com/MTnZtu4.png" width=50% />
-</details>
+<hr></details>
 <details>
 <summary>Why</summary>
 Challenge of aspect ratios is different ratios see different amounts of the world.  This is a fixed screen game so we choose an arbitrary target to design for.  When building, we can select specific resolutions to support.
 
 When laying the scene for an aspect ratio, it will automatically scale for different resolutions.
-</details>
+<hr></details>
 
 
 
@@ -321,14 +324,14 @@ Select the camera in the scene and update the size to 10, effectively zooming ou
 <details>
 <summary>How</summary>
 <img src="http://i.imgur.com/PmeoqG7.png" width=50% />
-</details>
+<hr></details>
 
 <details>
 <summary>Why</summary>
 This defines how much of the world is visible vertically.  Than the aspect ratio determines how much to display horizontally.
 
 With the two locked, we can design a scene without any camera movement and be sure everyone has the same experience.
-</details>
+<hr></details>
 
 
 
@@ -351,12 +354,12 @@ Create a new parent game object for the child.
  
 
 <img src="http://i.imgur.com/UB6JDgt.png" width=50% />
-</details>
+<hr></details>
 
 <details>
 <summary>Why</summary>
 aoeu
-</details>
+<hr></details>
 
 
 
@@ -379,7 +382,7 @@ How?
 
 <img src="http://i.imgur.com/GNMGb0w.gif" width=50% />
  - Apply prefab
- </details>
+ <hr></details>
 
 
 
@@ -394,14 +397,14 @@ Should have a total of 4 prefabs.
 You can delete them all from the scene.
 
 <img src="http://i.imgur.com/j1cz0aZ.png" width=50% />
-</details>
+<hr></details>
 
 <details>
 <summary>
 Why?
 </summary>
 When something on the prefab changes we can revert the instances in the scene.  This applies any new settings or components we may have added without disturbing the transform it uses in the scene.  Unfortunately it would also reset things like the missing edge sprites - so one for each.
-</details>
+<hr></details>
 
 ## Create a connected platform
 
@@ -422,7 +425,7 @@ Adjust the
  - Rotations on the z axis (2d doesn't respond well to x or y rotations --- but remember that Unity is a 3D engine)
  - Use the tile mode width for the middle segment only
 
-</details>
+<hr></details>
 
 
 ## Copy paste to complete Level1 platforms
@@ -439,7 +442,7 @@ Rinse and repeat of steps x,y,z
 
  Can also look at the game tab anytime to see what the camera sees
 
-</details>
+<hr></details>
  
 
 
@@ -449,7 +452,7 @@ Rinse and repeat of steps x,y,z
 
 * Check the children gameObjects in the prefab.  They should all be at 0 position (except for the edge segments which have an x value), 0 rotation, and 1 scale.
 
-</details>
+<hr></details>
 
 <br>
 <br>
@@ -545,4 +548,4 @@ Open player settings via "File"->"Build Settings".  Select the platform you want
 <img src="http://i.imgur.com/nWDCAwX.png" width=50% />
 For PC, we can select specific supported aspect ratios 
 <img src="http://i.imgur.com/Xoxw0Xs.png" width=50% />
-</details>
+<hr></details>
