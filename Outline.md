@@ -1,15 +1,14 @@
 # 2D Platformer Tutorial for Unity 2017
 
-This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
-
-[TODO some intro]
-
 [Demo of the game](https://hardlydifficult.com/Kong/index.html) we are creating.
 
 Target audience: we expect you know some coding and can follow along with C# examples.  New concepts are introduced along the way to help beginners and intermediate developers.  No experience with Unity or other game engines is required.
 
-[TODO image size how to manage this well????]
-todo review consistent use of GameObject
+This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
+
+TODO
+ - Intro
+ - Image size is all over the place
 
 
 # 1) Create a 2D project and layout platforms
@@ -721,7 +720,7 @@ TODO screenshots
 
 
 
-# 3) Add a Character and Movement Mechanics
+# 2) Add a Character and Movement Mechanics
 
 Add a character to the scene.  Have him walk and jump, creating a basic platformer.
 
