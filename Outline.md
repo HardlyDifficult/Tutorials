@@ -389,7 +389,9 @@ A Transform component manages the GameObject's position, rotation and scale.  Ev
 <hr></details>
 <details><summary>What's a Component?</summary>
 
-A component is a set of logic (i.e. code) which may be added to a GameObject (or child GameObject) and is exposed in the Inspector.  A GameObject may have any number of components and those components may expose various properties to customize the behaviour for a specific object.  Unity has a number of components available out of the box, we will be using several Unity components in this tutorial and will be making many custom components as well.
+A component is a set of logic (i.e. code) which may be added to a GameObject, or child GameObject, and is exposed in the 'Inspector' tab for the GameObject you have selected in the 'Hierarchy'.  A GameObject may have any number of components and those components may by configured to customize the behaviour for that specific object.  
+
+Unity has a number of components available out of the box, we will be using several Unity components in this tutorial and will be making many custom components as well.
 
 <hr></details>
 <details><summary>What's a SpriteRenderer?</summary>
