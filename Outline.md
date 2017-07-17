@@ -13,9 +13,11 @@ TODO
 
 # 1) Create a 2D project and layout platforms
 
+TODO part 1 video link
+
 Get Unity and start a 2D project. Create platforms and lay them out for Level1.  After this section, the game should look something like this:
 
-[TODO screenshot]
+<img src="http://i.imgur.com/KSsteJT.png" width=50% />
 
 <details><summary>How</summary>
 
@@ -686,13 +688,19 @@ The basic steps are:
  - Use Vertex Snap to position the edge sprites.
  - Move and rotate the sprite by modifying the parent GameObject, leaving the children at position and rotation 0, with the exception of the corner sprites which have an X position.
 
-TODO screenshots
+Optionally, you can rename the platform GameObjects and organize your platforms by placing them in a parent GameObject.  e.g.:
+
+ - Click and drag to re-arrange the platform GameObjects so they appear in the same order in the hierarchy as they do in game.
+ - Rename each to represent it's position - e.g. "Level2"
+ - Create an Empty GameObject, name it "Platforms".  Ensure that it is a position 0.
+ - Select all of your existing platforms (the parent GameObjects) and click and drag them onto "Platforms".
+
+<img src="http://i.imgur.com/f8GFdBD.png" width=50% />
+
 <hr></details>
 
 
-
-
-
+[Unity Project / Source Code](https://github.com/hardlydifficult/Unity2DPlatformerTutorial/tree/Part1) for Part 1.  The game does not do much yet, but here is a [demo build](https://hardlydifficult.com/PlatformerTutorialPart1/index.html) as well.
 
 
 
@@ -727,20 +735,36 @@ Add a character to the scene.  Have him walk and jump, creating a basic platform
 
 ## Add a character sprite sheet
 
-Add a sprite sheet for the character, slice it and set to point filter mode.  We are using [Kenney.nl's Platformer Characters](http://kenney.nl/assets/platformer-characters-1) 'PNG/Adventurer/adventurer_tilesheet.png'.
+Add a sprite sheet for the character, slice it with a bottom pivot and set to point filter mode.  We are using [Kenney.nl's Platformer Characters](http://kenney.nl/assets/platformer-characters-1) 'PNG/Adventurer/adventurer_tilesheet.png'.
 
 
 <details><summary>How</summary>
 
- - Drag/drop the sprite sheet into the "Project" tab Assets/Art folder.
- - Set "Sprite Mode" to "Multiple".
- - Click Sprite Editor and "Slice" by Cell Count, 9 rows 3 columns.
- - Set the "Filter Mode" to "Point".
+ - Drag/drop the sprite sheet into Assets/Art.
+ - Set 'Sprite Mode: Multiple'.
+ - Click 'Sprite Editor' 
+   - Cell Count, 9 rows 3 columns.
+   - Pivot: Bottom
+ - Set the 'Filter Mode: Point (no filter)'.
 
- Note we won't be tiling the character sprite, so the default of "Mesh Type: Tight" is okay.
+<img src="http://i.imgur.com/BuIsVWD.png" width=50% />
+
+Note we won't be tiling the character sprite, so the default of Mesh Type: Tight is okay.
 
 </details>
+<details><summary>What's Pivot do?</summary>
 
+A pivot point is the main anchor point for the sprite.  By default, pivot points are the center of the sprite.  
+
+For the character we are moving the pivot point to the bottom.  This allows us to position and rotate the character starting at the feet / the bottom of the sprite.  
+
+Here's an example showing a character with a default center and one with the recommended bottom pivot.  They both have the same y position.  Notice the the vertical position of each as well as how the rotation centers around the different pivot points:
+
+<img src="http://i.imgur.com/AQY4FOT.gif" width=50% />
+
+The pivot point you select is going to impact how we create animations and implement movement mechanics.  The significance of this topic should become more clear later in the tutorial.
+
+</details>
 
 
 
@@ -750,21 +774,23 @@ Drag the sprites for walking into the Hierarchy to create a Character and animat
 
 <details><summary>How</summary>
 
- - Select 'adventurer_tilesheet_0', 'adventurer_tilesheet_9', and 'adventurer_tilesheet_10' sprites from the sprite sheet 'adventurer_tilesheet'.
+ - Select "adventurer_tilesheet_0", "adventurer_tilesheet_9", and "adventurer_tilesheet_10" sprites from the sprite sheet "adventurer_tilesheet".
  - Drag them into the Hierarchy.
- - When prompted, save the animation as Assets/Animations/Character/Walk.anim
+ - When prompted, save the animation as Assets/Animations/Character/Walk.anim.
  - Rename the GameObject to 'Character'.
+
+<img src="http://i.imgur.com/ArNgG6g.gif" width=50% />
 
 This simple process created:
  - The character's GameObject.
  - A SpriteRenderer component on the GameObject defaulting to the first selected sprite.
  - An Animation representing those 3 sprites changing over time.
- - An Animation Controller for the character with a default state for the Walk animation.
- - An Animator component on the GameObject configured for the Animation Controller just created.
+ - An Animator Controller for the character with a default state for the Walk animation.
+ - An Animator component on the GameObject configured for the Animator Controller just created.
 
-Click Play to test - your character should be walking!  
+Click Play to test - your character should be walking (in place)! 
 
-TODO gif this process
+Gif of the walk
 
 <hr></details>
 <details><summary>What's the difference between Animation and Animator?</summary>
