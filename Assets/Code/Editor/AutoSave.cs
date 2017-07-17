@@ -1,32 +1,36 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 
-namespace HD
+/// <summary>
+/// Auto saves the scene and project everytime you click play.
+/// 
+/// This happens before the game runs so even if that run causes 
+/// a crash, your work is safe.
+/// </summary>
+[InitializeOnLoad]
+public class AutoSave
 {
   /// <summary>
-  /// Auto saves the scene and project everytime you click play.
+  /// Called automatically c/o InitializeOnLoad.  Registers for
+  /// play mode events.
   /// </summary>
-  [InitializeOnLoad]
-  public class AutoSave
+  static AutoSave()
   {
+    EditorApplication.playmodeStateChanged 
+      += OnPlaymodeStateChanged;
+  }
 
-    static AutoSave()
-    {
-      EditorApplication.playmodeStateChanged = AutoSaveOsStateChanged;
+  /// <summary>
+  /// When the play mode changes, consider saving.
+  /// </summary>
+  static void OnPlaymodeStateChanged()
+  {
+    if(EditorApplication.isPlaying)
+    { // If currently playing, don't save
+      return;
     }
 
-    static void AutoSaveOsStateChanged()
-    {
-      if(EditorApplication.isPlaying)
-      {
-        return;
-      }
-
-      EditorSceneManager.SaveScene(SceneManager.GetActiveScene());
-      AssetDatabase.SaveAssets();
-    }
+    // Save!  
+    EditorSceneManager.SaveOpenScenes();
   }
 }
