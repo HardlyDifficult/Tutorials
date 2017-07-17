@@ -382,13 +382,9 @@ This creates a GameObject with a SpriteRenderer component for that sprite.
 <hr></details>
 <details><summary>What's a GameObject and Transform?</summary>
 
-Everything you see and interact with in a game is driven by GameObjects.  Typically a GameObject represents a single logical object in the world (e.g. a character).  It may be composed of child GameObjects, each responsible for part of the display and/or behaviour.
+Everything you see and interact with in a game is driven by GameObjects.  Typically a GameObject represents a single logical object in the world (e.g. a character).  It may be composed of child GameObjects, each responsible for part of the display and/or behaviour. It may also hold various components.  
 
-A GameObject is something which appears in the game's "Hierarchy" tab.  Every GameObject has a transform.  It may also hold other GameObjects and it may includes various components.  
-
-A transform manages the GameObject's position, rotation and scale.  Every GameObject, including child GameObjects, have a transform.
-
-Occasionally you will encounter a GameObject that has nothing rendered on screen.  In these cases the transform is often completely ignored but may not be removed.
+A Transform component manages the GameObject's position, rotation and scale.  Every GameObject, including child GameObjects, have a Transform. Occasionally you will encounter a GameObject that has nothing rendered on screen.  In these cases the Transform is often completely ignored but may not be removed.
 
 <hr></details>
 <details><summary>What's a Component?</summary>
