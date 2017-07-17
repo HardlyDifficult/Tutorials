@@ -648,7 +648,7 @@ Our level design calls for the bottom platform to rotate half way through.  Crea
 
  - Use two copies of the Platform GameObject (without edges) and move their parent GameObjects so that the sprites appear near the bottom of the screen side by side. 
  - Raise the right Platform a little above the left.
- - Select the child sprite in each and increase the Tiled "Width" to about 15 so that the platforms combined cover more than the width of the screen.
+ - Select the child sprite in each and increase the tiled 'Width' to about 15 so that the platforms combined cover more than the width of the screen.
  - Select the parent GameObject for the Platform on the right and modify the Transform's rotation Z value to about 4.
  - Drag and drop the child GameObject out of the Platform you just rotated so it stands alone. (it will still appear at the same position/rotation). 
  - Hold V to enable Vertex Snap, hover over the bottom left corner and drag the box which appears to connect perfectly with the other platform.
@@ -659,7 +659,7 @@ Our level design calls for the bottom platform to rotate half way through.  Crea
 <img src="http://i.imgur.com/iJ4fdYQ.gif" />
 
 <hr></details>
-<details><summary>Why not use a single GameObject for the bottom platform?</summary>
+<details><summary>Why not use a single GameObject for this bottom platform?</summary>
 
 Soon in the tutorial we will be adding colliders to these platforms.  There are several ways this could be handled, as is always the case with GameDev, but the approach we will be using places BoxCollider2Ds on our Platform's parent GameObjects.  This works great when the parent is a middle sprite segment along with a rounded corner sprite - but does not work as well when the platform changes it's rotation half way through.
 
@@ -667,9 +667,10 @@ Soon in the tutorial we will be adding colliders to these platforms.  There are 
 <hr></details>
 <details><summary>Why extend the platform beyond the edge of the screen?</summary>
 
-The width of the world players are going to see is fixed so you could argue that extending over the edge is not necessary.  I recommend this to ensure there are no unexpected gaps at the edge.  Additional some enemies in this game will continue off screen and use some of the platform we can't see before returning to the game.
+The width of the world players are going to see is fixed so you could argue that extending over the edge is not necessary.  I recommend this to ensure there are no unexpected gaps at the edge and to leave some flexibility for future mechanics, including:
 
-Additionally we will be adding a screen shake feature.  This works by moving the camera up/down/left/right a bit.  Having the platforms extend beyond the edge of the screen allows us to do that without exposing unexpected gaps.
+ - Allow some enemies to continue off screen and use the platform we can't see before returning to the game.
+ - Screen shake.  This works by moving the camera up/down/left/right a bit.  Having the platforms extend beyond the edge of the screen allows us to do that without exposing gaps.
 
 <hr></details>
 
@@ -680,14 +681,14 @@ Additionally we will be adding a screen shake feature.  This works by moving the
 
 At this point we have covered everything you need to match the Level1 platform layout.  You can match the layout we used or come up with your own.
 
-Refer to the "Game" tab to confirm your layout.
+Refer to the 'Game' tab to confirm your layout as they player will see it.
 
 The basic steps are:
 
  - Copy a parent Platform to start from.
- - Modify the tile "Width" as needed.  Platforms should extend off the screen a bit.
+ - Modify the tile 'Width' as needed.  Platforms should extend off the screen a bit.
  - Use Vertex Snap to position the edge sprites.
- - Move and rotate the sprite by modifying the parent GameObject, leaving the children at position and rotation 0, with the exception of the corner sprites which have an X value.
+ - Move and rotate the sprite by modifying the parent GameObject, leaving the children at position and rotation 0, with the exception of the corner sprites which have an X position.
 
 
 TODO screenshots
