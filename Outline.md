@@ -621,8 +621,9 @@ Add sprites with rounded edges to the left and right of the platform.  We are us
 <details><summary>How</summary>
 
  - Copy the "Platform" GameObject, paste and rename to "PlatformWithEdges".
- - You may want to use the move tool to separate the position of these objects on-screen (making it easier to configure each).  When you do this be sure the parent GameObject is selected and not the child sprite.
+ - You may want to move these to separate them on-screen (making it easier to configure each).  When you do, be sure the parent GameObject is selected and not the child sprite.
  - Drag the each of edge sprites from the 'Project' tab Assets/spritesheet_ground into the 'Hierarchy' under the "PlatformWithEdges" GameObject (they should appear indented).  We're using "spritesheet_ground_79" and "spritesheet_ground_65".
+ - Confirm that each of the child sprites are still at 0 position, 0 rotation, and 1 scale.  The edge sprites may have an X position.
  - Select the rounded edge sprite (one of the child GameObjects) and use the move tool to position it away from the other sprites.
  - With the edge still selected, hold V to enable Vertex Snap mode.  A box appears for each anchor point (e.g. the corners of the sprite).  Hover over the top right corner and click and drag the box which appears.  It will snap perfectly with other anchor points in the world as show below.
 
@@ -631,7 +632,7 @@ Add sprites with rounded edges to the left and right of the platform.  We are us
  - Repeat for both edges, creating smooth corners on both sides of the platform.
  - Copy paste "PlatformWithEdges", rename to "PlatformWithRightEdge" and delete it's left edge.  Do the same to create a "PlatformWithLeftEdge".
 
-There should be four GameObjects in the world now, as shown below.
+There should now be four GameObjects in the world, as shown below.
 
 <img src="http://i.imgur.com/j1cz0aZ.png" width=50% />
 
