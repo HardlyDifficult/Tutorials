@@ -616,20 +616,20 @@ Typically all Transform updates during the game and in level design are done to 
 
 ## Add edges
 
-Add sprites with rounded edges to the left and right of the platform.
+Add sprites with rounded edges to the left and right of the platform.  We are using spritesheet_ground_79 and spritesheet_ground_65.
 
 <details><summary>How</summary>
 
- - Copy the 'Platform' GameObject, paste and rename to 'PlatformWithEdges'.
+ - Copy the "Platform" GameObject, paste and rename to "PlatformWithEdges".
  - You may want to use the move tool to separate the position of these objects on-screen.  When you do this, be sure the parent GameObject is selected and not the child sprite.
- - Drag the each of edge sprites from the "Project" tab Assets/spritesheet_ground into the "Hierarchy" under the 'PlatformWithEdges' GameObject (they should appear indented).  We're using 'spritesheet_ground_79' and 'spritesheet_ground_65'
+ - Drag the each of edge sprites from the "Project" tab Assets/spritesheet_ground into the 'Hierarchy' under the "PlatformWithEdges" GameObject (they should appear indented).  We're using "spritesheet_ground_79" and "spritesheet_ground_65".
  - Select an edge (one of the child GameObjects) and use the move tool to position it away from the other sprites.
  - Select an edge and hold V to enable Vertex Snap mode, a box appears for each anchor point.  Hover over the top right and click and drag the box which appears.  It will snap perfectly with other anchor points in the world.
 
 <img src="http://i.imgur.com/GNMGb0w.gif" width=50% />
 
  - Repeat for both edges, creating smooth corners on both sides of the platform.
- - Copy paste 'PlatformWithEdges', rename to 'PlatformWithRightEdge' and delete it's left edge.  Do the same to create a 'PlatformWithLeftEdge'.
+ - Copy paste "PlatformWithEdges", rename to "PlatformWithRightEdge" and delete it's left edge.  Do the same to create a "PlatformWithLeftEdge".
 
 There should be four GameObjects in the world now, as shown below.
 
