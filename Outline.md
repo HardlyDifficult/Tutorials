@@ -337,7 +337,7 @@ Slice the sprite sheet in order to access each individual sprite within.
 - Click 'Apply' and close the 'Sprite Editor'
 
 <hr></details>
-<details><summary>Could I use other slice method Types?</summary>
+<details><summary>Could I use other slice method types?</summary>
 
 The goal is to slice the sprite sheet, any method your comfortable with is fine.  Options include:
 
@@ -490,10 +490,10 @@ Disable Anti-Aliasing, preventing some visual artifacts.
  - Menu 'Edit' -> 'Project Settings' -> 'Quality'
  - In the 'Inspector' change 'Anti Aliasing' to 'Disabled'
  - Repeat this for each quality 'Level' supported
-   - Click on the row to modify (e.g. 'Ultra')
-   - Update Anti Aliasing if needed
+   - Click on the row to modify (e.g. 'Very High')
+   - Update 'Anti Aliasing' if needed
 
-The currently highlighted Level is what you are testing with ATM.  It will default to Ultra.  The green checkboxs represent the default quality level for different build types.  In this example I'm testing with Ultra, using Ultra by default for PC builds, and High by default for WebGL builds.  To avoid artifacts, I disable Anti Aliasing in every level and then switch back to Ultra.
+The highlighted Level is what you are testing with ATM.  It will default to Ultra.  The green checkboxes represent the default quality level for different build types.  In this example I'm testing with Ultra, using Ultra by default for PC builds, and High by default for WebGL builds.  To avoid artifacts, I disable Anti Aliasing in every level and then switch back to Ultra.
 
 <img src="http://i.imgur.com/omFI4DD.png" width=50% />
 
@@ -504,7 +504,7 @@ Anti Aliasing is a technique used to smooth jagged edges.
 
 <img src="https://qph.ec.quoracdn.net/main-qimg-10856ecbea4f439fb9fb751d41ff704a" width=50% />
 
-When working with sprites, we often want control over images down to the pixel.  Anti-aliasing may lead to unexpected gaps or distortions.  Here is an example that appears when using tiling:
+When working with sprites, we often want control over images down to the pixel.  Anti-aliasing may lead to unexpected gaps or distortions when sprites are side by side.  Here is an example that appears when using tiling:
 
 <img src="http://i.imgur.com/vY5YmVj.png" width=50% />
 
@@ -520,25 +520,27 @@ Change the aspect ratio to 5:4 as we want to simplify and always show the same a
 
 <details><summary>How</summary>
 
- - On the "Game" tab, near the top, change "Free Aspect" to "5:4"
+ - In the 'Game' tab, near the top, change 'Free Aspect' to '5:4'.
 
 <img src="http://i.imgur.com/MTnZtu4.png" width=50% />
 
- - Switch back to the "Scene" tab.  The white box here represents the area that players will see.
+Switch back to the 'Scene' tab.  The white box here represents the area that players will see.
 
 <img src="http://i.imgur.com/eIq2LD2.png" width=50% />
 
 <hr></details>
 <details><summary>Why use a fixed aspect ratio?</summary>
 
-We are building a game with a fixed display.  The camera is not going to move.  In order to design levels without requiring camera effects, we choose a specific aspect ratio to build for.  Different resolutions will scale the world larger or smaller... but everyone will see the same amount of the world.
+We are building a game with a fixed display.  The camera is not going to follow the character which will simplify the game and level design for this tutorial.  With a fixed aspect ratio we can design a scene without any camera movement and be sure everyone has the same experience.
+
+Different resolutions will scale the display larger or smaller but everyone will see the same amount of the world.
 
 5:4 was an arbitrary choice, use anything you'd like.
 
 <hr></details>
 <details><summary>Does this impact players of the game as well?</summary>
 
-No, this option only impacts what you see in the editor.  When we cut a build for players, we'll update the supported resolutions to match.  TODO see xxx
+No, this option only impacts what you see in the editor.  When we cut a build later in this tutorial, we'll update the supported resolutions to match.  
 
 <hr></details>
 
@@ -546,31 +548,28 @@ No, this option only impacts what you see in the editor.  When we cut a build fo
 
 ## Camera Size: 10
 
-Update the camera size to about 10, effectively zooming out a bit.
+Update the camera size to about 10 to zoom out a bit.
 
 <details><summary>How</summary>
 
- - In the "Hierarchy" select the "Main Camera"
- - In the "Inspector" change "Size" to 10
+ - In the 'Hierarchy' select the 'Main Camera'
+ - In the 'Inspector' change 'Size' to 10
 
 <img src="http://i.imgur.com/PmeoqG7.png" width=50% />
 
-<hr></details>
-<details><summary>Why change 'Size'?</summary>
-
-This defines how much of the world is visible vertically.  Than the aspect ratio determines how much to display horizontally.  With those two values fixed, we can design a scene without any camera movement and be sure everyone has the same experience.
+In the Game tab, the platform should look smaller now.  In the Scene, the white box representing the viewable area has grown.
 
 <hr></details>
-<details><summary>Why not use the camera position instead?</summary>
+<details><summary>Why change 'Size' and not camera position?</summary>
 
-2D games by default use "Projection: Orthographic".  This means that the camera does not consider perspective (the ability to see more of the world the further it is from your eye) which ensures that we see the edge of the screen head on rather than at an angle. 
-
-The amount of the world visible with a perspective camera is driven by the Z location.  For an Orthographic, it's driven by a special "Size" property.
+2D games by default use 'Projection: Orthographic'.  This means that the camera does not consider perspective (the ability to see more of the world the further it is from your eye) which ensures that we see the edge of the screen head on rather than at an angle. 
 
 We don't want perspective in a 2D game because in order to make this possible the edges may appear distorted. For example:
 
 <img src="http://i.imgur.com/5xCIowM.png" width=50% />
 <img src="http://i.imgur.com/6rqvWDA.png" width=50% />
+
+The amount of the world visible with a perspective camera is driven by it's position.  For an Orthographic camera, it's driven by a special 'Size' property. 'Size' defines how much of the world is visible vertically.  Then the aspect ratio is used to determine how much to display horizontally.  
 
 <hr></details>
 
