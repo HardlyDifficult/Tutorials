@@ -47,7 +47,7 @@ When you created a project a default scene was created as well.  Save it as "Lev
 <hr></details>
 <details><summary>What's a scene?</summary>
 
-The Scene represents a collection of game objects and components (defined below) configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial. 
+The Scene represents a collection of GameObjects and components (defined below) configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial. 
 
 <hr></details>
 
@@ -146,7 +146,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 // Tells unity that this component only works
-// if the game object also has a SpriteRenderer
+// if the GameObject also has a SpriteRenderer
 [RequireComponent(typeof(SpriteRenderer))]
 public class MyClassName : MonoBehaviour
 {
@@ -341,9 +341,9 @@ Slice the sprite sheet in order to access each individual sprite within.
 
 The goal is to slice the sprite sheet, any method your comfortable with is fine.  Options include:
 
- - "Automatic" which sometimes works (but does not for the spritesheet used in this example).
- - "Grid By Cell Size" allows you to enter the size of each sprite in the sheet directly, e.g. 128x128.
- - "Grid By Cell Count" allows you to simply count how many rows and columns you see in the sheet (vs maybe guess and checking the Cell Size).
+ - 'Automatic' which sometimes works (but does not for the spritesheet used in this example).
+ - 'Grid By Cell Size' allows you to enter the size of each sprite in the sheet directly, e.g. 128x128.
+ - 'Grid By Cell Count' allows you to simply count how many rows and columns you see in the sheet (vs maybe guess and checking the Cell Size).
 
 
 <hr></details>
@@ -351,11 +351,11 @@ The goal is to slice the sprite sheet, any method your comfortable with is fine.
 
 Slicing is the process of defining each individual sprite in a sprite sheet.  Once sliced, you can access each sprite as if it were a unique asset.
 
-After you have sliced, white lines appear in the "Sprite Editor".  These lines show you how the sprite sheet is cut, boxing in each individual sprite.  Any whitespace as shown in this example is ignored (i.e. it does not generate blank sprites as well).
+After you have sliced, white lines appear in the 'Sprite Editor'.  These lines show you how the sprite sheet is cut, boxing in each individual sprite.  Any whitespace as shown in this example is ignored (i.e. it does not generate blank sprites as well).
 
 <img src="http://i.imgur.com/NawupLS.png" width=50% />
 
-After closing the "Sprite Editor" and applying changes you can expand the sprite sheet in Assets to see each sprite it created.
+After closing the 'Sprite Editor' and applying changes you can expand the sprite sheet in Assets to see each sprite it created.
 
 <img src="http://i.imgur.com/Qq0nn2B.png" width=50% />
 
@@ -366,27 +366,25 @@ After closing the "Sprite Editor" and applying changes you can expand the sprite
 
 ## Drag sprite into scene
 
-Add a sprite to the scene representing the middle segment of a platform.  We are using 'spritesheet_ground/spritesheet_ground_72'.
+Add a sprite to the scene representing the middle segment of a platform.  We are using spritesheet_ground/spritesheet_ground_72.
 
 Note: there may be visual artifacts which we will address below.
 
 <details><summary>How</summary>
 
  - Click the arrow on the sprite sheet in your Assets/Art directory (this displays each individual sliced image).
- - Click and drag the platform sprite you want to use into the Hierarchy.  We are using 'spritesheet_ground_72'. This creates a GameObject with a SpriteRenderer component for that sprite.
-
+ - Click and drag the platform sprite you want to use into the 'Hierarchy' tab.  We are using "spritesheet_ground_72". 
+ 
 <img src="http://i.imgur.com/kZC4i6d.png" width=50% />
 
-<hr></details>
-<details><summary>What's a GameObject?</summary>
+This creates a GameObject with a SpriteRenderer component for that sprite.
 
-Everything you see and interact with in a game is driven by game objects.  Typically a game object represents a single logical object in the world.  It may be composed of child game objects, each responsible for part of the display and/or behaviour.
+<hr></details>
+<details><summary>What's a GameObject and Transform?</summary>
+
+Everything you see and interact with in a game is driven by GameObjects.  Typically a GameObject represents a single logical object in the world (e.g. a character).  It may be composed of child GameObjects, each responsible for part of the display and/or behaviour.
 
 A GameObject is something which appears in the game's "Hierarchy" tab.  Every GameObject has a transform.  It may also hold other GameObjects and it may includes various components.  
-
-
-<hr></details>
-<details><summary>What's a Transform?</summary>
 
 A transform manages the GameObject's position, rotation and scale.  Every GameObject, including child GameObjects, have a transform.
 
@@ -400,9 +398,9 @@ A component is a set of logic (i.e. code) which may be added to a GameObject (or
 <hr></details>
 <details><summary>What's a SpriteRenderer?</summary>
 
-SpriteRenderer is a Unity component which takes a sprite asset to render on screen.  Select the game object in the Hierarchy to view the component in the Inspector.  Here sereval options are available for modifying how the sprite is rendered.  For example:
+SpriteRenderer is a Unity component which takes a sprite asset to render on screen.  Select the GameObject in the Hierarchy to view the component in the Inspector.  Here sereval options are available for modifying how the sprite is rendered.  For example:
 
- - Sprite: This is the sprite image to render.  It was populated automatically when you created the game object with drag/drop.
+ - Sprite: This is the sprite image to render.  It was populated automatically when you created the GameObject with drag/drop.
  - Color: White is the default, displaying the sprite as it was created by the artist.  Changing this color modifies the sprite's appearance.  You can also use the Alpha value here to make a sprite transparent.
  - Order in Layer: When multiple sprites are overlapping, this is used to determine which one is on top of the other.
 
@@ -420,7 +418,7 @@ Note: a warning will appear in the inspector and there may be visual artifacts w
 
 <details><summary>How</summary>
 
- - Select the 'spritesheet_ground_72' game object.
+ - Select the 'spritesheet_ground_72' GameObject.
  - In the Inspector, under the SpriteRenderer component:
    - Change Draw Mode to Tiled 
    - An option for width appears, try increasing this to about 10 (but don't change height).
@@ -582,7 +580,7 @@ We don't want perspective in a 2D game because in order to make this possible th
 
 ## Create Platform GameObject
 
-Create a new parent game object for the platform sprite.
+Create a new parent GameObject for the platform sprite.
 
 
 <details><summary>How</summary>
