@@ -12,11 +12,11 @@ Target audience: we expect you know some coding and can follow along with C# exa
 todo review consistent use of GameObject
 
 
-# 1) Create a new 2D project
+# 0) Create a new 2D project
 
 Get Unity, start a 2D project and save before we get started.
 
-<details><summary>Where to get Unity</summary>
+<details><summary>How</summary>
 
  - [Download Unity](https://unity3d.com/), the free Personal edition has everything you need. 
  - Select "2D" when creating a new project.
@@ -37,17 +37,17 @@ Presenting the 2D vs 3D option when you create a new project suggests this is a 
 
 ## Save scene
 
-When you created a project, a default scene was created as well.  Save it as 'Level1', as that's where this tutorial begins.
+When you created a project a default scene was created as well.  Save it as "Level1", as that's where this tutorial begins.
 
 <details><summary>How</summary>
 
  - File -> Save Scenes.
- - Create a "Scenes" directory, call it 'Level1'.
+ - Create a "Scenes" directory, call it "Level1".
 
 <hr></details>
 <details><summary>What's a scene?</summary>
 
-The Scene represents a collection of game objects and components configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial. [TODO link to switch scene section]
+The Scene represents a collection of game objects and components (defined below) configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial. 
 
 <hr></details>
 
@@ -60,7 +60,7 @@ Unity may crash.  I recommend adding an editor script which automatically saves 
 
 <details><summary>How</summary>
 
- - Right click in the Project Assets folder -> Create -> Folder and name it "Editor".
+ - Right click in the 'Project' Assets folder -> Create -> Folder and name it "Editor".
  - Create -> C# Script and name it "AutoSave.cs".
  - Paste in the source code below.
  
@@ -126,9 +126,9 @@ Everything under a folder named "Editor" is an editor script, including files in
  - "[Resources](https://docs.unity3d.com/ScriptReference/Resources.html)": Assets bundled with the game, available for loading via code.  Note Unity [recommends using resources only for prototypes](https://unity3d.com/learn/tutorials/temas/best-practices/resources-folder) - the preferred solution is [AssetBundles](https://docs.unity3d.com/Manual/AssetBundlesIntro.html). 
  
 The following are additional special folder names only considered when in the root Assets directory. e.g. Assets/Gizmos is a special directory but Assets/Code/Gizmos could hold anything.
- - "[Standard Assets](https://docs.unity3d.com/Manual/HOWTO-InstallStandardAssets.html)": These are optional assets and scripts available from Unity you can add to your project anytime.
+ - "[Standard Assets](https://docs.unity3d.com/Manual/HOWTO-InstallStandardAssets.html)": These are optional assets and scripts available from Unity that you can add to your project anytime.
  - "[Editor Default Resources](https://docs.unity3d.com/ScriptReference/EditorGUIUtility.Load.html)": A resources directory only available to Editor scripts so you can have assets appear in the editor for debugging without increasing the game's built size.
- - "[Gizmos](https://docs.unity3d.com/ScriptReference/Gizmos.html)": Editor-only visualizations to aid level design and debugging.
+ - "[Gizmos](https://docs.unity3d.com/ScriptReference/Gizmos.html)": Editor-only visualizations to aid level design and debugging in the 'Scene' view.
  - "[Plugins](https://docs.unity3d.com/Manual/Plugins.html)": Dlls to include, typically from 3rd party libraries.
  - "[StreamingAssets](https://docs.unity3d.com/Manual/StreamingAssets.html)": Videos or other archives for your game to stream.
 
@@ -137,7 +137,7 @@ Be sure you do not use folders with these names anywhere in your project unless 
 <hr></details>
 <details><summary>What's a C# attribute?</summary>
 
-Attributes in C# are metadata added to classes, fields, or methods that may be queried by other classes.  In this example InitializeOnLoad, a Unity specific attribute, is used to ensure the static constructor on our AutoSave class is called when the game begins.
+Attributes in C# are metadata added to classes, fields, or methods that may be queried by other classes.  In the AutoSave script, InitializeOnLoad, a Unity specific attribute, is used to ensure the static constructor on our AutoSave class is called when the game begins.
 
 There are many [standard C# attributes](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/attributes/index) and [Unity specific attributes](http://www.tallior.com/unity-attributes/) that may be used.  Here are a few random examples:
 
@@ -212,21 +212,21 @@ public class AnotherClass
 <hr></details>
 <details><summary>What's a C# delegate?</summary>
 
-A delegate in C# is an object representing method(s) to call at a later time.  Events, Action, Func, and delegates are implemented as a 'multicast delegate'.  This means that any number of methods may subscribe to the same delegate.
+A delegate in C# is an object representing method(s) to call at a later time. You may encounter delegates under the following names: Events, Action, Func, and delegate. Under the hood these are all implemented with a 'multicast delegate'.  
 
-We use += when registering for an event so not to overwrite any other subscribers.
+When a method is added to a delegate to be called later, this is referred to as 'subscribing'.  Multicast delegate means that any number of methods may subscribe to the same delegate.  We use += when subscribing so not to overwrite any other subscribers.
 
 ```csharp
 EditorApplication.playmodeStateChanged += OnPlaymodeStateChanged;
 ```
 
-If the owner of the delegate (in the example above that's EditorApplication) may outlive the subscriber you should unsubcribe from the event OnDestroy, or any time you are no longer interested in future updates.  We do this with -= to remove our method and leave the remaining methods in-tact (if there are any).
+If the owner of the delegate (in the example above that's EditorApplication) may outlive the subscriber, the subscribe should unsubcribe when it's destroyed.  Also any time you are no longer interested in future updates, unsubscribe.  We do this with -= to remove our method and leave the remaining methods subscribed (if there are any).
 
 ```csharp
 EditorApplication.playmodeStateChanged -= OnPlaymodeStateChanged;
 ```
 
-Events are a common use case.  You may have a GameManager tracking points include an event onPointsChange.  Other components/systems in the game, such as Achievements and the points UI, may subscribe to onPointsChange.  When a player earns points, a method in Achievements is then called which can consider awarding a high score achievement and a method in the points UI is called to refresh what the player sees on-screen.  This way those components only need to refresh when something changed as opposed to checking the current state each frame.
+Events are a common use case for delegates.  For example, you may have a GameManager with a field for Points include an event "onPointsChange".  Other components/systems in the game, such as Achievements and the points UI, may subscribe to the onPointsChange event.  When a player earns points, a method in Achievements is then called which can consider awarding a high score achievement and a method in the points UI is called to refresh what the player sees on-screen.  This way those components only need to refresh when something has changed as opposed to checking the current state each frame.
 
 ```csharp
 using System;
@@ -277,7 +277,7 @@ public class MyCustomComponent : MonoBehaviour
 <hr></details>
 
 
-# 2) Create platforms 
+# 1) Create platforms 
 
 Create platforms and lay them out for Level1.  After this section, the game should look something like this:
 
