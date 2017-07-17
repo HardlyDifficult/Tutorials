@@ -569,7 +569,9 @@ We don't want perspective in a 2D game because in order to make this possible th
 <img src="http://i.imgur.com/5xCIowM.png" width=50% />
 <img src="http://i.imgur.com/6rqvWDA.png" width=50% />
 
-The amount of the world visible with a perspective camera is driven by it's position.  For an Orthographic camera, it's driven by a special 'Size' property. 'Size' defines how much of the world is visible vertically.  Then the aspect ratio is used to determine how much to display horizontally.  
+The amount of the world visible with a perspective camera is driven by it's position.  
+
+For an Orthographic camera, it's driven by a special 'Size' property. 'Size' defines how much of the world is visible vertically.  Then the aspect ratio is used to determine how much to display horizontally.  
 
 <hr></details>
 
@@ -584,13 +586,13 @@ Create a new parent GameObject for the platform sprite.
 
 <details><summary>How</summary>
 
- - Right click in "Hierarchy" and "Create Empty"
- - Rename to 'Platform'
- - Ensure the transform is at defaults for both the Platform and the sprite 'spritesheet_ground_72' (position 0, rotation 0, scale 1)
+ - Right click in 'Hierarchy' and 'Create Empty'.
+ - Rename to "Platform".
+ - Ensure the transform is at defaults (position 0, rotation 0, scale 1) for both the Platform and the sprite "spritesheet_ground_72".
 
 <img src="http://i.imgur.com/FAkZf1H.png" width=50% />
 
- - Drag and drop the sprite onto 'Platform' (it should appear indented under 'Platform')
+ - Drag and drop the sprite onto "Platform" (it should appear indented under "Platform")
 
  <img src="http://i.imgur.com/XOve0Ap.png" width=50% />
 
