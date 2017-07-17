@@ -642,7 +642,7 @@ There should now be four GameObjects in the world, as shown below.
 
 ## Create a connected platform
 
-Our level design calls for the bottom platform to rotate half way through.  Create two Platform GameObjects and position and rotate their parent GameObjects so that they appear connected.
+Our level design calls for the bottom platform to rotate half way through.  Create two Platform GameObjects and position and rotate their parents' GameObjects so that they appear connected.
 
 <details><summary>How</summary>
 
