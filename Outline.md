@@ -683,6 +683,8 @@ At this point we have covered everything you need to match the Level1 platform l
 
 Refer to the 'Game' tab to confirm your layout as they player will see it.
 
+<details><summary>How</summary>
+
 The basic steps are:
 
  - Copy a parent Platform to start from.
@@ -690,8 +692,8 @@ The basic steps are:
  - Use Vertex Snap to position the edge sprites.
  - Move and rotate the sprite by modifying the parent GameObject, leaving the children at position and rotation 0, with the exception of the corner sprites which have an X position.
 
-
 TODO screenshots
+<hr></details>
 
 
 
