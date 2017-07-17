@@ -396,10 +396,10 @@ Unity has a number of components available out of the box, we will be using seve
 <hr></details>
 <details><summary>What's a SpriteRenderer?</summary>
 
-SpriteRenderer is a Unity component which takes a sprite asset to render on screen.  Select the GameObject in the Hierarchy to view the component in the Inspector.  Here sereval options are available for modifying how the sprite is rendered.  For example:
+SpriteRenderer is a Unity component which renders a sprite on screen.  Select the GameObject in the 'Hierarchy' to view the SpriteRenderer component for this object in the 'Inspector'.  Here sereval options are available for modifying how the sprite is rendered.  For example:
 
  - Sprite: This is the sprite image to render.  It was populated automatically when you created the GameObject with drag/drop.
- - Color: White is the default, displaying the sprite as it was created by the artist.  Changing this color modifies the sprite's appearance.  You can also use the Alpha value here to make a sprite transparent.
+ - Color: White is the default, displaying the sprite as it was created by the artist.  Changing this color modifies the sprite's appearance.  You can also use the alpha value here to make a sprite transparent.
  - Order in Layer: When multiple sprites are overlapping, this is used to determine which one is on top of the other.
 
 <img src="http://i.imgur.com/4w3P1nx.png" width=50% />
@@ -410,16 +410,16 @@ SpriteRenderer is a Unity component which takes a sprite asset to render on scre
 
 ## Sprite Draw Mode: Tiled
 
-In the scene, update the SpriteRenderer to Draw Mode: Tiled and adjust the width so we can begin to design the level's platforms.
+Update the platform's SpriteRenderer to Draw Mode: Tiled and adjust the width so we can begin to design the level.
 
 Note: a warning will appear in the inspector and there may be visual artifacts which we will address below.
 
 <details><summary>How</summary>
 
- - Select the 'spritesheet_ground_72' GameObject.
- - In the Inspector, under the SpriteRenderer component:
-   - Change Draw Mode to Tiled 
-   - An option for width appears, try increasing this to about 10 (but don't change height).
+ - Select the "spritesheet_ground_72" GameObject in your Assets directory.
+ - In the 'Inspector', under the SpriteRenderer component:
+   - Change 'Draw Mode' to 'Tiled'
+   - An option for 'Width' appears, try increasing this to about 10 (but don't change height).
 
 <img src="http://i.imgur.com/MIgzjdO.png" width=50% />
 
