@@ -416,12 +416,14 @@ Note: a warning will appear in the inspector and there may be visual artifacts w
 
 <details><summary>How</summary>
 
- - Select the "spritesheet_ground_72" GameObject in your Assets directory.
+ - Select the "spritesheet_ground_72" GameObject in the 'Hierarchy'.
  - In the 'Inspector', under the SpriteRenderer component:
    - Change 'Draw Mode' to 'Tiled'
    - An option for 'Width' appears, try increasing this to about 10 (but don't change height).
 
 <img src="http://i.imgur.com/MIgzjdO.png" width=50% />
+
+You should see the platform sprite get wider, repeating it's pattern (vs stretching).
 
 <hr></details>
 <details>
