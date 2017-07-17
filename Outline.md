@@ -642,16 +642,17 @@ There should now be four GameObjects in the world, as shown below.
 
 ## Create a connected platform
 
-Our level design calls for the bottom platform to rotate half way through.  Create two Platform GameObjects, one of which is rotated and position their parent GameObjects so they appear connected.
+Our level design calls for the bottom platform to rotate half way through.  Create two Platform GameObjects and position and rotate their parent GameObjects so that they appear connected.
 
 <details><summary>How</summary>
 
- - Use two copies of Platform (without edges) and move their parent GameObjects so that the sprites appear near the bottom of the screen side by side. Raise the right Platform a little above the left.
- - Select the child sprite in each and increase the Tiled "Width" to about 15 so that the platforms cover more than the width of the screen.
- - Select the parent GameObject for the Platform on the right and modify the Rotation Z value to about 4.
- - Drag and drop the child GameObject out of the Platform the right so it stands alone.  
+ - Use two copies of the Platform GameObject (without edges) and move their parent GameObjects so that the sprites appear near the bottom of the screen side by side. 
+ - Raise the right Platform a little above the left.
+ - Select the child sprite in each and increase the Tiled "Width" to about 15 so that the platforms combined cover more than the width of the screen.
+ - Select the parent GameObject for the Platform on the right and modify the Transform's rotation Z value to about 4.
+ - Drag and drop the child GameObject out of the Platform you just rotated so it stands alone. (it will still appear at the same position/rotation). 
  - Hold V to enable Vertex Snap, hover over the bottom left corner and drag the box which appears to connect perfectly with the other platform.
- - Copy paste the transform position from the child you just placed to it's original parent.
+ - Copy paste the Transform position from the child you just placed to it's original parent GameObject.
  - Drag and drop the sprite back into the original parent GameObject.
  - Confirm the child GameObject is positioned at 0.
 
