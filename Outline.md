@@ -298,12 +298,9 @@ Add a sprite sheet for the platform to the Asset directory.  We are using [Kenne
    - If you have a zip file, you may need to unzip to a temp directory before drag/drop will work.
 
 <hr></details>
-<details><summary>What's a sprite?</summary>
+<details><summary>What's a sprite / sprite sheet?</summary>
 
 A sprite is an image, used in 2D games and for UI.  They may represent an object, part of an object, or a frame of an entity's animation, etc.  
-
-<hr></details>
-<details><summary>What's a sprite sheet?</summary>
 
 A sprite sheet is a single image file that contains multiple individual sprites.  The sheet may use these sprites to represent different frames for an animation or to hold a collection of various object types (as is the case here).
 
