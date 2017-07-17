@@ -385,9 +385,17 @@ Note: there may be visual artifacts which we will address below.
 <hr></details>
 <details><summary>What's a GameObject?</summary>
 
-A GameObject is something which appears in the game's Hierarchy.  Every GameObject has a transform.  It may also hold other GameObjects and it may includes various components.  
-
 Everything you see and interact with in a game is driven by game objects.  Typically a game object represents a single logical object in the world.  It may be composed of child game objects, each responsible for part of the display and/or behaviour.
+
+A GameObject is something which appears in the game's "Hierarchy" tab.  Every GameObject has a transform.  It may also hold other GameObjects and it may includes various components.  
+
+
+<hr></details>
+<details><summary>What's a Transform?</summary>
+
+A transform manages the GameObject's position, rotation and scale.  Every GameObject, including child GameObjects, have a transform.
+
+Occasionally you will encounter a GameObject that has nothing rendered on screen.  In these cases the transform is often completely ignored but may not be removed.
 
 <hr></details>
 <details><summary>What's a Component?</summary>
@@ -495,7 +503,6 @@ Disable Anti-Aliasing, preventing some visual artifacts.
 The currently highlighted 'Level' is what you are testing with ATM.  It will default to Ultra.  The green checkboxs represent the default quality level for different build types.  In this example I'm testing with Ultra, using Ultra by default for PC builds, and High by default for WebGL builds.  To avoid artifacts, I disable Anti Aliasing in every level and then switch back to Ultra.
 
 <img src="http://i.imgur.com/omFI4DD.png" width=50% />
-
 
 <hr></details>
 <details><summary>What is Anti Aliasing and why disable it?</summary>
@@ -638,6 +645,8 @@ There should be four GameObjects in the world now, as shown below.
 
 ## Create a connected platform
 
+Our level design calls for the bottom platform to rotate half way through.  Create two Platform GameObjects, one of which is rotated and position their parent GameObjects so they appear connected.
+
 <details><summary>How</summary>
 
  - Use two copies of Platform (without edges) and move their parent GameObjects so that the sprites appear near the bottom of the screen side by side. Raise the right Platform a little above the left.
@@ -662,6 +671,8 @@ Soon in the tutorial we will be adding colliders to these platforms.  There are 
 
 The width of the world players are going to see is fixed so you could argue that extending over the edge is not necessary.  I recommend this to ensure there are no unexpected gaps at the edge.  Additional some enemies in this game will continue off screen and use some of the platform we can't see before returning to the game.
 
+Additionally we will be adding a screen shake feature.  This works by moving the camera up/down/left/right a bit.  Having the platforms extend beyond the edge of the screen allows us to do that without exposing unexpected gaps.
+
 <hr></details>
 
 
@@ -672,6 +683,14 @@ The width of the world players are going to see is fixed so you could argue that
 At this point we have covered everything you need to match the Level1 platform layout.  You can match the layout we used or come up with your own.
 
 Refer to the "Game" tab to confirm your layout.
+
+The basic steps are:
+
+ - Copy a parent Platform to start from.
+ - Modify the tile "Width" as needed.  Platforms should extend off the screen a bit.
+ - Use Vertex Snap to position the edge sprites.
+ - Move and rotate the sprite by modifying the parent GameObject, leaving the children at position and rotation 0, with the exception of the corner sprites which have an X value.
+
 
 TODO screenshots
 
@@ -705,6 +724,131 @@ TODO screenshots
 
 
 
+
+# 3) Add a Character and Movement Mechanics
+
+Add a character to the scene.  Have him walk and jump, creating a basic platformer.
+
+
+## Add a character sprite sheet
+
+Add a sprite sheet for the character, slice it and set to point filter mode.  We are using [Kenney.nl's Platformer Characters](http://kenney.nl/assets/platformer-characters-1) 'PNG/Adventurer/adventurer_tilesheet.png'.
+
+
+<details><summary>How</summary>
+
+ - Drag/drop the sprite sheet into the "Project" tab Assets/Art folder.
+ - Set "Sprite Mode" to "Multiple".
+ - Click Sprite Editor and "Slice" by Cell Count, 9 rows 3 columns.
+ - Set the "Filter Mode" to "Point".
+
+ Note we won't be tiling the character sprite, so the default of "Mesh Type: Tight" is okay.
+
+</details>
+
+
+
+
+## Add Character to the Scene with a Walk Animation
+
+Drag the sprites for walking into the Hierarchy to create a Character and animation.  We are using adventurer_tilesheet_0, adventurer_tilesheet_9, and adventurer_tilesheet_10.
+
+<details><summary>How</summary>
+
+ - Select 'adventurer_tilesheet_0', 'adventurer_tilesheet_9', and 'adventurer_tilesheet_10' sprites from the sprite sheet 'adventurer_tilesheet'.
+ - Drag them into the Hierarchy.
+ - When prompted, save the animation as Assets/Animations/Character/Walk.anim
+ - Rename the GameObject to 'Character'.
+
+This simple process created:
+ - The character's GameObject.
+ - A SpriteRenderer component on the GameObject defaulting to the first selected sprite.
+ - An Animation representing those 3 sprites changing over time.
+ - An Animation Controller for the character with a default state for the Walk animation.
+ - An Animator component on the GameObject configured for the Animation Controller just created.
+
+Click Play to test - your character should be walking!  
+
+TODO gif this process
+
+<hr></details>
+<details><summary>What's the difference between Animation and Animator?</summary>
+
+An animat**ion** is a collection of sprites on a timeline, creating an animated effect similiar to a flip book.  Animations can also include transform changes, fire events for scripts to react to, etc to create any number of effects.
+
+An animat**or** controls which animations should be played at any given time.  An animator uses an animator controller which is a state machine used to select animations.
+
+We will be diving into more detail on both of these later in the tutorial.  TODO link.
+
+<hr></details>
+<details><summary>What's a state machine / animator state?</summary>
+
+A state machine is a common pattern in development to simplify the management of a complex system.  At any given momement a single state is in charge of the experience.  Transitions from one state to another may be triggered via script.
+
+With animations each animator state has an associated animation to play.  When you transition from one state to another Unity will smoothly switch from one animation to the next.
+
+<hr></details>
+
+
+
+
+## Add a Rigidbody2D
+
+Add a Rigidbody2D component to the character to enable gravity.
+
+<details><summary>How</summary>
+
+ - In the "Hierarchy" tab, select the Character's GameObject.
+ - In the "Inspector" tab, click "Add Component" and select 'Rigidbody2D'.
+
+ Hit play and watch the character fall through the platforms and out of view.
+
+</details>
+<details><summary>What's a Rigidbody2D?</summary>
+
+A rigidbody is a core component for the Unity physics engine.  It's added to GameObjects which may be manipulated by physics during the game.
+
+Physics refers to the logic in a game engine which moves objects based on forces such as gravity. We'll be using rigidbody's on all moving objects in this game. 
+
+</details>
+
+
+
+## Add BoxCollider2D to the Platforms
+
+Add a BoxCollider2D component to each of the parent Platform GameObjects in the scene.
+
+<details><summary>How</summary>
+
+TODO words
+ - Select parent
+ - Add BoxCollider2D component
+ - Set edge radius to .11
+ - Click "Edit Collider", eyeball the outer line
+ - For the bottom platform which is actually two connected - allow the colliders to overlap some.
+
+</details>
+<details><summary>Why not a PolygonCollide2D?</summary>
+
+TODO
+
+</details>
+<details><summary>Why not place colliders on the child GameObjects?</summary>
+
+TODO
+
+</details>
+
+
+
+
+
+
+
+
+
+
+aoeu
 
 
 ## Debugging
@@ -742,12 +886,8 @@ TODO link to web build and git / source for the example up to here
 
 
 
-## Add a character
 
 
-## Enable gravity
-
-## Colliders on platform parents
 
 ## Move left/right
 
@@ -755,6 +895,11 @@ TODO link to web build and git / source for the example up to here
 
 ## Add Platformer Effect to platforms
 
+
+
+
+
+# Character Animations
 
 
 
