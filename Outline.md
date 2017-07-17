@@ -654,14 +654,14 @@ Our level design calls for the bottom platform to rotate half way through.  Crea
  - Hold V to enable Vertex Snap, hover over the bottom left corner and drag the box which appears to connect perfectly with the other platform.
  - Copy paste the Transform position from the child you just placed to it's original parent GameObject.
  - Drag and drop the sprite back into the original parent GameObject.
- - Confirm the child GameObject is positioned at 0.
+ - Confirm the child GameObject's Transform is positioned at 0.
 
 <img src="http://i.imgur.com/iJ4fdYQ.gif" />
 
 <hr></details>
 <details><summary>Why not use a single GameObject for this bottom platform?</summary>
 
-Soon in the tutorial we will be adding colliders to these platforms.  There are several ways this could be handled, as is always the case with GameDev, but the approach we will be using places BoxCollider2Ds on our Platform's parent GameObjects.  This works great when the parent is a middle sprite segment along with a rounded corner sprite - but does not work as well when the platform changes it's rotation half way through.
+Soon in the tutorial we will be adding colliders to these platforms.  There are several ways this could be handled, as is always the case with GameDev, but the approach we will be using places BoxCollider2Ds on our Platforms' parent GameObjects.  This works great when the parent is a middle sprite segment along with a rounded corner sprite - but does not work as well when the platform changes it's rotation half way through.
 
 
 <hr></details>
