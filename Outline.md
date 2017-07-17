@@ -287,14 +287,14 @@ Create platforms and lay them out for Level1.  After this section, the game shou
 
 ## Import art
 
-Add a sprite sheet for the platform to the Asset directory.  We are using [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) 'spritesheets/spritesheet_ground.png'.
+Add a sprite sheet for the platform to the Assets directory.  We are using [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) 'spritesheets/spritesheet_ground.png'.
 
 <details><summary>How</summary>
 
 
- - Right click in the Project Assets directory -> Create Folder named 'Art'  (optional)
-   - You can rename folders by selecting and pressing F2
- - Drag/drop the sprite sheet (or an entire folder of art) into the folder you just created
+ - Right click in the 'Project' Assets directory -> 'Create Folder' named "Art"  (optional).
+   - You can rename folders by selecting and pressing F2.
+ - Drag/drop the sprite sheet (or an entire folder of art) into the folder you just created.
    - If you have a zip file, you may need to unzip to a temp directory before drag/drop will work.
 
 <hr></details>
@@ -321,24 +321,20 @@ Slice the sprite sheet in order to access each individual sprite within.
 
 <details><summary>How</summary>
 
-- Select the sprite sheet in the Project tab (Assets/Art/spritesheet_ground)
-- In the Inspector, set Sprite Mode to Multiple
-- Click Sprite Editor (apply changes when prompted)
+- Select the sprite sheet in the 'Project' tab (Assets/Art/spritesheet_ground).
+- In the 'Inspector', set 'Sprite Mode' to 'Multiple'.
+- Click 'Sprite Editor' and apply changes when prompted.
 
 <img src="http://i.imgur.com/duYuVMy.png" width=50% />
 
-- Click the "Slice" menu item
+- Click the 'Slice' menu item
   - Type: Grid By Cell Count
   - Column & Row: 8 & 16
-- Click "Slice" button
-- Click "Apply" and close the Sprite Editor
 
 <img src="http://i.imgur.com/hA2cMfv.png" width=50% />
 
-<hr></details>
-<details><summary>What does slicing achieve?</summary>
-
-Slicing is the process of defining each individual sprite in a sprite sheet.  Once sliced, you can access each sprite as if it were a unique asset.
+- Click 'Slice' button
+- Click 'Apply' and close the 'Sprite Editor'
 
 <hr></details>
 <details><summary>Could I use other slice method Types?</summary>
@@ -351,7 +347,9 @@ The goal is to slice the sprite sheet, any method your comfortable with is fine.
 
 
 <hr></details>
-<details><summary>How do I know I've sliced correctly?</summary>
+<details><summary>What does slicing achieve?</summary>
+
+Slicing is the process of defining each individual sprite in a sprite sheet.  Once sliced, you can access each sprite as if it were a unique asset.
 
  - After you have sliced, white lines appear in the "Sprite Editor".  These lines show you how the sprite sheet is cut, boxing in each individual sprite.  Any whitespace as shown in this example is ignored (i.e. it does not generate blank sprites as well).
 
