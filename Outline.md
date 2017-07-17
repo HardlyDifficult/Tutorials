@@ -351,11 +351,11 @@ The goal is to slice the sprite sheet, any method your comfortable with is fine.
 
 Slicing is the process of defining each individual sprite in a sprite sheet.  Once sliced, you can access each sprite as if it were a unique asset.
 
- - After you have sliced, white lines appear in the "Sprite Editor".  These lines show you how the sprite sheet is cut, boxing in each individual sprite.  Any whitespace as shown in this example is ignored (i.e. it does not generate blank sprites as well).
+After you have sliced, white lines appear in the "Sprite Editor".  These lines show you how the sprite sheet is cut, boxing in each individual sprite.  Any whitespace as shown in this example is ignored (i.e. it does not generate blank sprites as well).
 
 <img src="http://i.imgur.com/NawupLS.png" width=50% />
 
- - After closing the "Sprite Editor" and Applying changes you can expand the sprite sheet in Assets and see each sprite it created.
+After closing the "Sprite Editor" and applying changes you can expand the sprite sheet in Assets to see each sprite it created.
 
 <img src="http://i.imgur.com/Qq0nn2B.png" width=50% />
 
