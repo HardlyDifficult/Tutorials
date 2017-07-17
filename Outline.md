@@ -588,7 +588,7 @@ Create a new parent GameObject for the platform sprite.
 
  - Right click in 'Hierarchy' and 'Create Empty'.
  - Rename to "Platform".
- - Ensure the transform is at defaults (position 0, rotation 0, scale 1) for both the Platform and the sprite "spritesheet_ground_72".
+ - Ensure the Transform is at defaults (position 0, rotation 0, scale 1) for both the Platform and the sprite "spritesheet_ground_72".
 
 <img src="http://i.imgur.com/FAkZf1H.png" width=50% />
 
@@ -599,14 +599,16 @@ Create a new parent GameObject for the platform sprite.
 <hr></details>
 <details><summary>Why not use a single GameObject instead?</summary>
 
-Most of the platforms we will be creating require multiple different sprites to display correctly.  We tackle this in the next section.  Even for platforms which are represented with a single sprite, it's nice to be consistent across all our platforms.
+Most of the platforms we will be creating require multiple different sprites to display correctly.  We tackle this in the next section.  Even for platforms which are represented with a single sprite, it's nice to be consistent across all of our platforms.
+
+The implications of using a parent GameObject or not will be more clear when we start to add game mechanics later in the tutorial.
 
 <hr></details>
-<details><summary>How is the sprite position calulated?</summary>
+<details><summary>How is the sprite position calulated when it's a child?</summary>
 
 When a GameObject is a child of another GameObject, it's position is the combination of the child's position and the parent's position.  
 
-Typically all transform updates during the game and in level design are done to the parent GameObject.  Child transforms are often static offsets from the center of that objects location.  e.g. we'll be adding rounded edges to the platform, which will require a x offset so they are positioned next to the middle segment.
+Typically all Transform updates during the game and in level design are done to the parent GameObject.  Child Transforms are often static offsets from the center of the parent GameObject.  e.g. we'll be adding rounded edges to the platform, which will require a x offset so they are positioned next to the middle segment.
 
 <hr></details>
 
