@@ -443,8 +443,8 @@ Update the sprite sheet's import settings to use filter mode point, preventing s
 
 <details><summary>How</summary>
 
- - Select the sprite sheet in the "Project" tab (Assets/Art/spritesheet_ground)
- - In the "Inspector", set "Filter Mode" to "Point (no filter)"
+ - Select the sprite sheet in the 'Project' tab (Assets/Art/spritesheet_ground).
+ - In the 'Inspector', set 'Filter Mode' to 'Point (no filter)' and apply when prompted.
 
 <img src="http://i.imgur.com/B0nqf75.png" width=50% />
 
@@ -464,8 +464,8 @@ Update the sprite sheet's import settings to use mesh type full rect since we wi
 
 <details><summary>How</summary>
 
- - Select the sprite sheet in the "Project" tab (Assets/Art/spritesheet_ground)
- - In the "Inspector", set "Mesh Type" to "Full Rect"
+ - Select the sprite sheet.
+ - In the 'Inspector', set 'Mesh Type: Full Rect'.
 
 <img src="http://i.imgur.com/Dhe3Nzt.png" width=50% />
 
@@ -487,13 +487,13 @@ Disable Anti-Aliasing, preventing some visual artifacts.
 
 <details><summary>How</summary>
 
- - Menu "Edit" -> "Project Settings" -> "Quality"
- - In the "Inspector" change "Anti Aliasing" to "Disabled"
- - Repeat this for each quality level supported
-   - Click on the row to modify (e.g. "Ultra")
-   - Update "Anti Aliasing" if needed
+ - Menu 'Edit' -> 'Project Settings' -> 'Quality'
+ - In the 'Inspector' change 'Anti Aliasing' to 'Disabled'
+ - Repeat this for each quality 'Level' supported
+   - Click on the row to modify (e.g. 'Ultra')
+   - Update Anti Aliasing if needed
 
-The currently highlighted 'Level' is what you are testing with ATM.  It will default to Ultra.  The green checkboxs represent the default quality level for different build types.  In this example I'm testing with Ultra, using Ultra by default for PC builds, and High by default for WebGL builds.  To avoid artifacts, I disable Anti Aliasing in every level and then switch back to Ultra.
+The currently highlighted Level is what you are testing with ATM.  It will default to Ultra.  The green checkboxs represent the default quality level for different build types.  In this example I'm testing with Ultra, using Ultra by default for PC builds, and High by default for WebGL builds.  To avoid artifacts, I disable Anti Aliasing in every level and then switch back to Ultra.
 
 <img src="http://i.imgur.com/omFI4DD.png" width=50% />
 
