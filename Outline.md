@@ -608,7 +608,7 @@ The implications of using a parent GameObject or not will be more clear when we 
 
 When a GameObject is a child of another GameObject, it's position, rotation, and scale are the combination of the child's Transform and the parent's Transform (via matrix multiplication).  
 
-Typically all Transform updates during the game and in level design are done to the parent GameObject.  Child Transforms are often static offsets from the center of the parent GameObject.  e.g. we'll be adding rounded edges to the platform, which will require a x offset so they are positioned next to the middle segment.
+Typically all Transform updates during the game and in level design are done to the parent GameObject.  Child Transforms are often static offsets from the center of the parent GameObject.  e.g. we'll be adding rounded edges to the platform, which will require an x offset so they are positioned next to the middle segment.
 
 <hr></details>
 
@@ -621,10 +621,10 @@ Add sprites with rounded edges to the left and right of the platform.  We are us
 <details><summary>How</summary>
 
  - Copy the "Platform" GameObject, paste and rename to "PlatformWithEdges".
- - You may want to use the move tool to separate the position of these objects on-screen.  When you do this, be sure the parent GameObject is selected and not the child sprite.
- - Drag the each of edge sprites from the "Project" tab Assets/spritesheet_ground into the 'Hierarchy' under the "PlatformWithEdges" GameObject (they should appear indented).  We're using "spritesheet_ground_79" and "spritesheet_ground_65".
- - Select an edge (one of the child GameObjects) and use the move tool to position it away from the other sprites.
- - Select an edge and hold V to enable Vertex Snap mode, a box appears for each anchor point.  Hover over the top right and click and drag the box which appears.  It will snap perfectly with other anchor points in the world.
+ - You may want to use the move tool to separate the position of these objects on-screen (making it easier to configure each).  When you do this be sure the parent GameObject is selected and not the child sprite.
+ - Drag the each of edge sprites from the 'Project' tab Assets/spritesheet_ground into the 'Hierarchy' under the "PlatformWithEdges" GameObject (they should appear indented).  We're using "spritesheet_ground_79" and "spritesheet_ground_65".
+ - Select the rounded edge sprite (one of the child GameObjects) and use the move tool to position it away from the other sprites.
+ - With the edge still selected, hold V to enable Vertex Snap mode.  A box appears for each anchor point (e.g. the corners of the sprite).  Hover over the top right corner and click and drag the box which appears.  It will snap perfectly with other anchor points in the world as show below.
 
 <img src="http://i.imgur.com/GNMGb0w.gif" width=50% />
 
