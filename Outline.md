@@ -12,9 +12,11 @@ Target audience: we expect you know some coding and can follow along with C# exa
 todo review consistent use of GameObject
 
 
-# 0) Create a new 2D project
+# 1) Create a 2D project and layout platforms
 
-Get Unity, start a 2D project and save before we get started.
+Get Unity and start a 2D project. Create platforms and lay them out for Level1.  After this section, the game should look something like this:
+
+[TODO screenshot]
 
 <details><summary>How</summary>
 
@@ -275,13 +277,6 @@ public class MyCustomComponent : MonoBehaviour
 ```
 
 <hr></details>
-
-
-# 1) Create platforms 
-
-Create platforms and lay them out for Level1.  After this section, the game should look something like this:
-
-[TODO screenshot]
 
 
 
@@ -681,7 +676,7 @@ The width of the world players are going to see is fixed so you could argue that
 
 At this point we have covered everything you need to match the Level1 platform layout.  You can match the layout we used or come up with your own.
 
-Refer to the 'Game' tab to confirm your layout as they player will see it.
+Refer to the Game tab to confirm your layout as they player will see it.
 
 <details><summary>How</summary>
 
