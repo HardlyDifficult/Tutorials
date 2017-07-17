@@ -606,7 +606,7 @@ The implications of using a parent GameObject or not will be more clear when we 
 <hr></details>
 <details><summary>How is the sprite position calulated when it's a child?</summary>
 
-When a GameObject is a child of another GameObject, it's position is the combination of the child's position and the parent's position.  
+When a GameObject is a child of another GameObject, it's position, rotation, and scale are the combination of the child's Transform and the parent's Transform (via matrix multiplication).  
 
 Typically all Transform updates during the game and in level design are done to the parent GameObject.  Child Transforms are often static offsets from the center of the parent GameObject.  e.g. we'll be adding rounded edges to the platform, which will require a x offset so they are positioned next to the middle segment.
 
