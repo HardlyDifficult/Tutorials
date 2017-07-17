@@ -502,11 +502,182 @@ The currently highlighted 'Level' is what you are testing with ATM.  It will def
 
 Anti Aliasing is a technique used to smooth jagged edges. 
 
+<img src="https://qph.ec.quoracdn.net/main-qimg-10856ecbea4f439fb9fb751d41ff704a" width=50% />
+
 When working with sprites, we often want control over images down to the pixel.  Anti-aliasing may lead to unexpected gaps or distortions.  Here is an example that appears when using tiling:
 
 <img src="http://i.imgur.com/vY5YmVj.png" width=50% />
 
 <hr></details>
+
+
+
+
+
+## Set a 5:4 Aspect ratio
+
+Change the aspect ratio to 5:4 as we want to simplify and always show the same amount of the world on screen.
+
+<details><summary>How</summary>
+
+ - On the "Game" tab, near the top, change "Free Aspect" to "5:4"
+
+<img src="http://i.imgur.com/MTnZtu4.png" width=50% />
+
+ - Switch back to the "Scene" tab.  The white box here represents the area that players will see.
+
+<img src="http://i.imgur.com/eIq2LD2.png" width=50% />
+
+<hr></details>
+<details><summary>Why use a fixed aspect ratio?</summary>
+
+We are building a game with a fixed display.  The camera is not going to move.  In order to design levels without requiring camera effects, we choose a specific aspect ratio to build for.  Different resolutions will scale the world larger or smaller... but everyone will see the same amount of the world.
+
+5:4 was an arbitrary choice, use anything you'd like.
+
+<hr></details>
+<details><summary>Does this impact players of the game as well?</summary>
+
+No, this option only impacts what you see in the editor.  When we cut a build for players, we'll update the supported resolutions to match.  TODO see xxx
+
+<hr></details>
+
+
+
+## Camera Size: 10
+
+Update the camera size to about 10, effectively zooming out a bit.
+
+<details><summary>How</summary>
+
+ - In the "Hierarchy" select the "Main Camera"
+ - In the "Inspector" change "Size" to 10
+
+<img src="http://i.imgur.com/PmeoqG7.png" width=50% />
+
+<hr></details>
+<details><summary>Why change 'Size'?</summary>
+
+This defines how much of the world is visible vertically.  Than the aspect ratio determines how much to display horizontally.  With those two values fixed, we can design a scene without any camera movement and be sure everyone has the same experience.
+
+<hr></details>
+<details><summary>Why not use the camera position instead?</summary>
+
+2D games by default use "Projection: Orthographic".  This means that the camera does not consider perspective (the ability to see more of the world the further it is from your eye) which ensures that we see the edge of the screen head on rather than at an angle. 
+
+The amount of the world visible with a perspective camera is driven by the Z location.  For an Orthographic, it's driven by a special "Size" property.
+
+We don't want perspective in a 2D game because in order to make this possible the edges may appear distorted. For example:
+
+<img src="http://i.imgur.com/5xCIowM.png" width=50% />
+<img src="http://i.imgur.com/6rqvWDA.png" width=50% />
+
+<hr></details>
+
+
+
+
+
+## Create Platform GameObject
+
+Create a new parent game object for the platform sprite.
+
+
+<details><summary>How</summary>
+
+ - Right click in "Hierarchy" and "Create Empty"
+ - Rename to 'Platform'
+ - Ensure the transform is at defaults for both the Platform and the sprite 'spritesheet_ground_72' (position 0, rotation 0, scale 1)
+
+<img src="http://i.imgur.com/FAkZf1H.png" width=50% />
+
+ - Drag and drop the sprite onto 'Platform' (it should appear indented under 'Platform')
+
+ <img src="http://i.imgur.com/XOve0Ap.png" width=50% />
+
+<hr></details>
+<details><summary>Why not use a single GameObject instead?</summary>
+
+Most of the platforms we will be creating require multiple different sprites to display correctly.  We tackle this in the next section.  Even for platforms which are represented with a single sprite, it's nice to be consistent across all our platforms.
+
+<hr></details>
+<details><summary>How is the sprite position calulated?</summary>
+
+When a GameObject is a child of another GameObject, it's position is the combination of the child's position and the parent's position.  
+
+Typically all transform updates during the game and in level design are done to the parent GameObject.  Child transforms are often static offsets from the center of that objects location.  e.g. we'll be adding rounded edges to the platform, which will require a x offset so they are positioned next to the middle segment.
+
+<hr></details>
+
+
+
+## Add edges
+
+Add sprites with rounded edges to the left and right of the platform.
+
+<details><summary>How</summary>
+
+ - Copy the 'Platform' GameObject, paste and rename to 'PlatformWithEdges'.
+ - You may want to use the move tool to separate the position of these objects on-screen.  When you do this, be sure the parent GameObject is selected and not the child sprite.
+ - Drag the each of edge sprites from the "Project" tab Assets/spritesheet_ground into the "Hierarchy" under the 'PlatformWithEdges' GameObject (they should appear indented).  We're using 'spritesheet_ground_79' and 'spritesheet_ground_65'
+ - Select an edge (one of the child GameObjects) and use the move tool to position it away from the other sprites.
+ - Select an edge and hold V to enable Vertex Snap mode, a box appears for each anchor point.  Hover over the top right and click and drag the box which appears.  It will snap perfectly with other anchor points in the world.
+
+<img src="http://i.imgur.com/GNMGb0w.gif" width=50% />
+
+ - Repeat for both edges, creating smooth corners on both sides of the platform.
+ - Copy paste 'PlatformWithEdges', rename to 'PlatformWithRightEdge' and delete it's left edge.  Do the same to create a 'PlatformWithLeftEdge'.
+
+There should be four GameObjects in the world now, as shown below.
+
+<img src="http://i.imgur.com/j1cz0aZ.png" width=50% />
+
+<hr></details>
+
+
+
+## Create a connected platform
+
+<details><summary>How</summary>
+
+ - Use two copies of Platform (without edges) and move their parent GameObjects so that the sprites appear near the bottom of the screen side by side. Raise the right Platform a little above the left.
+ - Select the child sprite in each and increase the Tiled "Width" to about 15 so that the platforms cover more than the width of the screen.
+ - Select the parent GameObject for the Platform on the right and modify the Rotation Z value to about 4.
+ - Drag and drop the child GameObject out of the Platform the right so it stands alone.  
+ - Hold V to enable Vertex Snap, hover over the bottom left corner and drag the box which appears to connect perfectly with the other platform.
+ - Copy paste the transform position from the child you just placed to it's original parent.
+ - Drag and drop the sprite back into the original parent GameObject.
+ - Confirm the child GameObject is positioned at 0.
+
+<img src="http://i.imgur.com/iJ4fdYQ.gif" />
+
+<hr></details>
+<details><summary>Why not use a single GameObject for the bottom platform?</summary>
+
+Soon in the tutorial we will be adding colliders to these platforms.  There are several ways this could be handled, as is always the case with GameDev, but the approach we will be using places BoxCollider2Ds on our Platform's parent GameObjects.  This works great when the parent is a middle sprite segment along with a rounded corner sprite - but does not work as well when the platform changes it's rotation half way through.
+
+
+<hr></details>
+<details><summary>Why extend the platform beyond the edge of the screen?</summary>
+
+The width of the world players are going to see is fixed so you could argue that extending over the edge is not necessary.  I recommend this to ensure there are no unexpected gaps at the edge.  Additional some enemies in this game will continue off screen and use some of the platform we can't see before returning to the game.
+
+<hr></details>
+
+
+
+
+## Rinse and repeat to complete Level1 platforms
+
+At this point we have covered everything you need to match the Level1 platform layout.  You can match the layout we used or come up with your own.
+
+Refer to the "Game" tab to confirm your layout.
+
+TODO screenshots
+
+
+
+
 
 
 
@@ -534,183 +705,6 @@ When working with sprites, we often want control over images down to the pixel. 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Set a 5:4 Aspect ratio
-
-On the game tab, change the aspect ratio to 5:4 as we want to simplify and always show the same amount of the world on screen.
-
-<details>
-<summary>How</summary>
-
-<img src="http://i.imgur.com/MTnZtu4.png" width=50% />
-<hr></details>
-<details>
-<summary>Why</summary>
-Challenge of aspect ratios is different ratios see different amounts of the world.  This is a fixed screen game so we choose an arbitrary target to design for.  When building, we can select specific resolutions to support.
-
-When laying the scene for an aspect ratio, it will automatically scale for different resolutions.
-<hr></details>
-
-
-
-
-
-## Camera Size: 10
-
-Select the camera in the scene and update the size to 10, effectively zooming out a bit.
-
-<details>
-<summary>How</summary>
-<img src="http://i.imgur.com/PmeoqG7.png" width=50% />
-<hr></details>
-
-<details>
-<summary>Why</summary>
-This defines how much of the world is visible vertically.  Than the aspect ratio determines how much to display horizontally.
-
-With the two locked, we can design a scene without any camera movement and be sure everyone has the same experience.
-<hr></details>
-
-
-
-
-## Create Platform with child sprites
-
-Create a new parent game object for the child.
-
-
-<details>
-<summary>How</summary>
-
- - Right click in "Hierarchy" and "Create Empty"
- - Rename to 'Platform'
- - Ensure the transform is at defaults (position 0, rotation 0, scale 1)
-
-<img src="http://i.imgur.com/FAkZf1H.png" width=50% />
-
- - Drag and drop the sprite onto 'Platform' (it should appear indented under 'Platform' and also have a default transform)
- 
-
-<img src="http://i.imgur.com/UB6JDgt.png" width=50% />
-<hr></details>
-
-<details>
-<summary>Why</summary>
-
-TODO
-
-<hr></details>
-
-
-
-## Add edges
-
-Add sprites with rounded edges to the left and right of the platform.
-
-<details>
-<summary>
-How?
-</summary>
-
- - Rename the gameObject to 'PlatformWithEdges'
- - Drag drop into the Prefabs folder to create a new prefab
-
- - Drag the edge sprites into the hierarchy under the 'PlatformWithEdges' gameObject 
- -- When you do this, it will warn you that you will 'break' the prefab
- - Vertex snap by holding V, a box appears for each anchor point.  Hover over the top right and click and drag the box which appears.  It will snap perfectly with other anchor points in the world
- - Apply prefab
-
-<img src="http://i.imgur.com/GNMGb0w.gif" width=50% />
- - Apply prefab
- <hr></details>
-
-
-
-<details>
-<summary>How</summary>
- - Rename
-  - Drag drop new prefab
-  - Delete one side
-  - Drag in a new copy of PlatformWithEdges and repeat for the other side
-
-Should have a total of 4 prefabs.
-You can delete them all from the scene.
-
-<img src="http://i.imgur.com/j1cz0aZ.png" width=50% />
-<hr></details>
-
-<details>
-<summary>
-Why?
-</summary>
-When something on the prefab changes we can revert the instances in the scene.  This applies any new settings or components we may have added without disturbing the transform it uses in the scene.  Unfortunately it would also reset things like the missing edge sprites - so one for each.
-<hr></details>
-
-## Create a connected platform
-
-<details><summary>How?</summary>
-
-Copy paste, delete the edges we don't need
- - Use a copy of PlatformWithRightEdge and PlatformWithLeftEdge
-
-
-Adjust the 
-
- - Drag and drop the prefab to the hierarchy to instanciate a copy
- - Position side by side
- - Remove edges so each prefab can touch the other's middle segment
- (i.e. no rounded corner)
-
-
- - Rotations on the z axis (2d doesn't respond well to x or y rotations --- but remember that Unity is a 3D engine)
- - Use the tile mode width for the middle segment only
-
-<hr></details>
-
-
-## Copy paste to complete Level1 platforms
-
-<details><summary>How?</summary>
-
-When moving things around be sure the parent is selected.
-
-Aim to have platforms extending off the screen a bit
-
-
-Rinse and repeat of steps x,y,z
- - Note the white box in the scene view shows what will be visible in game.
-
- Can also look at the game tab anytime to see what the camera sees
-
-<hr></details>
- 
 
 
 ## Debugging
