@@ -9,6 +9,7 @@ This is very much a WIP.  I'm trying to make a tutorial helpful to a range of ex
 TODO
  - Intro
  - Image size is all over the place
+ - say links are included when relevant er something.
 
 
 # 1) Create a 2D project and layout platforms
@@ -396,7 +397,6 @@ SpriteRenderer is a Unity component which renders a sprite on screen.  Select th
 
  - Sprite: This is the sprite image to render.  It was populated automatically when you created the GameObject with drag/drop.
  - Color: White is the default, displaying the sprite as it was created by the artist.  Changing this color modifies the sprite's appearance.  You can also use the alpha value here to make a sprite transparent.
- - Order in Layer: When multiple sprites are overlapping, this is used to determine which one is on top of the other.
 
 <img src="http://i.imgur.com/4w3P1nx.png" width=50% />
 
@@ -774,12 +774,13 @@ Drag the sprites for walking into the Hierarchy to create a Character and animat
 
 <details><summary>How</summary>
 
- - Select "adventurer_tilesheet_0", "adventurer_tilesheet_9", and "adventurer_tilesheet_10" sprites from the sprite sheet "adventurer_tilesheet".
+ - Hold Ctrl and select "adventurer_tilesheet_0", "adventurer_tilesheet_9", and "adventurer_tilesheet_10" sprites from the sprite sheet "adventurer_tilesheet".
  - Drag them into the Hierarchy.
- - When prompted, save the animation as Assets/Animations/Character/Walk.anim.
- - Rename the GameObject to 'Character'.
+ - When prompted, save the animation as Assets/Animations/CharacterWalk.anim.
+ - Rename the GameObject to "Character" (optional).
 
 <img src="http://i.imgur.com/ArNgG6g.gif" width=50% />
+ 
 
 This simple process created:
  - The character's GameObject.
@@ -790,7 +791,7 @@ This simple process created:
 
 Click Play to test - your character should be walking (in place)! 
 
-Gif of the walk
+<img src="http://i.imgur.com/FU5yV7D.gif" width=50% />
 
 <hr></details>
 <details><summary>What's the difference between Animation and Animator?</summary>
@@ -799,19 +800,39 @@ An animat**ion** is a collection of sprites on a timeline, creating an animated 
 
 An animat**or** controls which animations should be played at any given time.  An animator uses an animator controller which is a state machine used to select animations.
 
-We will be diving into more detail on both of these later in the tutorial.  TODO link.
+We will be diving into more detail on both of these later in the tutorial.  
 
 <hr></details>
 <details><summary>What's a state machine / animator state?</summary>
 
-A state machine is a common pattern in development to simplify the management of a complex system.  At any given momement a single state is in charge of the experience.  Transitions from one state to another may be triggered via script.
+A state machine is a common pattern in development where logic is split across several states.  The state machine selects one primary state which owns the experience until the state machine transitions to another state.
 
-With animations each animator state has an associated animation to play.  When you transition from one state to another Unity will smoothly switch from one animation to the next.
+Each animator state has an associated animation to play.  When you transition from one state to another, Unity switches from one animation to the next.  Later in the tutorial we will trigger animator state changes via code.
 
 <hr></details>
 
 
+## Change Order in Layer to 2
 
+Update the Character's Order in Layer to 2.
+
+<details><summary>How</summary>
+
+ - Select the Character's GameObject
+ - In the 'Inspector', set the SpriteRenderer's 'Order in Layer' to 2.
+
+<img src="http://i.imgur.com/Zhgy28L.png" width=50% />
+
+</details>
+<details><summary>What does Order in Layer do?</summary>
+
+When multiple sprites are overlapping, Order in Layer is used to determine which one is on top of the other.  So if the character sprite has Order in Layer '2' and everything else uses the default Order in Layer '0', the character will always appear in front of other sprites in the world.
+
+Order in Layer may be any int value, positive or negative. Here's an example showing the character with Order in Layer '-1' and with '2'... sitting on a platform which still has the default Order in Layer '0'.
+
+<img src="http://i.imgur.com/QCHPLDf.png" width=50% />
+
+</details>
 
 ## Add a Rigidbody2D
 
@@ -819,17 +840,19 @@ Add a Rigidbody2D component to the character to enable gravity.
 
 <details><summary>How</summary>
 
- - In the "Hierarchy" tab, select the Character's GameObject.
- - In the "Inspector" tab, click "Add Component" and select 'Rigidbody2D'.
+ - Select the Character's GameObject.
+ - In the 'Inspector', click 'Add Component' and select "Rigidbody2D".
 
- Hit play and watch the character fall through the platforms and out of view.
+Hit play and watch the character fall through the platforms and out of view.
+
+<img src="http://i.imgur.com/ZJPkmt9.gif" width=50px />
 
 </details>
 <details><summary>What's a Rigidbody2D?</summary>
 
-A rigidbody is a core component for the Unity physics engine.  It's added to GameObjects which may be manipulated by physics during the game.
+A rigidbody is a core component for the Unity physics engine, Rigidbody2D is the 2D version of this component (vs 3D).  It's added to GameObjects which may be manipulated by physics during the game.
 
-Physics refers to the logic in a game engine which moves objects based on forces such as gravity. We'll be using rigidbody's on all moving objects in this game. 
+Physics refers to the logic in a game engine which moves objects based on forces such as gravity. We'll be using rigidbodys on all moving objects in this game. 
 
 </details>
 
@@ -837,26 +860,42 @@ Physics refers to the logic in a game engine which moves objects based on forces
 
 ## Add BoxCollider2D to the Platforms
 
-Add a BoxCollider2D component to each of the parent Platform GameObjects in the scene.
+Add a BoxCollider2D component with a .1 edge radius to each of the parent Platform GameObjects in the scene.
 
 <details><summary>How</summary>
 
-TODO words
- - Select parent
- - Add BoxCollider2D component
- - Set edge radius to .11
- - Click "Edit Collider", eyeball the outer line
- - For the bottom platform which is actually two connected - allow the colliders to overlap some.
+ - Select a platform's parent GameObject.
+   - By parent GameObject we are refering to the GameObject with child GameObjects for each sprite, and not the top level "Platforms" GameObject we created to hold all of the platforms.
+ - Add Component -> "BoxCollider2D".
+ - Set "Edge Radius' to '.1'
+ - Click 'Edit Collider' and click/drag the box which appears so that the outer green line encapsulates the platform.
+
+<img src="http://i.imgur.com/Mu06f3o.gif" />
+
+ - For the bottom platforms which are actually two connected parent platform GameObjects - allow the colliders to overlap some for a smooth experience when entities are walking from one to the next.
+
+ <img src="http://i.imgur.com/cgfqZhY.gif" />
+
 
 </details>
-<details><summary>Why not a PolygonCollide2D?</summary>
+<details><summary>What is a Collider?</summary>
 
-TODO
+[Colliders](https://docs.unity3d.com/Manual/CollidersOverview.html) are components placed on GameObjects to define their shape for the purposes of physical collisions.  The collider shape may or may not align with the visuals on screen.
+
+Typically colliders match the shape of the art on screen.  For example, they are used to keep the character from falling through the floor or walking through walls, and to cause the character to die when they hit an enemy.
+
+Colliders may also be used as 'triggers' to detect something happening near an object without causing a physical reaction.  For example, an entity could have a second collider twice as large as the entity itself and use that to know when danger is approaching - causing the entity to run the other way.
 
 </details>
-<details><summary>Why not place colliders on the child GameObjects?</summary>
+<details><summary>Why not place colliders on the child GameObjects instead?</summary>
 
-TODO
+Well, you could!  With GameDev, you'll find there are almost always various ways you could achieve a goal and pros/cons to each.  
+
+Since we are using BoxCollider2D and an Edge radius, getting our sprites to connect with a smooth surface for entities to walk over would be more challenging when the colliders are on the child sprite GameObjects themselves.  
+
+<img src="http://i.imgur.com/QTjSEt7.png" width=50% />
+
+Additionally, less colliders may improve your game's performance - however the difference here will not be noticeable.
 
 </details>
 
