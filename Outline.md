@@ -964,21 +964,6 @@ Note: The character will stand straight up even on slanted platforms.  This will
 
 
 
-
-
-aoeu
-
-
-## Debugging
-
-<details><summary>TODO</summary>
-
-* Check the children gameObjects in the prefab.  They should all be at 0 position (except for the edge segments which have an x value), 0 rotation, and 1 scale.
-
-<hr></details>
-
-TODO link to web build and git / source for the example up to here
-
 <br>
 <br>
 <br>
@@ -1009,19 +994,49 @@ TODO link to web build and git / source for the example up to here
 
 ## Move left/right
 
+PlayerController
+WalkMovement
+Feet
+KeepMovementOnScreen
+
+
+
+
+
+
+
+
+---------
+
+
 ## Jump
+
+JumpMovement
 
 ## Add Platformer Effect to platforms
 
+## Ladders
+
+LadderMovement
 
 
 
+-------
 
 # Character Animations
+ - Jump
+ - Climb
+ - Idle
+ - Dance
 
+PlayerAnimator
+DeathEffectThrobToDeath
 
+# Intro
+Character fades in via AppearInSecondsAndFade
 
-
++ other intro effects
+ - Cloud and animation
 
 
 
@@ -1075,3 +1090,22 @@ Open player settings via "File"->"Build Settings".  Select the platform you want
 For PC, we can select specific supported aspect ratios 
 <img src="http://i.imgur.com/Xoxw0Xs.png" width=50% />
 <hr></details>
+
+
+
+
+
+
+
+aoeu
+
+
+## Debugging
+
+<details><summary>TODO</summary>
+
+* Check the children gameObjects in the prefab.  They should all be at 0 position (except for the edge segments which have an x value), 0 rotation, and 1 scale.
+
+<hr></details>
+
+TODO link to web build and git / source for the example up to here
