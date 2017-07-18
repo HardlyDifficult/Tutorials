@@ -16,9 +16,13 @@ TODO
 
 TODO part 1 video link
 
-Get Unity and start a 2D project. Create platforms and lay them out for Level1.  After this section, the game should look something like this:
+Start a 2D project and layout platforms for Level1.  After this section, the game should look something like this:
 
 <img src="http://i.imgur.com/KSsteJT.png" width=50% />
+
+## Start a 2D project
+
+Get Unity and start a 2D project. 
 
 <details><summary>How</summary>
 
@@ -770,28 +774,28 @@ The pivot point you select is going to impact how we create animations and imple
 
 ## Add Character to the Scene with a Walk Animation
 
-Drag the sprites for walking into the Hierarchy to create a Character and animation.  We are using adventurer_tilesheet_0, adventurer_tilesheet_9, and adventurer_tilesheet_10.
+Drag the sprites for walking into the Hierarchy to create a Character and animation.  We are using adventurer_tilesheet_9 and adventurer_tilesheet_10.
 
 <details><summary>How</summary>
 
- - Hold Ctrl and select "adventurer_tilesheet_0", "adventurer_tilesheet_9", and "adventurer_tilesheet_10" sprites from the sprite sheet "adventurer_tilesheet".
+ - Hold Ctrl and select "adventurer_tilesheet_9" and "adventurer_tilesheet_10" sprites from the sprite sheet "adventurer_tilesheet".
  - Drag them into the Hierarchy.
  - When prompted, save the animation as Assets/Animations/CharacterWalk.anim.
  - Rename the GameObject to "Character" (optional).
 
-<img src="http://i.imgur.com/ArNgG6g.gif" width=50% />
+<img src="http://i.imgur.com/k7bSlCp.gif" width=50% />
  
 
 This simple process created:
  - The character's GameObject.
  - A SpriteRenderer component on the GameObject defaulting to the first selected sprite.
- - An Animation representing those 3 sprites changing over time.
+ - An Animation representing those 2 sprites changing over time.
  - An Animator Controller for the character with a default state for the Walk animation.
  - An Animator component on the GameObject configured for the Animator Controller just created.
 
 Click Play to test - your character should be walking (in place)! 
 
-<img src="http://i.imgur.com/FU5yV7D.gif" width=50% />
+<img src="http://i.imgur.com/2bkJdtS.gif" width=100px />
 
 <hr></details>
 <details><summary>What's the difference between Animation and Animator?</summary>
@@ -857,6 +861,50 @@ Physics refers to the logic in a game engine which moves objects based on forces
 </details>
 
 
+## Add a CapsuleCollider2D 
+
+Add a CapsuleCollider2D component and size it for the character.
+
+<details><summary>How</summary>
+
+ - Select the Character's GameObject.
+ - Click 'Add Component' and select "CapsuleCollider2D".
+ - Click 'Edit Collider' and adjust to fit the character.
+   - Click and then hold Alt while adjusting the sides to pull both side in evenly.
+
+<img src="http://i.imgur.com/KFwBZeo.gif" width=100px />
+
+Until we add colliders on the platforms (in the next section), playing the game will not look any different.
+
+</details>
+<details><summary>What is a Collider?</summary>
+
+[Colliders](https://docs.unity3d.com/Manual/CollidersOverview.html) are components placed on GameObjects to define their shape for the purposes of physical collisions.  The collider shape may or may not align with the visuals on screen.
+
+Typically colliders match the shape of the art on screen.  For example, they are used to keep the character from falling through the floor or walking through walls, and to cause the character to die when they hit an enemy.
+
+Colliders may also be used as 'triggers' to detect something happening near an object without causing a physical reaction.  For example, an entity could have a second collider twice as large as the entity itself and use that to know when danger is approaching - causing the entity to run the other way.
+
+</details>
+<details><summary>How do I know what size to make the collider?</summary>
+
+The collider does not fit the character perfectly, and that's okay.  In order for the game to feel fair for the player we should lean in their favor.  When designing colliders for the character and enemies, we may prefer to make the colliders a little smaller than the sprite so that there are no collisions in game which may leave the player feeling cheated.
+
+Becuase the character is constantly in motion, and its limbs are in different positions, the collider won't always fit the character. For that reason we use a collider that will work for all positions of the character.
+
+In addition to killing the character when he comes in contact with an enemy, the collider is used to keep the character on top of platforms.  For this reason it's important that the bottom of the collider aligns with the sprite's feet.
+
+</details>
+<details><summary>Why not use a collider that outlines the character?</summary>
+
+Bottom line, it's not worth the trouble.  Unity does not provide good tools for more accurate collisions on animating sprites.  Implementing this requires a lot of considerations and may be difficult to debug.
+
+Most of the time the collisions in the game would not have been any different if more detailed colliders were used.  Typically 2D games use an approach similiar to what this tutorial recommends. It creates a good game feel and the simplifications taken have become industry standard.
+
+</details>
+
+
+
 
 ## Add BoxCollider2D to the Platforms
 
@@ -876,15 +924,10 @@ Add a BoxCollider2D component with a .1 edge radius to each of the parent Platfo
 
  <img src="http://i.imgur.com/cgfqZhY.gif" />
 
+Hit play and the character should now land on a platform... but may fall over.
 
-</details>
-<details><summary>What is a Collider?</summary>
+<img src="http://i.imgur.com/T0fdwa1.gif" width=150px />
 
-[Colliders](https://docs.unity3d.com/Manual/CollidersOverview.html) are components placed on GameObjects to define their shape for the purposes of physical collisions.  The collider shape may or may not align with the visuals on screen.
-
-Typically colliders match the shape of the art on screen.  For example, they are used to keep the character from falling through the floor or walking through walls, and to cause the character to die when they hit an enemy.
-
-Colliders may also be used as 'triggers' to detect something happening near an object without causing a physical reaction.  For example, an entity could have a second collider twice as large as the entity itself and use that to know when danger is approaching - causing the entity to run the other way.
 
 </details>
 <details><summary>Why not place colliders on the child GameObjects instead?</summary>
@@ -895,13 +938,28 @@ Since we are using BoxCollider2D and an Edge radius, getting our sprites to conn
 
 <img src="http://i.imgur.com/QTjSEt7.png" width=50% />
 
-Additionally, less colliders may improve your game's performance - however the difference here will not be noticeable.
+Additionally, fewer colliders may improve your game's performance - however the difference here will not be noticeable.
 
 </details>
 
 
 
 
+## Freeze rotation
+
+Freeze the character's rotation so he does not fall over.
+
+Note: The character will stand straight up even on slanted platforms.  This will be addressed below when we write the movement controllers for the character.
+
+<details><summary>How</summary>
+
+ - Select the character.
+ - In the Rigidbody2D component, expand 'Constraints'.
+ - Check 'Freeze Rotation'.
+
+<img src="http://i.imgur.com/uXxDSwD.png" width=128px />
+
+</details>
 
 
 
