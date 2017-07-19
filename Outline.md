@@ -12,13 +12,17 @@ TODO
  - say links are included when relevant er something.
 
 
-# 1) Create a 2D project and layout platforms
+
+
+# 1) Create a 2D project and layout platforms - TODO
 
 TODO part 1 video link
 
+TODO
 Start a 2D project and layout platforms for Level1.  After this section, the game should look something like this:
 
 <img src="http://i.imgur.com/KSsteJT.png" width=50% />
+TODO update image to GIF
 
 ## Start a 2D project
 
@@ -32,15 +36,16 @@ Get Unity and start a 2D project.
 
 <img src="https://i.imgur.com/T2iZrmK.png" width=50% />
 
-<hr></details>
+Familiarize yourself with the Unity Editor a bit.  This [guide from Unity](https://docs.unity3d.com/Manual/LearningtheInterface.html) is a nice, quick overview.
+
+</details>
 <details><summary>Why 2D?</summary>
 
 Presenting the 2D vs 3D option when you create a new project suggests this is a significant choice.  It's not really... 2D just changes default settings on things like your camera.   Unity is a 3D engine, when creating 2D games your actually creating a 3D world where everything is very flat but the camera looks straight ahead and the only rotation in the world is around the z axis.  
 
+[More on 2D vs 3D from Unity](https://docs.unity3d.com/Manual/2Dor3D.html).
+
 <hr></details>
-
-
-
 
 
 ## Save scene
@@ -429,7 +434,7 @@ You should see the platform sprite get wider, repeating it's pattern (vs stretch
 <details>
 <summary>Why not use Transform scale?</summary>
 
-Using transform scale to change the width cause the sprite displayed to stretch.  We are using tiling so the sprite repeats instead.
+Using transform scale to change the width cause the sprite displayed to stretch.  We are using tiling so the sprite repeats instead:
 
 <img src="http://i.imgur.com/ejbs3RK.png" width=50% />
 
@@ -454,6 +459,13 @@ Update the sprite sheet's import settings to use filter mode point, preventing s
 This (and most) sprite sheets have each object touching the one next to it.  Filter Mode Point prevents blending happening between one sprite and it's neighbor.  The blending that occurs with other modes besides Point may lead to random lines showing up on screen.  For example:
 
 <img src="http://i.imgur.com/ZKqg5JP.png" width=50% />
+
+Additionally the filter mode blurs the image a bit in attempt to make smooth lines.  Often for a 2D game, this effect is not desirerable.  Here's an example with the character sprite we will be using.
+
+<img src="http://i.imgur.com/AYyx3Ma.png" width=150px />
+
+<img src="http://i.imgur.com/8wMlM1S.png"  width=150px />
+
 
 <hr></details>
 
@@ -639,6 +651,50 @@ There should now be four GameObjects in the world, as shown below.
 <hr></details>
 
 
+## Add BoxCollider2D to the Platforms
+
+Add a BoxCollider2D component with a .1 edge radius to each of the parent Platform GameObjects in the scene.
+
+<details><summary>How</summary>
+
+ - Select a platform's parent GameObject.
+ - Add Component -> "BoxCollider2D".
+ - Set "Edge Radius' to '.1'
+ - Click 'Edit Collider' and click/drag the box which appears so that the outer green line encapsulates the platform.
+
+<img src="http://i.imgur.com/Mu06f3o.gif" />
+
+ - For the bottom platforms which are actually two connected parent platform GameObjects - allow the colliders to overlap some for a smooth experience when entities are walking from one to the next.
+
+ <img src="http://i.imgur.com/cgfqZhY.gif" />
+
+Hit play and the character should now land on a platform... but may fall over.
+
+<img src="http://i.imgur.com/T0fdwa1.gif" width=150px />
+
+
+</details>
+<details><summary>What is a Collider?</summary>
+
+[Colliders](https://docs.unity3d.com/Manual/CollidersOverview.html) are components placed on GameObjects to define their shape for the purposes of physical collisions.  The collider shape may or may not align with the visuals on screen.
+
+Typically colliders match the shape of the art on screen.  For example, they are used to keep the character from falling through the floor or walking through walls, and to cause the character to die when they hit an enemy.
+
+Colliders may also be used as 'triggers' to detect something happening near an object without causing a physical reaction.  For example, an entity could have a second collider twice as large as the entity itself and use that to know when danger is approaching - causing the entity to run the other way.
+
+</details>
+<details><summary>Why not place colliders on the child GameObjects instead?</summary>
+
+Well, you could!  With GameDev, you'll find there are almost always various ways you could achieve a goal and pros/cons to each.  
+
+Since we are using BoxCollider2D and an Edge radius, getting our sprites to connect with a smooth surface for entities to walk over would be more challenging when the colliders are on the child sprite GameObjects themselves.  
+
+<img src="http://i.imgur.com/QTjSEt7.png" width=50% />
+
+Additionally, fewer colliders may improve your game's performance - however the difference here will not be noticeable.
+
+</details>
+
 
 ## Create a connected platform
 
@@ -704,18 +760,164 @@ Optionally, you can rename the platform GameObjects and organize your platforms 
 <hr></details>
 
 
+
+## Create a Spike Ball GameObject
+
+Add a sprite for the spike ball and drag it into the Hierarchy to create a GameObject.  Set filter mode Point and Order in Layer to -1.  We are using We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/spikeball1'.
+
+<details><summary>How</summary>
+
+ - Drag/drop the sprite into Assets/Art.
+ - Set the 'Filter Mode: Point (no filter)'.
+ - Drag the sprite into the 'Hierarchy' tab.  Rename to 'Spike Ball'.
+ - Under the 'Sprite Renderer' component, update 'Order in Layer' to '-1'.
+
+<img src="http://i.imgur.com/lIXupzs.png" width=150px />
+
+</details>
+
+
+
+## Add a Rigidbody2D
+
+Add a Rigidbody2D component to the spike ball to enable gravity.
+
+<details><summary>How</summary>
+
+ - Select the Spike Ball's GameObject.
+ - In the 'Inspector', click 'Add Component' and select "Rigidbody2D".
+
+Hit play and watch the spike ball fall through the platforms and out of view.
+
+<img src="http://i.imgur.com/PuWWL3z.gif" width=50px />
+
+</details>
+<details><summary>What's a Rigidbody2D?</summary>
+
+A rigidbody is a core component for the Unity physics engine, Rigidbody2D is the 2D version of this component (vs 3D).  It's added to GameObjects which may be manipulated by physics during the game.
+
+Physics refers to the logic in a game engine which moves objects based on forces such as gravity. We'll be using rigidbodys on all moving objects in this game. 
+
+</details>
+
+
+## Add a CircleCollider2D
+
+Add a CircleCollider2D component to the spike ball so it hits the platform and rolls.
+
+<details><summary>How</summary>
+
+ - Select the Spike Ball's GameObject.
+ - 'Add Component' and select "CircleCollider2D".
+ - Modify the radius so the collider is around the main body and not the spikes.
+
+<img src="http://i.imgur.com/ozPgCi4.gif" width=200px />
+
+Hit play to watch the spike ball fall onto a platform and roll.
+
+<img src="http://i.imgur.com/x4a848N.gif" width=200px />
+
+</details>
+<details><summary>Why shrink the collider?</summary>
+
+It's optional, use what you think creates the best experience.
+
+When we added the CircleCollider2D, it defaulted to surround the entire sprite.  This may be the right experience, it's up to how you want the game to play.  I'm suggesting that we pull the collider in a bit, this will cause the spike ball to roll on its body with the spikes digging into platforms instead of rolling on the tips of each spike as shown here:
+
+<img src="http://i.imgur.com/ov1F5Fo.gif" width=200px />
+
+<img src="http://i.imgur.com/WRLQITb.gif" width=200px />
+
+On a related note, seting the 'Order in Layer' to '-1' ensures that the spikes are behind the platform.  Without this the spikes would be ontop:
+
+<img src="http://i.imgur.com/8cgB7jZ.gif" width=200px />
+
+
+</details>
+
+
+
+## Add invisible bumpers
+
+Add additional BoxCollider2Ds offscreen to cause the spike balls to quickly turn around and roll back on-screen.
+
+<details><summary>How</summary>
+
+ - Right click in 'Hierarchy' -> 'Create Empty'.  Rename to "Bumper"
+ - 'Add Component' and select "BoxCollider2D"
+ - Increase the collider Size X to about 20
+ - Move the GameObject off screen, near one of the platforms, like this:
+
+<img src="http://i.imgur.com/gNQUfh6.png" width=150px />
+
+ - Rotate the Transform Z to about -30.
+ - Reposition so the edge of our bumper overlaps the platform.
+
+<img src="http://i.imgur.com/mUv143i.png" width=150px />
+
+Hit play, the spike ball should hit the bumper and quickly reverse and accelerate the other direction.
+
+<img src="http://i.imgur.com/vMjWoia.gif" width=150px />
+
+ - Copy paste the bumper and modify it's position so that each platform that may send a spike ball offscreen has a bumper.
+  - Change the Transform rotation Z to about '30' (times -1 from the other side).
+ - Remove the bumper from the bottom left as we do not want spike balls to roll back on screen after reaching this point.
+ - Optionally move each Bumper GameObject under a new parent empty GameObject "Bumpers" to keep the 'Hierarchy' organized.
+
+ Your screen with bumpers should look something like this:
+
+<img src="http://i.imgur.com/cAl0od4.png" />
+
+</details>
+
+<details><summary>Why not do X instead?</summary>
+
+Go for it!  With GameDev there are always options.  The experience we are creating here allows the spike balls to travel offscreen and then back on.  This may not be the desired behaviour for your game.  
+
+Later in the tutorial we will be adding another enemy type which will handle the edge of the screen differently (not allowing them to travel offscreen at all).
+
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sntahousntaohu
+
+
+
+
+
+
+
+
+
+
+TODO move colliders to part 1? and review pics below
+Also the spike ball.  Get it rolling down the platforms in part 1.
+ - Bumpers
+ - Initial velocity on spawn
+ - DieOutOfBounds
+
+
+
+
 [Unity Project / Source Code](https://github.com/hardlydifficult/Unity2DPlatformerTutorial/tree/Part1) for Part 1.  The game does not do much yet, but here is a [demo build](https://hardlydifficult.com/PlatformerTutorialPart1/index.html) as well.
-
-
-
-
-
-
-
-
-
-<br><br><br><br><br>^^^^ ReadyForReview ^^^^ (below is WIP)<br><br><br><br><br>
-
 
 
 
@@ -737,7 +939,7 @@ Optionally, you can rename the platform GameObjects and organize your platforms 
 Add a character to the scene.  Have him walk and jump, creating a basic platformer.
 
 
-## Add a character sprite sheet
+## Configure the character sprite sheet
 
 Add a sprite sheet for the character, slice it with a bottom pivot and set to point filter mode.  We are using [Kenney.nl's Platformer Characters](http://kenney.nl/assets/platformer-characters-1) 'PNG/Adventurer/adventurer_tilesheet.png'.
 
@@ -852,13 +1054,6 @@ Hit play and watch the character fall through the platforms and out of view.
 <img src="http://i.imgur.com/ZJPkmt9.gif" width=50px />
 
 </details>
-<details><summary>What's a Rigidbody2D?</summary>
-
-A rigidbody is a core component for the Unity physics engine, Rigidbody2D is the 2D version of this component (vs 3D).  It's added to GameObjects which may be manipulated by physics during the game.
-
-Physics refers to the logic in a game engine which moves objects based on forces such as gravity. We'll be using rigidbodys on all moving objects in this game. 
-
-</details>
 
 
 ## Add a CapsuleCollider2D 
@@ -877,20 +1072,11 @@ Add a CapsuleCollider2D component and size it for the character.
 Until we add colliders on the platforms (in the next section), playing the game will not look any different.
 
 </details>
-<details><summary>What is a Collider?</summary>
-
-[Colliders](https://docs.unity3d.com/Manual/CollidersOverview.html) are components placed on GameObjects to define their shape for the purposes of physical collisions.  The collider shape may or may not align with the visuals on screen.
-
-Typically colliders match the shape of the art on screen.  For example, they are used to keep the character from falling through the floor or walking through walls, and to cause the character to die when they hit an enemy.
-
-Colliders may also be used as 'triggers' to detect something happening near an object without causing a physical reaction.  For example, an entity could have a second collider twice as large as the entity itself and use that to know when danger is approaching - causing the entity to run the other way.
-
-</details>
 <details><summary>How do I know what size to make the collider?</summary>
 
 The collider does not fit the character perfectly, and that's okay.  In order for the game to feel fair for the player we should lean in their favor.  When designing colliders for the character and enemies, we may prefer to make the colliders a little smaller than the sprite so that there are no collisions in game which may leave the player feeling cheated.
 
-Becuase the character is constantly in motion, and its limbs are in different positions, the collider won't always fit the character. For that reason we use a collider that will work for all positions of the character.
+Because the character is constantly in motion, and its limbs are in different positions, the collider won't always fit the character. For that reason we use a collider focused around the body which works for all positions of the character.
 
 In addition to killing the character when he comes in contact with an enemy, the collider is used to keep the character on top of platforms.  For this reason it's important that the bottom of the collider aligns with the sprite's feet.
 
@@ -904,43 +1090,6 @@ Most of the time the collisions in the game would not have been any different if
 </details>
 
 
-
-
-## Add BoxCollider2D to the Platforms
-
-Add a BoxCollider2D component with a .1 edge radius to each of the parent Platform GameObjects in the scene.
-
-<details><summary>How</summary>
-
- - Select a platform's parent GameObject.
-   - By parent GameObject we are refering to the GameObject with child GameObjects for each sprite, and not the top level "Platforms" GameObject we created to hold all of the platforms.
- - Add Component -> "BoxCollider2D".
- - Set "Edge Radius' to '.1'
- - Click 'Edit Collider' and click/drag the box which appears so that the outer green line encapsulates the platform.
-
-<img src="http://i.imgur.com/Mu06f3o.gif" />
-
- - For the bottom platforms which are actually two connected parent platform GameObjects - allow the colliders to overlap some for a smooth experience when entities are walking from one to the next.
-
- <img src="http://i.imgur.com/cgfqZhY.gif" />
-
-Hit play and the character should now land on a platform... but may fall over.
-
-<img src="http://i.imgur.com/T0fdwa1.gif" width=150px />
-
-
-</details>
-<details><summary>Why not place colliders on the child GameObjects instead?</summary>
-
-Well, you could!  With GameDev, you'll find there are almost always various ways you could achieve a goal and pros/cons to each.  
-
-Since we are using BoxCollider2D and an Edge radius, getting our sprites to connect with a smooth surface for entities to walk over would be more challenging when the colliders are on the child sprite GameObjects themselves.  
-
-<img src="http://i.imgur.com/QTjSEt7.png" width=50% />
-
-Additionally, fewer colliders may improve your game's performance - however the difference here will not be noticeable.
-
-</details>
 
 
 
@@ -994,17 +1143,54 @@ Note: The character will stand straight up even on slanted platforms.  This will
 
 ## Move left/right
 
-PlayerController
-WalkMovement
-Feet
-KeepMovementOnScreen
+Create a WalkMovement with desiredWalkDirection and movementSpeed.  Set myBody.velocity.
+Create a PlayerController which desiredWalkDirection = Input.GetAxis("Horizontal").
+
+Start character at top and walk down level.
+
+==
+
+## Rotate to match the floor's angle
+
+Create a Feet with isGrounded and Quaternion floorRotation. 
+Create a RotateToMatchFloorWhenGrounded
+
+## Restrict movement to stay on screen
+
+Create KeepWalkMovementOnScreen
 
 
 
 
 
+- facing direction (flip sprite)
+- walk speed (maybe with jump)
 
 
+
+
+
+-----
+
+# Add the spike ball enemy
+
+Import, create GameObject with a Rigidbody2D and a CircleCollider2D.
+
+oaeu
+
+Create KillOnContactWithPlayer
+
+Create spawner.
+
+DieOutOfBounds.
+
+Create bumpers.
+
+DieOnBumpers.
+
+SuicideWhenPlayerDies.
+
+Fly Guy too?
 
 ---------
 
@@ -1017,9 +1203,7 @@ JumpMovement
 
 ## Ladders
 
-LadderMovement
-
-
+LadderMovement, for character and spike ball.
 
 -------
 
