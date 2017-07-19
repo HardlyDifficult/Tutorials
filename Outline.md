@@ -96,17 +96,17 @@ using UnityEditor.SceneManagement;
 public class AutoSave
 {
   /// <summary>
-  /// Called automatically c/o InitializeOnLoad.  Registers for
-  /// play mode events.
+  /// Called automatically c/o InitializeOnLoad.  
   /// </summary>
   static AutoSave()
   {
-    EditorApplication.playmodeStateChanged 
+    // Registers for play mode events.
+    EditorApplication.playmodeStateChanged
       += OnPlaymodeStateChanged;
   }
 
   /// <summary>
-  /// When the play mode changes, consider saving.
+  /// Called when the play mode changes.
   /// </summary>
   static void OnPlaymodeStateChanged()
   {
@@ -937,16 +937,18 @@ public class InitializeRigidbodyOnStart : MonoBehaviour
   Vector2 startingVelocity = new Vector2(3, 0);
 
   /// <summary>
-  /// Update the GameObject's rigidbody initial settings.
+  /// Unity event called when the GameObject is first spawned
+  /// in the world.
   /// </summary>
   protected void Start()
   {
+    // Update the GameObject's rigidbody initial settings
     Rigidbody2D myBody = GetComponent<Rigidbody2D>();
-
     myBody.angularVelocity = startingAngularVelocity;
     myBody.velocity = startingVelocity;
   }
 }
+
 ```
 
 </details>
@@ -1034,7 +1036,7 @@ public class AChildOfTest : Test
   protected override void Update()
   {
     base.Update();
-    // Child update logic
+    // Child update logic to run after the parent's Update
   }
 }
 ```
@@ -1056,7 +1058,7 @@ public class AChildOfTest : Test
 {
   protected new void Update()
   {
-    // Child update logic
+    // Child update logic to be run instead of the parent's Update
   }
 }
 ```
@@ -1075,8 +1077,114 @@ Encapsulation.  If we were to make these methods public, it suggests that other 
 
 </details>
 
+## Add a C# script to kill balls that fall off
 
+After the ball rolls off the bottom platform, destroy the GameObject.
 
+<details><summary>How</summary>
+
+ - Create a C# script "SuicideOutOfBounds" under Assets\Code\Components\Death\
+ - Select the spike ball, click 'Add Component' and select SuicideOutOfBounds.
+ - Paste in the following code:
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Destroy this GameObject if it falls off screen.
+/// </summary>
+public class SuicideOutOfBounds : MonoBehaviour
+{
+  /// <summary>
+  /// Anything with a transform Y position less than 
+  /// this is considered out of bounds.
+  /// 
+  /// To calculate this dynamically, try:
+  /// Camera camera = Camera.main;
+  /// const float maxEntityHeight = 2;
+  /// float outOfBoundsYPosition =
+  ///   -camera.orthographicSize
+  ///   + camera.transform.position.y
+  ///   - maxEntityHeight;
+  /// </summary>
+  const float outOfBoundsYPosition = -12;
+
+  /// <summary>
+  /// Unity event called each frame.
+  /// </summary>
+  protected void Update()
+  {
+    // If this is lower than the camera can see, 
+    // then it has fallen out of bounds
+    if(transform.position.y < outOfBoundsYPosition) 
+    { 
+      Destroy(gameObject);
+    }
+  }
+}
+```
+
+Play and the ball should now destroy itself when it falls off screen:
+
+<img src="http://i.imgur.com/xcqUO8I.gif" />
+
+</details>
+<details><summary>Why bother, the GameObject is already off screen?</summary>
+
+When a GameObject is off screen, there is no attempt to render it so your GPU is not wasting time but Unity is still processing Physics and logic for any components on the GameObject.  In this case, once the GameObject has fallen off the bottom it will never return to the game.  
+
+We destroy it to save performance while the game is running.  Without this script, the endless stream of balls spawning and then falling off would be a 'memory leak'.  This means that you are wasting resources and over time the performance of your game may get worse.
+
+</details>
+<details><summary>What is Destroy and why not Destroy(this)?</summary>
+
+Destroy is a Unity method to remove something from the scene.  You can:
+
+ - Destroy a component, causing the component to be removed from that GameObject (and stopping future event calls such as Update).  
+ - Destroy a GameObject, causing that entire GameObject to be removed from the scene.
+
+```csharp
+using UnityEngine;
+
+public class MyComponent : MonoBehaviour
+{
+  public bool shouldThisComponentStop;
+  public bool shouldThisGameObjectBeRemoved;
+
+  protected void Update()
+  {
+    if(shouldThisComponentStop)
+    {
+      // Remove MyComponent from this GameObject
+      Destroy(this); 
+    }
+    if(shouldThisGameObjectBeRemoved)
+    {
+      // Destroy this entire GameObject from the scene
+      Destroy(gameObject);
+    }
+  }
+}
+```
+
+</details>
+<details><summary>What about an object pool?</summary>
+
+An object pool may be appropriate to use but we are not implementing it here for simplicity.  Additionally the performance gain for a game like this would be negligible.
+
+What is an object pool?
+
+An object pool is the programming term for reusing GameObjects.  So for this example, instead of destroying a GameObject that falls off screen we would instead have it spawn at the top and go through the entire level again.
+
+When should an object pool be used?
+
+Objects which destroy and spawn again several times may warrent an object pool. There is overhead associated with having and using an object pool so it is not recommended for absolutely everything.  For example, a boss which is going to surface once should not be in an object pool.
+
+How is an object pool implemented?
+
+Basically anytime we spawn a GameObject, we ask the object pool if there is one already available for us to use.  And when we destroy a GameObject, we would instead do gameObject.SetActive(false) and add to the object pool's list of available objects.  
+
+</details>
 
 
 
@@ -1092,7 +1200,6 @@ Encapsulation.  If we were to make these methods public, it suggests that other 
 
  - Add cloud
  - Spawner - coroutines and rng min/max seconds between spawn
- - SuicideOutOfBounds
 
 
 
