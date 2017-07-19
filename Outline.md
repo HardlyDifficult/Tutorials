@@ -39,6 +39,10 @@ Get Unity and start a 2D project.
 Familiarize yourself with the Unity Editor a bit.  This [guide from Unity](https://docs.unity3d.com/Manual/LearningtheInterface.html) is a nice, quick overview.
 
 </details>
+
+
+
+
 <details><summary>Why 2D?</summary>
 
 Presenting the 2D vs 3D option when you create a new project suggests this is a significant choice.  It's not really... 2D just changes default settings on things like your camera.   Unity is a 3D engine, when creating 2D games your actually creating a 3D world where everything is very flat but the camera looks straight ahead and the only rotation in the world is around the z axis.  
@@ -58,6 +62,7 @@ When you created a project a default scene was created as well.  Save it as "Lev
  - Create a "Scenes" directory, call it "Level1".
 
 <hr></details>
+
 <details><summary>What's a scene?</summary>
 
 The Scene represents a collection of GameObjects and components (defined below) configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial. 
@@ -117,7 +122,6 @@ public class AutoSave
 ```
 
 <hr></details>
-
 <details><summary>What about performance?</summary>
 
 As an editor script, this logic is not included in the game you release.  Saving is incremental, so there is very little time wasted when there is nothing new to save.  Unless you're one of the lucky ones who never sees Unity crash, this script is absolutely worth the time tradeoff.
@@ -148,6 +152,17 @@ Be sure you do not use folders with these names anywhere in your project unless 
 
 
 aoeu
+
+</details>
+
+
+<details><summary>When and How do you trigger a save?</summary>
+ 
+[EditorApplication.playmodeStateChanged](https://docs.unity3d.com/ScriptReference/EditorApplication-playmodeStateChanged.html) events let you know anytime play starts and stops.  There are actually several state changes involved, we use [EditorApplication.isPlaying](https://docs.unity3d.com/ScriptReference/EditorApplication-isPlaying.html) to avoid extra save calls (saving only if the game is not in play mode).
+
+We save with [EditorSceneManager.SaveOpenScenes()](https://docs.unity3d.com/ScriptReference/SceneManagement.EditorSceneManager.SaveOpenScenes.html) which will save your scene and any project changes.
+
+You can confirm the save is working by noting the * in Unity's title.  This * indicates unsaved changes and should now go away everytime you click play.
 
 </details>
 
@@ -200,19 +215,6 @@ public class MyClassName
 }
 ```
 <hr></details>
-<details><summary>When do you trigger a save?</summary>
- 
-- On [EditorApplication.playmodeStateChanged](https://docs.unity3d.com/ScriptReference/EditorApplication-playmodeStateChanged.html) events:
-   - Save with [EditorSceneManager.SaveOpenScenes()](https://docs.unity3d.com/ScriptReference/SceneManagement.EditorSceneManager.SaveOpenScenes.html)
-   - You can do nothing if [EditorApplication.isPlaying](https://docs.unity3d.com/ScriptReference/EditorApplication-isPlaying.html), avoiding extra save calls
-</details>
-
-<details><summary>How do you save?</summary> 
-
-Save with [EditorSceneManager.SaveOpenScenes()](https://docs.unity3d.com/ScriptReference/SceneManagement.EditorSceneManager.SaveOpenScenes.html)
-
-</details>
-
 <details><summary>What's a C# static method?</summary>
 
 A static method in C# is one that may be called without first instantiating an object for that class.  Static methods may only access static data in that class (static data is data which is shared across all objects).
@@ -358,6 +360,7 @@ Slice the sprite sheet in order to access each individual sprite within.
 - Click 'Apply' and close the 'Sprite Editor'
 
 <hr></details>
+<br>
 <details><summary>Could I use other slice method types?</summary>
 
 The goal is to slice the sprite sheet, any method your comfortable with is fine.  Options include:
@@ -896,7 +899,7 @@ Later in the tutorial we will be adding another enemy type which will handle the
 
 ## Add a C# script to get the ball moving
 
-For the game, we  want the ball spawning in the top left.  But that's a flat surface so the ball does not roll down platforms.  Give it an initial Velocity and AngularVelocity.
+For the game, we  want the ball spawning in the top left.  But that's a flat surface so the ball does not roll down platforms.  Give it an initial Velocity of about (3, 0) and AngularVelocity of -500.
 
 <details><summary>How</summary>
 
@@ -947,49 +950,148 @@ public class InitializeRigidbodyOnStart : MonoBehaviour
 ```
 
 </details>
-<details><summary>Why not use a "SpikeBall" script instead?</summary>
+<details><summary>Why not use a "SpikeBall" component instead?</summary>
 
 You could, but...  
 
 Unity encourages component based solutions.  Here's a good [wikipedia article on component based software engineering](https://en.wikipedia.org/wiki/Component-based_software_engineering).  Briefly, the advantages to this approach are:
 
  - Each script or component focuses on a single feature or mechanic, simplifying and making it easier to debug.
- - Components may be reused between different object types.  If we had one master SpikeBall script and then created a similar enemy with a few different mechanics, reusing logic would be more challanging and we might copy paste parts to our new enemy script instead. 
+ - Components may be reused between different object types.  If we had one master SpikeBall component and then created a similar enemy with a few different mechanics, reusing logic would be more challanging and we might copy paste parts to our new enemy compoment instead. 
 
 </details>
-<details><summary>What's SerializeField and why not use public instead?<summary>
+<details><summary>What's SerializeField and why not use public instead?</summary>
 
-SerializeField exposes the object's field in the 'Inspector' tab.
-aoeu
+[SerializeField] exposes the object's field (piece of data) in the 'Inspector' tab.  The default value seen in the C# script becomes the default in the Inspector - however when the script runs, the value is whatever you set for that object in the Inspector. This allows you to change values per-object or have different values for a component which is used on various different object types.  You can also change values in the Inspector at runtime, which can be helpful while debugging.
 
-</details>
-<details><summary>What's RequireComponent do?<summary>
+Read [more about Serialization](https://docs.unity3d.com/Manual/script-Serialization.html).
 
+Any public field is a SerializeField by default.  If you do not want a public field to be exposed in the inspector, you can add the [NonSerialized] attribute (using System;)  
 
+So why not just public instead of [SerializeField]?
 
-</details>
-<details><summary>MonoBehaviour</summary>
-
-</details>
-<details><summary>What's velocity and angularVelocity?<summary>
+The fields in question are often only leveraged inside the component itself.  Other components may not interact with these fields directly.  In those scenarios, I prefer to follow the Object-Oriented programming best practice of [data encapsulation](https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)) - meaning we only expose public fields when we want other classes to interact with them.
 
 </details>
-<details><summary>How is the Start method called?</summary>
+<details><summary>What's RequireComponent do?</summary>
+
+[RequireComponent] is an Unity attribute used to let the editor know that this component requires another component on the same GameObject.
+
+```csharp
+[RequireComponent(typeof(ComponentThatMustBeOnThisGameObject))]
+public class MyComponent ...
+```
+
+When you add a component in the inspector which requires another and the required component is not already on that GameObject, Unity will automatically add it for you.
 
 </details>
-<details><summary>Why use protected on the Unity event?<summary>
+<details><summary>What is MonoBehaviour / how is Start() called?</summary>
+
+Most of the scripts that you create in Unity will derive from MonoBehaviour.  [MonoBehaviour](https://docs.unity3d.com/ScriptReference/MonoBehaviour.html) is the base class for a GameObject component (scripts on entities in your world).  It allows you to execute logic every Update and respond collision events, etc.
+
+There are a lot of events available to MonoBehaviours.  In this example we are using Start which is called once per-object, when that object is first spawned in the world.
+
+Note that when implementing MonoBehaviour events, you do not use 'override' nor subscribe to the event.  Unity uses reflection based on the method signature instead to improve performance.  This creates an unintuative pattern for C# delevelopes but allows Unity to eliminate unncessary calls.  This optimization normally in development would be considered overkill but for a game engine this kind of thing adds up, particularly since there are typically hundreds of MonoBehaviours in the world.
 
 </details>
-<details><summary>What's SerializeField do?<summary>
+<details><summary>What's velocity and angularVelocity?</summary>
+
+A GameObject with a rigidbody may be moved with forces.  The Unity Physics engine uses these forces as inputs in order to calculate the object's position and rotation, considering other things in the world such as a wall blocking your path.  
+
+Unity follows the [Newton's Laws of Motion](https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion) - e.g. an object either remains at rest or continues to move at a constant velocity, unless acted upon by a force.
+
+There are various APIs for manipulating forces on a rigidbody.  This script will be setting initial values for:
+
+ - Velocity: the desired movement direction and speed.  Abstent any additional forces, 'Drag' acts like friction decreasing the velocity every frame until it reaches 0.
+ - Angular velocity: degrees per second to rotate the object.  Abstent any additional forces, 'Angular drag' will decrease this until it reaches 0.
+
+</details>
+<details><summary>Why use protected on the Unity event?</summary>
+
+Protected is an access modifier in C# which ensures that the only way to call that method, or field, is from the same class or from a class that derives from it.  Unity will find events such as void Update() based on the signature, ignoring the access modifier - allowing you to use anything you'd like.
+
+Why protected and not private?
+
+When you are using inheritence and both the child and parent classes need to include an event such as void Update(), Unity will only call the child's implementation.  This can make it easy to miss that some events in the parent class have been overwritten (vs complemented by) the child.
+
+I recommend using protected on every Unity event so that the compiler can help avoid this mistake.  In the event the parent and child classes both have protected void Update(), you will get a compile warning about the conflict.  
+
+If you want both child and parent called, update the methods as follows:
+
+```csharp
+using UnityEngine;
+
+public class Test : MonoBehaviour
+{
+  protected virtual void Update()
+  {
+    // Parent update logic
+  }
+}
+
+public class AChildOfTest : Test
+{
+  protected override void Update()
+  {
+    base.Update();
+    // Child update logic
+  }
+}
+```
+
+If you want the child to replace the parent's update method (so that the parent's Update is never called), update the method like so:
+
+```csharp
+using UnityEngine;
+
+public class Test : MonoBehaviour
+{
+  protected void Update()
+  {
+    // Parent update logic
+  }
+}
+
+public class AChildOfTest : Test
+{
+  protected new void Update()
+  {
+    // Child update logic
+  }
+}
+```
+
+What if it's not a parent class?
+
+I recommend always using protected on Unity events.  A class may not be a parent at the moment but code constantly changes and matures.  This is a best practice to help avoid potential issues in the future.  If the class never becomes a parent, the method is effectively treated as private.  There is no performence or other runtime impact from using protected.
+
+Why not always make the methods virtual?
+
+Performance.  There is a runtime cost to marking a method as virtual, even if there are no overrides.
+
+Why not public instead?
+
+Encapsulation.  If we were to make these methods public, it suggests that other components may call the events directly.  I've yet to encounter a use case where it's appropriate to do that - you should rely only on Unity to call these events to keep your code clean.
 
 </details>
 
 
-InitializeRigidbodyOnStart
 
 
- - Spawner
- - Initial velocity / angular speed on spawn
+
+
+
+
+
+
+
+
+
+
+
+
+ - Add cloud
+ - Spawner - coroutines and rng min/max seconds between spawn
  - SuicideOutOfBounds
 
 
