@@ -521,6 +521,11 @@ If you are not going to build for WebGL, go ahead and try using the ExplosionMob
 
 ## Explosion self destruct
 
+## Explosion sound effect
+
+TODO
+
+
 ## Spawn explosion when the character dies
 
 TODO
@@ -539,10 +544,6 @@ aoeu
 
 </details>
 
-
-## Explosion sound effect
-
-TODO
 
 ## Rotate the character when he walks the other way
 
