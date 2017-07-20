@@ -1,4 +1,6 @@
 
+TODO review pics given part 1 changes
+
 
 # 2) Add a Character and Movement Mechanics
 

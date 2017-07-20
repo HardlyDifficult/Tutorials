@@ -21,8 +21,7 @@ TODO part 1 video link
 TODO
 Start a 2D project and layout platforms for Level1.  After this section, the game should look something like this:
 
-<img src="http://i.imgur.com/KSsteJT.png" width=50% />
-TODO update image to GIF
+<img src="http://i.imgur.com/31l9mA1.gif" width=50% />
 
 ## Start a 2D project
 
@@ -1184,50 +1183,290 @@ How is an object pool implemented?
 
 Basically anytime we spawn a GameObject, we ask the object pool if there is one already available for us to use.  And when we destroy a GameObject, we would instead do gameObject.SetActive(false) and add to the object pool's list of available objects.  
 
+For more, see [Catlike Coding's Object Pool tutorial](http://catlikecoding.com/unity/tutorials/object-pools/).
+
+</details>
+
+
+
+## Add the Evil Cloud to the scene
+
+Add a sprite for the evil cloud and create and scale a GameObject placed in the top left.  Set order in layer to 1. We are using We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/cloud' with filter mode Point.
+
+<details><summary>How</summary>
+
+ - Drag/drop the sprite into Assets/Art.
+ - Set the 'Filter Mode: Point (no filter)'.
+ - Drag the sprite into the 'Hierarchy' tab. Rename to 'Evil Cloud'.
+ - Move the cloud to the top left of the screen.
+ - Scale (evenly on all dimensions) the cloud to fit nicely.
+
+<img src="http://i.imgur.com/fecCBCq.gif" width=200px />
+
+</details>
+<details><summary>What does changing scale Z do?</summary>
+
+Nothing (for 2D games).  When we are scaling, in order to not distort the art we only need to ensure X and Y scales match.  Z could be left at the default of 1, but I prefer to keep it in sync with X and Y as well as Unity's scale tool will do this by default.
+
 </details>
 
 
 
 
+## Add a C# script to spawn balls
 
+Have balls spawn periodically at the evil cloud and fall down the platforms.
 
+<details><summary>How</summary>
 
+ - Create a C# script Assets/Code/Components/Life/Spawner.
+ - Add the Spawner component to the evil cloud GameObject.
+ - Edit the Spawner script, paste the following code.
 
+ ```csharp
+using System.Collections;
+using UnityEngine;
 
+/// <summary>
+/// Instantiates a prefab at this object's location periodically.
+/// </summary>
+public class Spawner : MonoBehaviour
+{
+  /// <summary>
+  /// Set to the prefab to instantiate.
+  /// </summary>
+  [SerializeField]
+  GameObject thingToSpawn;
 
+  /// <summary>
+  /// How long to wait before spawning begins.
+  /// </summary>
+  [SerializeField]
+  float initialWaitTime = 2;
 
+  /// <summary>
+  /// The least amount of time between each spawn.
+  /// </summary>
+  [SerializeField]
+  float minTimeBetweenSpawns = .5f;
 
+  /// <summary>
+  /// The most amount of time between each spawn.
+  /// </summary>
+  [SerializeField]
+  float maxTimeBetweenSpawns = 10;
 
- - Add cloud
- - Spawner - coroutines and rng min/max seconds between spawn
+  /// <summary>
+  /// Unity event called when the GameObject is first spawned
+  /// in the world.
+  /// </summary>
+  protected void Start()
+  {
+    // Starts a Coroutine which executes a spawn script over
+    // a period of time.
+    StartCoroutine(SpawnEnemies());
+  }
 
+  /// <summary>
+  /// The spawn script.  Called initially on Start, then 
+  /// executed as a Unity Coroutine over time.
+  /// </summary>
+  /// <returns>Used by Coroutines to manage time.</returns>
+  IEnumerator SpawnEnemies()
+  {
+    // Pre conditions
+    Debug.Assert(thingToSpawn != null,
+      "thingToSpawn has not been set");
+    Debug.Assert(initialWaitTime >= 0,
+      "initialWaitTime should not be negative");
+    Debug.Assert(minTimeBetweenSpawns >= 0,
+      "minTimeBetweenSpawns should not be negative");
+    Debug.Assert(maxTimeBetweenSpawns >= minTimeBetweenSpawns,
+      "maxTimeBetweenSpawns should be >= minTimeBetweenSpawns");
 
+    // Wait before first spawn, 0 or more seconds
+    yield return new WaitForSeconds(initialWaitTime);
 
+    // Loop until this is destroyed
+    while(true)
+    {
+      // Spawn thingToSpawn at this GameObject's location
+      Instantiate(thingToSpawn, transform.position, Quaternion.identity);
 
+      // Sleep a random amount of time before the next spawn
+      float sleepTime = UnityEngine.Random.Range(minTimeBetweenSpawns, maxTimeBetweenSpawns);
+      yield return new WaitForSeconds(sleepTime);
+    }
+  }
+}
+ ```
 
+ - After the code has been saved, create a prefab for "Spike Ball":
+    - Create a folder Assets/Prefabs.
+    - Select the Spike Ball GameObject and click/drag it to the folder.
 
+<img src="http://i.imgur.com/w4leZGk.gif" width=250px />
 
+ - Delete the "Spike Ball" GameObject from the 'Hierarchy', removing it from the scene but leaving our prefab in-tact.
+ - Select the "Evil Cloud" GameObject and then click/drag the prefab you just created onto the "Thing To Spawn" field in the 'Inspector'.
 
-sntahousntaohu
+<img src="http://i.imgur.com/scu8YUR.gif" width=250px />
 
+Click play to see the spawner in action:
 
+<img src="http://i.imgur.com/ZJSulAj.gif" width=200px /> 
 
+</details>
+<details><summary>What's a prefab?</summary>
 
+A prefab is a file representing a configured GameObject.  This includes any child GameObjects as well as Components and their settings from the Inspector. 
 
+This allows things like our spawner to instantiate a GameObject with the appropriate components and configurations, without knowing any details about the specific object type it is spawning.  More [on prefabs from Unity](https://docs.unity3d.com/Manual/Prefabs.html).
 
-TODO move colliders to part 1? and review pics below
-Also the spike ball.  Get it rolling down the platforms in part 1.
- - kill player
- - Ladders
- - Kill on bumpers when below character
- - Death effect (when killed via hammer)
- - Suicide when player dies (like restart level effects)
+</details>
+<details><summary>What is a Coroutine / WaitForSeconds?</summary>
+
+A Coroutine allows you to define a sequence which takes more than a single frame to execute.  It's implemented with a C# enumerator which Unity will then execute over time.  For example:
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+public class MyComponent : MonoBehaviour
+{
+  protected void Start()
+  {
+    StartCoroutine(ExampleCoroutine());
+  }
+
+  IEnumerator ExampleCoroutine()
+  {
+    print("Launch in T minus 3 seconds");
+    yield return new WaitForSeconds(1);
+    print("Launch in T minus 2 seconds");
+    yield return new WaitForSeconds(1);
+    print("Launch in T minus 1 seconds");
+    yield return new WaitForSeconds(.75f);
+    print("Almost there!");
+    yield return new WaitForSeconds(.25f);
+    print("Go go go");
+  }
+}
+```
+
+When Start is called, the first line is printed ("Launch in T minus 3 seconds") immediatally.  Then we 'yield return' how long until the next line should be excuted.
+
+'yield' before the return is a special C# keyword used with enumerators.  It is marking your location in the method, allowing another class (in this example, Unity's internal logic), to resume the method from where it left off.
+
+WaitForSeconds is a Unity class used to define how long before the enumerator should be resumed.  There are many similar classes available such as WaitForSecondsRealtime, WaitForEndOfFrame, WaitForFixedUpdate, WaitForSeconds, WaitUntil, WaitWhile to give you more control over when the Coroutine is resumed.
+
+Coroutines may be canceled before it's complete by calling StopCoroutine or StopAllCoroutines.  When a GameObject is destroyed, any Coroutines it had started are stopped.
+
+</details>
+<details><summary>What does Instantiate do?</summary>
+
+Clones an object or prefab, creating a new GameObject in the scene.  There are a few variations of the call you could use.
+
+To clone using the original's Transform (position, rotation, scale):
+```csharp
+Instantiate(thingToSpawn);
+```
+
+To clone and set a position and rotation:
+```csharp
+Instantiate(thingToSpawn, Vector3.zero, Quaternion.identity);
+```
+
+To clone and set a parent for this GameObject:
+
+```csharp
+Instantiate(thingToSpawn, gameObject);
+```
+
+</details>
+<details><summary>How do you choose a random number?</summary>
+
+Unity provides a [convientent static class for getting random data](https://docs.unity3d.com/ScriptReference/Random.html).  For example:
+
+```csharp
+float randomNumber0To1 = UnityEngine.Random.value;
+```
+
+```csharp
+float randomNumberNeg10p5ToPos5 = UnityEngine.Random.Range(-10.5f, 5f);
+```
+
+```csharp
+Quaternion randomRotation = UnityEngine.Random.rotation;
+```
+
+How is UnityEngine.Random different from System.Random?
+
+In addition to providing APIs which are convenient for games (such as .rotation), the UnityEngine.Random is accessed statically while the System.Random requires you to create an object first.
+
+</details>
+<details><summary>What does Debug.Assert do?</summary>
+
+Debug.Assert is a used to confirm an assumption your code is making.  If the assumption does not hold (i.e. if the contents of the Debug.Assert evaluate to false), then the assert fails and an error is presented in the Unity console for you to investigate.
+
+```csharp
+Debug.Assert(confirmThisIsTrue);
+```
+
+You can optionally include a message to be displayed when the assert fails.  e.g.:
+
+```csharp
+Debug.Assert(confirmThisIsTrue, "confirmThisIsTrue must be true");
+```
+
+Debug.Assert is there to help identify problems sooner.  If the assert fails it does not prevent other code from being executed - however you can select 'Error Pause' in the 'Console' to better see what is happening at that moment.
+
+Debug.Assert does not execute in release / the built version of your game.  In other words there is no performance impact to your final game by including these checks.
+
+</details>
+
+## Update the collision matrix
+
+Add an Enemy layer for the balls and change the collision matrix to allow them to travel through other enemies in the world.
+
+<details><summary>How</summary>
+
+ - Edit -> Project Settings -> Tags and Layers.
+ - Under 'Layers' add "Enemy" to one of the empty 'User Layer' slots.
+
+<img src="http://i.imgur.com/spZG3NZ.png" width=100px />
+
+ - Select the "Spike Ball" prefab under the 'Project' tab Assets/Prefabs.
+ - In the inspector, click the dropdown next to 'Layer' in the top right and select "Enemy".
+
+ http://i.imgur.com/KPvq22a.png
+
+ - Edit -> Project Settings -> Physics 2D.
+ - Uncheck the box where "Enemy" meets "Enemy".
+   - If you hover to confirm, a tooltip should appear saying 'Enemy / Enemy'.
+
+ http://i.imgur.com/JkjXpZN.png
+
+</details>
+<details><summary>What's a Layer and how's it different from a Tag?</summary>
+
+A layer is a number representing a category or type of object in your game.  The Unity editor allows you to associate a string with this value as well for convienence.  Layers can be used to effeciently include or exclude objects based off of their type.  For this reason, the physics matrix in Unity works with layers.
+
+A tag is also a way of categorizing objects, but by string.  It's useful for more targeted use cases, such as identifying the MainCamera and the Player.
+
+Every GameObject has both one layer and one tag.
+
+</details>
+<details><summary>What does the collision matrix impact?</summary>
+
+The collision matrix defines which GameObjects may collide with what other GameObjects, based off of the GameObjects' layers.
+
+A check in the box indicates that collisions are supported.  Uncheck to disable collisions between those layers.  When unchecked, collisions between GameObjects with those layers are completely disabled - allowing objects to walk through each other as if the other didn't exist.  
+
+Every possible combination of layers is exposed as a checkbox in settings, including a layer coming in contact with itself.  Remember that layers are defining a category or object type, so by disabling the 'Enemy' layer from coming in contact with the 'Enemy' layer - we are preventing one ball from colliding with another in the world while still allowing them to roll over platforms.
+
+</details>
 
 
 
 [Unity Project / Source Code](https://github.com/hardlydifficult/Unity2DPlatformerTutorial/tree/Part1) for Part 1.  The game does not do much yet, but here is a [demo build](https://hardlydifficult.com/PlatformerTutorialPart1/index.html) as well.
-
-
-
-
-
