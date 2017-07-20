@@ -521,7 +521,6 @@ Switch back to the 'Scene' tab.  The white box here represents the area that pla
 <img src="http://i.imgur.com/UHP5YVL.png" />
 
 TODO review
-
 Open player settings via "File"->"Build Settings".  Select the platform you want to build for and then click "Player Settings..."
 <img src="http://i.imgur.com/nWDCAwX.png" width=50% />
 For PC, we can select specific supported aspect ratios 

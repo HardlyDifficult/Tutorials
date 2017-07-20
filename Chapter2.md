@@ -140,29 +140,20 @@ Note: The character will stand straight up even on slanted platforms.  This will
 
 
 
-
 ## Move left/right
 
-aoeu
+Create a script 'WalkMovement' to control the rigidbody and a script 'PlayerController' to feed user input to the WalkMovement component.
 
-Note the character will always be looking right, even while walking left.  
-
+Note the character will always be looking right, even while walking left.  He can also walk off the screen and push the balls around.  
 
 <details open><summary>How</summary>
-
-TODO
-
-Create a WalkMovement with desiredWalkDirection and movementSpeed.  Set myBody.velocity.
-Create a PlayerController which desiredWalkDirection = Input.GetAxis("Horizontal").
-
-Start character at top and walk down level.
 
  - Create a C# script "WalkMovement" under Assets/Code/Components/Movement.
  - Select the Character GameObject and add the WalkMovement component.
  - Paste in the following code:
  
- ```csharp
- using UnityEngine;
+```csharp
+using UnityEngine;
 using System;
 
 /// <summary>
@@ -288,6 +279,10 @@ public class PlayerController : MonoBehaviour
 }
 ```
 
+The character should walk around, but there is clearly work to be done:
+
+<img src="http://i.imgur.com/xOpivgJ.gif" />
+
 </details>
 <details><summary>What is an Input 'Axis' and how are they configured?</summary>
 
@@ -332,6 +327,333 @@ As discussed in chapter 1, Unity encourages a component based solution.  This me
 
 </details>
 
+
+## Kill the player when he hits a ball
+
+When the player comes in contact with a spiked ball, kill him!
+
+<details open><summary>How</summary>
+
+ - Create a C# script "LayerMaskExtensions" under Assets/Code/Utils.
+ - Paste in the following code:
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Provides additional convenience methods for Unity's LayerMask.
+/// </summary>
+public static class LayerMaskExtensions
+{
+  /// <summary>
+  /// Determines if the layer is part of this layerMask.
+  /// </summary>
+  /// <param name="mask">
+  /// The layer mask defining which layers should be included.
+  /// </param>
+  /// <param name="layer">
+  /// The layer to check against the mask.
+  /// </param>
+  /// <returns>
+  /// True if the layer is part of the layerMask.
+  /// </returns>
+  /// <remarks>
+  /// This method is used to wrap the bit logic below as 
+  /// it's not an intuitive read.
+  /// </remarks>
+  public static bool Includes(
+    this LayerMask mask,
+    int layer)
+  {
+    return (mask.value & 1 << layer) > 0;
+  }
+}
+```
+
+ - Create a C# script "KillOnContactWith" under Assets/Code/Components/Death.
+ - Select the Spike Ball prefab and add the KillOnContactWith component.
+ - Paste in the following code:
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Kills anything which collides with this GameObject
+/// if the thing that hit us is included in the provided LayerMask.
+/// </summary>
+[RequireComponent(typeof(Collider2D))]
+public class KillOnContactWith : MonoBehaviour
+{
+  /// <summary>
+  /// Defines which layers will be killed on contact.
+  /// </summary>
+  [SerializeField]
+  LayerMask layersToKill;
+
+  /// <summary>
+  /// A Unity event called anytime an object hits 
+  /// this GameObject's collider.
+  /// 
+  /// Consider killing the thing we touched.
+  /// </summary>
+  /// <param name="collision">
+  /// The thing we touched.
+  /// </param>
+  protected void OnCollisionEnter2D(
+    Collision2D collision)
+  {
+    ConsiderKilling(collision.gameObject);
+  }
+
+  /// <summary>
+  /// Checks if we should kill the object just touched, 
+  /// if so Destroy that GameObject.
+  /// </summary>
+  /// <param name="gameObjectWeJustHit">
+  /// The gameObject just touched.
+  /// </param>
+  void ConsiderKilling(
+    GameObject gameObjectWeJustHit)
+  {
+    // Compare the GameObject's layer to the LayerMask
+    if(layersToKill.Includes(gameObjectWeJustHit.layer) == false)
+    { // This object gets to live.
+      return;
+    }
+
+    // Kill it!
+    Destroy(gameObjectWeJustHit);
+  }
+}
+```
+
+ - Edit -> Project Settings -> Tags and Layers.
+ - Create a custom Layer for 'Player'.
+ - Select the Character GameObject and change its Layer to 'Player'.
+ - Select the Spike Ball prefab, update 'Layers To Kill' to 'Player'.
+
+<img src="http://i.imgur.com/wrkb3eJ.png" width=100px />
+
+Hit play to watch the player die:
+
+<img src="http://i.imgur.com/gKEl8wE.gif" width=200px />
+
+For now, to test again stop and hit play again.  We'll respawn the player later in the tutorial.
+
+
+</details>
+<details><summary>What is a C# extension method and why use it?</summary>
+
+Extension methods are a way of adding additional methods to a class you don't own.  In this example, Unity has a class LayerMask.  That class does not offer an easy way to determine if a layer is part of that LayerMask.  Using extensions, we are able to create an 'Includes' method that then can be used as if Unity had written it for us.
+
+This allows us to focus on intent and forget the gory details.  For example this statement:
+
+```csharp
+if((layersToKill.value & 1 << gameObjectWeJustHit.layer) > 0) 
+...
+```
+
+Can now be written like so, which should be easier for people to follow.
+
+```csharp
+if(layersToKill.Includes(gameObjectWeJustHit.layer)) 
+...
+```
+
+</details>
+<details><summary>What is this '& 1 <<' black magic?</summary>
+
+Bitwise operations... which are beyond the scope of this tutorial.  To learn more, google 'bit shifting' and 'bitwise and'.
+
+</details>
+
+
+
+## Rotate the character when he walks the other way
+
+Flip the character's sprite when he switches between walking left and walking right.
+
+<details open><summary>How</summary>
+
+ - Create a C# script "RotateWalkingEntity" under Assets/Code/Components/Movement.
+ - Select the character GameObject and add the RotateWalkingEntity component.
+ - Paste in the following code:
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Rotates an entity based on it's current horizontal velocity.
+/// 
+/// This causes entities to face the direction they are walking.
+/// </summary>
+[RequireComponent(typeof(Rigidbody2D))]
+public class RotateWalkingEntity : MonoBehaviour
+{
+  /// <summary>
+  /// The rotation that's applied when looking left (vs right).
+  /// </summary>
+  /// <remarks>
+  /// Cached here for performance.
+  /// </remarks>
+  static readonly Quaternion backwardsRotation = Quaternion.Euler(0, 180, 0);
+
+  /// <summary>
+  /// Used to control movement.
+  /// </summary>
+  /// <remarks>
+  /// Cached here for performance.
+  /// </remarks>
+  Rigidbody2D myBody;
+
+  /// <summary>
+  /// The direction we are currently walking, 
+  /// used to know when we turn around.
+  /// </summary>
+  /// <remarks>
+  /// Defaults to true as our entities are configured facing right.
+  /// </remarks>
+  bool _isGoingRight = true;
+
+  /// <summary>
+  /// The direction we are currently walking.
+  /// When changed, flips the rotation so the entity is facing forward.
+  /// </summary>
+  bool isGoingRight
+  {
+    get
+    {
+      return _isGoingRight;
+    }
+    set
+    {
+      if(isGoingRight == value)
+      { // The value is not changing
+        return;
+      }
+
+      // Flip the entity
+      transform.rotation *= backwardsRotation;
+      _isGoingRight = value;
+    }
+  }
+
+  /// <summary>
+  /// A Unity event, called before this GameObject is instantiated.
+  /// </summary>
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+    // Check if we are currently facing right
+    isGoingRight = Vector2.Dot(Vector2.right, transform.right) > 0;
+    Debug.Assert(myBody != null);
+  }
+
+  /// <summary>
+  /// A Unity event, called each frame.
+  /// 
+  /// Updates the entities rotation.
+  /// </summary>
+  protected void Update()
+  {
+    float xVelocity = myBody.velocity.x;
+    // If there is any horizontal movement
+    if(Mathf.Abs(xVelocity) > 0.001)
+    { 
+      // Determine the current walk direction
+      // This may rotate the sprite c/o
+      // the smart property above.
+      isGoingRight = xVelocity > 0;
+    }
+  }
+}
+```
+
+</details>
+
+<details><summary>What's a C# smart property?</summary>
+
+In C#, data may be exposed as either a Field or a Property.  Fields are simply data as one would expect.  Properties are accessed in code like a field is, but they are capable of more.
+
+In this example, when isGoingRight changes between true and false, the GameObject's transform is rotated so that the sprite faces the correct direction.  Leveraging the property changing to trigger the rotation change is an example of logic in the property making it 'smart'.
+
+There are pros and cons to smart properties.  For example, one may argue that including the transform change when isGoingRight is modified hides the mechanic and makes the code harder to follow.  There are always alternatives if you prefer to not use smart properties.  For example:
+
+```csharp
+bool isGoingRightNow = xVelocity > 0;
+if(isGoingRight != isGoingRightNow) 
+{
+  transform.rotation *= backwardsRotation;    
+  isGoingRight = isGoingRightNow;
+}
+```
+
+</details>
+
+<details><summary>What's a Quaternion?</summary>
+
+A Quaternion is how rotations are stored in a game engine.  They represent the rotation with (x, y, z, w) values, stored in this fashion because that it is an effecient way to do the necessary calculations when rendering on object on screen.
+
+You could argue that this is overkill for a 2D game as in 2D the only rotation that may be applied is around the Z axis, and I would agree.  However remember that Unity is a 3D game engine.  When creating a 2D game, you are still in a 3D environment.  Therefore under the hood, Unity still optimizes its data for 3D.
+
+Quaternions are not easy for people to understand.  When we think of rotations, we typically think in terms of 'Euler' (pronounced oil-er) rotations.  Euler rotations are degrees of rotation around each axis, e.g. (0, 0, 30) means rotate the object by 30 degrees around the Z axis.
+
+In the inspector, modifying a Transform's rotation is done in Euler.  In code, you can either work with Quatenions directly or use Euler and then convert it back to Quatenion for storage.
+
+Given a Quatenion, you can calculate the Euler value like so:
+
+```csharp
+Quaternion myRotationInQuaternion = transform.rotation;
+Vector3 myRotationInEuler = myRotationInQuaternion.eulerAngles;
+```
+
+Given an Euler value, you can calculate the Quatenion:
+
+```csharp
+Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
+```
+
+Quaternions may be combined using Quaternion multiplication:
+
+```csharp
+Quaternion rotationOfZ60Degrees 
+  = rotationOfZ30Degrees * rotationOfZ30Degrees;
+```
+
+</details>
+
+<details><summary>How does Dot product work?</summary>
+
+The Dot product is a fast operation which can be used to effeciently determine if two directions represented with Vectors are facing the same (or a similiar) way.
+
+In the visualization below, we are rotating two ugly arrows.  These arrows are pointing in a direction and we are using Vector2.Dot to compare those two directions.  The Dot product is shown as we rotate around.
+
+<img src="http://i.imgur.com/XrjcWQm.gif" width=200px />
+
+A few notables about Dot products:
+
+ - '1' means the two directions are facing the same way.
+ - '-1' means the two directions are facing opposite ways.
+ - '0' means the two directions are perpendicular.
+ - Numbers smoothly transition between these points, so .9 means that the two directions are nearly identical.
+ - When two directions are not the same, the Dot product will not tell you which direction an object should rotate in order to make them align - it only informs you about how similar they are at the moment.  
+
+For this visualization, we are calculating the Dot product like so:
+
+```csharp
+Vector2.Dot(gameObjectAToWatch.transform.up, gameObjectBToWatch.transform.up);
+```
+
+</details>
+<details><summary>Why not compare to 0 when checking if there is no movement?</summary>
+
+In Unity, numbers are represented with the float data type.  Float is a way of representing decimal numbers but is a not precise representation like you may expect.  When you set a float to some value, internally it may be rounded ever so slightly.
+
+The rounding that happens with floats allows operations on floats to be executed very quickly.  However it means we should never look for exact values when comparing floats, as a tiny rounding issue may lead to the numbers not being equal.
+
+In the example above, as the velocity approaches zero, the significance of if the value is positive or negative, is lost.  It's possible that if we were to compare to 0 that at times the float may oscilate between a tiny negative value and a tiny positive value causing the sprite to flip back and forth.
+
+</details>
 <br>
 <br>
 <br>
@@ -359,25 +681,27 @@ As discussed in chapter 1, Unity encourages a component based solution.  This me
 
 
 
+- animation walk speed
 
-==
+## Restrict movement to stay on screen
+
+Create KeepWalkMovementOnScreen
 
 ## Rotate to match the floor's angle
 
 Create a Feet with isGrounded and Quaternion floorRotation. 
 Create a RotateToMatchFloorWhenGrounded
 
-## Restrict movement to stay on screen
-
-Create KeepWalkMovementOnScreen
 
 
+- Sound effects
 
 
 
-- facing direction (flip sprite)
-- walk speed (maybe with jump)
- - kill player
+
+
+
+
 
 
 # Add the spike ball enemy
