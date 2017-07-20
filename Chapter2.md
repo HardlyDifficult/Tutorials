@@ -467,7 +467,13 @@ Bitwise operations... which are beyond the scope of this tutorial.  To learn mor
 
 </details>
 
+## Spawn explosion when the player dies
 
+TODO
+
+## Explosion sound effect
+
+TODO
 
 ## Rotate the character when he walks the other way
 
@@ -654,81 +660,97 @@ The rounding that happens with floats allows operations on floats to be executed
 In the example above, as the velocity approaches zero, the significance of if the value is positive or negative, is lost.  It's possible that if we were to compare to 0 that at times the float may oscilate between a tiny negative value and a tiny positive value causing the sprite to flip back and forth.
 
 </details>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-
-
-
-
-
-
-- animation walk speed
 
 ## Restrict movement to stay on screen
 
-Create KeepWalkMovementOnScreen
-
-## Rotate to match the floor's angle
-
-Create a Feet with isGrounded and Quaternion floorRotation. 
-Create a RotateToMatchFloorWhenGrounded
-
-
-
-- Sound effects
+TODO
 
 
 
 
 
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 
 
 
-# Add the spike ball enemy
 
 
-Create KillOnContactWithPlayer
+
+===
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 DieOnBumpers?
 
-SuicideWhenPlayerDies.
 
-Fly Guy too?
 
 ---------
 
+
+Fly Guy too
 
 ## Jump
 
 JumpMovement
 
+## Prevent double jump
+
+
+## Rotate to match the floor's angle
+(or with jumping)
+
+Create a Feet with isGrounded and Quaternion floorRotation. 
+Create a RotateToMatchFloorWhenGrounded
+
+
 ## Add Platformer Effect to platforms
+
+
 
 ## Ladders
 
 LadderMovement, for character and spike ball.
 
--------
+
+====
+
+
+## animation walk speed
+ TODO
 
 # Character Animations
  - Jump
@@ -737,7 +759,8 @@ LadderMovement, for character and spike ball.
  - Dance
 
 PlayerAnimator
-DeathEffectThrobToDeath
+Player DeathEffectThrobToDeath
+other death effects?
 
 # Intro
 Character fades in via AppearInSecondsAndFade
@@ -745,8 +768,10 @@ Character fades in via AppearInSecondsAndFade
 + other intro effects
  - Cloud and animation
 
+end of level / respawn
 
-
+## SuicideWhenPlayerDies.
+(or with end of level sequence)
 
 
 
@@ -797,13 +822,5 @@ Character fades in via AppearInSecondsAndFade
 
 TODO link to web build and git / source for the example up to here
 
-
-
-
-
- - Ladders
- - Kill on bumpers when below character
- - Death effect (when killed via hammer)
- - Suicide when player dies (like restart level effects)
 
 
