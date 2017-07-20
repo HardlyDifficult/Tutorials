@@ -1,27 +1,29 @@
 # 2D Platformer Tutorial for Unity 2017
 
-[Demo of the game](https://hardlydifficult.com/Kong/index.html) we are creating.
+TODO intro.
 
-Target audience: we expect you know some coding and can follow along with C# examples.  New concepts are introduced along the way to help beginners and intermediate developers.  No experience with Unity or other game engines is required.
+[Demo of the game](https://hardlydifficult.com/Kong/index.html) we are creating. TODO update to final build.
+
+Target audience: we try to assume little without boring those with experience.  We expect you know some coding and can follow along with C# examples.  New concepts are introduced along the way to help beginners and intermediate developers.  No experience with Unity is required.
 
 This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
 
 TODO
- - Intro
  - Image size is all over the place
  - say links are included when relevant er something.
  - Target character count on scripts is 65
 
 
 
-# 1) Create a 2D project and layout platforms - TODO
+# 1) Create a game with enemies spawning
 
-TODO part 1 video link
+In chapter 1, we create a 2D game in Unity with spiked balls spawning at random intervals from an evil cloud.  They roll across platforms and fall from level to level.
 
-TODO
-Start a 2D project and layout platforms for Level1.  After this section, the game should look something like this:
+TODO tutorial video link
 
 <img src="http://i.imgur.com/31l9mA1.gif" width=50% />
+
+TODO demo build
 
 ## Start a 2D project
 
@@ -53,7 +55,7 @@ Presenting the 2D vs 3D option when you create a new project suggests this is a 
 
 ## Save scene
 
-When you created a project a default scene was created as well.  Save it as "Level1", as that's where this tutorial begins.
+When you created the project, a default scene was created as well.  Save it as "Level1" as that's where this tutorial begins.
 
 <details><summary>How</summary>
 
@@ -78,7 +80,7 @@ Unity may crash.  I recommend adding an editor script which automatically saves 
 <details><summary>How</summary>
 
  - Right click in the 'Project' Assets folder -> Create -> Folder and name it "Editor".
- - Create -> C# Script and name it "AutoSave.cs".
+ - Create -> C# Script and name it "AutoSave".
  - Paste in the source code below.
  
 ```csharp
@@ -95,7 +97,8 @@ using UnityEditor.SceneManagement;
 public class AutoSave
 {
   /// <summary>
-  /// Called automatically c/o InitializeOnLoad.  
+  /// Called automatically before the game runs
+  /// c/o InitializeOnLoad.  
   /// </summary>
   static AutoSave()
   {
@@ -123,7 +126,7 @@ public class AutoSave
 <hr></details>
 <details><summary>What about performance?</summary>
 
-As an editor script, this logic is not included in the game you release.  Saving is incremental, so there is very little time wasted when there is nothing new to save.  Unless you're one of the lucky ones who never sees Unity crash, this script is absolutely worth the time tradeoff.
+As an editor script, this logic is not included in the game you release.  Saving is incremental so there is very little time wasted when there is nothing new to save.  Unless you're one of the lucky ones who never sees Unity crash, this script is absolutely worth the time tradeoff.
 
 
 <hr></details>
@@ -136,7 +139,7 @@ Everything under a folder named "Editor" is an editor script, including files in
  - "[Resources](https://docs.unity3d.com/ScriptReference/Resources.html)": Assets bundled with the game, available for loading via code.  Note Unity [recommends using resources only for prototypes](https://unity3d.com/learn/tutorials/temas/best-practices/resources-folder) - the preferred solution is [AssetBundles](https://docs.unity3d.com/Manual/AssetBundlesIntro.html). 
  
 The following are additional special folder names only considered when in the root Assets directory. e.g. Assets/Gizmos is a special directory but Assets/Code/Gizmos could hold anything.
- - "[Standard Assets](https://docs.unity3d.com/Manual/HOWTO-InstallStandardAssets.html)": These are optional assets and scripts available from Unity that you can add to your project anytime.
+ - "[Standard Assets](https://docs.unity3d.com/Manual/HOWTO-InstallStandardAssets.html)": These are optional assets and scripts available from Unity that you can add to your project anytime by right clicking in the Assets directory and selecting from 'Import Package'.
  - "[Editor Default Resources](https://docs.unity3d.com/ScriptReference/EditorGUIUtility.Load.html)": A resources directory only available to Editor scripts so you can have assets appear in the editor for debugging without increasing the game's built size.
  - "[Gizmos](https://docs.unity3d.com/ScriptReference/Gizmos.html)": Editor-only visualizations to aid level design and debugging in the 'Scene' view.
  - "[Plugins](https://docs.unity3d.com/Manual/Plugins.html)": Dlls to include, typically from 3rd party libraries.
@@ -147,19 +150,18 @@ Be sure you do not use folders with these names anywhere in your project unless 
 <hr></details>
 <details><summary>What's InitializeOnLoad</summary>
 
-[InitializeOnLoad](https://docs.unity3d.com/ScriptReference/InitializeOnLoadAttribute.html) is an attribute which works in the UnityEditor only to enables the script before the game begins.
+InitializeOnLoad is an attribute which enables the script.  The static constructor of any class with this attribute is executed before anything else in the game.
 
-
-aoeu
+InitializeOnLoad is an editor only script and found under the UnityEditor namespace.
 
 </details>
 
 
-<details><summary>When and How do you trigger a save?</summary>
+<details><summary>When and how do you trigger a save?</summary>
  
-[EditorApplication.playmodeStateChanged](https://docs.unity3d.com/ScriptReference/EditorApplication-playmodeStateChanged.html) events let you know anytime play starts and stops.  There are actually several state changes involved, we use [EditorApplication.isPlaying](https://docs.unity3d.com/ScriptReference/EditorApplication-isPlaying.html) to avoid extra save calls (saving only if the game is not in play mode).
+UnityEditor.EditorApplication.playmodeStateChanged events let you know anytime play starts and stops.  There are actually several state changes involved, we use UnityEditor.EditorApplication.isPlaying to avoid extra save calls (saving only if the game is not in play mode).
 
-We save with [EditorSceneManager.SaveOpenScenes()](https://docs.unity3d.com/ScriptReference/SceneManagement.EditorSceneManager.SaveOpenScenes.html) which will save your scene and any project changes.
+We save with UnityEditor.SceneManagement.EditorSceneManager.SaveOpenScenes() which will save your scene and any project changes.
 
 You can confirm the save is working by noting the * in Unity's title.  This * indicates unsaved changes and should now go away everytime you click play.
 
@@ -214,32 +216,6 @@ public class MyClassName
 }
 ```
 <hr></details>
-<details><summary>What's a C# static method?</summary>
-
-A static method in C# is one that may be called without first instantiating an object for that class.  Static methods may only access static data in that class (static data is data which is shared across all objects).
-
-```csharp
-public class MyClassName
-{
-  static int callCount;
-  public static void MyMethod()
-  {
-    callCount++; 
-  }
-}
-
-public class AnotherClass
-{
-  public void Run()
-  {
-    // Call MyMethod without creating 
-    // an object for MyClassName.
-    MyClassName.MyMethod();
-  }
-}
-```
-
-<hr></details>
 <details><summary>What's a C# delegate?</summary>
 
 A delegate in C# is an object representing method(s) to call at a later time. You may encounter delegates under the following names: Events, Action, Func, and delegate. Under the hood these are all implemented with a 'multicast delegate'.  
@@ -250,13 +226,13 @@ When a method is added to a delegate to be called later, this is referred to as 
 EditorApplication.playmodeStateChanged += OnPlaymodeStateChanged;
 ```
 
-If the owner of the delegate (in the example above that's EditorApplication) may outlive the subscriber, the subscribe should unsubcribe when it's destroyed.  Also any time you are no longer interested in future updates, unsubscribe.  We do this with -= to remove our method and leave the remaining methods subscribed (if there are any).
+If the owner of the delegate (in the example above that's EditorApplication) may outlive the subscriber, the subscriber should unsubcribe when it's destroyed.  Also, any time you are no longer interested in future updates, unsubscribe.  We do this with -= to remove our method and leave any remaining methods subscribed.
 
 ```csharp
 EditorApplication.playmodeStateChanged -= OnPlaymodeStateChanged;
 ```
 
-Events are a common use case for delegates.  For example, you may have a GameManager with a field for Points include an event "onPointsChange".  Other components/systems in the game, such as Achievements and the points UI, may subscribe to the onPointsChange event.  When a player earns points, a method in Achievements is then called which can consider awarding a high score achievement and a method in the points UI is called to refresh what the player sees on-screen.  This way those components only need to refresh when something has changed as opposed to checking the current state each frame.
+Events are a common use case for delegates.  For example, you may have a GameManager with a field for Points include an event "onPointsChange".  Other components/systems in the game, such as Achievements and the UI, may subscribe to the onPointsChange event.  When a player earns points, a method in Achievements is then called which can consider awarding a high score achievement and a method in the UI is called to refresh what the player sees on-screen.  This way those components only need to refresh when something has changed as opposed to checking the current state each frame.
 
 ```csharp
 using System;
@@ -314,7 +290,7 @@ Add a sprite sheet for the platform to the Assets directory.  We are using [Kenn
 <details><summary>How</summary>
 
 
- - Right click in the 'Project' Assets directory -> 'Create Folder' named "Art"  (optional).
+ - Right click in the 'Project' Assets directory -> Create Folder named "Art"  (optional).
    - You can rename folders by selecting and pressing F2.
  - Drag/drop the sprite sheet (or an entire folder of art) into the folder you just created.
    - If you have a zip file, you may need to unzip to a temp directory before drag/drop will work.
@@ -356,18 +332,7 @@ Slice the sprite sheet in order to access each individual sprite within.
 <img src="http://i.imgur.com/hA2cMfv.png" width=50% />
 
 - Click 'Slice' button
-- Click 'Apply' and close the 'Sprite Editor'
-
-<hr></details>
-<br>
-<details><summary>Could I use other slice method types?</summary>
-
-The goal is to slice the sprite sheet, any method your comfortable with is fine.  Options include:
-
- - 'Automatic' which sometimes works (but does not for the spritesheet used in this example).
- - 'Grid By Cell Size' allows you to enter the size of each sprite in the sheet directly, e.g. 128x128.
- - 'Grid By Cell Count' allows you to simply count how many rows and columns you see in the sheet (vs maybe guess and checking the Cell Size).
-
+- Click 'Apply' and close the Sprite Editor 
 
 <hr></details>
 <details><summary>What does slicing achieve?</summary>
@@ -387,7 +352,7 @@ After closing the 'Sprite Editor' and applying changes you can expand the sprite
 
 
 
-## Add the platform's middle segment to the Scene
+## Add the platform's middle segment to the scene
 
 Add a sprite to the scene representing the middle segment of a platform.  We are using spritesheet_ground/spritesheet_ground_72.
 
@@ -396,30 +361,27 @@ Note: there may be visual artifacts which we will address below.
 <details><summary>How</summary>
 
  - Click the arrow on the sprite sheet in your Assets/Art directory (this displays each individual sliced image).
- - Click and drag the platform sprite you want to use into the 'Hierarchy' tab.  We are using "spritesheet_ground_72". 
+ - Click and drag the platform sprite you want to use into the 'Hierarchy' tab.  We are using spritesheet_ground_72. 
  
 <img src="http://i.imgur.com/kZC4i6d.png" width=50% />
 
 This creates a GameObject with a SpriteRenderer component for that sprite.
 
 <hr></details>
-<details><summary>What's a GameObject and Transform?</summary>
+<details><summary>What's a GameObject, Transform, and Component?</summary>
 
 Everything you see and interact with in a game is driven by GameObjects.  Typically a GameObject represents a single logical object in the world (e.g. a character).  It may be composed of child GameObjects, each responsible for part of the display and/or behaviour. It may also hold various components.  
-
-A Transform component manages the GameObject's position, rotation and scale.  Every GameObject, including child GameObjects, have a Transform. Occasionally you will encounter a GameObject that has nothing rendered on screen.  In these cases the Transform is often completely ignored but may not be removed.
-
-<hr></details>
-<details><summary>What's a Component?</summary>
 
 A component is a set of logic (i.e. code) which may be added to a GameObject, or child GameObject, and is exposed in the 'Inspector' tab for the GameObject you have selected in the 'Hierarchy'.  A GameObject may have any number of components and those components may by configured to customize the behaviour for that specific object.  
 
 Unity has a number of components available out of the box, we will be using several Unity components in this tutorial and will be making many custom components as well.
 
+A Transform component manages the GameObject's position, rotation and scale.  Every GameObject, including child GameObjects, have a Transform. Occasionally you will encounter a GameObject that has nothing rendered on screen.  In these cases the Transform is often completely ignored but may not be removed.
+
 <hr></details>
 <details><summary>What's a SpriteRenderer?</summary>
 
-SpriteRenderer is a Unity component which renders a sprite on screen.  Select the GameObject in the 'Hierarchy' to view the SpriteRenderer component for this object in the 'Inspector'.  Here sereval options are available for modifying how the sprite is rendered.  For example:
+SpriteRenderer is a Unity component which renders a sprite on screen.  Select the GameObject in the 'Hierarchy' to view the SpriteRenderer component for this object in the 'Inspector'.  Here several options are available for modifying how the sprite is rendered.  For example:
 
  - Sprite: This is the sprite image to render.  It was populated automatically when you created the GameObject with drag/drop.
  - Color: White is the default, displaying the sprite as it was created by the artist.  Changing this color modifies the sprite's appearance.  You can also use the alpha value here to make a sprite transparent.
@@ -434,7 +396,7 @@ SpriteRenderer is a Unity component which renders a sprite on screen.  Select th
 
 Update the platform's SpriteRenderer to Draw Mode: Tiled and adjust the width so we can begin to design the level.
 
-Note: a warning will appear in the inspector and there may be visual artifacts which we will address below.
+Note: a warning may appear in the inspector and there may be visual artifacts which we will address below.
 
 <details><summary>How</summary>
 
@@ -445,7 +407,7 @@ Note: a warning will appear in the inspector and there may be visual artifacts w
 
 <img src="http://i.imgur.com/MIgzjdO.png" width=50% />
 
-You should see the platform sprite get wider, repeating it's pattern (vs stretching).
+You should see the platform sprite get wider, repeating it's pattern.
 
 <hr></details>
 <details>
@@ -471,18 +433,17 @@ Update the sprite sheet's import settings to use filter mode point, preventing s
 <img src="http://i.imgur.com/B0nqf75.png" width=50% />
 
 <hr></details>
-<details><summary>Why use Point and not the default?</summary>
+<details><summary>Why use Point and not the default of Bilinear?</summary>
 
-This (and most) sprite sheets have each object touching the one next to it.  Filter Mode Point prevents blending happening between one sprite and it's neighbor.  The blending that occurs with other modes besides Point may lead to random lines showing up on screen.  For example:
-
-<img src="http://i.imgur.com/ZKqg5JP.png" width=50% />
-
-Additionally the filter mode blurs the image a bit in attempt to make smooth lines.  Often for a 2D game, this effect is not desirerable.  Here's an example with the character sprite we will be using.
+Filter mode of Bilinear or Trilinear blurs the image a bit in attempt to make smooth lines.  Often for a 2D game, we want control down to the pixel and this effect is not desirerable.  Here's an example with the character sprite we will be using:
 
 <img src="http://i.imgur.com/AYyx3Ma.png" width=150px />
 
 <img src="http://i.imgur.com/8wMlM1S.png"  width=150px />
 
+For sprite sheets, often each object is touching the one next to it.  Filter Mode Point prevents blending happening between one sprite and it's neighbor.  The blending that occurs with other modes besides Point may lead to random lines showing up on screen.  For example:
+
+<img src="http://i.imgur.com/ZKqg5JP.png" width=50% />
 
 <hr></details>
 
@@ -500,9 +461,9 @@ Update the sprite sheet's import settings to use mesh type full rect since we wi
 
 <hr></details>
 
-<details><summary>Why use Full Rect and not the default?</summary>
+<details><summary>Why use Full Rect and not the default of Tight?</summary>
 
-When using tiling on a sprite, Unity recommends updating the sprite sheet to use "Full Rect".  I don't have an example of issues that may arrise from using "Tight" instead, but here is the warning from Unity recommending "Full Rect":
+When using tiling on a sprite, Unity recommends updating the sprite sheet to use 'Full Rect'.  I don't have an example of issues that may arrise from using 'Tight' instead, but here is the warning from Unity recommending 'Full Rect':
 
 <img src="http://i.imgur.com/e9jE83B.png" width=50% />
 
@@ -529,11 +490,13 @@ The highlighted Level is what you are testing with ATM.  It will default to Ultr
 <hr></details>
 <details><summary>What is Anti Aliasing and why disable it?</summary>
 
-Anti Aliasing is a technique used to smooth jagged edges. 
+Anti Aliasing is a technique used to smooth jagged edges as shown here:
 
 <img src="https://qph.ec.quoracdn.net/main-qimg-10856ecbea4f439fb9fb751d41ff704a" width=50% />
 
-When working with sprites, we often want control over images down to the pixel.  Anti-aliasing may lead to unexpected gaps or distortions when sprites are side by side.  Here is an example that appears when using tiling:
+Like changing the filter mode to Point, we do this when working with sprites because we often want control over images down to the pixel.
+
+Anti-aliasing may lead to unexpected gaps or distortions when sprites are side by side.  Here is an example that appears when using tiling and Anti Aliasing is enabled:
 
 <img src="http://i.imgur.com/vY5YmVj.png" width=50% />
 
@@ -546,6 +509,8 @@ When working with sprites, we often want control over images down to the pixel. 
 ## Set a 5:4 Aspect ratio
 
 Change the aspect ratio to 5:4 as we want to simplify and always show the same amount of the world on screen.
+
+Note: this option only impacts what you see in the editor.  When we cut a build at the end of this chapter, we'll update the supported resolutions to match.  
 
 <details><summary>How</summary>
 
@@ -565,11 +530,6 @@ We are building a game with a fixed display.  The camera is not going to follow 
 Different resolutions will scale the display larger or smaller but everyone will see the same amount of the world.
 
 5:4 was an arbitrary choice, use anything you'd like.
-
-<hr></details>
-<details><summary>Does this impact players of the game as well?</summary>
-
-No, this option only impacts what you see in the editor.  When we cut a build later in this tutorial, we'll update the supported resolutions to match.  
 
 <hr></details>
 
@@ -595,8 +555,7 @@ In the Game tab, the platform should look smaller now.  In the Scene, the white 
 
 We don't want perspective in a 2D game because in order to make this possible the edges may appear distorted. For example:
 
-<img src="http://i.imgur.com/5xCIowM.png" width=50% />
-<img src="http://i.imgur.com/6rqvWDA.png" width=50% />
+<img src="http://i.imgur.com/bxV8AN1.gif" width=300px />
 
 The amount of the world visible with a perspective camera is driven by it's position.  
 
@@ -1467,6 +1426,12 @@ Every possible combination of layers is exposed as a checkbox in settings, inclu
 
 </details>
 
+
+## Test!
+
+ - Try adjusting aoeu
+ - Cut a test build (resolution)
+ - Debugging FAQ?
 
 
 [Unity Project / Source Code](https://github.com/hardlydifficult/Unity2DPlatformerTutorial/tree/Part1) for Part 1.  The game does not do much yet, but here is a [demo build](https://hardlydifficult.com/PlatformerTutorialPart1/index.html) as well.
