@@ -8,6 +8,10 @@ TODO review pics given part 1 changes
  - Suicide when player dies (like restart level effects)
 
 
+Hit play and the character should now land on a platform... but may fall over.
+
+<img src="http://i.imgur.com/T0fdwa1.gif" width=150px />
+
 
 # 2) Add a Character and Movement Mechanics
 
