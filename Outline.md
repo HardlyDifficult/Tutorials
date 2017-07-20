@@ -551,19 +551,11 @@ In the Game tab, the platform should look smaller now.  In the Scene, the white 
 <hr></details>
 <details><summary>Why change 'Size' and not camera position?</summary>
 
-2D games by default use 'Projection: Orthographic'.  This means that the camera does not consider perspective (the ability to see more of the world the further it is from your eye) which ensures that we see the edge of the screen head on rather than at an angle. 
+2D games by default use 'Projection: Orthographic'.  This means that the camera does not consider perspective, the ability to see more of the world the further it is from your eye. The amount of the world visible with a perspective camera is driven by it's position.  
 
-We don't want perspective in a 2D game because in order to make this possible the edges may appear distorted. For example:
-
-<img src="http://i.imgur.com/bxV8AN1.gif" width=300px />
-
-The amount of the world visible with a perspective camera is driven by it's position.  
-
-For an Orthographic camera, it's driven by a special 'Size' property. 'Size' defines how much of the world is visible vertically.  Then the aspect ratio is used to determine how much to display horizontally.  
+For an Orthographic camera, the amout of the world visible is driven by a special 'Size' property. 'Size' defines how much of the world is visible vertically.  Then the aspect ratio is used to determine how much to display horizontally.  
 
 <hr></details>
-
-
 
 
 
@@ -576,11 +568,11 @@ Create a new parent GameObject for the platform sprite.
 
  - Right click in 'Hierarchy' and 'Create Empty'.
  - Rename to "Platform".
- - Ensure the Transform is at defaults (position 0, rotation 0, scale 1) for both the Platform and the sprite "spritesheet_ground_72".
+ - Ensure the Transform is at defaults (position 0, rotation 0, scale 1) for both the Platform and the sprite spritesheet_ground_72.
 
 <img src="http://i.imgur.com/FAkZf1H.png" width=50% />
 
- - Drag and drop the sprite onto "Platform" (it should appear indented under "Platform")
+ - Drag and drop the sprite onto the "Platform" GameObject (it should appear indented under "Platform" in the Hierarchy)
 
  <img src="http://i.imgur.com/XOve0Ap.png" width=50% />
 
@@ -610,7 +602,7 @@ Add sprites with rounded edges to the left and right of the platform.  We are us
 
  - Copy the "Platform" GameObject, paste and rename to "PlatformWithEdges".
  - You may want to move these to separate them on-screen (making it easier to configure each).  When you do, be sure the parent GameObject is selected and not the child sprite.
- - Drag the each of edge sprites from the 'Project' tab Assets/spritesheet_ground into the 'Hierarchy' under the "PlatformWithEdges" GameObject (they should appear indented).  We're using "spritesheet_ground_79" and "spritesheet_ground_65".
+ - Drag the each of edge sprites from the 'Project' tab Assets/spritesheet_ground into the 'Hierarchy' under the "PlatformWithEdges" GameObject (they should appear indented).  We're using spritesheet_ground_79 and spritesheet_ground_65.
  - Confirm that each of the child sprites are still at 0 position, 0 rotation, and 1 scale.  The edge sprites may have an X position.
  - Select the rounded edge sprite (one of the child GameObjects) and use the move tool to position it away from the other sprites.
  - With the edge still selected, hold V to enable Vertex Snap mode.  A box appears for each anchor point (e.g. the corners of the sprite).  Hover over the top right corner and click and drag the box which appears.  It will snap perfectly with other anchor points in the world as show below.
@@ -627,49 +619,6 @@ There should now be four GameObjects in the world, as shown below.
 <hr></details>
 
 
-## Add BoxCollider2D to the Platforms
-
-Add a BoxCollider2D component with a .1 edge radius to each of the parent Platform GameObjects in the scene.
-
-<details><summary>How</summary>
-
- - Select a platform's parent GameObject.
- - Add Component -> "BoxCollider2D".
- - Set "Edge Radius' to '.1'
- - Click 'Edit Collider' and click/drag the box which appears so that the outer green line encapsulates the platform.
-
-<img src="http://i.imgur.com/Mu06f3o.gif" />
-
- - For the bottom platforms which are actually two connected parent platform GameObjects - allow the colliders to overlap some for a smooth experience when entities are walking from one to the next.
-
- <img src="http://i.imgur.com/cgfqZhY.gif" />
-
-Hit play and the character should now land on a platform... but may fall over.
-
-<img src="http://i.imgur.com/T0fdwa1.gif" width=150px />
-
-
-</details>
-<details><summary>What is a Collider?</summary>
-
-[Colliders](https://docs.unity3d.com/Manual/CollidersOverview.html) are components placed on GameObjects to define their shape for the purposes of physical collisions.  The collider shape may or may not align with the visuals on screen.
-
-Typically colliders match the shape of the art on screen.  For example, they are used to keep the character from falling through the floor or walking through walls, and to cause the character to die when they hit an enemy.
-
-Colliders may also be used as 'triggers' to detect something happening near an object without causing a physical reaction.  For example, an entity could have a second collider twice as large as the entity itself and use that to know when danger is approaching - causing the entity to run the other way.
-
-</details>
-<details><summary>Why not place colliders on the child GameObjects instead?</summary>
-
-Well, you could!  With GameDev, you'll find there are almost always various ways you could achieve a goal and pros/cons to each.  
-
-Since we are using BoxCollider2D and an Edge radius, getting our sprites to connect with a smooth surface for entities to walk over would be more challenging when the colliders are on the child sprite GameObjects themselves.  
-
-<img src="http://i.imgur.com/QTjSEt7.png" width=50% />
-
-Additionally, fewer colliders may improve your game's performance - however the difference here will not be noticeable.
-
-</details>
 
 
 ## Create a connected platform
@@ -693,8 +642,7 @@ Our level design calls for the bottom platform to rotate half way through.  Crea
 <hr></details>
 <details><summary>Why not use a single GameObject for this bottom platform?</summary>
 
-Soon in the tutorial we will be adding colliders to these platforms.  There are several ways this could be handled, as is always the case with GameDev, but the approach we will be using places BoxCollider2Ds on our Platforms' parent GameObjects.  This works great when the parent is a middle sprite segment along with a rounded corner sprite - but does not work as well when the platform changes it's rotation half way through.
-
+Up next we will be adding colliders to these platforms.  There are several ways this could be handled, as is always the case with GameDev. We will be placing BoxCollider2Ds on our Platforms' parent GameObjects.  This works great when the parent is a middle sprite segment along with a rounded corner sprite - but does not work as well when the platform changes it's rotation half way through.
 
 <hr></details>
 <details><summary>Why extend the platform beyond the edge of the screen?</summary>
@@ -707,6 +655,45 @@ The width of the world players are going to see is fixed so you could argue that
 <hr></details>
 
 
+## Add BoxCollider2D to the Platforms
+
+Add a BoxCollider2D component with a .1 edge radius to each of the parent Platform GameObjects in the scene.
+
+<details><summary>How</summary>
+
+ - Select a platform's parent GameObject.
+ - Add Component -> "BoxCollider2D".
+ - Set 'Edge Radius' to '.1'
+ - Click 'Edit Collider' and click/drag the box which appears so that the outer green line encapsulates the platform.
+    - Click and then hold Alt while adjusting the sides to pull both sides in evenly.
+
+<img src="http://i.imgur.com/rHhHSXL.gif" />
+
+ - For the bottom platforms which are actually two connected parent platform GameObjects - allow the colliders to overlap some for a smooth experience when entities are walking from one to the next.
+
+<img src="http://i.imgur.com/cgfqZhY.gif" />
+
+</details>
+<details><summary>What is a Collider?</summary>
+
+[Colliders](https://docs.unity3d.com/Manual/CollidersOverview.html) are components placed on GameObjects to define their shape for the purposes of physical collisions.  The collider shape may or may not align with the visuals on screen.
+
+Typically colliders match the shape of the art on screen.  For example, they are used to keep the character from falling through the floor or walking through walls, and to cause the character to die when they hit an enemy.
+
+Colliders may also be used as 'triggers' to detect something happening near an object without causing a physical reaction.  For example, an entity could have a second collider twice as large as the entity itself and use that to know when danger is approaching - causing the entity to run the other way.
+
+</details>
+<details><summary>Why not place colliders on the child GameObjects instead?</summary>
+
+Well, you could!  With GameDev, you'll find there are almost always various ways you could achieve a goal and pros/cons to each.  
+
+Since we are using BoxCollider2D and an Edge radius, getting our sprites to connect with a smooth surface for entities to walk over would be more challenging when the colliders are on the child sprite GameObjects instead of the parent Platform.  
+
+<img src="http://i.imgur.com/QTjSEt7.png" width=50% />
+
+Additionally, fewer colliders may improve your game's performance - however the difference here will not be noticeable.
+
+</details>
 
 
 ## Rinse and repeat to complete Level1 platforms
@@ -722,6 +709,7 @@ The basic steps are:
  - Copy a parent Platform to start from.
  - Modify the tile 'Width' as needed.  Platforms should extend off the screen a bit.
  - Use Vertex Snap to position the edge sprites.
+ - Update the colliders to match the platform visuals on screen.  They will need to be updated if the width or edges were changed.
  - Move and rotate the sprite by modifying the parent GameObject, leaving the children at position and rotation 0, with the exception of the corner sprites which have an X position.
 
 Optionally, you can rename the platform GameObjects and organize your platforms by placing them in a parent GameObject.  e.g.:
@@ -739,14 +727,14 @@ Optionally, you can rename the platform GameObjects and organize your platforms 
 
 ## Create a Spike Ball GameObject
 
-Add a sprite for the spike ball and drag it into the Hierarchy to create a GameObject.  Set filter mode Point and Order in Layer to -1.  We are using We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/spikeball1'.
+Add a sprite and GameObject for the spike ball.  Set filter mode to Point and Order in Layer to -1.  We are using We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/spikeball1'.
 
 <details><summary>How</summary>
 
  - Drag/drop the sprite into Assets/Art.
  - Set the 'Filter Mode: Point (no filter)'.
  - Drag the sprite into the 'Hierarchy' tab.  Rename to 'Spike Ball'.
- - Under the 'Sprite Renderer' component, update 'Order in Layer' to '-1'.
+ - Under the SpriteRenderer component, update 'Order in Layer' to '-1'.
 
 <img src="http://i.imgur.com/lIXupzs.png" width=150px />
 
@@ -763,7 +751,7 @@ Add a Rigidbody2D component to the spike ball to enable gravity.
  - Select the Spike Ball's GameObject.
  - In the 'Inspector', click 'Add Component' and select "Rigidbody2D".
 
-Hit play and watch the spike ball fall through the platforms and out of view.
+Hit play and watch the spike ball fall through the platforms and out of view:
 
 <img src="http://i.imgur.com/PuWWL3z.gif" width=50px />
 
@@ -831,14 +819,13 @@ Add additional BoxCollider2Ds offscreen to cause the spike balls to quickly turn
 
 <img src="http://i.imgur.com/mUv143i.png" width=150px />
 
-Hit play, the spike ball should hit the bumper and quickly reverse and accelerate the other direction.
+Hit play, the spike ball should hit the bumper and quickly reverse and then accelerate the other direction: 
 
 <img src="http://i.imgur.com/vMjWoia.gif" width=150px />
 
- - Copy paste the bumper and modify it's position so that each platform that may send a spike ball offscreen has a bumper.
-  - Change the Transform rotation Z to about '30' (times -1 from the other side).
+ - Copy paste the bumper and modify it's position and rotation so that each platform that may send a spike ball offscreen has a bumper.
  - Remove the bumper from the bottom left as we do not want spike balls to roll back on screen after reaching this point.
- - Optionally move each Bumper GameObject under a new parent empty GameObject "Bumpers" to keep the 'Hierarchy' organized.
+ - Optionally move each Bumper GameObject under a new parent empty GameObject "Bumpers" to keep the 'Hierarchy' organized, like we had done for Platforms.
 
  Your screen with bumpers should look something like this:
 
@@ -846,23 +833,15 @@ Hit play, the spike ball should hit the bumper and quickly reverse and accelerat
 
 </details>
 
-<details><summary>Why not do X instead?</summary>
-
-Go for it!  With GameDev there are always options.  The experience we are creating here allows the spike balls to travel offscreen and then back on.  This may not be the desired behaviour for your game.  
-
-Later in the tutorial we will be adding another enemy type which will handle the edge of the screen differently (not allowing them to travel offscreen at all).
-
-</details>
-
 
 ## Add a C# script to get the ball moving
 
-For the game, we  want the ball spawning in the top left.  But that's a flat surface so the ball does not roll down platforms.  Give it an initial Velocity of about (3, 0) and AngularVelocity of -500.
+For the game, we  want the ball spawning in the top left.  But that's a flat surface so the ball does not roll down platforms.  Give it an initial Velocity of (3, 0) and AngularVelocity of -500.
 
 <details><summary>How</summary>
 
- - In the 'Project' tab 'Assets/Code' directory, create a new directory "Components/Movement".
- - Right click -> 'Create' -> 'C# script' and name it "InitializeRigidbodyOnStart".
+ - In the 'Project' tab Assets/Code directory, create a new directory "Components/Movement".
+ - Right click -> Create -> C# script and name it "InitializeRigidbodyOnStart".
  - Select the spike ball, click 'Add Component' and select "InitializeRigidbodyOnStart".
  - Double click the script to open it in Visual Studio (or Monodevelop).
  - Copy the source below:
@@ -882,7 +861,7 @@ For the game, we  want the ball spawning in the top left.  But that's a flat sur
 public class InitializeRigidbodyOnStart : MonoBehaviour
 {
   /// <summary>
-  /// Cause the GameObject's rigidbody to start with a spin.
+  /// Cause the GameObject's rigidbody to start with this spin.
   /// </summary>
   [SerializeField]
   float startingAngularVelocity = -500;
@@ -914,19 +893,31 @@ public class InitializeRigidbodyOnStart : MonoBehaviour
 
 You could, but...  
 
-Unity encourages component based solutions.  Here's a good [wikipedia article on component based software engineering](https://en.wikipedia.org/wiki/Component-based_software_engineering).  Briefly, the advantages to this approach are:
+Unity encourages component based solutions, where you aim to offer a single mechanic per component.  Here's a good [wikipedia article on component based](https://en.wikipedia.org/wiki/Component-based_software_engineering) design.  Briefly, the advantages to this approach are:
 
  - Each script or component focuses on a single feature or mechanic, simplifying and making it easier to debug.
  - Components may be reused between different object types.  If we had one master SpikeBall component and then created a similar enemy with a few different mechanics, reusing logic would be more challanging and we might copy paste parts to our new enemy compoment instead. 
 
 </details>
+<details><summary>What's velocity and angularVelocity?</summary>
+
+A GameObject with a rigidbody may be moved with forces.  The Unity Physics engine uses these forces as inputs in order to calculate the object's position and rotation, considering other things in the world such as a wall blocking your path.  
+
+Unity follows the [Newton's Laws of Motion](https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion) - e.g. an object either remains at rest or continues to move at a constant velocity, unless acted upon by a force.
+
+There are various APIs for manipulating forces on a rigidbody.  This script will be setting initial values for:
+
+ - Velocity: the desired movement direction and speed.  Abstent any additional forces, 'Drag' decreases the velocity every frame until it reaches 0.
+ - Angular velocity: degrees per second to rotate the object.  Abstent any additional forces, 'Angular drag' will decrease this until it reaches 0.
+
+</details>
 <details><summary>What's SerializeField and why not use public instead?</summary>
 
-[SerializeField] exposes the object's field (piece of data) in the 'Inspector' tab.  The default value seen in the C# script becomes the default in the Inspector - however when the script runs, the value is whatever you set for that object in the Inspector. This allows you to change values per-object or have different values for a component which is used on various different object types.  You can also change values in the Inspector at runtime, which can be helpful while debugging.
+[SerializeField] exposes the object's field (data) in the 'Inspector' tab.  The default value seen in the C# script becomes the default in the Inspector - however when the script runs, the value is whatever you set for that object in the Inspector. This allows you to change values per-object or have different values for a component which is used on various different object types.  You can also change values in the Inspector at runtime, which can be helpful while debugging.
 
-Read [more about Serialization](https://docs.unity3d.com/Manual/script-Serialization.html).
+Read [more about Serialization in Unity](https://docs.unity3d.com/Manual/script-Serialization.html).
 
-Any public field is a SerializeField by default.  If you do not want a public field to be exposed in the inspector, you can add the [NonSerialized] attribute (using System;)  
+Any public field is a SerializeField by default.  If you do not want a public field to be exposed in the inspector, you can add the [NonSerialized] attribute (from the System namespace).  
 
 So why not just public instead of [SerializeField]?
 
@@ -942,39 +933,27 @@ The fields in question are often only leveraged inside the component itself.  Ot
 public class MyComponent ...
 ```
 
-When you add a component in the inspector which requires another and the required component is not already on that GameObject, Unity will automatically add it for you.
+When you add a component in the inspector which requires another, and the required component is not already on that GameObject, Unity will automatically add it for you.
 
 </details>
 <details><summary>What is MonoBehaviour / how is Start() called?</summary>
 
-Most of the scripts that you create in Unity will derive from MonoBehaviour.  [MonoBehaviour](https://docs.unity3d.com/ScriptReference/MonoBehaviour.html) is the base class for a GameObject component (scripts on entities in your world).  It allows you to execute logic every Update and respond collision events, etc.
+Most of the scripts that you create in Unity will derive from MonoBehaviour.  [MonoBehaviour](https://docs.unity3d.com/ScriptReference/MonoBehaviour.html) is the base class for a GameObject component (scripts on objects in your world).  It allows you to execute logic every Update (each frame) and respond collision events, etc.
 
 There are a lot of events available to MonoBehaviours.  In this example we are using Start which is called once per-object, when that object is first spawned in the world.
 
 Note that when implementing MonoBehaviour events, you do not use 'override' nor subscribe to the event.  Unity uses reflection based on the method signature instead to improve performance.  This creates an unintuative pattern for C# delevelopes but allows Unity to eliminate unncessary calls.  This optimization normally in development would be considered overkill but for a game engine this kind of thing adds up, particularly since there are typically hundreds of MonoBehaviours in the world.
 
 </details>
-<details><summary>What's velocity and angularVelocity?</summary>
-
-A GameObject with a rigidbody may be moved with forces.  The Unity Physics engine uses these forces as inputs in order to calculate the object's position and rotation, considering other things in the world such as a wall blocking your path.  
-
-Unity follows the [Newton's Laws of Motion](https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion) - e.g. an object either remains at rest or continues to move at a constant velocity, unless acted upon by a force.
-
-There are various APIs for manipulating forces on a rigidbody.  This script will be setting initial values for:
-
- - Velocity: the desired movement direction and speed.  Abstent any additional forces, 'Drag' acts like friction decreasing the velocity every frame until it reaches 0.
- - Angular velocity: degrees per second to rotate the object.  Abstent any additional forces, 'Angular drag' will decrease this until it reaches 0.
-
-</details>
 <details><summary>Why use protected on the Unity event?</summary>
 
-Protected is an access modifier in C# which ensures that the only way to call that method, or field, is from the same class or from a class that derives from it.  Unity will find events such as void Update() based on the signature, ignoring the access modifier - allowing you to use anything you'd like.
+Protected is an access modifier in C# which ensures that the only way to call that method, or field, is from the same class or from a class that derives from it.  Unity will find events such as Update() based on the signature, ignoring the access modifier - allowing you to use anything you'd like.
 
 Why protected and not private?
 
-When you are using inheritence and both the child and parent classes need to include an event such as void Update(), Unity will only call the child's implementation.  This can make it easy to miss that some events in the parent class have been overwritten (vs complemented by) the child.
+When you are using inheritence and both the child and parent classes need to include an event such as Update(), Unity will only call the child's implementation.  This can make it easy to miss that some events in the parent class have been overwritten (vs complemented by) the child.
 
-I recommend using protected on every Unity event so that the compiler can help avoid this mistake.  In the event the parent and child classes both have protected void Update(), you will get a compile warning about the conflict.  
+I recommend using protected on every Unity event so that the compiler can help avoid this mistake.  In the event the parent and child classes both have protected Update(), you will get a compile warning about the conflict.  
 
 If you want both child and parent called, update the methods as follows:
 
@@ -1035,13 +1014,13 @@ Encapsulation.  If we were to make these methods public, it suggests that other 
 
 </details>
 
-## Add a C# script to kill balls that fall off
+## Add a C# script to destroy balls that roll off
 
 After the ball rolls off the bottom platform, destroy the GameObject.
 
 <details><summary>How</summary>
 
- - Create a C# script "SuicideOutOfBounds" under Assets\Code\Components\Death\
+ - Create a C# script "SuicideOutOfBounds" under Assets\Code\Components\Death.
  - Select the spike ball, click 'Add Component' and select SuicideOutOfBounds.
  - Paste in the following code:
 
@@ -1091,7 +1070,7 @@ Play and the ball should now destroy itself when it falls off screen:
 
 When a GameObject is off screen, there is no attempt to render it so your GPU is not wasting time but Unity is still processing Physics and logic for any components on the GameObject.  In this case, once the GameObject has fallen off the bottom it will never return to the game.  
 
-We destroy it to save performance while the game is running.  Without this script, the endless stream of balls spawning and then falling off would be a 'memory leak'.  This means that you are wasting resources and over time the performance of your game may get worse.
+We destroy it to save performance while the game is running.  Without this script, the endless stream of balls spawning and then falling off would be a 'memory leak'.  This means that you are wasting resources and over time the performance of your game will get worse.
 
 </details>
 <details><summary>What is Destroy and why not Destroy(this)?</summary>
@@ -1100,6 +1079,8 @@ Destroy is a Unity method to remove something from the scene.  You can:
 
  - Destroy a component, causing the component to be removed from that GameObject (and stopping future event calls such as Update).  
  - Destroy a GameObject, causing that entire GameObject to be removed from the scene.
+
+For example:
 
 ```csharp
 using UnityEngine;
@@ -1128,19 +1109,21 @@ public class MyComponent : MonoBehaviour
 </details>
 <details><summary>What about an object pool?</summary>
 
-An object pool may be appropriate to use but we are not implementing it here for simplicity.  Additionally the performance gain for a game like this would be negligible.
+An object pool is an optimization technique which may be appropriate to use but we are not implementing it here for simplicity.  Additionally the performance gain for a game like this would be negligible.
 
 What is an object pool?
 
-An object pool is the programming term for reusing GameObjects.  So for this example, instead of destroying a GameObject that falls off screen we would instead have it spawn at the top and go through the entire level again.
+Instatiate (creating a new GameObject) is one of the most expensive calls you can make.  An object pool is the programming term for reusing objects instead of destroying and creating new ones.  
+
+For this example, instead of destroying a GameObject that falls off screen we would instead have it respawn at the top and go through the entire level again.
 
 When should an object pool be used?
 
-Objects which destroy and spawn again several times may warrent an object pool. There is overhead associated with having and using an object pool so it is not recommended for absolutely everything.  For example, a boss which is going to surface once should not be in an object pool.
+Objects which destroy and spawn again several times may warrent an object pool. There is overhead associated with having and using an object pool so it is not recommended for absolutely everything.  For example, a boss which is going to surface once in a game may not be a good choice to include in an object pool.
 
 How is an object pool implemented?
 
-Basically anytime we spawn a GameObject, we ask the object pool if there is one already available for us to use.  And when we destroy a GameObject, we would instead do gameObject.SetActive(false) and add to the object pool's list of available objects.  
+Basically anytime we spawn a GameObject, we ask the object pool if there is one already available for us to reuse.  And when we would have destroyed a GameObject, we would instead do gameObject.SetActive(false) and add it to the object pool's list of available objects.  
 
 For more, see [Catlike Coding's Object Pool tutorial](http://catlikecoding.com/unity/tutorials/object-pools/).
 
@@ -1150,15 +1133,15 @@ For more, see [Catlike Coding's Object Pool tutorial](http://catlikecoding.com/u
 
 ## Add the Evil Cloud to the scene
 
-Add a sprite for the evil cloud and create and scale a GameObject placed in the top left.  Set order in layer to 1. We are using We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/cloud' with filter mode Point.
+Add a sprite and GameObject for the evil cloud, place it in the top left and scale the size.  Set order in layer to 1. We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/cloud' with filter mode Point.
 
 <details><summary>How</summary>
 
  - Drag/drop the sprite into Assets/Art.
  - Set the 'Filter Mode: Point (no filter)'.
- - Drag the sprite into the 'Hierarchy' tab. Rename to 'Evil Cloud'.
+ - Drag the sprite into the 'Hierarchy' tab. Rename to "Evil Cloud".
  - Move the cloud to the top left of the screen.
- - Scale (evenly on all dimensions) the cloud to fit nicely.
+ - Scale the cloud (evenly on all dimensions) to fit nicely.
 
 <img src="http://i.imgur.com/fecCBCq.gif" width=200px />
 
@@ -1317,14 +1300,14 @@ When Start is called, the first line is printed ("Launch in T minus 3 seconds") 
 
 'yield' before the return is a special C# keyword used with enumerators.  It is marking your location in the method, allowing another class (in this example, Unity's internal logic), to resume the method from where it left off.
 
-WaitForSeconds is a Unity class used to define how long before the enumerator should be resumed.  There are many similar classes available such as WaitForSecondsRealtime, WaitForEndOfFrame, WaitForFixedUpdate, WaitForSeconds, WaitUntil, WaitWhile to give you more control over when the Coroutine is resumed.
+WaitForSeconds is a Unity class used to define how long before the enumerator should be resumed.  There are similar classes available: WaitForSecondsRealtime, WaitForEndOfFrame, WaitForFixedUpdate, WaitUntil, and WaitWhile to give you more control over when the Coroutine is resumed.
 
 Coroutines may be canceled before it's complete by calling StopCoroutine or StopAllCoroutines.  When a GameObject is destroyed, any Coroutines it had started are stopped.
 
 </details>
 <details><summary>What does Instantiate do?</summary>
 
-Clones an object or prefab, creating a new GameObject in the scene.  There are a few variations of the call you could use.
+Instantiate clones a GameObject or prefab, creating a new GameObject in the scene.  There are a few variations of the call you could use.
 
 To clone using the original's Transform (position, rotation, scale):
 ```csharp
@@ -1345,21 +1328,15 @@ Instantiate(thingToSpawn, gameObject);
 </details>
 <details><summary>How do you choose a random number?</summary>
 
-Unity provides a [convientent static class for getting random data](https://docs.unity3d.com/ScriptReference/Random.html).  For example:
+Unity provides a convientent static class for getting random data.  For example:
 
 ```csharp
 float randomNumber0To1 = UnityEngine.Random.value;
-```
-
-```csharp
 float randomNumberNeg10p5ToPos5 = UnityEngine.Random.Range(-10.5f, 5f);
-```
-
-```csharp
 Quaternion randomRotation = UnityEngine.Random.rotation;
 ```
 
-How is UnityEngine.Random different from System.Random?
+How is [UnityEngine.Random](https://docs.unity3d.com/ScriptReference/Random.html) different from System.Random?
 
 In addition to providing APIs which are convenient for games (such as .rotation), the UnityEngine.Random is accessed statically while the System.Random requires you to create an object first.
 
@@ -1398,20 +1375,63 @@ Add an Enemy layer for the balls and change the collision matrix to allow them t
  - Select the "Spike Ball" prefab under the 'Project' tab Assets/Prefabs.
  - In the inspector, click the dropdown next to 'Layer' in the top right and select "Enemy".
 
- http://i.imgur.com/KPvq22a.png
+ <img src="http://i.imgur.com/KPvq22a.png" width=150px />
 
  - Edit -> Project Settings -> Physics 2D.
- - Uncheck the box where "Enemy" meets "Enemy".
+ - Under the 'Layer Collision Matrix', uncheck the box where "Enemy" meets "Enemy".
    - If you hover to confirm, a tooltip should appear saying 'Enemy / Enemy'.
 
- http://i.imgur.com/JkjXpZN.png
+ <img src="http://i.imgur.com/JkjXpZN.png" width=150px />
 
 </details>
 <details><summary>What's a Layer and how's it different from a Tag?</summary>
 
-A layer is a number representing a category or type of object in your game.  The Unity editor allows you to associate a string with this value as well for convienence.  Layers can be used to effeciently include or exclude objects based off of their type.  For this reason, the physics matrix in Unity works with layers.
+A layer is a number representing a category or type of object in your game which may be compared to a LayerMask.  The Unity editor allows you to associate a string with this value as well for convienence.  Layers can be used to effeciently include or exclude objects based off of their type.  For this reason, the physics matrix in Unity works with layers.
 
-A tag is also a way of categorizing objects, but by string.  It's useful for more targeted use cases, such as identifying the MainCamera and the Player.
+To determine if a layer is included with in a LayerMask, you can do it like the following example.  Comparing to a LayerMask uses bit shifting and bitwise operations which are not intuative.  Later in the tutorial we'll create an extension method so we don't have to look at this ever again.
+
+```csharp
+using UnityEngine;
+
+public class MyComponent : MonoBehaviour
+{
+  protected void Start()
+  {
+    LayerMask mask = LayerMask.GetMask(new[] { "Water", "UI" });
+    if((mask.value & 1 << gameObject.layer) > 0)
+    {
+      // This gameObject is included in the LayerMask
+    } 
+    else
+    {
+      // This gameObject is NOT in the LayerMask
+    }
+  } 
+}
+```
+
+A tag is also a way of categorizing objects, but by string.  It's useful for more targeted use cases, such as identifying the MainCamera and the Player.  
+
+To check the tag, use CompareTag as shown here:
+
+```csharp
+using UnityEngine;
+
+public class MyComponent : MonoBehaviour
+{
+  protected void Start()
+  {
+    if(gameObject.CompareTag("Player"))
+    {
+      // This gameObject is a Player
+    }
+    else
+    {
+      // This gameObject is NOT a Player
+    }
+  }
+}
+```
 
 Every GameObject has both one layer and one tag.
 
@@ -1420,18 +1440,34 @@ Every GameObject has both one layer and one tag.
 
 The collision matrix defines which GameObjects may collide with what other GameObjects, based off of the GameObjects' layers.
 
-A check in the box indicates that collisions are supported.  Uncheck to disable collisions between those layers.  When unchecked, collisions between GameObjects with those layers are completely disabled - allowing objects to walk through each other as if the other didn't exist.  
+A checked box indicates that collisions are supported.  Uncheck to disable collisions between those layers.  When unchecked, collisions between GameObjects with those layers are completely disabled - allowing objects to pass through each other as if the other didn't exist.  
 
-Every possible combination of layers is exposed as a checkbox in settings, including a layer coming in contact with itself.  Remember that layers are defining a category or object type, so by disabling the 'Enemy' layer from coming in contact with the 'Enemy' layer - we are preventing one ball from colliding with another in the world while still allowing them to roll over platforms.
+Every possible combination of layers is exposed as a checkbox in settings, including a layer coming in contact with itself.  Remember that layers are defining a category or object type, so by disabling the 'Enemy' layer from coming in contact with itself - we are preventing one ball from colliding with another in the world while still allowing them to roll over platforms.
 
 </details>
 
 
 ## Test!
 
- - Try adjusting aoeu
- - Cut a test build (resolution)
- - Debugging FAQ?
+That's it for chapter 1!  Your game should now look a lot like the gif at the top.  You can compare to our  [demo build](https://hardlydifficult.com/PlatformerTutorialPart1/index.html) and review the [Unity Project / Source Code for Chapter 1](https://github.com/hardlydifficult/Unity2DPlatformerTutorial/tree/Part1). 
+
+Additionally to review, you may want to:
+ - Try adjusting the variables in Spawner to get a reasonable flow of enemies.
+ - Try adjusting the initial velocity values for the spike ball.
+   - Consider adding randomness to these values as well.
+ - Try adjusting the bumper position angles so balls return to the screen promptly / smoothly. 
+ - Cut a test build and try it outside of the Unity editor environment.
+
+<details><summary>How to set supported resolutions for a test build</summary>
+
+ - File -> Build Settings
+ - Select the desired platform and click 'Player Settings'.
+ - In the 'Inspector' tab, set the supported resolution or aspect ratio (this will be different for different platform types).
+
+<img src="http://i.imgur.com/zTHTwHt.png" />
+
+<img src="http://i.imgur.com/UHP5YVL.png" />
+
+</details>
 
 
-[Unity Project / Source Code](https://github.com/hardlydifficult/Unity2DPlatformerTutorial/tree/Part1) for Part 1.  The game does not do much yet, but here is a [demo build](https://hardlydifficult.com/PlatformerTutorialPart1/index.html) as well.

@@ -1,6 +1,13 @@
 
 TODO review pics given part 1 changes
 
+ - kill player
+ - Ladders
+ - Kill on bumpers when below character
+ - Death effect (when killed via hammer)
+ - Suicide when player dies (like restart level effects)
+
+
 
 # 2) Add a Character and Movement Mechanics
 
@@ -133,7 +140,7 @@ Add a CapsuleCollider2D component and size it for the character.
  - Select the Character's GameObject.
  - Click 'Add Component' and select "CapsuleCollider2D".
  - Click 'Edit Collider' and adjust to fit the character.
-   - Click and then hold Alt while adjusting the sides to pull both side in evenly.
+   - Click and then hold Alt while adjusting the sides to pull both sides in evenly.
 
 <img src="http://i.imgur.com/KFwBZeo.gif" width=100px />
 
