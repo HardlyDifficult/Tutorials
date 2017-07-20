@@ -327,6 +327,18 @@ As discussed in chapter 1, Unity encourages a component based solution.  This me
 
 </details>
 
+## Create a pattern for death effects
+
+Create a pattern to use instead of destroying GameObjects directly, allowing an opportunity for objects to animate on death.
+
+<details open><summary>How</summary>
+
+ - Create a C# script "IHaveDeathEffect" under Assets/Code/Components/Death.
+ - Paste in the following code:
+
+
+
+</details>
 
 ## Kill the player when he hits a ball
 
@@ -467,9 +479,66 @@ Bitwise operations... which are beyond the scope of this tutorial.  To learn mor
 
 </details>
 
-## Spawn explosion when the player dies
+## Create an explosion prefab
+
+Create an explosion prefab.  We are using a scaled Fireball from the standard assets' ExplosionMobile prefab.
+
+<details open><summary>How</summary>
+
+ - In the Assets directory, right click -> Import Package -> ParticleSystems
+ - You could import everything, but for this tutorial we only need the prefab 'ExplosionMobile'.
+
+<img src="http://i.imgur.com/6lVqJtL.png" width=150px />
+
+ - Drag the prefab from Assets/Standard Assets/ParticleSystems/Prefabs/ExplosionMobile into the scene.
+ - Drag the 'Fireball' child GameObject out of the 'ExplosionMobile' GameObject, making Fireball stand alone.
+ - Delete the 'ExplosionMobile' GameObject.
+
+<img src="http://i.imgur.com/IPPAzHG.gif" width=200px />
+
+ - To preview the Fireball effect, select the GameObject.  In the 'Scene' tab a 'Particle effect' panel appears.  Click 'Stop' and then 'Simulate' to see the explosion.
+ - Under the Particle Systems component, change the 'Scaling Mode' to 'Local'.
+ - Change the Transform scale to about (.25, .25, .25).
+ - Preview the Fireball effect again.
+
+<img src="http://i.imgur.com/ICngwqj.gif" width=300px />
+
+</details>
+<details><summary>What's a particle / particle system?</summary>
+
+A particle is a small 2D image managed by a particle system.  It's optimized to display a large number of similar particles at the same time, possible with different colors, sizes, etc.
+
+A Particle System component animates a large numbers of particles to create effects such as fluid, smoke, and fire. Read more about [Particle Systems from Unity](https://docs.unity3d.com/Manual/class-ParticleSystem.html).
+
+</details>
+<details><summary>Why not use the entire MobileExplosion prefab?</summary>
+
+You could, but for this tutorial we are creating WebGL builds of the game.  WebGL does not perform as well in general, and the performance tanks if you use the entire ExplosionMobile prefab.  Effects that would be perfectly fine in the Unity editor and as a desktop build may not work well in the browser. 
+
+If you are not going to build for WebGL, go ahead and try using the ExplosionMobile prefab or other particle system you think looks good.
+
+</details>
+
+## Explosion self destruct
+
+## Spawn explosion when the character dies
 
 TODO
+
+
+
+
+<details><summary></summary>
+
+aoeu
+
+</details>
+<details><summary></summary>
+
+aoeu
+
+</details>
+
 
 ## Explosion sound effect
 
@@ -666,7 +735,7 @@ In the example above, as the velocity approaches zero, the significance of if th
 TODO
 
 
-
+ 
 
 
 <br>
@@ -749,6 +818,7 @@ LadderMovement, for character and spike ball.
 ====
 
 
+
 ## animation walk speed
  TODO
 
@@ -762,21 +832,33 @@ PlayerAnimator
 Player DeathEffectThrobToDeath
 other death effects?
 
+Hammer
+
 # Intro
 Character fades in via AppearInSecondsAndFade
 
 + other intro effects
  - Cloud and animation
 
-end of level / respawn
+
+======
+
+win condition
+
+end of level / respawn and scene changes
 
 ## SuicideWhenPlayerDies.
 (or with end of level sequence)
 
+In game UI
 
+ui...
 
+=====
 
+Level 2
 
+..
 
 
 
@@ -823,4 +905,6 @@ end of level / respawn
 TODO link to web build and git / source for the example up to here
 
 
+
+=====
 
