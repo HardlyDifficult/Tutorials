@@ -1,22 +1,11 @@
 
-TODO review pics given part 1 changes
-
- - kill player
- - Ladders
- - Kill on bumpers when below character
- - Death effect (when killed via hammer)
- - Suicide when player dies (like restart level effects)
 
 
-Hit play and the character should now land on a platform... but may fall over.
+# 2) Add a Character and Movement Mechanics TODO
 
-<img src="http://i.imgur.com/T0fdwa1.gif" width=150px />
+Add a character to the scene.  Have him walk and jump, creating a basic platformer. TODO
 
-
-# 2) Add a Character and Movement Mechanics
-
-Add a character to the scene.  Have him walk and jump, creating a basic platformer.
-
+TODO gif, demo build
 
 ## Configure the character sprite sheet
 
@@ -55,13 +44,14 @@ The pivot point you select is going to impact how we create animations and imple
 
 ## Add Character to the Scene with a Walk Animation
 
-Drag the sprites for walking into the Hierarchy to create a Character and animation.  We are using adventurer_tilesheet_9 and adventurer_tilesheet_10.
+Drag the sprites for walking into the Hierarchy to create a Character and animation. Change Order in Layer to 2.  We are using adventurer_tilesheet_9 and adventurer_tilesheet_10.
 
 <details><summary>How</summary>
 
  - Hold Ctrl and select "adventurer_tilesheet_9" and "adventurer_tilesheet_10" sprites from the sprite sheet "adventurer_tilesheet".
  - Drag them into the Hierarchy.
  - When prompted, save the animation as Assets/Animations/CharacterWalk.anim.
+ - In the 'Inspector', set the SpriteRenderer's 'Order in Layer' to 2.
  - Rename the GameObject to "Character" (optional).
 
 <img src="http://i.imgur.com/k7bSlCp.gif" width=50% />
@@ -97,50 +87,14 @@ Each animator state has an associated animation to play.  When you transition fr
 <hr></details>
 
 
-## Change Order in Layer to 2
+## Add a rigidbody and CapsuleCollider2D
 
-Update the Character's Order in Layer to 2.
-
-<details><summary>How</summary>
-
- - Select the Character's GameObject
- - In the 'Inspector', set the SpriteRenderer's 'Order in Layer' to 2.
-
-<img src="http://i.imgur.com/Zhgy28L.png" width=50% />
-
-</details>
-<details><summary>What does Order in Layer do?</summary>
-
-When multiple sprites are overlapping, Order in Layer is used to determine which one is on top of the other.  So if the character sprite has Order in Layer '2' and everything else uses the default Order in Layer '0', the character will always appear in front of other sprites in the world.
-
-Order in Layer may be any int value, positive or negative. Here's an example showing the character with Order in Layer '-1' and with '2'... sitting on a platform which still has the default Order in Layer '0'.
-
-<img src="http://i.imgur.com/QCHPLDf.png" width=50% />
-
-</details>
-
-## Add a Rigidbody2D
-
-Add a Rigidbody2D component to the character to enable gravity.
+Add a Rigidbody2D and CapsuleCollider2D components to the character to enable gravity.  Adjust the collider size as needed.
 
 <details><summary>How</summary>
 
  - Select the Character's GameObject.
  - In the 'Inspector', click 'Add Component' and select "Rigidbody2D".
-
-Hit play and watch the character fall through the platforms and out of view.
-
-<img src="http://i.imgur.com/ZJPkmt9.gif" width=50px />
-
-</details>
-
-
-## Add a CapsuleCollider2D 
-
-Add a CapsuleCollider2D component and size it for the character.
-
-<details><summary>How</summary>
-
  - Select the Character's GameObject.
  - Click 'Add Component' and select "CapsuleCollider2D".
  - Click 'Edit Collider' and adjust to fit the character.
@@ -148,9 +102,17 @@ Add a CapsuleCollider2D component and size it for the character.
 
 <img src="http://i.imgur.com/KFwBZeo.gif" width=100px />
 
-Until we add colliders on the platforms (in the next section), playing the game will not look any different.
+Hit play and the character should now land on a platform... but may fall over:
+
+<img src="http://i.imgur.com/T0fdwa1.gif" width=150px />
+
+
+Hit play and watch the character fall through the platforms and out of view.
+
+<img src="http://i.imgur.com/ZJPkmt9.gif" width=50px />
 
 </details>
+
 <details><summary>How do I know what size to make the collider?</summary>
 
 The collider does not fit the character perfectly, and that's okay.  In order for the game to feel fair for the player we should lean in their favor.  When designing colliders for the character and enemies, we may prefer to make the colliders a little smaller than the sprite so that there are no collisions in game which may leave the player feeling cheated.
@@ -167,8 +129,6 @@ Bottom line, it's not worth the trouble.  Unity does not provide good tools for 
 Most of the time the collisions in the game would not have been any different if more detailed colliders were used.  Typically 2D games use an approach similiar to what this tutorial recommends. It creates a good game feel and the simplifications taken have become industry standard.
 
 </details>
-
-
 
 
 
@@ -372,5 +332,15 @@ aoeu
 <hr></details>
 
 TODO link to web build and git / source for the example up to here
+
+
+
+
+
+ - kill player
+ - Ladders
+ - Kill on bumpers when below character
+ - Death effect (when killed via hammer)
+ - Suicide when player dies (like restart level effects)
 
 
