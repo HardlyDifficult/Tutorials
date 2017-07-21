@@ -9,7 +9,7 @@ TODO gif, demo build
 
 ## Configure the character sprite sheet
 
-Add a sprite sheet for the character, slice it with a bottom pivot and set to point filter mode.  We are using [Kenney.nl's Platformer Characters](http://kenney.nl/assets/platformer-characters-1) 'PNG/Adventurer/adventurer_tilesheet.png'.
+Add a sprite sheet for the character, slice it with a bottom pivot and set filter mode to point.  We are using [Kenney.nl's Platformer Characters](http://kenney.nl/assets/platformer-characters-1) 'PNG/Adventurer/adventurer_tilesheet.png'.
 
 
 <details><summary>How</summary>
@@ -1322,7 +1322,7 @@ public class PlayerController : MonoBehaviour
 Click play, you can now jump around.  But you can hold onto the side of a platform while falling and spam the space bar to fly away:
 
 <img src="http://i.imgur.com/RRpRio5.gif" width=250px />
-
+</details>
 <details><summary>Why AddForce here instead and what's 'Impulse'?</summary>
 
 As discussed above when creating the WalkMovement component, you could always create mechanics using either AddForce or by modifying the velocity.
@@ -1426,7 +1426,8 @@ Scripts in order where possible, like DeathEffectManager before any DeathEffects
 
 On a related note, order does matter when for some scripts in terms of which compoment executes before another.  To ma...
 
+TODO
+
 </details>
 
 
-TODO sides
