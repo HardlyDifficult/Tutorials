@@ -16,6 +16,7 @@ TODO
  - Maybe copy paste for a fully expanded view all in one page (but note gifs make it not print friendly)
  - Lots of FAQs along the way, please consider these questions as you go, we try not to be redundant later on.
  - Stop saying cached for perf.
+ - Post questions/comments under the youtube video (since git doesn't do discussions well). Maybe survey at end?
 
 # 1) Create a game with enemies spawning
 
@@ -31,7 +32,7 @@ TODO demo build
 
 Get Unity and start a 2D project. 
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - [Download Unity](https://unity3d.com/), the free Personal edition has everything you need. 
  - Select "2D" when creating a new project.
@@ -59,7 +60,7 @@ Presenting the 2D vs 3D option when you create a new project suggests this is a 
 
 When you created the project, a default scene was created as well.  Save it as "Level1" as that's where this tutorial begins.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - File -> Save Scenes.
  - Create a "Scenes" directory, call it "Level1".
@@ -79,7 +80,7 @@ The Scene represents a collection of GameObjects and components (defined below) 
 
 Unity may crash.  I recommend adding an editor script which automatically saves everytime you hit play.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Right click in the 'Project' Assets folder -> Create -> Folder and name it "Editor".
  - Create -> C# Script and name it "AutoSave".
@@ -281,7 +282,7 @@ public class MyCustomComponent : MonoBehaviour
 
 Add a sprite sheet for the platform to the Assets directory.  We are using [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) 'spritesheets/spritesheet_ground.png'.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
 
  - Right click in the 'Project' Assets directory -> Create Folder named "Art"  (optional).
@@ -311,7 +312,7 @@ Of course, this tutorial only assumes that you are using sprites.  You can build
 
 Slice the sprite sheet in order to access each individual sprite within.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
 - Select the sprite sheet in the 'Project' tab (Assets/Art/spritesheet_ground).
 - In the 'Inspector', set 'Sprite Mode' to 'Multiple'.
@@ -352,7 +353,7 @@ Add a sprite to the scene representing the middle segment of a platform.  We are
 
 Note: there may be visual artifacts which we will address below.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Click the arrow on the sprite sheet in your Assets/Art directory (this displays each individual sliced image).
  - Click and drag the platform sprite you want to use into the 'Hierarchy' tab.  We are using spritesheet_ground_72. 
@@ -392,7 +393,7 @@ Update the platform's SpriteRenderer to Draw Mode: Tiled and adjust the width so
 
 Note: a warning may appear in the inspector and there may be visual artifacts which we will address below.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select the "spritesheet_ground_72" GameObject in the 'Hierarchy'.
  - In the 'Inspector', under the SpriteRenderer component:
@@ -419,7 +420,7 @@ Using transform scale to change the width cause the sprite displayed to stretch.
 
 Update the sprite sheet's import settings to use filter mode point, preventing some visual artifacts.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select the sprite sheet in the 'Project' tab (Assets/Art/spritesheet_ground).
  - In the 'Inspector', set 'Filter Mode' to 'Point (no filter)' and apply when prompted.
@@ -446,7 +447,7 @@ For sprite sheets, often each object is touching the one next to it.  Filter Mod
 
 Update the sprite sheet's import settings to use mesh type full rect since we will be using tiling.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select the sprite sheet.
  - In the 'Inspector', set 'Mesh Type: Full Rect'.
@@ -469,7 +470,7 @@ When using tiling on a sprite, Unity recommends updating the sprite sheet to use
 
 Disable Anti-Aliasing, preventing some visual artifacts.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Menu 'Edit' -> 'Project Settings' -> 'Quality'
  - In the 'Inspector' change 'Anti Aliasing' to 'Disabled'
@@ -504,7 +505,7 @@ Anti-aliasing may lead to unexpected gaps or distortions when sprites are side b
 
 Change the aspect ratio to 5:4 as we want to simplify and always show the same amount of the world on screen.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - In the 'Game' tab, near the top, change 'Free Aspect' to '5:4'.
 
@@ -514,19 +515,17 @@ Switch back to the 'Scene' tab.  The white box here represents the area that pla
 
 <img src="http://i.imgur.com/eIq2LD2.png" width=50% />
 
+You'll also want to update the supported resolutions for the different platforms you are building for:
+
  - File -> Build Settings
  - Select the desired platform and click 'Player Settings'.
  - In the 'Inspector' tab, set the supported resolution or aspect ratio (this will be different for different platform types).
 
-<img src="http://i.imgur.com/zTHTwHt.png" />
+<img src="http://i.imgur.com/nWDCAwX.png" width=200px />
 
-<img src="http://i.imgur.com/UHP5YVL.png" />
+<img src="http://i.imgur.com/zTHTwHt.png" width=200px />
 
-TODO review
-Open player settings via "File"->"Build Settings".  Select the platform you want to build for and then click "Player Settings..."
-<img src="http://i.imgur.com/nWDCAwX.png" width=50% />
-For PC, we can select specific supported aspect ratios 
-<img src="http://i.imgur.com/Xoxw0Xs.png" width=50% />
+<img src="http://i.imgur.com/UHP5YVL.png" width=200px />
 
 <hr></details>
 <details><summary>Why use a fixed aspect ratio?</summary>
@@ -545,7 +544,7 @@ Different resolutions will scale the display larger or smaller but everyone will
 
 Update the camera size to about 10 to zoom out a bit.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - In the 'Hierarchy' select the 'Main Camera'
  - In the 'Inspector' change 'Size' to 10
@@ -570,7 +569,7 @@ For an Orthographic camera, the amout of the world visible is driven by a specia
 Create a new parent GameObject for the platform sprite.
 
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Right click in 'Hierarchy' and 'Create Empty'.
  - Rename to "Platform".
@@ -604,7 +603,7 @@ Typically all Transform updates during the game and in level design are done to 
 
 Add sprites with rounded edges to the left and right of the platform.  We are using spritesheet_ground_79 and spritesheet_ground_65.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Copy the "Platform" GameObject, paste and rename to "PlatformWithEdges".
  - You may want to move these to separate them on-screen (making it easier to configure each).  When you do, be sure the parent GameObject is selected and not the child sprite.
@@ -631,7 +630,7 @@ There should now be four GameObjects in the world, as shown below.
 
 Our level design calls for the bottom platform to rotate half way through.  Create two Platform GameObjects and position and rotate their parents' GameObjects so that they appear connected.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Use two copies of the Platform GameObject (without edges) and move their parent GameObjects so that the sprites appear near the bottom of the screen side by side. 
  - Raise the right Platform a little above the left.
@@ -665,7 +664,7 @@ The width of the world players are going to see is fixed so you could argue that
 
 Add a BoxCollider2D component with a .1 edge radius to each of the parent Platform GameObjects in the scene.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select a platform's parent GameObject.
  - Add Component -> "BoxCollider2D".
@@ -708,7 +707,7 @@ At this point we have covered everything you need to match the Level1 platform l
 
 Refer to the Game tab to confirm your layout as they player will see it.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
 The basic steps are:
 
@@ -735,7 +734,7 @@ Optionally, you can rename the platform GameObjects and organize your platforms 
 
 Add a sprite and GameObject for the spike ball.  Set filter mode to Point.  We are using We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/spikeball1'.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Drag/drop the sprite into Assets/Art.
  - Set the 'Filter Mode: Point (no filter)'.
@@ -771,7 +770,7 @@ Order in Layer may be any int value, positive or negative. Here's an example sho
 
 Add a Rigidbody2D component to the spike ball to enable gravity.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select the Spike Ball's GameObject.
  - In the 'Inspector', click 'Add Component' and select "Rigidbody2D".
@@ -794,7 +793,7 @@ Physics refers to the logic in a game engine which moves objects based on forces
 
 Add a CircleCollider2D component to the spike ball so it hits the platform and rolls.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select the Spike Ball's GameObject.
  - 'Add Component' and select "CircleCollider2D".
@@ -830,7 +829,7 @@ On a related note, seting the 'Order in Layer' to '-1' ensures that the spikes a
 
 Add additional BoxCollider2Ds offscreen to cause the spike balls to quickly turn around and roll back on-screen.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Right click in 'Hierarchy' -> 'Create Empty'.  Rename to "Bumper"
  - 'Add Component' and select "BoxCollider2D"
@@ -863,7 +862,7 @@ Hit play, the spike ball should hit the bumper and quickly reverse and then acce
 
 For the game, we  want the ball spawning in the top left.  But that's a flat surface so the ball does not roll down platforms.  Give it an initial Velocity of (3, 0) and AngularVelocity of -500.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - In the 'Project' tab Assets/Code directory, create a new directory "Components/Movement".
  - Right click -> Create -> C# script and name it "InitializeRigidbodyOnStart".
@@ -1045,7 +1044,7 @@ Encapsulation.  If we were to make these methods public, it suggests that other 
 
 After the ball rolls off the bottom platform, destroy the GameObject.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a C# script "SuicideOutOfBounds" under Assets\Code\Components\Death.
  - Select the spike ball, click 'Add Component' and select SuicideOutOfBounds.
@@ -1162,7 +1161,7 @@ For more, see [Catlike Coding's Object Pool tutorial](http://catlikecoding.com/u
 
 Add a sprite and GameObject for the evil cloud, place it in the top left and scale the size.  Set order in layer to 1. We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/cloud' with filter mode Point.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Drag/drop the sprite into Assets/Art.
  - Set the 'Filter Mode: Point (no filter)'.
@@ -1186,7 +1185,7 @@ Nothing (for 2D games).  When we are scaling, in order to not distort the art we
 
 Have balls spawn periodically at the evil cloud and fall down the platforms.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a C# script Assets/Code/Components/Life/Spawner.
  - Add the Spawner component to the evil cloud GameObject.
@@ -1419,7 +1418,7 @@ TODO pre conditions and post conditions
 
 Add an Enemy layer for the balls and change the collision matrix to allow them to travel through other enemies in the world.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Edit -> Project Settings -> Tags and Layers.
  - Under 'Layers' add "Enemy" to one of the empty 'User Layer' slots.
@@ -1513,11 +1512,13 @@ Additionally to review, you may want to:
  - Try adjusting the size of colliders, ensure that objects appear to be touching the ground reasonably.
  - Cut a test build and try it outside of the Unity editor environment.
 
-
+TODO add something about changing values in run mode vs save.
 
 
 
 
 == 
+
+
 
 TODO paypal, patreon, and twitch links.

@@ -12,7 +12,7 @@ TODO gif, demo build
 Add a sprite sheet for the character, slice it with a bottom pivot and set to point filter mode.  We are using [Kenney.nl's Platformer Characters](http://kenney.nl/assets/platformer-characters-1) 'PNG/Adventurer/adventurer_tilesheet.png'.
 
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Drag/drop the sprite sheet into Assets/Art.
  - Set 'Sprite Mode: Multiple'.
@@ -46,7 +46,7 @@ The pivot point you select is going to impact how we create animations and imple
 
 Drag the sprites for walking into the Hierarchy to create a Character and animation. Change Order in Layer to 2.  We are using adventurer_tilesheet_9 and adventurer_tilesheet_10.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Hold Ctrl and select "adventurer_tilesheet_9" and "adventurer_tilesheet_10" sprites from the sprite sheet "adventurer_tilesheet".
  - Drag them into the Hierarchy.
@@ -86,7 +86,7 @@ We will be diving into more detail about animations and animators later in the t
 
 Add Rigidbody2D and CapsuleCollider2D components to the character to enable gravity.  Adjust the collider size as needed.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select the Character's GameObject.
  - In the 'Inspector', click 'Add Component' and select "Rigidbody2D".
@@ -128,7 +128,7 @@ Freeze the character's rotation so he does not fall over.
 
 Note: The character will stand straight up even on slanted platforms.  This will be addressed below when we write the movement controllers for the character.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select the character.
  - In the Rigidbody2D component, expand 'Constraints'.
@@ -146,7 +146,7 @@ Create a script 'WalkMovement' to control the rigidbody and a script 'PlayerCont
 
 Note the character will always be looking right, even while walking left.  He can also walk off the screen and push the balls around.  
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a C# script "WalkMovement" under Assets/Code/Components/Movement.
  - Select the Character GameObject and add the WalkMovement component.
@@ -315,11 +315,11 @@ Additionaly you may choose to adjust the time interval between FixedUpdate calls
 </details>
 <details><summary>Why set velocity instead of using AddForce?</summary>
 
-AddForce is a way of increasing a rigidbody's velocity instead of manipulating the velocity directly.
+AddForce is a way of impacting a rigidbody's velocity indirectly.  Anytime you interact with either AddForce or velocity, a similar mechanic could be made using the other.
 
-You could use AddForce instead.  Maybe give it a try and see how it feels.  Adding force instead of setting velocity will create a different game feel, in terms of how objects accelerate.
+Generally the game feel when using AddForce has more gradual changes and for many experiences that's great.  Although there are lots of options for tuning the forces experience, velocity simply gives you more direct control.
 
-TODO more words.
+So that's to say you could use AddForce here instead.  Maybe give it a try and see how it feels.  We select velocity because we want the controls for moving left and right to feel crisp.  Later in the tutorial we will use AddForce, for the jump effect.
 
 </details>
 <details><summary>Why not combine these into a single class?</summary>
@@ -332,7 +332,7 @@ As discussed in chapter 1, Unity encourages a component based solution.  This me
 
 Create a pattern to use instead of destroying GameObjects directly, allowing an opportunity for objects to animate on death.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a C# script "DeathEffect" under Assets/Code/Components/Death.
  - Paste in the following code:
@@ -441,7 +441,7 @@ You might also consider using nested classes.  For simplicity in the tutorial, w
 
 When the player comes in contact with a spiked ball, kill him!
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a C# script "LayerMaskExtensions" under Assets/Code/Utils.
  - Paste in the following code:
@@ -580,7 +580,7 @@ Bitwise operations... which are beyond the scope of this tutorial.  To learn mor
 
 Create an explosion prefab.  We are using a scaled Fireball from the standard assets' ExplosionMobile prefab.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - In the Assets directory, right click -> Import Package -> ParticleSystems
  - You could import everything, but for this tutorial we only need the prefab 'ExplosionMobile'.
@@ -624,7 +624,7 @@ If you are not going to build for WebGL, go ahead and try using the ExplosionMob
 
 Create a script to destroy the explosion GameObject after the effect completes.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a C# script "SuicideIn" under Assets/Code/Components/Death.
  - Select the Fireball prefab, add the SuicideIn component.
@@ -677,7 +677,7 @@ In other words, this script ensures that our explosions do not result in a memor
 
 Add a sound effect to the explosion prefab.  We are using a [shotgun blast from Sound Bible](http://soundbible.com/1919-Shotgun-Blast.html).
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Drag/drop the .wav file into Assets/Art.
  - Drag/drop the Explosion prefab into the Hierarchy to create a GameObject.
@@ -764,7 +764,7 @@ protected void OnEnable()
 
 Add a script which spawns the explosion prefab when the character dies.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a C# script "DeathEffectSpawn" under Assets/Code/Components/Death.
  - Select the Character GameObject and add the DeathEffectSpawn component.
@@ -828,7 +828,7 @@ We use the collider's bounds to determine where to spawn the explosion.  The [bo
 
 Flip the character's sprite when he switches between walking left and walking right.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a C# script "RotateEntity" under Assets/Code/Components/Movement.
  - Select the character GameObject and add the RotateEntity component.
@@ -911,7 +911,7 @@ public class RotateEntity : MonoBehaviour
   {
     float xVelocity = myBody.velocity.x;
     // If there is any horizontal movement
-    if(Mathf.Abs(xVelocity) > 0.001)
+    if(Mathf.Abs(xVelocity) > 0.1)
     { 
       // Determine the current walk direction
       // This may rotate the sprite c/o
@@ -988,7 +988,7 @@ In the example above, as the velocity approaches zero, the significance of if th
 
 Create a script which ensures the character can not walk off screen.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a C# script "KeepWalkMovementOnScreen" under Assets/Code/Components/Movement.
  - Select the Character GameObject and add the KeepWalkMovementOnScreen component.
@@ -1065,8 +1065,8 @@ public class KeepWalkMovementOnScreen : MonoBehaviour
     if(screenBounds.Contains(transform.position) == false)
     { 
       // Move the entity back to the edge of the screen
-      transform.position 
-        = screenBounds.ClosestPoint(transform.position);
+      transform.position =
+        screenBounds.ClosestPoint(transform.position);
       if(walkMovement != null)
       {
         // Flip the walk direction
@@ -1090,7 +1090,7 @@ There are a few ways you could check for an entity walking off the edge of the s
 
 </details>
 
-<details><summary>Why doesn't flipping the walk direction seem to do anything?</summary>
+<details><summary>What does flipping the walk direction do?</summary>
 
 Each frame the PlayerController sets the walk direction without consider the previous value.  So flipping the walk direction here is promptly overwritten by the PlayerController - resulting in little or no impact to movement in the game.
 
@@ -1100,11 +1100,27 @@ This logic doesn't impact the character but it's not harmful either and it fits 
 
 </details>
 
+<details><summary>What's the different between setting transform.position and using myBody.MovePosition?</summary>
+
+Updates to the Transform directly will teleport your character immediatelly and bypass all physics logic.  
+
+Using the rigidbody.MovePosition method will smoothly transition the object to its new postion.  It's very fast, but if you try this and watch closely, MovePosition is animating a few frames on the way to the target position instead of going there immediatelly.
+
+We are not suggesting one approach should always be used over the other - consider the use case and how you want your game to feel, sometimes teleporting is exactly the feature you're looking for.  
+
+Be careful when you change position using either of these methods as opposed to using forces on the rigidbody.  It's possible that you teleport right into the middle of another object.  The next frame, Unity will try to react to that collision state and this may result in objects popping out in strange ways.
+
+In this component we are setting transform.position for the teleport effect.  If rigidbody.MovePosition was used instead, occasionally issues would arrise as MovePosition competes with other forces on the object.
+
+</details>
+
 ## Jump
 
-Add the ability for the character to jump.
+Add the ability for the character to jump.  Add a sound effect as well, we are using 'phaseJump1' from [Kenney.nl's Digital Audio pack](http://kenney.nl/assets/digital-audio).
 
-<details open><summary>How</summary>
+Note the character will be able to double jump / fly, this will be addressed later in the tutorial.
+
+<details><summary>How</summary>
 
  - Create a C# script "JumpMovement" under Assets/Code/Components/Movement.
  - Select the Character GameObject and add the JumpMovement component.
@@ -1176,18 +1192,15 @@ public class JumpMovement : MonoBehaviour
 }
 ```
 
+ - Drag/drop the jump sound effect into Assets/Art.
  - Select the Character GameObject and add an 'AudioSource' component if it does not already have one.
- - Select a Jump Sound.
+ - Under the JumpMovement component for the character, assign the jummp sound.
 
-Jump 'phaseJump1' from 
-
-TODO import jump sound
+<img src="http://i.imgur.com/q4LEETw.gif" width=150px />
 
 
  - Edit the existing C# script "PlayerController" under Assets/Code/Components/Movement.
- - Add the following (or click here for the full file to copy/paste from):
-
-TODO file link
+ - Add the following (or [click here for the full file to copy/paste from](TODO file link):
 
 <details><summary>Existing code</summary>
 
@@ -1306,18 +1319,35 @@ public class PlayerController : MonoBehaviour
 
 
 
-Click play, you can now jump around.  Spam the space bar to fly away:
+Click play, you can now jump around.  But you can hold onto the side of a platform while falling and spam the space bar to fly away:
 
-<img src="http://i.imgur.com/dlKUV9v.gif" width=250px />
+<img src="http://i.imgur.com/RRpRio5.gif" width=250px />
 
-<details><summary>Why AddForce here instead of setting velocity?</summary>
+<details><summary>Why AddForce here instead and what's 'Impulse'?</summary>
 
-TODO, compare with the force section above.
+As discussed above when creating the WalkMovement component, you could always create mechanics using either AddForce or by modifying the velocity.
+
+We are using AddForce to jump in this component.  Using velocity here instead would have actually created the same basic jump experience we are looking for.  
+
+Using AddForce for the jump may provide a better experience for some corner cases or future mechanics.  For example, if we wanted to support double jump in this game, initiating the second jump while in the air would feel much different.
+
+What is ForceMode2D.Impulse and how is it different from ForceMode2D.Force?
+
+These options appear to have the same effect on effects on objects, the difference is only the scale.  The unit for Impulse is defined as force per FixedUpdate.  The unit for Force is defined as force per second.  In the end, it means when configured your speed you may need a much larger value when using Force than while using Impulse.
 
 </details>
 <details><summary>How do you know when to use Update vs FixedUpdate for Input and rigidbodies?</summary>
 
-TODO Talk about Update for events vs Fixed for state.
+Unity recommends always using FixedUpdate when interacting with a rigidbody as physics is processed in FixedUpdate. 
+
+There is nothing blocking you from changing the rigidbody in an Update loop.  You could, for example, AddForce every Update.  This is not recommended and may lead to inconsistent experiences.
+
+For Input:
+
+ - When reading the current Input state (e.g. using Input.GetAxis), either FixedUpdate or Update is fine.  For example if you are checking the current position of the joystick, you'll get the same information in FixedUpdate and Update. 
+  - If you need to modify a rigidbody based on current Input state, I recommend reading Input in FixedUpdate to keep it simple.
+ - When checking for an Input event (e.g. using Input.GetButtonDown), you must use Update.  Input is polled in the Update loop.  Since it's possible for two Updates to happen before a FixedUpdate, some events may be missed when only checking in FixedUpdate.  
+   - Always read events in Update.  Unity will not block or warn you when checking for an event in FixedUpdate, and most of the time it will work - but occasional bugs will arrise.
 
 </details>
 
@@ -1326,7 +1356,9 @@ TODO Talk about Update for events vs Fixed for state.
 
 Add the PlatformerEffect2D component to each platform, allowing the character to jump through them.
 
-<details open><summary>How</summary>
+Note collisions with the sides of the platforms may feel off, we'll update this in the next section.
+
+<details><summary>How</summary>
 
  - Select all of the Platform GameObjects.
  - Add Component: PlatformEffector2D.
@@ -1348,6 +1380,23 @@ Unity is not doing anything with these components that you technically could not
 Read more about the [various 2d effectors in Unity](https://docs.unity3d.com/Manual/Effectors2D.html) including a conveyor belt, repulsion, and floating effects.
 
 </details>
+
+
+## Update the platforms' surface arc
+
+Reduce the PlatformerEffector2D Surface Arc to about 135.
+
+<details><summary>How</summary>
+
+ - Select all of the Platform GameObjects.
+ - Change the 'Surface Arc' to '135' under the Platform Effector 2D compenent.
+
+Play, now the character should not be able to stick to the sides while falling:
+
+<img src="http://i.imgur.com/GGzbkdp.gif" width=200px />
+
+</details>
+
 
 
 ## Test!
@@ -1380,4 +1429,4 @@ On a related note, order does matter when for some scripts in terms of which com
 </details>
 
 
-
+TODO sides
