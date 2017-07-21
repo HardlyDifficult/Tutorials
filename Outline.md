@@ -12,8 +12,9 @@ TODO
  - Image size is all over the place
  - say links are included when relevant er something.
  - Target character count on scripts is 65
-
-
+ - Table of contents with anchors
+ - Maybe copy paste for a fully expanded view all in one page (but note gifs make it not print friendly)
+ - Lots of FAQs along the way, please consider these questions as you go, we try not to be redundant later on.
 
 # 1) Create a game with enemies spawning
 

@@ -333,12 +333,155 @@ Create a pattern to use instead of destroying GameObjects directly, allowing an 
 
 <details open><summary>How</summary>
 
- - Create a C# script "IHaveDeathEffect" under Assets/Code/Components/Death.
+ - Create a C# script "DeathEffect" under Assets/Code/Components/Death.
  - Paste in the following code:
 
+```csharp
+using UnityEngine;
 
+/// <summary>
+/// Any/all component(s) on the gameObject inherit from this to add
+/// effects or animations on death, before the GameObject is destroyed.
+/// </summary>
+[RequireComponent(typeof(DeathEffectManager))]
+public abstract class DeathEffect : MonoBehaviour
+{
+  /// <summary>
+  /// How long we need to wait before destroying the
+  /// GameObject to allow the effect to complete.
+  /// </summary>
+  public abstract float timeUntilObjectMayBeDestroyed
+  {
+    get;
+  }
+
+  /// <summary>
+  /// Do not call directly.  Initiated only by the DeathEffectManager.
+  /// 
+  /// When we are ready to destroy a GameObject, PlayDeathEffects is called
+  /// and then we wait for at least timeUntilObjectMayBeDestroyed
+  /// before calling Destroy on the gameObject.
+  /// </summary>
+  public abstract void PlayDeathEffects();
+}
+```
+
+ - Create a C# script "DeathEffectManager" under Assets/Code/Components/Death.
+ - Paste in the following code:
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+/// <summary>
+/// Manages playing multiple effects, and destroying
+/// the gameObject when they all complete.
+/// 
+/// Required if the GameObject has any DeathEffects.
+/// </summary>
+public class DeathEffectManager : MonoBehaviour
+{
+  /// <summary>
+  /// Called when an object that may have a death effect
+  /// should be destroyed.
+  /// 
+  /// If no DeathEffects are found, the gameObject is 
+  /// destroyed immediatally.
+  /// </summary>
+  /// <param name="gameObject">
+  /// The gameObject to destroy.
+  /// </param>
+  public static void PlayDeathEffectsThenDestroy(
+    GameObject gameObject)
+  {
+    DeathEffectManager deathEffectManager 
+      = gameObject.GetComponent<DeathEffectManager>();
+
+    if(deathEffectManager == null)
+    {
+      // If there is no DeathEffectManager on 
+      // this gameObject, Destroy it now.
+      MonoBehaviour.Destroy(gameObject);
+      return;
+    }
+
+    // Start death sequence, which ends with 
+    // destroying the gameObject.
+    deathEffectManager.PlayDeathEffectsThenDestroy();
+  }
+
+  /// <summary>
+  /// Initiated only by PlayDeathEffectsThenDestroy.
+  /// 
+  /// Starts a Coroutine for any DeathEffects on this 
+  /// GameObject.
+  /// </summary>
+  void PlayDeathEffectsThenDestroy()
+  {
+    StartCoroutine(PlayDeathEffectsThenDestroyCoroutine());
+  }
+
+  /// <summary>
+  /// A Unity Coroutine to start DeathEffects and then
+  /// Destroy the gameObject once all complete.
+  /// </summary>
+  /// <returns>Used by Coroutines to manage time.</returns>
+  IEnumerator PlayDeathEffectsThenDestroyCoroutine()
+  {    
+    DeathEffect[] deathEffectList 
+      = gameObject.GetComponentsInChildren<DeathEffect>();
+
+    float maxTimeUntilObjectMayBeDestroyed = 0;
+    for(int i = 0; i < deathEffectList.Length; i++)
+    {
+      DeathEffect deathEffect = deathEffectList[i];
+      maxTimeUntilObjectMayBeDestroyed = Mathf.Max(
+        maxTimeUntilObjectMayBeDestroyed, 
+        deathEffect.timeUntilObjectMayBeDestroyed);
+
+      // Start each individual DeathEffect to run in parallel.
+      deathEffect.PlayDeathEffects();
+    }
+
+    // Wait until the slowest DeathEffect completes.
+    yield return new WaitForSeconds(maxTimeUntilObjectMayBeDestroyed);
+
+    Destroy(gameObject);
+  }
+}
+```
 
 </details>
+
+<details><summary>Why not just play effects OnDestroy()?</summary>
+
+OnDestroy is called when an object is destroyed, but we only want the death effects to trigger in certain circumstances.  For example, when we quit back to the main menu, we do not want explosions spawning for GameObjects being destroyed while closing level 1.
+
+This pattern was selected because:
+
+ - It gives us easy control over when DeathEffects should be considered, vs promptly destroying the object.
+ - It gracefully falls back to Destroy when there are no DeathEffects to play.
+ - It allows for several separate DeathEffects to be combined, creating a new kind of effect.
+
+As always, there are probably a thousand different ways you could achieve similar results.
+
+</details>
+<details><summary>Why is there a public method that 'should not be called directly'?</summary>
+
+PlayDeathEffects() in the DeathEffect class has a public method with a comment saying it 'should not be called directly'.  So why is it public?
+
+In order to support multiple DeathEffects and to be able to fallback gracefully when an object does not have a DeathEffect, we always initiate the effects from DeathEffectManager.  
+
+Since DeathEffectManager is a class of its own, we would not be able to call a private or protected method in DeathEffect.
+
+'internal' could be an option to consider, but typically when working in Unity you are working in a single project - therefore internal is effectively the same as public.
+
+You might also consider using nested classes.  For simplicity in the tutorial, we're not using nested classes as they can be a bit confusing.  If you are familiar with this topic, briefly you could make DeathEffectsManager a class nested inside DeathEffect and then make PlayDeathEffects() private, and the rest pretty much works the same.
+
+</details>
+
+
+
 
 ## Kill the player when he hits a ball
 
@@ -434,7 +577,7 @@ public class KillOnContactWith : MonoBehaviour
     }
 
     // Kill it!
-    Destroy(gameObjectWeJustHit);
+    DeathEffectManager.PlayDeathEffectsThenDestroy(gameObjectWeJustHit);
   }
 }
 ```
@@ -493,15 +636,19 @@ Create an explosion prefab.  We are using a scaled Fireball from the standard as
  - Drag the prefab from Assets/Standard Assets/ParticleSystems/Prefabs/ExplosionMobile into the scene.
  - Drag the 'Fireball' child GameObject out of the 'ExplosionMobile' GameObject, making Fireball stand alone.
  - Delete the 'ExplosionMobile' GameObject.
+ - Rename Fireball to 'Explosion'.
 
 <img src="http://i.imgur.com/IPPAzHG.gif" width=200px />
 
- - To preview the Fireball effect, select the GameObject.  In the 'Scene' tab a 'Particle effect' panel appears.  Click 'Stop' and then 'Simulate' to see the explosion.
+ - To preview the Explosion effect, select the GameObject.  In the 'Scene' tab a 'Particle effect' panel appears.  Click 'Stop' and then 'Simulate' to see the explosion.
  - Under the Particle Systems component, change the 'Scaling Mode' to 'Local'.
  - Change the Transform scale to about (.25, .25, .25).
- - Preview the Fireball effect again.
+ - Preview the Explosion effect again.
 
 <img src="http://i.imgur.com/ICngwqj.gif" width=300px />
+
+ - Drag/drop the Explosion GameObject to Asserts/Prefabs to create a prefab.
+ - Delete the Explosion GameObject.
 
 </details>
 <details><summary>What's a particle / particle system?</summary>
@@ -521,15 +668,205 @@ If you are not going to build for WebGL, go ahead and try using the ExplosionMob
 
 ## Explosion self destruct
 
+Create a script to destroy the explosion GameObject after the effect completes.
+
+<details open><summary>How</summary>
+
+ - Create a C# script "SuicideIn" under Assets/Code/Components/Death.
+ - Select the Fireball prefab, add the SuicideIn component.
+ - Paste in the following code:
+ 
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Destroy's the GameObject after timeTillDeath seconds
+/// since the object was instatiated have passed.
+/// </summary>
+public class SuicideIn : MonoBehaviour
+{
+  /// <summary>
+  /// How long, in seconds, till this object should be destroyed.
+  /// </summary>
+  [SerializeField]
+  float timeTillDeath = 5;
+  
+  /// <summary>
+  /// A Unity event, called when this GameObject
+  /// is instatiated.
+  /// 
+  /// Begin the countdown till Destroy.
+  /// </summary>
+  protected void Start()
+  {
+    Debug.Assert(timeTillDeath > 0,
+      "timeTillDeath must be greater than 0");
+
+    Destroy(gameObject, timeTillDeath);
+  }
+}
+```
+
+</details>
+<details><summary>Why bother, the explosion is not visible after a few seconds?</summary>
+
+Similar to how we destroyed balls which rolled off the bottom of the screen in chapter 1, we need to ensure the explosion GameObjects are destroyed at some point.
+
+The explosion effect on screen only lasts for a few seconds, but Unity does not realize this on its own.  Destroying the GameObject prevents Unity from wasting resources on the old GameObjects which are never going to be visible again.
+
+In other words, this script ensures that our explosions do not result in a memory leak.
+
+</details>
+
+
 ## Explosion sound effect
 
-TODO
+Add a sound effect to the explosion prefab.  We are using a [shotgun blast from Sound Bible](http://soundbible.com/1919-Shotgun-Blast.html).
+
+<details open><summary>How</summary>
+
+ - Drag/drop the .wav file into Assets/Art.
+ - Drag/drop the Explosion prefab into the Hierarchy to create a GameObject.
+ - Drag/drop the .wav file from Assets/Art onto the Explosion GameObject.
+
+ This creates an AudioSource component on the GameObject.
+
+ - Click 'Apply' prefab.
+
+<img src="http://i.imgur.com/atFbwlK.png" width=100px />
+
+ - Delete the Explosion GameObject from the Hierarchy.
+
+Hit play, you should hear the sound when the player dies.
+
+</details>
+<details><summary>Why is Audio on a GameObject vs simply a clip which is played?</summary>
+
+Audio playback in Unity is built to support 3D audio.  3D audio refers to the feature where the closer an object making noise is to your ear, the louder it is.  Additionally 3D sound is directional, so sounds to the players left would be loudest in the left speaker.
+
+Your 'ear' is typically the camera itself.  This is managed by the AudioListener component which was placed on the Main Camera by default when the scene was created.  You could choose to move this component to the character instead, if appropriate.
+
+To enable 3D audio, sounds need to originate at a position in the world.  We use the AudioSource component to play clips.  As a component, it must live an a GameObject which in turn must have a Transform -- the position we are looking for.
+
+For consistency, 2D audio is played the same way.  2D means we don't have the features above, the clip sounds the same regardless of where it the world it was initiated from.  Note that audio is 2D by default.
+
+Alternatively you could use the Unity API to play a clip as shown below.  This API will create an empty GameObject at the location provided, add an AudioSource component to it, configure that source to use the clip specified and have the AudioSource start playing.  After the clip completes, the GameObject will be destroyed automatically.  
+
+```csharp
+[SerializeField]
+AudioClip clip;
+
+protected void Start() 
+{
+  AudioSource.PlayClipAtPoint(clip, new Vector3(5, 1, 2));
+}
+```
+
+</details>
+<details><summary>How might you play mulitple clips at the same time?</summary>
+
+Each AudioSource can be configured for one clip at a time.  To play multiple clips in parallel, you could use multiple AudioSources by placing multiple on a single GameObject or instantiating multiple GameObjects.  You can also use the following API to play a clip in parallel:
+
+```csharp
+GetComponent<AudioSource>().PlayOneShot(clip);
+```
+
+This will start playing another clip, re-using an existing AudioSource component (and its GameObject's position as well as the audio configuration options such as pitch).
+
+</details>
+<details><summary>Could you RNG select the clip to play?</summary>
+
+Anything is possible.  Here's a little code sample that may help you get started.  
+
+On a related note, you could also randomize the pitch to get some variation between each clip played.  e.g. this could be a nice addition to a rapidly firing gun.
+
+```csharp
+[SerializeField]
+AudioClip clip1;
+[SerializeField]
+AudioClip clip2;
+
+protected void OnEnable()
+{
+  AudioSource audioSource = GetComponent<AudioSource>();
+  switch(UnityEngine.Random.Range(0, 2))
+  {
+    case 0:
+    audioSource.clip = clip1;
+    break;
+    case 1:
+    audioSource.clip = clip2;
+    break;
+  }
+  audioSource.Play();
+}
+```
+
+</details>
+
 
 
 ## Spawn explosion when the character dies
 
-TODO
+Add a script which spawns the explosion prefab when the character dies.
 
+<details open><summary>How</summary>
+
+ - Create a C# script "DeathEffectSpawn" under Assets/Code/Components/Death.
+ - Select the Character GameObject and add the DeathEffectSpawn component.
+ - Paste in the following code:
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Spawns another GameObject before this GameObject is destroyed.
+/// </summary>
+public class DeathEffectSpawn : DeathEffect
+{
+  [SerializeField]
+  GameObject gameObjectToSpawnOnDeath;
+
+  public override float timeUntilObjectMayBeDestroyed
+  {
+    get
+    {
+      return 0;
+    }
+  }
+
+  public override void PlayDeathEffects()
+  {
+    Debug.Assert(gameObjectToSpawnOnDeath != null,
+      "gameObjectToSpawnOnDeath must not be null");
+
+    // Spawn the other GameObject at my current location
+    Instantiate(
+      gameObjectToSpawnOnDeath, 
+      transform.position, 
+      Quaternion.identity);
+  }
+}
+```
+
+ - Select the Character GameObject and under DeathEffectSpawn, assign the Explosion prefab to 'Game Object To Spawn'.
+
+Click play and an explosion should spawn when the player dies:
+
+<img src="http://i.imgur.com/1vrLFB0.gif" width=200px />
+
+</details>
+
+<details><summary></summary>
+
+aoeu
+
+</details>
+<details><summary></summary>
+
+aoeu
+
+</details>
 
 
 
