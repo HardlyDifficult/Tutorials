@@ -15,6 +15,7 @@ TODO
  - Table of contents with anchors
  - Maybe copy paste for a fully expanded view all in one page (but note gifs make it not print friendly)
  - Lots of FAQs along the way, please consider these questions as you go, we try not to be redundant later on.
+ - Stop saying cached for perf.
 
 # 1) Create a game with enemies spawning
 

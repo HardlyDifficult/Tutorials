@@ -822,6 +822,7 @@ using UnityEngine;
 /// <summary>
 /// Spawns another GameObject before this GameObject is destroyed.
 /// </summary>
+[RequireComponent(typeof(Collider2D))]
 public class DeathEffectSpawn : DeathEffect
 {
   [SerializeField]
@@ -840,10 +841,12 @@ public class DeathEffectSpawn : DeathEffect
     Debug.Assert(gameObjectToSpawnOnDeath != null,
       "gameObjectToSpawnOnDeath must not be null");
 
+    Collider2D collider = GetComponent<Collider2D>();
+
     // Spawn the other GameObject at my current location
     Instantiate(
-      gameObjectToSpawnOnDeath, 
-      transform.position, 
+      gameObjectToSpawnOnDeath,
+      collider.bounds.center, 
       Quaternion.identity);
   }
 }
@@ -853,34 +856,19 @@ public class DeathEffectSpawn : DeathEffect
 
 Click play and an explosion should spawn when the player dies:
 
-<img src="http://i.imgur.com/1vrLFB0.gif" width=200px />
+<img src="http://i.imgur.com/XhhkRpC.gif" width=200px />
 
 </details>
 
-<details><summary></summary>
+<details><summary>Why not spawn the explosion at transform.position?</summary>
 
-aoeu
+The character sprite was configured with Pivot 'Bottom'.  The transform.position refers to the location of this pivot point.  If we were to target tranform.position instead, the explosion would center around the character's feet.
 
-</details>
-<details><summary></summary>
+This component could be reused on other GameObjects which may have a different pivot point. It will work correctly so long as the object has a collider.
 
-aoeu
-
-</details>
-
-
-
-<details><summary></summary>
-
-aoeu
+We use the collider's bounds to determine where to spawn the explosion.  The [bounds struct](https://docs.unity3d.com/ScriptReference/Bounds.html) has a number of convienent methods for things like determining the center point of an object.
 
 </details>
-<details><summary></summary>
-
-aoeu
-
-</details>
-
 
 ## Rotate the character when he walks the other way
 
@@ -1070,9 +1058,104 @@ In the example above, as the velocity approaches zero, the significance of if th
 
 ## Restrict movement to stay on screen
 
-TODO
+Create a script which ensures the character can not walk off screen.
 
+<details open><summary>How</summary>
 
+ - Create a C# script "KeepWalkMovementOnScreen" under Assets/Code/Components/Movement.
+ - Select the Character GameObject and add the KeepWalkMovementOnScreen component.
+ - Paste in the following code:
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Ensures that the entity stays on the screen. 
+/// It will flip the current walk direction automatically 
+/// (which has no impact on the Player but causes enemies to bounce).
+/// </summary>
+[RequireComponent(typeof(Rigidbody2D))]
+public class KeepWalkMovementOnScreen : MonoBehaviour
+{
+  #region Data
+  /// <summary>
+  /// Used to determine if we are currently moving.
+  /// </summary>
+  Rigidbody2D myBody;
+
+  /// <summary>
+  /// Used to cause the entity to start walking the 
+  /// opposite direction when it hits the edge of the screen.
+  /// 
+  /// This is not required and may be null.
+  /// </summary>
+  WalkMovement walkMovement;
+
+  /// <summary>
+  /// The area of the world the camera can see.
+  /// 
+  /// This is calculated on Awake, and therefore
+  /// does not consider effects like screen shake.
+  /// </summary>
+  Bounds screenBounds;
+  #endregion
+
+  #region Init
+  /// <summary>
+  /// A Unity event, called once before this GameObject
+  /// is spawned in the world.
+  /// </summary>
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+    walkMovement = GetComponent<WalkMovement>();
+
+    Camera camera = Camera.main;
+    Vector2 screenSize = new Vector2((float)Screen.width / Screen.height, 1);
+    screenSize *= camera.orthographicSize * 2;
+
+    screenBounds = new Bounds((Vector2)camera.transform.position, screenSize);
+
+    Debug.Assert(myBody != null);
+  }
+  #endregion
+
+  #region Events
+  /// <summary>
+  /// A Unity event, called each frame.
+  /// 
+  /// If the entity is off screen, pop it back 
+  /// and flip the walk direction.
+  /// </summary>
+  protected void Update()
+  {
+    // Check if the entity is off screen
+    if(screenBounds.Contains(transform.position) == false)
+    { 
+      // Move the entity back to the edge of the screen
+      transform.position = screenBounds.ClosestPoint(transform.position);
+      if(walkMovement != null)
+      {
+        // Flip the walk direction
+        walkMovement.desiredWalkDirection 
+          = -walkMovement.desiredWalkDirection;
+      }
+    }
+  }
+  #endregion
+}
+```
+
+</details>
+
+<details><summary>Why use bounds for these checks?</summary>
+
+There are a few ways you could check for an entity walking off the edge of the screen.  I choose to use the Unity bounds struct because it has methods which make the rest of this component easy.  Specifically:
+
+ - Contains: Check if the current position is on the screen.
+ - ClosestPoint: Return the closest point on screen for the character, used when he is off-screen to teleport him back.
+
+</details>
  
 
 
@@ -1129,6 +1212,7 @@ DieOnBumpers?
 
 
 Fly Guy too
+ - Prevent walking into walls?
 
 ## Jump
 
@@ -1191,6 +1275,8 @@ end of level / respawn and scene changes
 In game UI
 
 ui...
+
+points
 
 =====
 
