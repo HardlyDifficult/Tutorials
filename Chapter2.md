@@ -876,8 +876,8 @@ Flip the character's sprite when he switches between walking left and walking ri
 
 <details open><summary>How</summary>
 
- - Create a C# script "RotateWalkingEntity" under Assets/Code/Components/Movement.
- - Select the character GameObject and add the RotateWalkingEntity component.
+ - Create a C# script "RotateEntity" under Assets/Code/Components/Movement.
+ - Select the character GameObject and add the RotateEntity component.
  - Paste in the following code:
 
 ```csharp
@@ -889,7 +889,7 @@ using UnityEngine;
 /// This causes entities to face the direction they are walking.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-public class RotateWalkingEntity : MonoBehaviour
+public class RotateEntity : MonoBehaviour
 {
   /// <summary>
   /// The rotation that's applied when looking left (vs right).
@@ -945,8 +945,6 @@ public class RotateWalkingEntity : MonoBehaviour
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-    // Check if we are currently facing right
-    isGoingRight = Vector2.Dot(Vector2.right, transform.right) > 0;
     Debug.Assert(myBody != null);
   }
 
@@ -971,7 +969,6 @@ public class RotateWalkingEntity : MonoBehaviour
 ```
 
 </details>
-
 <details><summary>What's a C# smart property?</summary>
 
 In C#, data may be exposed as either a Field or a Property.  Fields are simply data as one would expect.  Properties are accessed in code like a field is, but they are capable of more.
@@ -1023,29 +1020,6 @@ Quaternion rotationOfZ60Degrees
 
 </details>
 
-<details><summary>How does Dot product work?</summary>
-
-The Dot product is a fast operation which can be used to effeciently determine if two directions represented with Vectors are facing the same (or a similiar) way.
-
-In the visualization below, we are rotating two ugly arrows.  These arrows are pointing in a direction and we are using Vector2.Dot to compare those two directions.  The Dot product is shown as we rotate around.
-
-<img src="http://i.imgur.com/XrjcWQm.gif" width=200px />
-
-A few notables about Dot products:
-
- - '1' means the two directions are facing the same way.
- - '-1' means the two directions are facing opposite ways.
- - '0' means the two directions are perpendicular.
- - Numbers smoothly transition between these points, so .9 means that the two directions are nearly identical.
- - When two directions are not the same, the Dot product will not tell you which direction an object should rotate in order to make them align - it only informs you about how similar they are at the moment.  
-
-For this visualization, we are calculating the Dot product like so:
-
-```csharp
-Vector2.Dot(gameObjectAToWatch.transform.up, gameObjectBToWatch.transform.up);
-```
-
-</details>
 <details><summary>Why not compare to 0 when checking if there is no movement?</summary>
 
 In Unity, numbers are represented with the float data type.  Float is a way of representing decimal numbers but is a not precise representation like you may expect.  When you set a float to some value, internally it may be rounded ever so slightly.
@@ -1156,9 +1130,103 @@ There are a few ways you could check for an entity walking off the edge of the s
  - ClosestPoint: Return the closest point on screen for the character, used when he is off-screen to teleport him back.
 
 </details>
- 
+
+## Jump
+
+Add the ability for the character to jump.
+
+<details open><summary>How</summary>
+
+ - Create a C# script "JumpMovement" under Assets/Code/Components/Movement.
+ - Select the Character GameObject and add the JumpMovement component.
+ - Paste in the following code:
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Controls the entity's jump.  
+/// 
+/// Another component drives when to jump via Jump().
+/// </summary>
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(AudioSource))]
+public class JumpMovement : MonoBehaviour
+{
+  #region Data
+  /// <summary>
+  /// The sound to play when the character starts their jump.
+  /// </summary>
+  [SerializeField]
+  AudioClip jumpSound;
+
+  /// <summary>
+  /// How much force to apply on jump.
+  /// </summary>
+  [SerializeField]
+  float jumpSpeed = 6.5f;
+
+  /// <summary>
+  /// Used to add force on jump.
+  /// </summary>
+  Rigidbody2D myBody;
+
+  /// <summary>
+  /// The audioSource to play sound effects with.
+  /// </summary>
+  AudioSource audioSource;
+  #endregion
+
+  #region Init
+  /// <summary>
+  /// On awake, initialize variables.
+  /// </summary>
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+    audioSource = Camera.main.GetComponent<AudioSource>();
+
+    Debug.Assert(myBody != null);
+    Debug.Assert(audioSource != null);
+  }
+  #endregion
+
+  #region API
+  /// <summary>
+  /// Adds force to the body to make the entity jump.
+  /// </summary>
+  public void Jump()
+  {
+    Debug.Assert(jumpSpeed >= 0,
+      "jumpSpeed must not be negative");
+    
+    // Jump!
+    myBody.AddForce((Vector2)transform.up * jumpSpeed, ForceMode2D.Impulse);
+
+    // Play the sound effect
+    audioSource.PlayOneShot(jumpSound);
+  }
+  #endregion
+}
+```
+
+ - Select the Character GameObject and add an 'AudioSource' component if it does not already have one.
+oaeu
+
+TODO import jump sound
+
+</details>
 
 
+
+## Jump
+
+JumpMovement
+
+
+
+## Add Platformer Effect to platforms
+
 <br>
 <br>
 <br>
@@ -1182,12 +1250,6 @@ There are a few ways you could check for an entity walking off the edge of the s
 <br>
 
 
-
-
-
-
-
-===
 
 
 
@@ -1211,12 +1273,35 @@ DieOnBumpers?
 ---------
 
 
-Fly Guy too
- - Prevent walking into walls?
 
-## Jump
 
-JumpMovement
+====
+
+Feet
+
+<details><summary>How does Dot product work?</summary>
+
+The Dot product is a fast operation which can be used to effeciently determine if two directions represented with Vectors are facing the same (or a similiar) way.
+
+In the visualization below, we are rotating two ugly arrows.  These arrows are pointing in a direction and we are using Vector2.Dot to compare those two directions.  The Dot product is shown as we rotate around.
+
+<img src="http://i.imgur.com/XrjcWQm.gif" width=200px />
+
+A few notables about Dot products:
+
+ - '1' means the two directions are facing the same way.
+ - '-1' means the two directions are facing opposite ways.
+ - '0' means the two directions are perpendicular.
+ - Numbers smoothly transition between these points, so .9 means that the two directions are nearly identical.
+ - When two directions are not the same, the Dot product will not tell you which direction an object should rotate in order to make them align - it only informs you about how similar they are at the moment.  
+
+For this visualization, we are calculating the Dot product like so:
+
+```csharp
+Vector2.Dot(gameObjectAToWatch.transform.up, gameObjectBToWatch.transform.up);
+```
+
+</details>
 
 ## Prevent double jump
 
@@ -1227,15 +1312,13 @@ JumpMovement
 Create a Feet with isGrounded and Quaternion floorRotation. 
 Create a RotateToMatchFloorWhenGrounded
 
-
-## Add Platformer Effect to platforms
-
-
-
 ## Ladders
 
 LadderMovement, for character and spike ball.
 
+
+Fly Guy too
+ - Prevent walking into walls?
 
 ====
 
