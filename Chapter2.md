@@ -340,40 +340,6 @@ Create a pattern to use instead of destroying GameObjects directly, allowing an 
 using UnityEngine;
 
 /// <summary>
-/// Any/all component(s) on the gameObject inherit from this to add
-/// effects or animations on death, before the GameObject is destroyed.
-/// </summary>
-[RequireComponent(typeof(DeathEffectManager))]
-public abstract class DeathEffect : MonoBehaviour
-{
-  /// <summary>
-  /// How long we need to wait before destroying the
-  /// GameObject to allow the effect to complete.
-  /// </summary>
-  public abstract float timeUntilObjectMayBeDestroyed
-  {
-    get;
-  }
-
-  /// <summary>
-  /// Do not call directly.  Initiated only by the DeathEffectManager.
-  /// 
-  /// When we are ready to destroy a GameObject, PlayDeathEffects is called
-  /// and then we wait for at least timeUntilObjectMayBeDestroyed
-  /// before calling Destroy on the gameObject.
-  /// </summary>
-  public abstract void PlayDeathEffects();
-}
-```
-
- - Create a C# script "DeathEffectManager" under Assets/Code/Components/Death.
- - Paste in the following code:
-
-```csharp
-using System.Collections;
-using UnityEngine;
-
-/// <summary>
 /// Manages playing multiple effects, and destroying
 /// the gameObject when they all complete.
 /// 
@@ -401,7 +367,7 @@ public class DeathEffectManager : MonoBehaviour
     {
       // If there is no DeathEffectManager on 
       // this gameObject, Destroy it now.
-      MonoBehaviour.Destroy(gameObject);
+      Destroy(gameObject);
       return;
     }
 
@@ -413,22 +379,11 @@ public class DeathEffectManager : MonoBehaviour
   /// <summary>
   /// Initiated only by PlayDeathEffectsThenDestroy.
   /// 
-  /// Starts a Coroutine for any DeathEffects on this 
-  /// GameObject.
+  /// Plays any DeathEffects then destroys this GameObject.
   /// </summary>
   void PlayDeathEffectsThenDestroy()
   {
-    StartCoroutine(PlayDeathEffectsThenDestroyCoroutine());
-  }
-
-  /// <summary>
-  /// A Unity Coroutine to start DeathEffects and then
-  /// Destroy the gameObject once all complete.
-  /// </summary>
-  /// <returns>Used by Coroutines to manage time.</returns>
-  IEnumerator PlayDeathEffectsThenDestroyCoroutine()
-  {    
-    DeathEffect[] deathEffectList 
+    DeathEffect[] deathEffectList
       = gameObject.GetComponentsInChildren<DeathEffect>();
 
     float maxTimeUntilObjectMayBeDestroyed = 0;
@@ -436,17 +391,15 @@ public class DeathEffectManager : MonoBehaviour
     {
       DeathEffect deathEffect = deathEffectList[i];
       maxTimeUntilObjectMayBeDestroyed = Mathf.Max(
-        maxTimeUntilObjectMayBeDestroyed, 
+        maxTimeUntilObjectMayBeDestroyed,
         deathEffect.timeUntilObjectMayBeDestroyed);
 
       // Start each individual DeathEffect to run in parallel.
       deathEffect.PlayDeathEffects();
     }
 
-    // Wait until the slowest DeathEffect completes.
-    yield return new WaitForSeconds(maxTimeUntilObjectMayBeDestroyed);
-
-    Destroy(gameObject);
+    // Wait until the slowest DeathEffect completes then Destroy.
+    Destroy(gameObject, maxTimeUntilObjectMayBeDestroyed);
   }
 }
 ```
@@ -1085,10 +1038,14 @@ public class KeepWalkMovementOnScreen : MonoBehaviour
     walkMovement = GetComponent<WalkMovement>();
 
     Camera camera = Camera.main;
-    Vector2 screenSize = new Vector2((float)Screen.width / Screen.height, 1);
+    Vector2 screenSize = new Vector2(
+      (float)Screen.width / Screen.height, 
+      1);
     screenSize *= camera.orthographicSize * 2;
 
-    screenBounds = new Bounds((Vector2)camera.transform.position, screenSize);
+    screenBounds = new Bounds(
+      (Vector2)camera.transform.position, 
+      screenSize);
 
     Debug.Assert(myBody != null);
   }
@@ -1107,7 +1064,8 @@ public class KeepWalkMovementOnScreen : MonoBehaviour
     if(screenBounds.Contains(transform.position) == false)
     { 
       // Move the entity back to the edge of the screen
-      transform.position = screenBounds.ClosestPoint(transform.position);
+      transform.position 
+        = screenBounds.ClosestPoint(transform.position);
       if(walkMovement != null)
       {
         // Flip the walk direction
@@ -1128,6 +1086,13 @@ There are a few ways you could check for an entity walking off the edge of the s
 
  - Contains: Check if the current position is on the screen.
  - ClosestPoint: Return the closest point on screen for the character, used when he is off-screen to teleport him back.
+
+</details>
+
+<details><summary></summary>
+
+TODO
+// Flip the walk direction vs Input PlayerController
 
 </details>
 
@@ -1153,7 +1118,6 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class JumpMovement : MonoBehaviour
 {
-  #region Data
   /// <summary>
   /// The sound to play when the character starts their jump.
   /// </summary>
@@ -1172,26 +1136,23 @@ public class JumpMovement : MonoBehaviour
   Rigidbody2D myBody;
 
   /// <summary>
-  /// The audioSource to play sound effects with.
+  /// Used to play sound effects.
   /// </summary>
   AudioSource audioSource;
-  #endregion
 
-  #region Init
   /// <summary>
-  /// On awake, initialize variables.
+  /// A Unity event, called once before this GameObject
+  /// is spawned in the world.
   /// </summary>
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-    audioSource = Camera.main.GetComponent<AudioSource>();
+    audioSource = GetComponent<AudioSource>();
 
     Debug.Assert(myBody != null);
     Debug.Assert(audioSource != null);
   }
-  #endregion
 
-  #region API
   /// <summary>
   /// Adds force to the body to make the entity jump.
   /// </summary>
@@ -1201,19 +1162,27 @@ public class JumpMovement : MonoBehaviour
       "jumpSpeed must not be negative");
     
     // Jump!
-    myBody.AddForce((Vector2)transform.up * jumpSpeed, ForceMode2D.Impulse);
+    myBody.AddForce(
+      (Vector2)transform.up * jumpSpeed, 
+      ForceMode2D.Impulse);
 
     // Play the sound effect
     audioSource.PlayOneShot(jumpSound);
   }
-  #endregion
 }
 ```
 
  - Select the Character GameObject and add an 'AudioSource' component if it does not already have one.
+ - Select a Jump Sound.
+
+
+
 oaeu
 
+Jump 'phaseJump1' from 
+
 TODO import jump sound
+
 
 </details>
 
@@ -1223,195 +1192,93 @@ TODO import jump sound
 
 JumpMovement
 
+Click play, you can now jump around.  Spam the space bar to fly away:
+
+<img src="http://i.imgur.com/dlKUV9v.gif" width=250px />
 
 
 ## Add Platformer Effect to platforms
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+ - Use by Effector!
+
+ - May need to increase the Jump Speed to test out the platformer effect.
+
+ <img src="http://i.imgur.com/hRe7CEJ.gif" width=200px />
 
 
 
+ TODO move speed from controller to walk
+ Recommend sorting components on the character
 
 
 
+ ```csharp
+using UnityEngine;
 
+/// <summary>
+/// Wires up user input, allowing the user to 
+/// control the player in game with a keyboard.
+/// </summary>
+[RequireComponent(typeof(WalkMovement))]
+// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+[RequireComponent(typeof(JumpMovement))] 
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+public class PlayerController : MonoBehaviour
+{
+  /// <summary>
+  /// Used to cause the object to walk.
+  /// </summary>
+  /// <remarks>
+  /// Cached here for performance.
+  /// </remarks>
+  WalkMovement walkMovement;
 
+  JumpMovement jumpMovement; // 
 
+  /// <summary>
+  /// A Unity event, called once before the GameObject
+  /// is instantiated.
+  /// </summary>
+  protected void Awake()
+  {
+    walkMovement = GetComponent<WalkMovement>();
+    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    jumpMovement = GetComponent<JumpMovement>(); 
+    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+    Debug.Assert(walkMovement != null);
+    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    Debug.Assert(jumpMovement != null); 
+    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  }
 
+  /// <summary>
+  /// A Unity event, called every x ms of game time.
+  /// 
+  /// Consider moving.
+  /// </summary>
+  /// <remarks>
+  /// Moving uses an input state, and therefore may be captured 
+  /// on Update or FixedUpdate, we use FixedUpdate since physics 
+  /// also runs on FixedUpdate, so trying to do this on update would
+  /// require an extra cache (w/o benefit).
+  /// </remarks>
+  protected void FixedUpdate()
+  {
+    // Consider moving left/right based off keyboard input.
+    walkMovement.desiredWalkDirection 
+      = Input.GetAxis("Horizontal");
+  }
 
+  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+  protected void Update()
+  {
+    if(Input.GetButtonDown("Jump"))
+    {
+      jumpMovement.Jump();
+    }
+  }
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
+}
 
-
-
-
-
-
-DieOnBumpers?
-
-
-
----------
-
-
-
-
-====
-
-Feet
-
-<details><summary>How does Dot product work?</summary>
-
-The Dot product is a fast operation which can be used to effeciently determine if two directions represented with Vectors are facing the same (or a similiar) way.
-
-In the visualization below, we are rotating two ugly arrows.  These arrows are pointing in a direction and we are using Vector2.Dot to compare those two directions.  The Dot product is shown as we rotate around.
-
-<img src="http://i.imgur.com/XrjcWQm.gif" width=200px />
-
-A few notables about Dot products:
-
- - '1' means the two directions are facing the same way.
- - '-1' means the two directions are facing opposite ways.
- - '0' means the two directions are perpendicular.
- - Numbers smoothly transition between these points, so .9 means that the two directions are nearly identical.
- - When two directions are not the same, the Dot product will not tell you which direction an object should rotate in order to make them align - it only informs you about how similar they are at the moment.  
-
-For this visualization, we are calculating the Dot product like so:
-
-```csharp
-Vector2.Dot(gameObjectAToWatch.transform.up, gameObjectBToWatch.transform.up);
 ```
-
-</details>
-
-## Prevent double jump
-
-
-## Rotate to match the floor's angle
-(or with jumping)
-
-Create a Feet with isGrounded and Quaternion floorRotation. 
-Create a RotateToMatchFloorWhenGrounded
-
-## Ladders
-
-LadderMovement, for character and spike ball.
-
-
-Fly Guy too
- - Prevent walking into walls?
-
-====
-
-
-
-## animation walk speed
- TODO
-
-# Character Animations
- - Jump
- - Climb
- - Idle
- - Dance
-
-PlayerAnimator
-Player DeathEffectThrobToDeath
-other death effects?
-
-Hammer
-
-# Intro
-Character fades in via AppearInSecondsAndFade
-
-+ other intro effects
- - Cloud and animation
-
-
-======
-
-win condition
-
-end of level / respawn and scene changes
-
-## SuicideWhenPlayerDies.
-(or with end of level sequence)
-
-In game UI
-
-ui...
-
-points
-
-=====
-
-Level 2
-
-..
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<hr>
-<br>
-
-
-
-## Debugging
-
-<details><summary>TODO</summary>
-
-* Check the children gameObjects in the prefab.  They should all be at 0 position (except for the edge segments which have an x value), 0 rotation, and 1 scale.
-
-<hr></details>
-
-TODO link to web build and git / source for the example up to here
-
-
-
-=====
-

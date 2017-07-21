@@ -1365,6 +1365,31 @@ How is [UnityEngine.Random](https://docs.unity3d.com/ScriptReference/Random.html
 
 In addition to providing APIs which are convenient for games (such as .rotation), the UnityEngine.Random is accessed statically while the System.Random requires you to create an object first.
 
+Since the Unity random class has the same name as the System random class, I try to consistently use the fully qualified name like this:
+
+```csharp
+UnityEngine.Random.Range(-1f, 1f);
+```
+
+The reason for this is if you have 'using System' in the file, the compile may throw an error.  For example:
+
+```csharp
+using System;
+using UnityEngine;
+
+public class ExampleClass : MonoBehaviour
+{
+  protected void Start()
+  {
+    // This line is a compile error
+    float randomNumber = Random.Range(-1f, 1f); 
+
+    // This line works correctly
+    float randomNumber = UnityEngine.Random.Range(-1f, 1f);
+  }
+}
+```
+
 </details>
 <details><summary>What does Debug.Assert do?</summary>
 
@@ -1383,6 +1408,8 @@ Debug.Assert(confirmThisIsTrue, "confirmThisIsTrue must be true");
 Debug.Assert is there to help identify problems sooner.  If the assert fails it does not prevent other code from being executed - however you can select 'Error Pause' in the 'Console' to better see what is happening at that moment.
 
 Debug.Assert does not execute in release / the built version of your game.  In other words there is no performance impact to your final game by including these checks.
+
+TODO pre conditions and post conditions
 
 </details>
 
