@@ -17,6 +17,7 @@ TODO
  - Lots of FAQs along the way, please consider these questions as you go, we try not to be redundant later on.
  - Stop saying cached for perf.
  - Post questions/comments under the youtube video (since git doesn't do discussions well). Maybe survey at end?
+ - Brief bio / why i did this
 
 # 1) Create a game with enemies spawning
 

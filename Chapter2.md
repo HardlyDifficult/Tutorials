@@ -9,32 +9,32 @@ TODO gif, demo build
 
 ## Configure the character sprite sheet
 
-Add a sprite sheet for the character, slice it with a bottom pivot and set filter mode to point.  We are using [Kenney.nl's Platformer Characters](http://kenney.nl/assets/platformer-characters-1) 'PNG/Adventurer/adventurer_tilesheet.png'.
+Add a sprite sheet for the character, slice it with a bottom pivot and set filter mode to point.  We are using [Kenney.nl's Platformer Characters](http://kenney.nl/assets/platformer-characters-1) PNG/Adventurer/adventurer_tilesheet.png.
 
 
 <details><summary>How</summary>
 
  - Drag/drop the sprite sheet into Assets/Art.
  - Set 'Sprite Mode: Multiple'.
- - Click 'Sprite Editor' 
-   - Cell Count, 9 rows 3 columns.
+ - Click 'Sprite Editor':
+   - Cell Count: 9 rows 3 columns
    - Pivot: Bottom
  - Set the 'Filter Mode: Point (no filter)'.
 
-<img src="http://i.imgur.com/BuIsVWD.png" width=50% />
+<img src="http://i.imgur.com/BuIsVWD.png" width=204 />
 
 Note we won't be tiling the character sprite, so the default of Mesh Type: Tight is okay.
 
 </details>
 <details><summary>What's Pivot do?</summary>
 
-A pivot point is the main anchor point for the sprite.  By default, pivot points are the center of the sprite.  
+A pivot point is the main anchor point for the sprite.  By default, pivot points are at the center of the sprite.  
 
-For the character we are moving the pivot point to the bottom.  This allows us to position and rotate the character starting at the feet / the bottom of the sprite.  
+For the character, we are moving the pivot point to the 'Bottom'.  This allows us to position and rotate the character starting at the feet.  
 
-Here's an example showing a character with a default 'Center' and one with the recommended 'Bottom' pivot.  They both have the same Y position.  Notice the the vertical position of each as well as how the rotation centers around the different pivot points:
+Here's an example showing a character with a default 'Center' pivot and one with the recommended 'Bottom' pivot.  They both have the same Y position.  Notice the the vertical position of each character as well as how the rotation centers around the different pivot points:
 
-<img src="http://i.imgur.com/AQY4FOT.gif" width=50% />
+<img src="http://i.imgur.com/AQY4FOT.gif" width=320 />
 
 The pivot point you select is going to impact how we create animations and implement movement mechanics.  The significance of this topic should become more clear later in the tutorial.
 
@@ -44,14 +44,14 @@ The pivot point you select is going to impact how we create animations and imple
 
 ## Add Character to the Scene with a Walk Animation
 
-Drag the sprites for walking into the Hierarchy to create a Character and animation. Change Order in Layer to 2.  We are using adventurer_tilesheet_9 and adventurer_tilesheet_10.
+Create a Character GameObject with a walk animation. Change Order in Layer to 2.  We are using adventurer_tilesheet_9 and adventurer_tilesheet_10.
 
 <details><summary>How</summary>
 
- - Hold Ctrl and select "adventurer_tilesheet_9" and "adventurer_tilesheet_10" sprites from the sprite sheet "adventurer_tilesheet".
+ - Hold Ctrl and select 'adventurer_tilesheet_9' and 'adventurer_tilesheet_10' sprites from the sprite sheet 'adventurer_tilesheet'.
  - Drag them into the Hierarchy.
  - When prompted, save the animation as Assets/Animations/CharacterWalk.anim.
- - In the 'Inspector', set the SpriteRenderer's 'Order in Layer' to 2.
+ - In the Inspector, set the SpriteRenderer's 'Order in Layer' to 2.
  - Rename the GameObject to "Character" (optional).
 
 <img src="http://i.imgur.com/k7bSlCp.gif" width=50% />
@@ -89,14 +89,14 @@ Add Rigidbody2D and CapsuleCollider2D components to the character to enable grav
 <details><summary>How</summary>
 
  - Select the Character's GameObject.
- - In the 'Inspector', click 'Add Component' and select "Rigidbody2D".
- - Click 'Add Component' and select "CapsuleCollider2D".
- - Click 'Edit Collider' and adjust to fit the character.
+ - In the Inspector, click Add Component and select 'Rigidbody2D'.
+ - Click Add Component and select 'CapsuleCollider2D'.
+ - Click Edit Collider in the Inspector, under the CapsuleCollider2D component you just added and adjust to fit the character.
    - Click and then hold Alt while adjusting the sides to pull both sides in evenly.
 
 <img src="http://i.imgur.com/KFwBZeo.gif" width=100px />
 
-Hit play and the character should now land on a platform... but may fall over:
+Hit play and the character should now land on a platform... but might fall over:
 
 <img src="http://i.imgur.com/T0fdwa1.gif" width=150px />
 
@@ -106,7 +106,7 @@ Hit play and the character should now land on a platform... but may fall over:
 
 The collider does not fit the character perfectly, and that's okay.  In order for the game to feel fair for the player we should lean in their favor.  When designing colliders for the character and enemies, we may prefer to make the colliders a little smaller than the sprite so that there are no collisions in game which may leave the player feeling cheated.
 
-Because the character is constantly in motion, and its limbs are in different positions, the collider won't always fit the character. For that reason we use a collider focused around the body which works for the different character stances.
+As the character animates, its limbs may be in different positions.  The collider won't always fit the character and for that reason we use a collider focused around the body.
 
 In addition to killing the character when he comes in contact with an enemy, the collider is used to keep the character on top of platforms.  For this reason it's important that the bottom of the collider aligns with the sprite's feet.
 
@@ -124,9 +124,9 @@ Most of the time the collisions in the game would not have been any different if
 
 ## Freeze rotation
 
-Freeze the character's rotation so he does not fall over.
+Freeze the character's rotation so he doesn't fall over.
 
-Note: The character will stand straight up even on slanted platforms.  This will be addressed below when we write the movement controllers for the character.
+Note: The character will stand straight up even on slanted platforms.  This will be addressed later in the tutorial.
 
 <details><summary>How</summary>
 
@@ -137,14 +137,22 @@ Note: The character will stand straight up even on slanted platforms.  This will
 <img src="http://i.imgur.com/uXxDSwD.png" width=128px />
 
 </details>
+<details><summary>Does freezing rotation mean the rotation can never change?</summary>
 
+No.  Adding constraints to the rigidbody only limits the Unity physics engine. Freezing the rigidbody position or rotation means that even if you got hit by a bus, you would not move or rotate.  However you could have a custom component set the position or rotation at any time.
+
+Later in the tutorial we will be writing a script to rotate entities so that they align with platforms (i.e. their feet sit flat on the floor).
+
+We use constraints to remove capabilities from Unity, allowing us more control where we need it.  Specifically here that means our character is not going to ever fall flat on his face.
+
+</details>
 
 
 ## Move left/right
 
-Create a script 'WalkMovement' to control the rigidbody and a script 'PlayerController' to feed user input to the WalkMovement component.
+Create a WalkMovement script to control the rigidbody and a  PlayerController script to feed user input to the WalkMovement component.
 
-Note the character will always be looking right, even while walking left.  He can also walk off the screen and push the balls around.  
+Note the character will always be looking right, even while walking left.  He can also walk off the screen and push the balls around.  This will all be addressed later in the tutorial.
 
 <details><summary>How</summary>
 
@@ -173,11 +181,15 @@ public class WalkMovement : MonoBehaviour
   public float desiredWalkDirection;
 
   /// <summary>
+  /// A multiple to increase/decrease how quickly
+  /// the object walks.
+  /// </summary>
+  [SerializeField]
+  float walkSpeed = 100;
+
+  /// <summary>
   /// Used to control movement.
   /// </summary>
-  /// <remarks>
-  /// Cached here for performance.
-  /// </remarks>
   Rigidbody2D myBody;
   
   /// <summary>
@@ -211,7 +223,7 @@ public class WalkMovement : MonoBehaviour
     // Calculate the desired horizontal movement given 
     // the input desiredWalkDirection.
     float desiredXVelocity 
-      = desiredWalkDirection * Time.fixedDeltaTime;
+      = desiredWalkDirection * walkSpeed * Time.fixedDeltaTime;
 
     // Any y velocity is preserved, this allows gravity
     // to continue working.
@@ -235,18 +247,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
   /// <summary>
-  /// A multiple to increase/decrease how quickly
-  /// the object walks.
-  /// </summary>
-  [SerializeField]
-  float walkSpeed = 100; 
-
-  /// <summary>
   /// Used to cause the object to walk.
   /// </summary>
-  /// <remarks>
-  /// Cached here for performance.
-  /// </remarks>
   WalkMovement walkMovement;
 
   /// <summary>
@@ -256,6 +258,7 @@ public class PlayerController : MonoBehaviour
   protected void Awake()
   {
     walkMovement = GetComponent<WalkMovement>();
+    
     Debug.Assert(walkMovement != null);
   }
 
@@ -274,7 +277,7 @@ public class PlayerController : MonoBehaviour
   {
     // Consider moving left/right based off keyboard input.
     walkMovement.desiredWalkDirection 
-      = Input.GetAxis("Horizontal") * walkSpeed;
+      = Input.GetAxis("Horizontal");
   }
 }
 ```
@@ -295,6 +298,24 @@ Unity offers several ways of detecting keyboard/mouse/controller input.  'Axis' 
 
 You can add, remove, rename, and configure the inputs for your game.  Inputs may also be reconfigured by the player at runtime.  For more information about the various options, see [Unity's description of the InputManager](https://docs.unity3d.com/Manual/class-InputManager.html).  We will be using the defaults for this tutorial.
 
+To read / detect Input, Unity offers a few APIs including:
+
+ - GetAxis: Gets the current state as a float.  E.g. horizontal may return 1 for right, -1 for left.  
+ - GetButtonDown/GetButtonUp: Determines if a button was pressed or released this frame.
+ - GetMouseButtonDown/GetMouseButtonUp: Same as above, but for mouse buttons.
+
+There are a ton of options, check out the [complete list of Input APIs](https://docs.unity3d.com/ScriptReference/Input.html).
+
+</details>
+
+<details><summary>Why not use a bool or Enum for Left/Right instead of a float?</summary>
+
+You could for the game we are making at the moment.  When playing with a keyboard, a button is down or it isn't.  
+
+The nice thing about using a float here is it could be leveraged to allow players even more control over movement.  When playing with a controller, left and right are not simply on and off - the amount you move the joystick  by scales how quickly the character should walk.
+
+The WalkMovement desiredWalkDirection should be set to something in the range of -1 to 1, where 1 represents the desire to walk at full speed towards the right.  From there the WalkMovement component will apply the walkSpeed, representing the fastest speed the entity should walk, and then update the rigidbody.
+
 </details>
 <details><summary>Why FixedUpdate instead of Update?</summary>
 
@@ -308,7 +329,7 @@ FixedUpdate is preferred for mechanics which require some level of consistency o
 
 It's optional. Anytime you make a change which includes some speed, such as walking, we multiply by the time elapsed so motion is smooth even when the frame rate may not be.  While using FixedUpdate, the time passed between calls is always the same - so Time.fixedDeltaTime is essentially a constant.  
 
-If speed is beinging processed in an Update, you must multiply by Time.deltaTime for a smooth experience.  While in FixedUpdate, you could opt to not use Time.fixedDeltaTime, however leaving it out may lead to some confusion as fields which are configured for FixedUpdate may have a different order of magnitude than fields configured for use in Update.
+If speed is being processed in an Update, you must multiply by Time.deltaTime for a smooth experience.  While in FixedUpdate, you could opt to not use Time.fixedDeltaTime, however leaving it out may lead to some confusion as fields which are configured for FixedUpdate may have a different order of magnitude than fields configured for use in Update.
 
 Additionaly you may choose to adjust the time interval between FixedUpdate calls while optimizing your game.  By consistently multiplying by the delta time, you can adjust the interval for FixedUpdate without changing the game play.
 
@@ -324,9 +345,10 @@ So that's to say you could use AddForce here instead.  Maybe give it a try and s
 </details>
 <details><summary>Why not combine these into a single class?</summary>
 
-As discussed in chapter 1, Unity encourages a component based solution.  This means that we attempt to make each component focused on a single mechanic for feature.  Doing so simplifies debugging and enables reuse.  For example, we will be creating another enemy type which will use the same WalkMovement component created for the character above.
+As discussed in chapter 1, Unity encourages a component based solution.  This means that we attempt to make each component focused on a single mechanic or feature.  Doing so simplifies debugging and enables reuse.  For example, we will be creating another enemy type which will use the same WalkMovement component created for the character above.
 
 </details>
+
 
 ## Create a pattern for death effects
 
@@ -335,6 +357,39 @@ Create a pattern to use instead of destroying GameObjects directly, allowing an 
 <details><summary>How</summary>
 
  - Create a C# script "DeathEffect" under Assets/Code/Components/Death.
+ - Paste in the following code:
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Any/all component(s) on the gameObject inherit from this to add
+/// effects or animations on death, before the GameObject is destroyed.
+/// </summary>
+[RequireComponent(typeof(DeathEffectManager))]
+public abstract class DeathEffect : MonoBehaviour
+{
+  /// <summary>
+  /// How long we need to wait before destroying the
+  /// GameObject to allow the effect to complete.
+  /// </summary>
+  public abstract float timeUntilObjectMayBeDestroyed
+  {
+    get;
+  }
+
+  /// <summary>
+  /// Do not call directly.  Initiated only by the DeathEffectManager.
+  /// 
+  /// When we are ready to destroy a GameObject, PlayDeathEffects is called
+  /// and then we wait for at least timeUntilObjectMayBeDestroyed
+  /// before calling Destroy on the gameObject.
+  /// </summary>
+  public abstract void PlayDeathEffects();
+}
+```
+
+ - Create a C# script "DeathEffectManager" under Assets/Code/Components/Death.
  - Paste in the following code:
 
 ```csharp
