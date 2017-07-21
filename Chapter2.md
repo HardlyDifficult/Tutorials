@@ -319,6 +319,7 @@ AddForce is a way of increasing a rigidbody's velocity instead of manipulating t
 
 You could use AddForce instead.  Maybe give it a try and see how it feels.  Adding force instead of setting velocity will create a different game feel, in terms of how objects accelerate.
 
+TODO more words.
 
 </details>
 <details><summary>Why not combine these into a single class?</summary>
@@ -1089,10 +1090,13 @@ There are a few ways you could check for an entity walking off the edge of the s
 
 </details>
 
-<details><summary></summary>
+<details><summary>Why doesn't flipping the walk direction seem to do anything?</summary>
 
-TODO
-// Flip the walk direction vs Input PlayerController
+Each frame the PlayerController sets the walk direction without consider the previous value.  So flipping the walk direction here is promptly overwritten by the PlayerController - resulting in little or no impact to movement in the game.
+
+We included this logic because not all controllers are going to work the same way.  Later in the tutorial we will be adding another entity that uses WalkMovement by only setting desiredWalkDirection periodically.  For that entity, flipping the direction will cause the entity to bounce off the side of the screen and walk the other way.
+
+This logic doesn't impact the character but it's not harmful either and it fits with the theme of this component, enabling reuse.
 
 </details>
 
@@ -1175,46 +1179,19 @@ public class JumpMovement : MonoBehaviour
  - Select the Character GameObject and add an 'AudioSource' component if it does not already have one.
  - Select a Jump Sound.
 
-
-
-oaeu
-
 Jump 'phaseJump1' from 
 
 TODO import jump sound
 
 
-</details>
+ - Edit the existing C# script "PlayerController" under Assets/Code/Components/Movement.
+ - Add the following (or click here for the full file to copy/paste from):
 
-
-
-## Jump
-
-JumpMovement
-
-Click play, you can now jump around.  Spam the space bar to fly away:
-
-<img src="http://i.imgur.com/dlKUV9v.gif" width=250px />
-
-
-## Add Platformer Effect to platforms
-
- - Use by Effector!
-
- - May need to increase the Jump Speed to test out the platformer effect.
-
- <img src="http://i.imgur.com/hRe7CEJ.gif" width=200px />
-
-
-
- TODO move speed from controller to walk
- Recommend sorting components on the character
-
-
+TODO file link
 
 <details><summary>Existing code</summary>
 
- ```csharp
+```csharp
 using UnityEngine;
 
 /// <summary>
@@ -1239,15 +1216,15 @@ public class PlayerController : MonoBehaviour
   /// <summary>
   /// Used to cause the object to walk.
   /// </summary>
-  /// <remarks>
-  /// Cached here for performance.
-  /// </remarks>
   WalkMovement walkMovement;
 ```
 
 </details>
 
 ```csharp
+  /// <summary>
+  /// Used to cause the object to jump.
+  /// </summary>
   JumpMovement jumpMovement; 
 ```
 
@@ -1295,8 +1272,20 @@ public class PlayerController : MonoBehaviour
     walkMovement.desiredWalkDirection 
       = Input.GetAxis("Horizontal");
   }
+```
 
-  // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+</details>
+
+```csharp
+  /// <summary>
+  /// A Unity event, called once per frame.
+  /// 
+  /// Consider jumping.
+  /// </summary>
+  /// <remarks>
+  /// Jumping uses an input event, and therefore must be
+  /// captured on Update.
+  /// </remarks>
   protected void Update()
   {
     if(Input.GetButtonDown("Jump"))
@@ -1304,7 +1293,91 @@ public class PlayerController : MonoBehaviour
       jumpMovement.Jump();
     }
   }
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  
-}
-
 ```
+
+<details><summary>Existing code</summary>
+
+
+```csharp
+}
+```
+
+</details>
+
+
+
+Click play, you can now jump around.  Spam the space bar to fly away:
+
+<img src="http://i.imgur.com/dlKUV9v.gif" width=250px />
+
+<details><summary>Why AddForce here instead of setting velocity?</summary>
+
+TODO, compare with the force section above.
+
+</details>
+<details><summary>How do you know when to use Update vs FixedUpdate for Input and rigidbodies?</summary>
+
+TODO Talk about Update for events vs Fixed for state.
+
+</details>
+
+
+## Add Platformer Effect to platforms
+
+Add the PlatformerEffect2D component to each platform, allowing the character to jump through them.
+
+<details open><summary>How</summary>
+
+ - Select all of the Platform GameObjects.
+ - Add Component: PlatformEffector2D.
+ - Under the BoxCollider2D, select 'Use by Effector'.
+
+<img src="http://i.imgur.com/55YiY3N.gif" width=200px />
+
+Click play to test it out.  You may need to increase the character's Jump Speed to really see how platformer effect works:
+
+<img src="http://i.imgur.com/hRe7CEJ.gif" width=200px />
+
+</details>
+<details><summary>Wow that was easy, what else like this can Unity do for 'free'?</summary>
+
+Effectors in Unity are easy ways to add various mechanics to the game.  The one-way collision effect we are using here happens to be a very common mechanic for 2D games, so Unity has this component ready to drop in.  
+
+Unity is not doing anything with these components that you technically could not have built yourself in a custom script, but that said adding the one-way effect the PlatformerEffector2D creates would not be easy to do.
+
+Read more about the [various 2d effectors in Unity](https://docs.unity3d.com/Manual/Effectors2D.html) including a conveyor belt, repulsion, and floating effects.
+
+</details>
+
+
+## Test!
+
+Chapter 2, complete!  Your game should now look a lot like the gif at the top.  You can compare to our  [demo build](https://hardlydifficult.com/PlatformerTutorialPart2/index.html) and review the [Unity Project / Source Code for Chapter 2](https://github.com/hardlydifficult/Unity2DPlatformerTutorial/tree/Part2). TODO links
+
+Additionally to review, you may want to:
+ - Consider sorting components on the character GameObject, as it's starting to look a little cluttered.
+ - Try adjusting the jump speed for the character.
+ - Maybe try different particle systems for the explosion death effect.
+ - Cut a test build and try it outside of the Unity editor environment.
+
+<details><summary>How do you sort components on a GameObject?</summary>
+
+The order does not impact anything.  So why bother?  Just tidyness really.   As the number of components grows it may be nice to have them presented in an order you find more intuative.
+
+Start by collapsing everything.
+To sort, select the GameObject and in the Inspector
+
+Transform has to be first. Then Unity stuff.  Then scripts.
+
+Unity grouping logically similar components, eg. Rigidbody near Collider
+
+Scripts in order where possible, like DeathEffectManager before any DeathEffects.
+
+<img src="http://i.imgur.com/ElAr8xt.gif" width=150px />
+
+On a related note, order does matter when for some scripts in terms of which compoment executes before another.  To ma...
+
+</details>
+
+
+

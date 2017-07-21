@@ -969,6 +969,8 @@ There are a lot of events available to MonoBehaviours.  In this example we are u
 
 Note that when implementing MonoBehaviour events, you do not use 'override' nor subscribe to the event.  Unity uses reflection based on the method signature instead to improve performance.  This creates an unintuative pattern for C# delevelopes but allows Unity to eliminate unncessary calls.  This optimization normally in development would be considered overkill but for a game engine this kind of thing adds up, particularly since there are typically hundreds of MonoBehaviours in the world.
 
+TODO flow of events https://docs.unity3d.com/uploads/Main/monobehaviour_flowchart.svg
+
 </details>
 <details><summary>Why use protected on the Unity event?</summary>
 
@@ -1513,3 +1515,9 @@ Additionally to review, you may want to:
 
 
 
+
+
+
+== 
+
+TODO paypal, patreon, and twitch links.
