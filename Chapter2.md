@@ -1212,6 +1212,8 @@ Click play, you can now jump around.  Spam the space bar to fly away:
 
 
 
+<details><summary>Existing code</summary>
+
  ```csharp
 using UnityEngine;
 
@@ -1220,9 +1222,18 @@ using UnityEngine;
 /// control the player in game with a keyboard.
 /// </summary>
 [RequireComponent(typeof(WalkMovement))]
-// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+```
+
+</details>
+
+```csharp
 [RequireComponent(typeof(JumpMovement))] 
-// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
+<details><summary>Existing code</summary>
+
+
+```csharp
 public class PlayerController : MonoBehaviour
 {
   /// <summary>
@@ -1232,9 +1243,18 @@ public class PlayerController : MonoBehaviour
   /// Cached here for performance.
   /// </remarks>
   WalkMovement walkMovement;
+```
 
-  JumpMovement jumpMovement; // 
+</details>
 
+```csharp
+  JumpMovement jumpMovement; 
+```
+
+<details><summary>Existing code</summary>
+
+
+```csharp
   /// <summary>
   /// A Unity event, called once before the GameObject
   /// is instantiated.
@@ -1242,14 +1262,20 @@ public class PlayerController : MonoBehaviour
   protected void Awake()
   {
     walkMovement = GetComponent<WalkMovement>();
-    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    jumpMovement = GetComponent<JumpMovement>(); 
-    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
     Debug.Assert(walkMovement != null);
-    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+```
+
+</details>
+
+```csharp
+    jumpMovement = GetComponent<JumpMovement>(); 
     Debug.Assert(jumpMovement != null); 
-    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+```
+
+<details><summary>Existing code</summary>
+
+
+```csharp
   }
 
   /// <summary>
