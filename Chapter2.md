@@ -363,7 +363,7 @@ Create a pattern to use instead of destroying GameObjects directly, allowing an 
 using UnityEngine;
 
 /// <summary>
-/// Any/all component(s) on the gameObject inherit from this to add
+/// Any/all component(s) on the gameObject that inherit from this to add
 /// effects or animations on death, before the GameObject is destroyed.
 /// </summary>
 [RequireComponent(typeof(DeathEffectManager))]
@@ -371,7 +371,7 @@ public abstract class DeathEffect : MonoBehaviour
 {
   /// <summary>
   /// How long we need to wait before destroying the
-  /// GameObject to allow the effect to complete.
+  /// GameObject to allow this effect to complete.
   /// </summary>
   public abstract float timeUntilObjectMayBeDestroyed
   {
@@ -464,7 +464,7 @@ public class DeathEffectManager : MonoBehaviour
 
 <details><summary>Why not just play effects OnDestroy()?</summary>
 
-OnDestroy is called when an object is destroyed, but we only want the death effects to trigger in certain circumstances.  For example, when we quit back to the main menu, we do not want explosions spawning for GameObjects being destroyed while closing level 1.
+OnDestroy is called anytime the object is destroyed, but we only want the death effects to trigger in certain circumstances.  For example, when we quit back to the main menu, we do not want explosions spawning for character being destroyed while closing level 1.
 
 This pattern was selected because:
 
@@ -479,7 +479,7 @@ As always, there are probably a thousand different ways you could achieve simila
 
 PlayDeathEffects() in the DeathEffect class has a public method with a comment saying it 'should not be called directly'.  So why is it public?
 
-In order to support multiple DeathEffects and to be able to fallback gracefully when an object does not have a DeathEffect, we always initiate the effects from DeathEffectManager.  
+In order to support multiple DeathEffects and to be able to fallback gracefully when an object does not have one, we always start effects by calling the public static method in DeathEffectManager, PlayDeathEffectsThenDestroy.  
 
 Since DeathEffectManager is a class of its own, we would not be able to call a private or protected method in DeathEffect.
 
@@ -489,6 +489,11 @@ You might also consider using nested classes.  For simplicity in the tutorial, w
 
 </details>
 
+<details><summary>Why are you using Mathf and not System.Math?</summary>
+
+Unity offers the UnityEngine.Mathf class to try and make some things a little easier.  Basically it's the same APIs which are offered from the standard System.Math class (which is also still available to use if you prefer).  The main difference is all of the APIs in Mathf are focused on the float data type, where the System.Math class often prefers double.  Most of the data you interact with in Unity is float.  
+
+</details>
 
 
 
@@ -608,7 +613,7 @@ For now, to test again stop and hit play again.  We'll respawn the player later 
 </details>
 <details><summary>What is a C# extension method and why use it?</summary>
 
-Extension methods are a way of adding additional methods to a class you don't own.  In this example, Unity has a class LayerMask.  That class does not offer an easy way to determine if a layer is part of that LayerMask.  Using extensions, we are able to create an 'Includes' method that then can be used as if Unity had written it for us.
+Extension methods are a way of adding additional methods to a class or struct you don't own.  In this example, Unity has a struct 'LayerMask'.  That struct does not offer an easy way to determine if a layer is part of that LayerMask.  Using extensions, we are able to create an 'Includes' method that then can be used as if Unity had written it for us.
 
 This allows us to focus on intent and forget the gory details.  For example this statement:
 
@@ -627,7 +632,7 @@ if(layersToKill.Includes(gameObjectWeJustHit.layer))
 </details>
 <details><summary>What is this '& 1 <<' black magic?</summary>
 
-Bitwise operations... which are beyond the scope of this tutorial.  To learn more, google 'bit shifting' and 'bitwise and'.
+Bitwise operations... which are beyond the scope of this tutorial.  More specifically, this is 'bitwise and' and 'bit shifting' if you would like to read more about this.  Here is a [Stackoverflow post on the topic](http://answers.unity3d.com/questions/8715/how-do-i-use-layermasks.html).
 
 </details>
 
@@ -654,10 +659,14 @@ Create an explosion prefab.  We are using a scaled Fireball from the standard as
  - Change the Transform scale to about (.25, .25, .25).
  - Preview the Explosion effect again.
 
-<img src="http://i.imgur.com/ICngwqj.gif" width=300px />
+<img src="http://i.imgur.com/bOWigXy.gif" width=300px />
 
  - Drag/drop the Explosion GameObject to Asserts/Prefabs to create a prefab.
  - Delete the Explosion GameObject.
+
+Note that by default Unity scales particle systems based on the viewport size.  This means that while previewing the effect in the 'Scene' tab, the size you see relative to the world may not be what's going to happen in game.  To limit impact from this, you can change the 'Max Particle Size' to 1 - but for best results always confirm your work in the 'Game' tab while playing.
+
+<img src="http://i.imgur.com/h12U4xa.png" />
 
 </details>
 <details><summary>What's a particle / particle system?</summary>

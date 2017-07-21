@@ -949,6 +949,11 @@ So why not just public instead of [SerializeField]?
 The fields in question are often only leveraged inside the component itself.  Other components may not interact with these fields directly.  In those scenarios, I prefer to follow the Object-Oriented programming best practice of [data encapsulation](https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)) - meaning we only expose public fields when we want other classes to interact with them.
 
 </details>
+<>
+
+TODO GetComponent
+
+
 <details><summary>What's RequireComponent do?</summary>
 
 [RequireComponent] is an Unity attribute used to let the editor know that this component requires another component on the same GameObject.
