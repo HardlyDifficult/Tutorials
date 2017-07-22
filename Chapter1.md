@@ -914,6 +914,10 @@ public class InitializeRigidbodyOnStart : MonoBehaviour
 ```
 
 </details>
+
+TODO faq on GetComponent, GetChildComponents...
+
+
 <details><summary>Why not use a "SpikeBall" component instead?</summary>
 
 You could, but...  
@@ -1528,3 +1532,6 @@ TODO add something about changing values in run mode vs save.
 
 
 TODO paypal, patreon, and twitch links.
+
+TODO  - Why do some scripts have a check to disable and others do not.
+TODO - Debugging tip / talk about the defaults in code vs inspector.  Check your values.  Maybe we should be more explicit in the steps.

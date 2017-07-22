@@ -1,6 +1,3 @@
-
-
-
 # 2) Add a Character and Movement Mechanics TODO
 
 Add a character to the scene.  Have him walk and jump, creating a basic platformer. TODO
@@ -1488,7 +1485,7 @@ Scripts in order where possible, like DeathEffectManager before any DeathEffects
 
 <img src="http://i.imgur.com/ElAr8xt.gif" width=150px />
 
-On a related note, order does matter when for some scripts in terms of which compoment executes before another.  To ma...
+On a related note, order does matter when for some scripts in terms of which compoment executes before another.  To ma... Script execution order
 
 TODO
 
