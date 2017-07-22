@@ -1035,6 +1035,9 @@ Quaternion rotationOfZ60Degrees
 
 </details>
 
+TODO why Quaternion.Euler(0, 180, 0) when you said before 2D games only rotate around the z axis?
+
+
 <details><summary>Why not compare to 0 when checking if there is no movement?</summary>
 
 In Unity, numbers are represented with the float data type.  Float is a way of representing decimal numbers but is a not precise representation like you may expect.  When you set a float to some value, internally it may be rounded ever so slightly.
@@ -1222,6 +1225,12 @@ public class JumpMovement : MonoBehaviour
   AudioSource audioSource;
 
   /// <summary>
+  /// Used to process events in FixedUpdate that 
+  /// may have been captured on Update.
+  /// </summary>
+  bool wasJumpRequestedSinceLastFixedUpdate;
+
+  /// <summary>
   /// A Unity event, called once before this GameObject
   /// is spawned in the world.
   /// </summary>
@@ -1241,14 +1250,25 @@ public class JumpMovement : MonoBehaviour
   {
     Debug.Assert(jumpSpeed >= 0,
       "jumpSpeed must not be negative");
-    
-    // Jump!
-    myBody.AddForce(
-      (Vector2)transform.up * jumpSpeed, 
-      ForceMode2D.Impulse);
 
-    // Play the sound effect
-    audioSource.PlayOneShot(jumpSound);
+    wasJumpRequestedSinceLastFixedUpdate = true;
+  }
+
+  protected void FixedUpdate()
+  {
+    if(wasJumpRequestedSinceLastFixedUpdate)
+    {
+      // Jump!
+      myBody.AddForce(
+          new Vector2(0, jumpSpeed),
+          ForceMode2D.Impulse);
+
+      // Play the sound effect
+      audioSource.PlayOneShot(jumpSound);
+
+      // Clear the jump flag, enabling the next jump
+      wasJumpRequestedSinceLastFixedUpdate = false;
+    }
   }
 }
 ```
@@ -1459,6 +1479,469 @@ Play, now the character should not be able to stick to the sides while falling:
 </details>
 
 
+## Detect floors
+
+TODO
+
+<details><summary>How</summary>
+
+ - Change all the Platforms to Layer 'Floor'. TODO words.
+
+ - Create a C# script "FloorDetector" under Assets/Code/Components/Movement.
+ - Select the Character GameObject and add the FloorDetector component.
+ - Paste in the following code:
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Used to determine if the entity is on the ground.  
+/// Also provides properties about the ground we are standing on.
+/// 
+/// This component may be placed on the main entity GameObject 
+/// or a child GameObject.  A child may be used to offset the feet
+/// from the collider used for other things.
+/// </summary>
+[RequireComponent(typeof(Collider2D))]
+public class FloorDetector : MonoBehaviour
+{
+  /// <summary>
+  /// The rotation that's applied when a floor is upside down.
+  /// </summary>
+  static readonly Quaternion backwardsRotation = Quaternion.Euler(0, 0, 180);
+
+  /// <summary>
+  /// The collider on this gameObject, used to determine if we 
+  /// are currently on the ground (vs jumping or falling).
+  /// </summary>
+  Collider2D myCollider;
+
+  /// <summary>
+  /// Sets a LayerMask to 'Floor' for use when calling Physics 
+  /// to check if we are on ground.
+  /// </summary>
+  ContactFilter2D floorFilter;
+
+  /// <summary>
+  /// True if the entity is currently standing on the ground.
+  /// </summary>
+  public bool isTouchingFloor
+  {
+    get; private set;
+  }
+
+  /// <summary>
+  /// The up direction / normal for the floor we are standing on.
+  /// Null if we isTouchingFloor == false.
+  /// </summary>
+  public Vector2? floorUp
+  {
+    get; private set;
+  }
+
+  /// <summary>
+  /// The rotation for the floor we are standing on.
+  /// Null if we isTouchingFloor == false.
+  /// </summary>
+  public Quaternion? floorRotation
+  {
+    get; private set;
+  }
+
+  /// <summary>
+  /// How far above the floor we are ATM.  
+  /// 0 if isTouchingFloor.
+  /// Null if there is no floor under us.
+  /// </summary>
+  public float? distanceToFloor
+  {
+    get; private set;
+  }
+
+  /// <summary>
+  /// A Unity event, called once before this GameObject
+  /// is spawned in the world.
+  /// </summary>
+  protected void Awake()
+  {
+    myCollider = GetComponent<Collider2D>();
+
+    floorFilter = new ContactFilter2D()
+    {
+      layerMask = LayerMask.GetMask(new[] { "Floor" }),
+      useLayerMask = true
+    };
+
+    Debug.Assert(myCollider != null);
+  }
+
+  /// <summary>
+  /// A Unity event, called every x ms of game time.
+  /// 
+  /// Checks for floor and updates properties.
+  /// </summary>
+  protected void FixedUpdate()
+  {
+    Collider2D floorWeAreStandingOn = DetectTheFloorWeAreStandingOn();
+    isTouchingFloor = floorWeAreStandingOn != null;
+
+    Collider2D floorUnderUs;
+    if(floorWeAreStandingOn != null)
+    {
+      floorUp = CalculateFloorUp(floorWeAreStandingOn);
+      floorRotation = CalculateFloorRotation(floorWeAreStandingOn);
+      floorUnderUs = floorWeAreStandingOn;
+    }
+    else
+    {
+      floorUp = null;
+      floorRotation = null;
+      floorUnderUs = DetectFloorUnderUs();
+    }
+
+    distanceToFloor = CalculateDistanceToFloor(floorWeAreStandingOn, floorUnderUs);
+  }
+
+  /// <summary>
+  /// Returns the collider for the floor / platform we are 
+  /// standing on, if we are not in the air.
+  /// </summary>
+  /// <returns>The floor's collider, or null.</returns>
+  Collider2D DetectTheFloorWeAreStandingOn()
+  {
+    Collider2D[] possibleResultList = new Collider2D[3];
+
+    // Ask Unity which floors we are colliding with
+    int foundColliderCound
+      = Physics2D.OverlapCollider(myCollider, floorFilter, possibleResultList);
+
+    for(int i = 0; i < foundColliderCound; i++)
+    {
+      Collider2D collider = possibleResultList[i];
+      ColliderDistance2D distance = collider.Distance(myCollider);
+
+      // If my collider is on or above the floor
+      // (vs jumping up through a floor)
+      // and we are making contact with the top (vs bottom) 
+      if(distance.distance >= -.1f
+        && Vector2.Dot(Vector2.up, distance.normal) > 0)
+      {
+        return collider;
+      }
+    }
+
+    // Didn't find a valid floor, we must be in the air.
+    return null;
+  }
+
+  /// <summary>
+  /// If we are not standing on a floor, this may be used
+  /// to raycast from the center of the entity downwards,
+  /// looking for the first floor underneath us.
+  /// </summary>
+  /// <returns>The floor's collider, or null.</returns>
+  Collider2D DetectFloorUnderUs()
+  {
+    // Raycast to find any floor under us if we can.
+    RaycastHit2D[] result = new RaycastHit2D[1];
+    if(Physics2D.Raycast(transform.position, Vector2.down, floorFilter, result) > 0)
+    {
+      return result[0].collider;
+    }
+
+    // Can't find any floor
+    // this should never happen with our level design.
+    return null;
+  }
+
+  /// <summary>
+  /// If we are standing on a floor, this may be used
+  /// to determine its up direction.
+  /// </summary>
+  /// <returns>
+  /// The floor 'up' normally.  
+  /// 'Down' when the floor is upsidedown.
+  /// i.e. always facing positive Y.
+  /// </returns>
+  static Vector2 CalculateFloorUp(
+    Collider2D floorWeAreStandingOn)
+  {
+    Debug.Assert(floorWeAreStandingOn != null);
+
+    // The transform up represents the platform's normal because any rotation in the platform sprite 
+    // is part of it's gameObject (vs drawn with rotation or rotated in a child object).
+    Vector2 floorUp = floorWeAreStandingOn.transform.up;
+    if(Vector2.Dot(Vector2.up, floorUp) >= 0)
+    {
+      return floorUp;
+    }
+    else
+    {
+      // Use down instead
+      return -floorUp;
+    }
+  }
+
+  /// <summary>
+  /// If we are standing on a floor, this may be used
+  /// to determine its rotation.
+  /// </summary>
+  /// <returns>
+  /// The floor rotation normally.  
+  /// The floor rotation * (0, 0, 180) when the floor is upsidedown.
+  /// i.e. always facing the world up.
+  /// </returns>
+  static Quaternion CalculateFloorRotation(
+    Collider2D floorWeAreStandingOn)
+  {
+    Debug.Assert(floorWeAreStandingOn != null);
+
+    Quaternion floorRotation = floorWeAreStandingOn.transform.rotation;
+    if(Quaternion.Dot(floorRotation, Quaternion.identity) >= 0)
+    {
+      return floorRotation;
+    }
+    else
+    {
+      return floorRotation * backwardsRotation;
+    }
+  }
+
+  /// <summary>
+  /// Determines the distance to the closest floor.
+  /// </summary>
+  /// <returns>
+  /// 0 if standing on a floor.
+  /// > 0 if there is floor under us.
+  /// null if we couldn't find a floor.
+  /// </returns>
+  float? CalculateDistanceToFloor(
+    Collider2D floorWeAreStandingOn,
+    Collider2D floorUnderUs)
+  {
+    if(floorWeAreStandingOn != null)
+    {
+      // If standing, distance is assumed to be 0
+      return 0;
+    }
+    else if(floorUnderUs != null)
+    {
+      // Compare bounds to determine the separation between them
+      float yOfTopOfFloor = floorUnderUs.bounds.max.y;
+
+      // If an edgeRadius was used, this must be added to the bounds info
+      if(floorUnderUs is BoxCollider2D)
+      {
+        BoxCollider2D boxCollider = (BoxCollider2D)floorUnderUs;
+        yOfTopOfFloor += boxCollider.edgeRadius;
+      }
+
+      return myCollider.bounds.min.y - yOfTopOfFloor;
+    }
+    else
+    {
+      // Couldn't find a floor
+      return null;
+    }
+  }
+}
+```
+
+TODO
+
+
+</details>
+
+TODO question - when changing layers, yes change children..
+http://i.imgur.com/xFiD5Vc.png
+
+TODO question - why not require floordetector component? / why GetComponentInChildren
+
+
+
+## Prevent double jump
+
+ - Change the JumpMovement script:
+ TODO words
+
+ TODO link to full source
+
+<details><summary>How</summary>
+
+<details><summary>Existing code</summary>
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Controls the entity's jump.  
+/// 
+/// Another component drives when to jump via Jump().
+/// </summary>
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(AudioSource))]
+public class JumpMovement : MonoBehaviour
+{
+  /// <summary>
+  /// The sound to play when the character starts their jump.
+  /// </summary>
+  [SerializeField]
+  AudioClip jumpSound;
+
+  /// <summary>
+  /// How much force to apply on jump.
+  /// </summary>
+  [SerializeField]
+  float jumpSpeed = 6.5f;
+
+  /// <summary>
+  /// Used to add force on jump.
+  /// </summary>
+  Rigidbody2D myBody;
+
+```
+
+</details>
+
+```csharp
+  /// <summary>
+  /// Used to confirm we are grounded before jumping.
+  /// </summary>
+  FloorDetector floorDector; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  /// <summary>
+  /// Used to play sound effects.
+  /// </summary>
+  AudioSource audioSource;
+
+  /// <summary>
+  /// Used to process events in FixedUpdate that 
+  /// may have been captured on Update.
+  /// </summary>
+  bool wasJumpRequestedSinceLastFixedUpdate;
+
+  /// <summary>
+  /// A Unity event, called once before this GameObject
+  /// is spawned in the world.
+  /// </summary>
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+    
+```
+
+</details>
+
+```csharp
+    floorDector = GetComponentInChildren<FloorDetector>(); 
+    Debug.Assert(floorDector != null); 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+    audioSource = GetComponent<AudioSource>();
+
+    Debug.Assert(myBody != null);
+    Debug.Assert(audioSource != null);
+  }
+
+  /// <summary>
+  /// Adds force to the body to make the entity jump.
+  /// </summary>
+  public void Jump()
+  {
+    Debug.Assert(jumpSpeed >= 0,
+      "jumpSpeed must not be negative");
+
+    wasJumpRequestedSinceLastFixedUpdate = true;
+  }
+
+  protected void FixedUpdate()
+  {
+    if(wasJumpRequestedSinceLastFixedUpdate)
+    {
+```
+
+</details>
+
+```csharp
+      if(floorDector.isTouchingFloor) 
+      {
+```
+
+<details><summary>Existing code</summary>
+
+
+```csharp
+        // Jump!
+        myBody.AddForce(
+            new Vector2(0, jumpSpeed),
+            ForceMode2D.Impulse);
+
+        // Play the sound effect
+        audioSource.PlayOneShot(jumpSound);
+```
+
+</details>
+
+```csharp
+      } 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+      // Clear the jump flag, enabling the next jump
+      wasJumpRequestedSinceLastFixedUpdate = false;
+    }
+  }
+}
+```
+</details>
+
+</details>
+
+TODO jump cooldown by time
+
+
+## Rotate to match the floor's angle
+(or with jumping)
+
+Create a Feet with isGrounded and Quaternion floorRotation. 
+Create a RotateToMatchFloorWhenGrounded
+
+## Ladders
+
+LadderMovement, for character and spike ball.
+
+
+Fly Guy too
+ - Prevent walking into walls?
+
+
+
+
+## Ladders
+
+Lots here
+
+
+## Broken Ladders
+
+
+
+TODO Player DeathEffectThrobToDeath, something for bomb? but that doesn't make sense till the hammer. 
+other death effects?
+
+## Fly guy
+
+Door,
+
 
 ## Test!
 
@@ -1495,7 +1978,7 @@ TODO
 TODO talk about disabling the spawner for debugging
 
 
-TODO Player DeathEffectThrobToDeath
+
 
 # Next chapter
 

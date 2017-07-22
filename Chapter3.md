@@ -277,18 +277,6 @@ Now we resume walking as desired:
 
 
 
-## Detect isGrounded
-
-
-## Prevent double jump
-
-
-## Rotate to match the floor's angle
-(or with jumping)
-
-Create a Feet with isGrounded and Quaternion floorRotation. 
-Create a RotateToMatchFloorWhenGrounded
-
 ## Wire up an animation parameter for isGrounded
 
 
@@ -308,27 +296,10 @@ TODO transitions.
 
 
 
-## Ladders
-
-LadderMovement, for character and spike ball.
-
-
-Fly Guy too
- - Prevent walking into walls?
-
-
-
-
-## Ladders
-
-Lots here
-
-
 ## Climb animation
 
 
 
-other death effects?
 
 
 <details><summary>How does Dot product work?</summary>
@@ -363,13 +334,17 @@ Vector2.Dot(gameObjectAToWatch.transform.up, gameObjectBToWatch.transform.up);
 
 ## Hammer killing
 
+
+
 ## Intro
-Character fades in via AppearInSecondsAndFade
+
+Try Unity Timeline.
+
+Character and fly guy fades in via AppearInSecondsAndFade
 
 + other intro effects
  - Cloud and animation
 
- 
 
 # Next chapter
 
