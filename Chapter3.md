@@ -97,3 +97,11 @@ Character fades in via AppearInSecondsAndFade
 
 + other intro effects
  - Cloud and animation
+
+
+
+ 
+
+# Next chapter
+
+[Chapter 4](https://github.com/hardlydifficult/Platformer/blob/master/Chapter4.md).

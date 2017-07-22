@@ -1492,3 +1492,8 @@ TODO
 </details>
 
 
+
+
+# Next chapter
+
+[Chapter 3](https://github.com/hardlydifficult/Platformer/blob/master/Chapter3.md).

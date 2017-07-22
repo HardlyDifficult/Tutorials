@@ -1535,3 +1535,9 @@ TODO paypal, patreon, and twitch links.
 
 TODO  - Why do some scripts have a check to disable and others do not.
 TODO - Debugging tip / talk about the defaults in code vs inspector.  Check your values.  Maybe we should be more explicit in the steps.
+
+
+
+# Next chapter
+
+[Chapter 2](https://github.com/hardlydifficult/Platformer/blob/master/Chapter2.md).
