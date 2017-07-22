@@ -1492,7 +1492,10 @@ TODO
 </details>
 
 
+TODO talk about disabling the spawner for debugging
 
+
+TODO Player DeathEffectThrobToDeath
 
 # Next chapter
 
