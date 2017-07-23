@@ -1,4 +1,417 @@
 
+# 3) Advanced scripting
+
+## Rotate the character when he walks the other way
+
+Flip the character's sprite when he switches between walking left and walking right.
+
+<details><summary>How</summary>
+
+ - Create a C# script "RotateFacingDirection" under Assets/Code/Components/Movement.
+ - Select the character GameObject and add the RotateFacingDirection component.
+ - Paste in the following code:
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Rotates an entity based on it's current horizontal velocity.
+/// 
+/// This causes entities to face the direction they are walking.
+/// </summary>
+[RequireComponent(typeof(Rigidbody2D))]
+public class RotateFacingDirection : MonoBehaviour
+{
+  /// <summary>
+  /// The rotation that's applied when looking left (vs right).
+  /// </summary>
+  /// <remarks>
+  /// Cached here for performance.
+  /// </remarks>
+  static readonly Quaternion backwardsRotation = Quaternion.Euler(0, 180, 0);
+
+  /// <summary>
+  /// Used to control movement.
+  /// </summary>
+  /// <remarks>
+  /// Cached here for performance.
+  /// </remarks>
+  Rigidbody2D myBody;
+
+  /// <summary>
+  /// The direction we are currently walking, 
+  /// used to know when we turn around.
+  /// </summary>
+  /// <remarks>
+  /// Defaults to true as our entities are configured facing right.
+  /// </remarks>
+  bool _isGoingRight = true;
+
+  /// <summary>
+  /// The direction we are currently walking.
+  /// When changed, flips the rotation so the entity is facing forward.
+  /// </summary>
+  public bool isGoingRight
+  {
+    get
+    {
+      return _isGoingRight;
+    }
+    private set
+    {
+      if(isGoingRight == value)
+      { // The value is not changing
+        return;
+      }
+
+      // Flip the entity
+      transform.rotation *= backwardsRotation;
+      _isGoingRight = value;
+    }
+  }
+
+  /// <summary>
+  /// A Unity event, called before this GameObject is instantiated.
+  /// </summary>
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+    Debug.Assert(myBody != null);
+  }
+
+  /// <summary>
+  /// A Unity event, called each frame.
+  /// 
+  /// Updates the entities rotation.
+  /// </summary>
+  protected void Update()
+  {
+    float xVelocity = myBody.velocity.x;
+    // If there is any horizontal movement
+    if(Mathf.Abs(xVelocity) > 0.1)
+    { 
+      // Determine the current walk direction
+      // This may rotate the sprite c/o
+      // the smart property above.
+      isGoingRight = xVelocity > 0;
+    }
+  }
+}
+```
+
+</details>
+<details><summary>What's a C# smart property?</summary>
+
+In C#, data may be exposed as either a Field or a Property.  Fields are simply data as one would expect.  Properties are accessed in code like a field is, but they are capable of more.
+
+In this example, when isGoingRight changes between true and false, the GameObject's transform is rotated so that the sprite faces the correct direction.  Leveraging the property changing to trigger the rotation change is an example of logic in the property making it 'smart'.
+
+There are pros and cons to smart properties.  For example, one may argue that including the transform change when isGoingRight is modified hides the mechanic and makes the code harder to follow.  There are always alternatives if you prefer to not use smart properties.  For example:
+
+```csharp
+bool isGoingRightNow = xVelocity > 0;
+if(isGoingRight != isGoingRightNow) 
+{
+  transform.rotation *= backwardsRotation;    
+  isGoingRight = isGoingRightNow;
+}
+```
+
+</details>
+
+<details><summary>What's a Quaternion?</summary>
+
+A Quaternion is how rotations are stored in a game engine.  They represent the rotation with (x, y, z, w) values, stored in this fashion because that it is an effecient way to do the necessary calculations when rendering on object on screen.
+
+You could argue that this is overkill for a 2D game as in 2D the only rotation that may be applied is around the Z axis, and I would agree.  However remember that Unity is a 3D game engine.  When creating a 2D game, you are still in a 3D environment.  Therefore under the hood, Unity still optimizes its data for 3D.
+
+Quaternions are not easy for people to understand.  When we think of rotations, we typically think in terms of 'Euler' (pronounced oil-er) rotations.  Euler rotations are degrees of rotation around each axis, e.g. (0, 0, 30) means rotate the object by 30 degrees around the Z axis.
+
+In the inspector, modifying a Transform's rotation is done in Euler.  In code, you can either work with Quatenions directly or use Euler and then convert it back to Quatenion for storage.
+
+Given a Quatenion, you can calculate the Euler value like so:
+
+```csharp
+Quaternion myRotationInQuaternion = transform.rotation;
+Vector3 myRotationInEuler = myRotationInQuaternion.eulerAngles;
+```
+
+Given an Euler value, you can calculate the Quatenion:
+
+```csharp
+Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
+```
+
+Quaternions may be combined using Quaternion multiplication:
+
+```csharp
+Quaternion rotationOfZ60Degrees 
+  = rotationOfZ30Degrees * rotationOfZ30Degrees;
+```
+
+</details>
+
+TODO why Quaternion.Euler(0, 180, 0) when you said before 2D games only rotate around the z axis?
+
+
+<details><summary>Why not compare to 0 when checking if there is no movement?</summary>
+
+In Unity, numbers are represented with the float data type.  Float is a way of representing decimal numbers but is a not precise representation like you may expect.  When you set a float to some value, internally it may be rounded ever so slightly.
+
+The rounding that happens with floats allows operations on floats to be executed very quickly.  However it means we should never look for exact values when comparing floats, as a tiny rounding issue may lead to the numbers not being equal.
+
+In the example above, as the velocity approaches zero, the significance of if the value is positive or negative, is lost.  It's possible that if we were to compare to 0 that at times the float may oscilate between a tiny negative value and a tiny positive value causing the sprite to flip back and forth.
+
+</details>
+
+## Create a GameController script
+
+Create a singleton GameController to track points, lives, and hold global data such as the world size.
+
+<details><summary>How</summary>
+
+  - Create a new GameObject named "GameController"
+  - Create a script also named "GameController" and add it to the GameObject just created.
+  - Paste the following:
+
+```csharp
+using System;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+/// <summary>
+/// Tracks information which persists between scenes.
+/// 
+/// Singleton: This should appear in every scene, 
+/// and only the first will survive.
+/// </summary>
+public class GameController : MonoBehaviour
+{
+  /// <summary>
+  /// A convenient way to access this singleton.
+  /// </summary>
+  /// <remarks>
+  /// Optional, could us GameObject.FindObjectByType instead.
+  /// </remarks>
+  public static GameController instance;
+
+  /// <summary>
+  /// Player's remaining life.  
+  /// 
+  /// Each game we reset to the initial value.
+  /// </summary>
+  public int lifeCounter = 3;
+
+  /// <summary>
+  /// Stores the original lifeCounter value, 
+  /// allowing us to reset to the between games.
+  /// </summary>
+  int originalLifeCount;
+
+  /// <summary>
+  /// Player's total points so far this game.
+  /// </summary>
+  [NonSerialized]
+  public int points;
+
+  /// <summary>
+  /// The visible area of the world.  Used to react to 
+  /// things being at the edge of the screen.
+  /// </summary>
+  public Bounds screenBounds
+  {
+    get; private set;
+  }
+
+  /// <summary>
+  /// A Unity event, called before this GameObject is instantiated.
+  /// 
+  /// Destroy gameobject if this is the second game controller 
+  /// (guaranteeing one in the scene).
+  /// </summary>
+  protected void Awake()
+  {
+    Debug.Assert(lifeCounter > 0);
+
+    if(instance != null)
+    {
+      // There is already a GameController,
+      // we don't need another.
+      Destroy(gameObject);
+      return;
+    }
+    
+    instance = this;
+    originalLifeCount = lifeCounter;
+
+    // Calculate size of the visible world
+    Camera camera = Camera.main;
+    Vector2 screenSize = new Vector2(
+      (float)Screen.width / Screen.height,
+      1);
+    screenSize *= camera.orthographicSize * 2;
+    screenBounds = new Bounds(
+      (Vector2)camera.transform.position,
+      screenSize);
+
+    // Ensure this GameObject never dies.
+    DontDestroyOnLoad(gameObject);
+
+    // Subscribe to scene changes, to consider
+    // reseting the game (points/lives).
+    SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+
+    Debug.Assert(originalLifeCount > 0);
+    Debug.Assert(screenBounds.size.magnitude > 0);
+  }
+
+  /// <summary>
+  /// On scene change, consider reset game data (i.e. points/life).
+  /// </summary>
+  /// <param name="scene">The scene being loaded ATM.</param>
+  /// <param name="loadMode">ignored</param>
+  void SceneManager_sceneLoaded(
+    Scene scene,
+    LoadSceneMode loadMode)
+  {
+    // When you return to the menu, reset the game.
+    if(scene.name == "MainMenu")
+    {
+      Reset();
+    }
+  }
+
+  /// <summary>
+  /// Resets life and points in preparation for a new game.
+  /// </summary>
+  void Reset()
+  {
+    lifeCounter = originalLifeCount;
+    points = 0;
+
+    Debug.Assert(lifeCounter > 0);
+  }
+}
+```
+
+</details>
+
+## Restrict movement to stay on screen
+
+Create a script which ensures the character can not walk off screen.
+
+<details><summary>How</summary>
+
+ - Create a C# script "KeepWalkMovementOnScreen" under Assets/Code/Components/Movement.
+ - Select the Character GameObject and add the KeepWalkMovementOnScreen component.
+ - Paste in the following code:
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Ensures that the entity stays on the screen. 
+/// It will flip the current walk direction automatically 
+/// (which has no impact on the Player but causes enemies to bounce).
+/// </summary>
+[RequireComponent(typeof(Rigidbody2D))]
+public class KeepWalkMovementOnScreen : MonoBehaviour
+{
+  #region Data
+  /// <summary>
+  /// Used to determine if we are currently moving.
+  /// </summary>
+  Rigidbody2D myBody;
+
+  /// <summary>
+  /// Used to cause the entity to start walking the 
+  /// opposite direction when it hits the edge of the screen.
+  /// 
+  /// This is not required and may be null.
+  /// </summary>
+  WalkMovement walkMovement;
+  #endregion
+
+  #region Init
+  /// <summary>
+  /// A Unity event, called once before this GameObject
+  /// is spawned in the world.
+  /// </summary>
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+    walkMovement = GetComponent<WalkMovement>();
+
+    
+
+    Debug.Assert(myBody != null);
+  }
+  #endregion
+
+  #region Events
+  /// <summary>
+  /// A Unity event, called each frame.
+  /// 
+  /// If the entity is off screen, pop it back 
+  /// and flip the walk direction.
+  /// </summary>
+  protected void Update()
+  {
+    // Check if the entity is off screen
+    if(GameController.instance.screenBounds.Contains(transform.position) == false)
+    { 
+      // Move the entity back to the edge of the screen
+      transform.position =
+        GameController.instance.screenBounds.ClosestPoint(transform.position);
+      if(walkMovement != null)
+      {
+        // Flip the walk direction
+        walkMovement.desiredWalkDirection 
+          = -walkMovement.desiredWalkDirection;
+      }
+    }
+  }
+  #endregion
+}
+```
+
+</details>
+
+<details><summary>Why use bounds for these checks?</summary>
+
+There are a few ways you could check for an entity walking off the edge of the screen.  I choose to use the Unity bounds struct because it has methods which make the rest of this component easy.  Specifically:
+
+ - Contains: Check if the current position is on the screen.
+ - ClosestPoint: Return the closest point on screen for the character, used when he is off-screen to teleport him back.
+
+</details>
+
+<details><summary>What does flipping the walk direction do?</summary>
+
+Each frame the PlayerController sets the walk direction without consider the previous value.  So flipping the walk direction here is promptly overwritten by the PlayerController - resulting in little or no impact to movement in the game.
+
+We included this logic because not all controllers are going to work the same way.  Later in the tutorial we will be adding another entity that uses WalkMovement by only setting desiredWalkDirection periodically.  For that entity, flipping the direction will cause the entity to bounce off the side of the screen and walk the other way.
+
+This logic doesn't impact the character but it's not harmful either and it fits with the theme of this component, enabling reuse.
+
+</details>
+
+<details><summary>What's the different between setting transform.position and using myBody.MovePosition?</summary>
+
+Updates to the Transform directly will teleport your character immediatelly and bypass all physics logic.  
+
+Using the rigidbody.MovePosition method will smoothly transition the object to its new postion.  It's very fast, but if you try this and watch closely, MovePosition is animating a few frames on the way to the target position instead of going there immediatelly.
+
+We are not suggesting one approach should always be used over the other - consider the use case and how you want your game to feel, sometimes teleporting is exactly the feature you're looking for.  
+
+Be careful when you change position using either of these methods as opposed to using forces on the rigidbody.  It's possible that you teleport right into the middle of another object.  The next frame, Unity will try to react to that collision state and this may result in objects popping out in strange ways.
+
+In this component we are setting transform.position for the teleport effect.  If rigidbody.MovePosition was used instead, occasionally issues would arrise as MovePosition competes with other forces on the object.
+
+</details>
+
+
+
 ## Detect floors
 
 Create a script to calculate the distance to and rotation of the floor under an entity.
@@ -522,7 +935,6 @@ Layout ladders in the world.  We are using [Kenney.nl's Platformer Pack Redux](h
 
 <details><summary>How</summary>
 
- - Import the spritesheet, slice, set filter mode to point.
  - Create a parent Ladder GameObject, add sprite(s) for the look you want.
    - You may want to 'Flip' the Y in the SpriteRenderer to mirror the top and bottom on some ladders.
    - The child sprite GameObjects should have a default Transform, with the execption of the Y position when multiple sprites are used.
@@ -1102,35 +1514,88 @@ Door spawner
  - Select the sprites for the walk animation, we are using 30, 84, and 90.
  - Drag into the Hierarchy to create the GameObject and animation.  Save as Assets/Animations/FlyWalk.
  - Rename to "FlyGuy"
+ - Set the Layer for FlyGuy to 'Enemy'.
+ - Set Order in Layer to 1.
  - Add Rigidbody2D 
  - Freeze the Z rotation.
  - Add a CircleCollider2D.
  - Size the collider.
  - Create a Layer for "Feet".
- - Select the Feet GameObject and change it to use the layer Feet.
+ - Set the Layer for the FlyGuy's Feet to 'Feet'.
  - Size and position the collider 
  - Add FloorDetector, WalkMovement, KeepWalkMovementOnScreen, LadderMovement, RotateFacingDirection.
-
-</details>
-
-## Create a controller for the fly guy
-
-<details><summary>How</summary>
-
-FlyGuyController
-
+ - Add KillOnContactWith and set the layermask to Player.
+ - Update the matrix to disable Feet / Player, Feet / Enemy, and Feet / Feet collisions.
 </details>
 
 ## Flying feet
 
+Add feet so that the body of this entity is above the ground.
+
 <details><summary>How</summary>
 
- - Add an empty GameObject as a child under the FlyGuy.  Name it "Feet".
+ - Add an empty GameObject as a child under the FlyGuy.  Name it "aoeu".
    - Confirm it has a default transform.
  - Add a CapsuleCollider2D to the Feet.
 
 
+</details>
+
+## Make the fly guy walk
+
+Add a
+
+<details><summary>How</summary>
+
+
+aoeu
+
+```csharp
+
+```
 
 </details>
 
-TODO fly guy animations
+
+## Make the fly guy climb
+
+
+
+<details><summary>How</summary>
+
+
+aoeu
+
+```csharp
+
+```
+
+</details>
+
+## Add the spawner
+
+Add and configure a spawner for the FlyGuy.
+
+<details><summary>How</summary>
+
+ - Add the sprite(s) to the scene.
+ - Create a prefab for FlyGuy.
+ - Add the Spawner component and set the Thing to Spawn to the fly guy prefab.
+ - Door Order in Layer -1
+ 
+aoeu
+
+TODO - scale the parent gameObject.
+For position, spawn happens at the parent GameObject's location.  Try to position that near the middle of the visuals for the door.
+
+</details>
+
+## Fade the fly guy in
+
+Disable WanderWalkMovement component
+FadeIn script
+Configure to enable the WanderWalkMovement
+
+## Test
+
+GG

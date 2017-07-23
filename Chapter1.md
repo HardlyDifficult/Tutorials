@@ -18,6 +18,9 @@ TODO
  - Stop saying cached for perf.
  - Post questions/comments under the youtube video (since git doesn't do discussions well). Maybe survey at end?
  - Brief bio / why i did this
+ - Filenames in bold
+ 
+
 
 # 1) Create a game with enemies spawning
 
@@ -39,6 +42,8 @@ Get Unity and start a 2D project.
  - Select "2D" when creating a new project.
  - Enter a name/directory - the other options can be left at defaults.
 
+TODO account required
+
 <img src="https://i.imgur.com/T2iZrmK.png" width=50% />
 
 Familiarize yourself with the Unity Editor a bit.  This [guide from Unity](https://docs.unity3d.com/Manual/LearningtheInterface.html) is a nice, quick overview.
@@ -48,7 +53,7 @@ Familiarize yourself with the Unity Editor a bit.  This [guide from Unity](https
 
 
 
-<details><summary>Why 2D?</summary>
+<details><summary>Whats the difference between 2D and 3D?</summary>
 
 Presenting the 2D vs 3D option when you create a new project suggests this is a significant choice.  It's not really... 2D just changes default settings on things like your camera.   Unity is a 3D engine, when creating 2D games your actually creating a 3D world where everything is very flat but the camera looks straight ahead and the only rotation in the world is around the z axis.  
 
@@ -75,15 +80,243 @@ The Scene represents a collection of GameObjects and components (defined below) 
 <hr></details>
 
 
+TODO change background color
+
+## Import assets
+
+Create directories and import assets.  TODO link
+
+<details><summary>How</summary>
+
+TODO
 
 
-## Auto save script (optional)
+## Import Platform art
+
+Add a sprite sheet for the platform to the Assets directory.  We are using [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) 'spritesheets/spritesheet_ground.png'.
+
+<details><summary>How</summary>
+
+
+ - Right click in the 'Project' Assets directory -> Create Folder named "Art"  (optional).
+   - You can rename folders by selecting and pressing F2.
+ - Drag/drop the sprite sheet (or an entire folder of art) into the folder you just created.
+   - If you have a zip file, you may need to unzip to a temp directory before drag/drop will work.
+
+<hr></details>
+<details><summary>What's a sprite / sprite sheet?</summary>
+
+A sprite is an image, used in 2D games and for UI.  They may represent an object, part of an object, or a frame of an entity's animation, etc.  
+
+A sprite sheet is a single image file that contains multiple individual sprites.  The sheet may use these sprites to represent different frames for an animation or to hold a collection of various object types (as is the case here).
+
+<hr></details>
+<details><summary>Can I use my own art?</summary>
+
+Of course, this tutorial only assumes that you are using sprites.  You can build your own sprite sheet or use individual sprites, but this tutorial is geared towards a 2D game and some things may not work out well if you try using 3D models instead.
+
+<hr></details>
+
+</details>
+
+
+## Slice sprite sheets
+
+Slice the sprite sheet in order to access each individual sprite within.
+
+<details><summary>How</summary>
+
+- Select the sprite sheet in the 'Project' tab (Assets/Art/spritesheet_ground).
+- In the 'Inspector', set 'Sprite Mode' to 'Multiple'.
+- Click 'Sprite Editor' and apply changes when prompted.
+
+<img src="http://i.imgur.com/duYuVMy.png" width=50% />
+
+- Click the 'Slice' menu item
+  - Type: Grid By Cell Count
+  - Column & Row: 8 & 16
+
+<img src="http://i.imgur.com/hA2cMfv.png" width=50% />
+
+- Click 'Slice' button
+- Click 'Apply' and close the Sprite Editor 
+
+TODO for each
+
+TODO we also have multi-sized sprites.
+
+<hr></details>
+<details><summary>What does slicing achieve?</summary>
+
+Slicing is the process of defining each individual sprite in a sprite sheet.  Once sliced, you can access each sprite as if it were a unique asset.
+
+After you have sliced, white lines appear in the 'Sprite Editor'.  These lines show you how the sprite sheet is cut, boxing in each individual sprite.  Any whitespace as shown in this example is ignored (i.e. it does not generate blank sprites as well).
+
+<img src="http://i.imgur.com/NawupLS.png" width=50% />
+
+After closing the 'Sprite Editor' and applying changes you can expand the sprite sheet in Assets to see each sprite it created.
+
+<img src="http://i.imgur.com/Qq0nn2B.png" width=50% />
+
+<hr></details>
+
+## Sprite Filter Mode: Point
+
+Update the sprite sheet's import settings to use filter mode point, preventing some visual artifacts.
+
+<details><summary>How</summary>
+
+ - Select the sprite sheet in the 'Project' tab (Assets/Art/spritesheet_ground).
+ - In the 'Inspector', set 'Filter Mode' to 'Point (no filter)' and apply when prompted.
+
+<img src="http://i.imgur.com/B0nqf75.png" width=50% />
+
+<hr></details>
+<details><summary>Why use Point and not the default of Bilinear?</summary>
+
+Filter mode of Bilinear or Trilinear blurs the image a bit in attempt to make smooth lines.  Often for a 2D game, we want control down to the pixel and this effect is not desirerable.  Here's an example with the character sprite we will be using:
+
+<img src="http://i.imgur.com/AYyx3Ma.png" width=150px />
+
+<img src="http://i.imgur.com/8wMlM1S.png"  width=150px />
+
+For sprite sheets, often each object is touching the one next to it.  Filter Mode Point prevents blending happening between one sprite and it's neighbor.  The blending that occurs with other modes besides Point may lead to random lines showing up on screen.  For example:
+
+<img src="http://i.imgur.com/ZKqg5JP.png" width=50% />
+
+<hr></details>
+
+
+
+## Sprite Mesh Type: Full Rect
+
+Update the sprite sheet's import settings to use mesh type full rect since we will be using tiling.
+
+<details><summary>How</summary>
+
+ - Select the sprite sheet.
+ - In the 'Inspector', set 'Mesh Type: Full Rect'.
+
+<img src="http://i.imgur.com/Dhe3Nzt.png" width=50% />
+
+<hr></details>
+
+<details><summary>Why use Full Rect and not the default of Tight?</summary>
+
+When using tiling on a sprite, Unity recommends updating the sprite sheet to use 'Full Rect'.  I don't have an example of issues that may arrise from using 'Tight' instead, but here is the warning from Unity recommending 'Full Rect':
+
+<img src="http://i.imgur.com/e9jE83B.png" width=50% />
+
+TODO .  Plus performance.  Rect uses 2 trigs while tight creates a complex polygon.  Rect batches better.
+
+<hr></details>
+
+
+
+## Disable Anti Aliasing
+
+Disable Anti-Aliasing, preventing some visual artifacts.
+
+<details><summary>How</summary>
+
+ - Menu 'Edit' -> 'Project Settings' -> 'Quality'
+ - In the 'Inspector' change 'Anti Aliasing' to 'Disabled'
+ - Repeat this for each quality 'Level' supported
+   - Click on the row to modify (e.g. 'Very High')
+   - Update 'Anti Aliasing' if needed
+
+The highlighted Level is what you are testing with ATM.  It will default to Ultra.  The green checkboxes represent the default quality level for different build types.  In this example I'm testing with Ultra, using Ultra by default for PC builds, and High by default for WebGL builds.  To avoid artifacts, I disable Anti Aliasing in every level and then switch back to Ultra.
+
+<img src="http://i.imgur.com/omFI4DD.png" width=50% />
+
+<hr></details>
+<details><summary>What is Anti Aliasing and why disable it?</summary>
+
+Anti Aliasing is a technique used to smooth jagged edges as shown here:
+
+<img src="https://qph.ec.quoracdn.net/main-qimg-10856ecbea4f439fb9fb751d41ff704a" width=50% />
+
+Like changing the filter mode to Point, we do this when working with sprites because we often want control over images down to the pixel.
+
+Anti-aliasing may lead to unexpected gaps or distortions when sprites are side by side.  Here is an example that appears when using tiling and Anti Aliasing is enabled:
+
+<img src="http://i.imgur.com/vY5YmVj.png" width=50% />
+
+<hr></details>
+
+
+
+## Set a 5:4 Aspect ratio
+
+Change the aspect ratio to 5:4 as we want to simplify and always show the same amount of the world on screen.
+
+<details><summary>How</summary>
+
+ - In the 'Game' tab, near the top, change 'Free Aspect' to '5:4'.
+
+<img src="http://i.imgur.com/MTnZtu4.png" width=50% />
+
+ - Switch back to the 'Scene' tab.  
+ 
+The white box here represents the area that players will see:
+
+<img src="http://i.imgur.com/eIq2LD2.png" width=50% />
+
+You'll also want to update the supported resolutions for the different platforms you are building for:
+
+ - File -> Build Settings
+ - Select the desired platform and click 'Player Settings'.
+ - In the 'Inspector' tab, set the supported resolution or aspect ratio (this will be different for different platform types).
+
+<img src="http://i.imgur.com/nWDCAwX.png" width=200px />
+
+<img src="http://i.imgur.com/zTHTwHt.png" width=200px />
+
+<img src="http://i.imgur.com/UHP5YVL.png" width=200px />
+
+<hr></details>
+<details><summary>Why use a fixed aspect ratio?</summary>
+
+We are building a game with a fixed display.  The camera is not going to follow the character which will simplify the game and level design for this tutorial.  With a fixed aspect ratio we can design a scene without any camera movement and be sure everyone has the same experience.
+
+Different resolutions will scale the display larger or smaller but everyone will see the same amount of the world.
+
+5:4 was an arbitrary choice, use anything you'd like.
+
+<hr></details>
+
+
+## Camera Size: 10
+
+Update the camera size to about 10 to zoom out a bit.
+
+<details><summary>How</summary>
+
+ - In the 'Hierarchy' select the 'Main Camera'
+ - In the 'Inspector' change 'Size' to 10
+
+<img src="http://i.imgur.com/PmeoqG7.png" width=50% />
+
+In the Game tab, the platform should look smaller now.  In the Scene, the white box representing the viewable area has grown.
+
+<hr></details>
+<details><summary>Why change 'Size' and not camera position?</summary>
+
+2D games by default use 'Projection: Orthographic'.  This means that the camera does not consider perspective, the ability to see more of the world the further it is from your eye. The amount of the world visible with a perspective camera is driven by it's position.  
+
+For an Orthographic camera, the amout of the world visible is driven by a special 'Size' property. 'Size' defines how much of the world is visible vertically.  Then the aspect ratio is used to determine how much to display horizontally.  
+
+<hr></details>
+
+
+## Auto save script 
 
 Unity may crash.  I recommend adding an editor script which automatically saves everytime you hit play.
 
 <details><summary>How</summary>
 
- - Right click in the 'Project' Assets folder -> Create -> Folder and name it "Editor".
+ - Right click in the 'Project' Assets folder -> Create -> Folder and name it "Code".
+ - Make an "Editor" folder under Assets/Code.
  - Create -> C# Script and name it "AutoSave".
  - Paste in the source code below.
  
@@ -138,22 +371,15 @@ As an editor script, this logic is not included in the game you release.  Saving
 <hr></details>
 <details><summary>Why is the folder name important?</summary>
 
-Unity uses [special folder names](https://docs.unity3d.com/Manual/SpecialFolders.html) for various features.  
+Unity uses special folder names to drive certain capabilities.  Any script under a folder named "Editor" will only run while testing in the Unity editor (vs in your built game).
 
-Everything under a folder named "Editor" is an editor script, including files in any subdirectories.  e.g. this script could be saved as Assets/Editor/AutoSave.cs or Assets/Code/Editor/Utils/AutoSave.cs  There are two special folder names that work anywhere in your folder hierarchy like this:
- - "[Editor](https://docs.unity3d.com/Manual/ExtendingTheEditor.html)": These scripts are only executed when in the Unity Editor (vs built into the game).
- - "[Resources](https://docs.unity3d.com/ScriptReference/Resources.html)": Assets bundled with the game, available for loading via code.  Note Unity [recommends using resources only for prototypes](https://unity3d.com/learn/tutorials/temas/best-practices/resources-folder) - the preferred solution is [AssetBundles](https://docs.unity3d.com/Manual/AssetBundlesIntro.html). 
- 
-The following are additional special folder names only considered when in the root Assets directory. e.g. Assets/Gizmos is a special directory but Assets/Code/Gizmos could hold anything.
- - "[Standard Assets](https://docs.unity3d.com/Manual/HOWTO-InstallStandardAssets.html)": These are optional assets and scripts available from Unity that you can add to your project anytime by right clicking in the Assets directory and selecting from 'Import Package'.
- - "[Editor Default Resources](https://docs.unity3d.com/ScriptReference/EditorGUIUtility.Load.html)": A resources directory only available to Editor scripts so you can have assets appear in the editor for debugging without increasing the game's built size.
- - "[Gizmos](https://docs.unity3d.com/ScriptReference/Gizmos.html)": Editor-only visualizations to aid level design and debugging in the 'Scene' view.
- - "[Plugins](https://docs.unity3d.com/Manual/Plugins.html)": Dlls to include, typically from 3rd party libraries.
- - "[StreamingAssets](https://docs.unity3d.com/Manual/StreamingAssets.html)": Videos or other archives for your game to stream.
+[Read more](
+https://docs.unity3d.com/Manual/SpecialFolders.html) from Unity.
 
-Be sure you do not use folders with these names anywhere in your project unless specifically for that Unity use case. e.g. Assets/Code/Editor/InGameMapEditor.cs may be intended to be part of the game but would be flagged as an Editor only script instead.
+<hr>
 
-<hr></details>
+</details>
+
 <details><summary>What's InitializeOnLoad</summary>
 
 InitializeOnLoad is an attribute which enables the script.  The static constructor of any class with this attribute is executed before anything else in the game.
@@ -279,71 +505,7 @@ public class MyCustomComponent : MonoBehaviour
 <hr></details>
 
 
-## Import Platform art
 
-Add a sprite sheet for the platform to the Assets directory.  We are using [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) 'spritesheets/spritesheet_ground.png'.
-
-<details><summary>How</summary>
-
-
- - Right click in the 'Project' Assets directory -> Create Folder named "Art"  (optional).
-   - You can rename folders by selecting and pressing F2.
- - Drag/drop the sprite sheet (or an entire folder of art) into the folder you just created.
-   - If you have a zip file, you may need to unzip to a temp directory before drag/drop will work.
-
-<hr></details>
-<details><summary>What's a sprite / sprite sheet?</summary>
-
-A sprite is an image, used in 2D games and for UI.  They may represent an object, part of an object, or a frame of an entity's animation, etc.  
-
-A sprite sheet is a single image file that contains multiple individual sprites.  The sheet may use these sprites to represent different frames for an animation or to hold a collection of various object types (as is the case here).
-
-<hr></details>
-<details><summary>Can I use my own art?</summary>
-
-Of course, this tutorial only assumes that you are using sprites.  You can build your own sprite sheet or use individual sprites, but this tutorial is geared towards a 2D game and some things may not work out well if you try using 3D models instead.
-
-<hr></details>
-
-
-
-
-
-## Slice sprite sheet
-
-Slice the sprite sheet in order to access each individual sprite within.
-
-<details><summary>How</summary>
-
-- Select the sprite sheet in the 'Project' tab (Assets/Art/spritesheet_ground).
-- In the 'Inspector', set 'Sprite Mode' to 'Multiple'.
-- Click 'Sprite Editor' and apply changes when prompted.
-
-<img src="http://i.imgur.com/duYuVMy.png" width=50% />
-
-- Click the 'Slice' menu item
-  - Type: Grid By Cell Count
-  - Column & Row: 8 & 16
-
-<img src="http://i.imgur.com/hA2cMfv.png" width=50% />
-
-- Click 'Slice' button
-- Click 'Apply' and close the Sprite Editor 
-
-<hr></details>
-<details><summary>What does slicing achieve?</summary>
-
-Slicing is the process of defining each individual sprite in a sprite sheet.  Once sliced, you can access each sprite as if it were a unique asset.
-
-After you have sliced, white lines appear in the 'Sprite Editor'.  These lines show you how the sprite sheet is cut, boxing in each individual sprite.  Any whitespace as shown in this example is ignored (i.e. it does not generate blank sprites as well).
-
-<img src="http://i.imgur.com/NawupLS.png" width=50% />
-
-After closing the 'Sprite Editor' and applying changes you can expand the sprite sheet in Assets to see each sprite it created.
-
-<img src="http://i.imgur.com/Qq0nn2B.png" width=50% />
-
-<hr></details>
 
 
 
@@ -417,151 +579,8 @@ Using transform scale to change the width cause the sprite displayed to stretch.
 
 
 
-## Sprite Filter Mode: Point
 
-Update the sprite sheet's import settings to use filter mode point, preventing some visual artifacts.
 
-<details><summary>How</summary>
-
- - Select the sprite sheet in the 'Project' tab (Assets/Art/spritesheet_ground).
- - In the 'Inspector', set 'Filter Mode' to 'Point (no filter)' and apply when prompted.
-
-<img src="http://i.imgur.com/B0nqf75.png" width=50% />
-
-<hr></details>
-<details><summary>Why use Point and not the default of Bilinear?</summary>
-
-Filter mode of Bilinear or Trilinear blurs the image a bit in attempt to make smooth lines.  Often for a 2D game, we want control down to the pixel and this effect is not desirerable.  Here's an example with the character sprite we will be using:
-
-<img src="http://i.imgur.com/AYyx3Ma.png" width=150px />
-
-<img src="http://i.imgur.com/8wMlM1S.png"  width=150px />
-
-For sprite sheets, often each object is touching the one next to it.  Filter Mode Point prevents blending happening between one sprite and it's neighbor.  The blending that occurs with other modes besides Point may lead to random lines showing up on screen.  For example:
-
-<img src="http://i.imgur.com/ZKqg5JP.png" width=50% />
-
-<hr></details>
-
-
-## Sprite Mesh Type: Full Rect
-
-Update the sprite sheet's import settings to use mesh type full rect since we will be using tiling.
-
-<details><summary>How</summary>
-
- - Select the sprite sheet.
- - In the 'Inspector', set 'Mesh Type: Full Rect'.
-
-<img src="http://i.imgur.com/Dhe3Nzt.png" width=50% />
-
-<hr></details>
-
-<details><summary>Why use Full Rect and not the default of Tight?</summary>
-
-When using tiling on a sprite, Unity recommends updating the sprite sheet to use 'Full Rect'.  I don't have an example of issues that may arrise from using 'Tight' instead, but here is the warning from Unity recommending 'Full Rect':
-
-<img src="http://i.imgur.com/e9jE83B.png" width=50% />
-
-<hr></details>
-
-
-
-## Disable Anti Aliasing
-
-Disable Anti-Aliasing, preventing some visual artifacts.
-
-<details><summary>How</summary>
-
- - Menu 'Edit' -> 'Project Settings' -> 'Quality'
- - In the 'Inspector' change 'Anti Aliasing' to 'Disabled'
- - Repeat this for each quality 'Level' supported
-   - Click on the row to modify (e.g. 'Very High')
-   - Update 'Anti Aliasing' if needed
-
-The highlighted Level is what you are testing with ATM.  It will default to Ultra.  The green checkboxes represent the default quality level for different build types.  In this example I'm testing with Ultra, using Ultra by default for PC builds, and High by default for WebGL builds.  To avoid artifacts, I disable Anti Aliasing in every level and then switch back to Ultra.
-
-<img src="http://i.imgur.com/omFI4DD.png" width=50% />
-
-<hr></details>
-<details><summary>What is Anti Aliasing and why disable it?</summary>
-
-Anti Aliasing is a technique used to smooth jagged edges as shown here:
-
-<img src="https://qph.ec.quoracdn.net/main-qimg-10856ecbea4f439fb9fb751d41ff704a" width=50% />
-
-Like changing the filter mode to Point, we do this when working with sprites because we often want control over images down to the pixel.
-
-Anti-aliasing may lead to unexpected gaps or distortions when sprites are side by side.  Here is an example that appears when using tiling and Anti Aliasing is enabled:
-
-<img src="http://i.imgur.com/vY5YmVj.png" width=50% />
-
-<hr></details>
-
-
-
-
-
-## Set a 5:4 Aspect ratio
-
-Change the aspect ratio to 5:4 as we want to simplify and always show the same amount of the world on screen.
-
-<details><summary>How</summary>
-
- - In the 'Game' tab, near the top, change 'Free Aspect' to '5:4'.
-
-<img src="http://i.imgur.com/MTnZtu4.png" width=50% />
-
-Switch back to the 'Scene' tab.  The white box here represents the area that players will see.
-
-<img src="http://i.imgur.com/eIq2LD2.png" width=50% />
-
-You'll also want to update the supported resolutions for the different platforms you are building for:
-
- - File -> Build Settings
- - Select the desired platform and click 'Player Settings'.
- - In the 'Inspector' tab, set the supported resolution or aspect ratio (this will be different for different platform types).
-
-<img src="http://i.imgur.com/nWDCAwX.png" width=200px />
-
-<img src="http://i.imgur.com/zTHTwHt.png" width=200px />
-
-<img src="http://i.imgur.com/UHP5YVL.png" width=200px />
-
-<hr></details>
-<details><summary>Why use a fixed aspect ratio?</summary>
-
-We are building a game with a fixed display.  The camera is not going to follow the character which will simplify the game and level design for this tutorial.  With a fixed aspect ratio we can design a scene without any camera movement and be sure everyone has the same experience.
-
-Different resolutions will scale the display larger or smaller but everyone will see the same amount of the world.
-
-5:4 was an arbitrary choice, use anything you'd like.
-
-<hr></details>
-
-
-
-## Camera Size: 10
-
-Update the camera size to about 10 to zoom out a bit.
-
-<details><summary>How</summary>
-
- - In the 'Hierarchy' select the 'Main Camera'
- - In the 'Inspector' change 'Size' to 10
-
-<img src="http://i.imgur.com/PmeoqG7.png" width=50% />
-
-In the Game tab, the platform should look smaller now.  In the Scene, the white box representing the viewable area has grown.
-
-<hr></details>
-<details><summary>Why change 'Size' and not camera position?</summary>
-
-2D games by default use 'Projection: Orthographic'.  This means that the camera does not consider perspective, the ability to see more of the world the further it is from your eye. The amount of the world visible with a perspective camera is driven by it's position.  
-
-For an Orthographic camera, the amout of the world visible is driven by a special 'Size' property. 'Size' defines how much of the world is visible vertically.  Then the aspect ratio is used to determine how much to display horizontally.  
-
-<hr></details>
 
 
 
@@ -583,7 +602,7 @@ Create a new parent GameObject for the platform sprite.
  <img src="http://i.imgur.com/XOve0Ap.png" width=50% />
 
 <hr></details>
-<details><summary>Why not use a single GameObject instead?</summary>
+<details><summary>Why creat a parent GameObject?</summary>
 
 Most of the platforms we will be creating require multiple different sprites to display correctly.  We tackle this in the next section.  Even for platforms which are represented with a single sprite, it's nice to be consistent across all of our platforms.
 
@@ -624,7 +643,9 @@ There should now be four GameObjects in the world, as shown below.
 
 <hr></details>
 
+TODO faq move, scale tools
 
+TODO copy paste vs duplicate
 
 
 ## Create a connected platform
@@ -657,6 +678,33 @@ The width of the world players are going to see is fixed so you could argue that
 
  - Allow some enemies to continue off screen and use the platform we can't see before returning to the game.
  - Screen shake.  This works by moving the camera up/down/left/right a bit.  Having the platforms extend beyond the edge of the screen allows us to do that without exposing gaps.
+
+<hr></details>
+
+
+## Rinse and repeat to complete Level1 platforms
+
+At this point we have covered everything you need to match the Level1 platform layout.  You can match the layout we used or come up with your own.
+
+Refer to the Game tab to confirm your layout as they player will see it.
+
+<details><summary>How</summary>
+
+The basic steps are:
+
+ - Copy a parent Platform to start from.
+ - Modify the tile 'Width' as needed.  Platforms should extend off the screen a bit.
+ - Use Vertex Snap to position the edge sprites.
+ - Move and rotate the sprite by modifying the parent GameObject, leaving the children at position and rotation 0, with the exception of the corner sprites which have an X position.
+
+Optionally, you can rename the platform GameObjects and organize your platforms by placing them in a parent GameObject.  e.g.:
+
+ - Click and drag to re-arrange the platform GameObjects so they appear in the same order in the hierarchy as they do in game.
+ - Rename each to represent it's position - e.g. "Level2"
+ - Create an Empty GameObject, name it "Platforms".  Ensure that it is a position 0.
+ - Select all of your existing platforms (the parent GameObjects) and click and drag them onto "Platforms".
+
+<img src="http://i.imgur.com/f8GFdBD.png" width=50% />
 
 <hr></details>
 
@@ -702,38 +750,11 @@ Additionally, fewer colliders may improve your game's performance - however the 
 </details>
 
 
-## Rinse and repeat to complete Level1 platforms
-
-At this point we have covered everything you need to match the Level1 platform layout.  You can match the layout we used or come up with your own.
-
-Refer to the Game tab to confirm your layout as they player will see it.
-
-<details><summary>How</summary>
-
-The basic steps are:
-
- - Copy a parent Platform to start from.
- - Modify the tile 'Width' as needed.  Platforms should extend off the screen a bit.
- - Use Vertex Snap to position the edge sprites.
- - Update the colliders to match the platform visuals on screen.  They will need to be updated if the width or edges were changed.
- - Move and rotate the sprite by modifying the parent GameObject, leaving the children at position and rotation 0, with the exception of the corner sprites which have an X position.
-
-Optionally, you can rename the platform GameObjects and organize your platforms by placing them in a parent GameObject.  e.g.:
-
- - Click and drag to re-arrange the platform GameObjects so they appear in the same order in the hierarchy as they do in game.
- - Rename each to represent it's position - e.g. "Level2"
- - Create an Empty GameObject, name it "Platforms".  Ensure that it is a position 0.
- - Select all of your existing platforms (the parent GameObjects) and click and drag them onto "Platforms".
-
-<img src="http://i.imgur.com/f8GFdBD.png" width=50% />
-
-<hr></details>
-
 
 
 ## Create a Spike Ball GameObject
 
-Add a sprite and GameObject for the spike ball.  Set filter mode to Point.  We are using We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/spikeball1'.
+Add a sprite and GameObject for the spike ball.  Set filter mode to Point.  We are using We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/spikeball1'. TODO now 40 in sheet
 
 TODO change to use jumper spritesheet
 TODO spritesheet requires automatic slicing, different sizes per sprite.
@@ -787,6 +808,8 @@ Hit play and watch the spike ball fall through the platforms and out of view:
 <details><summary>What's a Rigidbody2D?</summary>
 
 A rigidbody is a core component for the Unity physics engine, Rigidbody2D is the 2D version of this component (vs 3D).  It's added to GameObjects which may be manipulated by physics during the game.
+
+TODO elaborate
 
 Physics refers to the logic in a game engine which moves objects based on forces such as gravity. We'll be using rigidbodys on all moving objects in this game. 
 

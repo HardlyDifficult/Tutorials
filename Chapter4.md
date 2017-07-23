@@ -1,105 +1,8 @@
-# 3) Animations and stuff
+# 4) Animations and stuff
 
 TODO intro
 
-## Use velocity as a speed multipler
 
-Update the walk animation speed so that the animation plays faster when the character moves quickly.
-
-Note that the character will walk when jumping too, we'll address this later in the tutorial.
-
-<details><summary>How</summary>
-
- - Select the character's GameObject.
- - Double click the box next to 'Controller' to open the 'Animator' tab for the character's animation controller.
-
-<img src="http://i.imgur.com/F7AkEaH.gif" width=200px />
-
- - Switch to the 'Parameters' tab on the left.
- - Click the '+' button and select 'Float'.
-
-<img src="http://i.imgur.com/p6F4gHG.png" width=100px />
-
- - Name the parameter "Speed".
- - Select the 'CharacterWalk' state (the orange box).
- - In the Inspector, under speed check the box near 'Multiplier' to enable a 'Parameter'.
- - Confirm Speed is selected (should be the default).
-
-Hit play and you'll see that the walk animation has stopped completely.
-
- - Create a C# script "PlayerAnimator" under Assets/Code/Components/Animations.
- - Select the Character GameObject and add the PlayerAnimator component.
- - Paste in the following code:
-
-```csharp
-using UnityEngine;
-
-/// <summary>
-/// Updates the Animator each frame with variables of interest, such as speed.
-/// 
-/// These directly impact the animations playing, either triggering state transitions or changing playback speed.
-/// </summary>
-[RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(Rigidbody2D))]
-public class PlayerAnimator : MonoBehaviour
-{
-  /// <summary>
-  /// Used to set variables leveraged by animations such as the current speed.
-  /// </summary>
-  Animator animator;
-
-  /// <summary>
-  /// Used to get the current velocity.
-  /// </summary>
-  Rigidbody2D myBody;
-
-  /// <summary>
-  /// A Unity event, called once before this GameObject
-  /// is spawned in the world.
-  /// </summary>
-  protected void Awake()
-  {
-    animator = GetComponentInChildren<Animator>();
-    myBody = GetComponent<Rigidbody2D>();
-    Debug.Assert(animator != null);
-    Debug.Assert(myBody != null);
-  }
-
-  /// <summary>
-  /// A Unity event, called each frame.
-  /// 
-  /// Update the animator with variables such as current speed.
-  /// </summary>
-  protected void Update()
-  {
-    animator.SetFloat("Speed", myBody.velocity.magnitude);
-  }
-}
-```
-
-Hit play to see the character playing the walk animation only while moving.
-
-<img src="http://i.imgur.com/KZYjZf2.gif" width=150px />
-
-</details>
-
-## Adjust the walk speed
-
-Change the walk animator state's speed to about .4.
-
-
-<details><summary>How</summary>
-
- - Select the 'CharacterWalk' state in the Animator tab.
- - Adjust the 'Speed' to about '.4'
-
-<img src="http://i.imgur.com/dhFASHe.png" width=150px />
-
-Now the character's walk animation should align with the moment a little better.  Adjust the value to something you think looks good. However the walk animation also plays while jumping:
-
-<img src="http://i.imgur.com/2dfN2RE.gif" width=150px />
-
-</details>
 
 ## Create an idle animation
 
@@ -276,6 +179,116 @@ Now we resume walking as desired:
 </details>
 
 
+## Hammer
+
+ - Change the sprite's pivot to Bottom
+ - Add to the world
+ - Scale, position, create a few
+ - Add a BoxCollider2D and resize
+ - Change to Trigger
+ - Add FadeInThenEnableComponents with TimeTillEnabled set to 3 and no components to enable.
+
+
+## Hammer animation 
+
+ - Open Animation tab and click create, save as Assets/Animations/HammerSwing
+ - Click record
+ - Modify the rotation, then set it back to 0, creating a keyframe for the default rotation.
+ - Double click under 1:00 to create another keyframe.
+ - Switch the current time position (the white line) to 0:30.
+ - Change rotation to (0, 0, -90).
+ - Click record to stop recording.
+ - Click play to preview the hammer swinging, adjust the middle keyframe's position until the hammer has a nice swing, about 0:10.
+
+ TODO gif of this change
+
+Hit play and the hammer is swinging in the air.
+
+## Hammer animaition controller
+
+Stop swinging by default.
+
+ - Double click the animation.
+ - Create new Empty State, name it "Idle".
+ - Right click and 'Set as Layer Default State'.
+
+
+## Weapon holder
+
+Create and add to character.
+
+
+
+## Hammer controller
+
+KillOnContactWith for Player.
+
+Create and add to Hammer. Config position.
+aoeu
+
+
+## Hammer killing
+
+
+## Wire up animation controller
+
+TODO
+
+Update the walk animation speed so that the animation plays faster when the character moves quickly.
+
+Note that the character will walk when jumping too, we'll address this later in the tutorial.
+
+<details><summary>How</summary>
+
+ - Select the character's GameObject.
+ - Double click the box next to 'Controller' to open the 'Animator' tab for the character's animation controller.
+
+<img src="http://i.imgur.com/F7AkEaH.gif" width=200px />
+
+ - Switch to the 'Parameters' tab on the left.
+ - Click the '+' button and select 'Float'.
+
+<img src="http://i.imgur.com/p6F4gHG.png" width=100px />
+
+ - Name the parameter "Speed".
+ - Select the 'CharacterWalk' state (the orange box).
+ - In the Inspector, under speed check the box near 'Multiplier' to enable a 'Parameter'.
+ - Confirm Speed is selected (should be the default).
+
+Hit play and you'll see that the walk animation has stopped completely.
+
+ - Create a C# script "PlayerAnimator" under Assets/Code/Components/Animations.
+ - Select the Character GameObject and add the PlayerAnimator component.
+ - Paste in the following code:
+
+```csharp
+TODO
+```
+
+Hit play to see the character playing the walk animation only while moving.
+
+<img src="http://i.imgur.com/KZYjZf2.gif" width=150px />
+
+</details>
+
+## Adjust the walk speed
+
+Change the walk animator state's speed to about .4.
+
+
+<details><summary>How</summary>
+
+ - Select the 'CharacterWalk' state in the Animator tab.
+ - Adjust the 'Speed' to about '.4'
+
+<img src="http://i.imgur.com/dhFASHe.png" width=150px />
+
+Now the character's walk animation should align with the moment a little better.  Adjust the value to something you think looks good. However the walk animation also plays while jumping:
+
+<img src="http://i.imgur.com/2dfN2RE.gif" width=150px />
+
+</details>
+
 
 ## Wire up an animation parameter for isGrounded
 
@@ -328,13 +341,6 @@ Vector2.Dot(gameObjectAToWatch.transform.up, gameObjectBToWatch.transform.up);
 
 
 
-## Hammer
-
-## Hammer animation
-
-## Hammer killing
-
-
 
 ## Intro
 
@@ -348,7 +354,7 @@ Character and fly guy fades in via AppearInSecondsAndFade
 
 # Next chapter
 
-[Chapter 4](https://github.com/hardlydifficult/Platformer/blob/master/Chapter4.md).
+[Chapter 5](https://github.com/hardlydifficult/Platformer/blob/master/Chapter5.md).
 
 
 

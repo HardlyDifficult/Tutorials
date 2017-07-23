@@ -1,10 +1,10 @@
-# 2) Add a Character and Movement Mechanics TODO
+# 2) Move, Jump, and Die
 
 Add a character to the scene.  Have him walk and jump, creating a basic platformer. TODO
 
 TODO gif, demo build
 
-## Configure the character sprite sheet
+## Change the character to Pivot Bottom
 
 Add a sprite sheet for the character, slice it with a bottom pivot and set filter mode to point.  We are using [Kenney.nl's Platformer Characters](http://kenney.nl/assets/platformer-characters-1) PNG/Adventurer/adventurer_tilesheet.png.
 
@@ -343,6 +343,307 @@ So that's to say you could use AddForce here instead.  Maybe give it a try and s
 <details><summary>Why not combine these into a single class?</summary>
 
 As discussed in chapter 1, Unity encourages a component based solution.  This means that we attempt to make each component focused on a single mechanic or feature.  Doing so simplifies debugging and enables reuse.  For example, we will be creating another enemy type which will use the same WalkMovement component created for the character above.
+
+</details>
+
+
+## Jump
+
+Add the ability for the character to jump.  Add a sound effect as well, we are using 'phaseJump1' from [Kenney.nl's Digital Audio pack](http://kenney.nl/assets/digital-audio).
+
+Note the character will be able to double jump / fly, this will be addressed later in the tutorial.
+
+<details><summary>How</summary>
+
+ - Create a C# script "JumpMovement" under Assets/Code/Components/Movement.
+ - Select the Character GameObject and add the JumpMovement component.
+ - Paste in the following code:
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Controls the entity's jump.  
+/// 
+/// Another component drives when to jump via Jump().
+/// </summary>
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(AudioSource))]
+public class JumpMovement : MonoBehaviour
+{
+  /// <summary>
+  /// The sound to play when the character starts their jump.
+  /// </summary>
+  [SerializeField]
+  AudioClip jumpSound;
+
+  /// <summary>
+  /// How much force to apply on jump.
+  /// </summary>
+  [SerializeField]
+  float jumpSpeed = 6.5f;
+
+  /// <summary>
+  /// Used to add force on jump.
+  /// </summary>
+  Rigidbody2D myBody;
+
+  /// <summary>
+  /// Used to play sound effects.
+  /// </summary>
+  AudioSource audioSource;
+
+  /// <summary>
+  /// Used to process events in FixedUpdate that 
+  /// may have been captured on Update.
+  /// </summary>
+  bool wasJumpRequestedSinceLastFixedUpdate;
+
+  /// <summary>
+  /// A Unity event, called once before this GameObject
+  /// is spawned in the world.
+  /// </summary>
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+    audioSource = GetComponent<AudioSource>();
+
+    Debug.Assert(myBody != null);
+    Debug.Assert(audioSource != null);
+  }
+
+  /// <summary>
+  /// Adds force to the body to make the entity jump.
+  /// </summary>
+  public void Jump()
+  {
+    Debug.Assert(jumpSpeed >= 0,
+      "jumpSpeed must not be negative");
+
+    wasJumpRequestedSinceLastFixedUpdate = true;
+  }
+
+  protected void FixedUpdate()
+  {
+    if(wasJumpRequestedSinceLastFixedUpdate)
+    {
+      // Jump!
+      myBody.AddForce(
+          new Vector2(0, jumpSpeed),
+          ForceMode2D.Impulse);
+
+      // Play the sound effect
+      audioSource.PlayOneShot(jumpSound);
+
+      // Clear the jump flag, enabling the next jump
+      wasJumpRequestedSinceLastFixedUpdate = false;
+    }
+  }
+}
+```
+
+ - Drag/drop the jump sound effect into Assets/Art.
+ - Select the Character GameObject and add an 'AudioSource' component if it does not already have one.
+ - Under the JumpMovement component for the character, assign the jummp sound.
+
+<img src="http://i.imgur.com/q4LEETw.gif" width=150px />
+
+
+ - Edit the existing C# script "PlayerController" under Assets/Code/Components/Movement.
+ - Add the following (or [click here for the full file to copy/paste from](TODO file link):
+
+<details><summary>Existing code</summary>
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Wires up user input, allowing the user to 
+/// control the player in game with a keyboard.
+/// </summary>
+[RequireComponent(typeof(WalkMovement))]
+```
+
+</details>
+
+```csharp
+[RequireComponent(typeof(JumpMovement))] 
+```
+
+<details><summary>Existing code</summary>
+
+
+```csharp
+public class PlayerController : MonoBehaviour
+{
+  /// <summary>
+  /// Used to cause the object to walk.
+  /// </summary>
+  WalkMovement walkMovement;
+```
+
+</details>
+
+```csharp
+  /// <summary>
+  /// Used to cause the object to jump.
+  /// </summary>
+  JumpMovement jumpMovement; 
+```
+
+<details><summary>Existing code</summary>
+
+
+```csharp
+  /// <summary>
+  /// A Unity event, called once before the GameObject
+  /// is instantiated.
+  /// </summary>
+  protected void Awake()
+  {
+    walkMovement = GetComponent<WalkMovement>();
+    Debug.Assert(walkMovement != null);
+```
+
+</details>
+
+```csharp
+    jumpMovement = GetComponent<JumpMovement>(); 
+    Debug.Assert(jumpMovement != null); 
+```
+
+<details><summary>Existing code</summary>
+
+
+```csharp
+  }
+
+  /// <summary>
+  /// A Unity event, called every x ms of game time.
+  /// 
+  /// Consider moving.
+  /// </summary>
+  /// <remarks>
+  /// Moving uses an input state, and therefore may be captured 
+  /// on Update or FixedUpdate, we use FixedUpdate since physics 
+  /// also runs on FixedUpdate, so trying to do this on update would
+  /// require an extra cache (w/o benefit).
+  /// </remarks>
+  protected void FixedUpdate()
+  {
+    // Consider moving left/right based off keyboard input.
+    walkMovement.desiredWalkDirection 
+      = Input.GetAxis("Horizontal");
+  }
+```
+
+</details>
+
+```csharp
+  /// <summary>
+  /// A Unity event, called once per frame.
+  /// 
+  /// Consider jumping.
+  /// </summary>
+  /// <remarks>
+  /// Jumping uses an input event, and therefore must be
+  /// captured on Update.
+  /// </remarks>
+  protected void Update()
+  {
+    if(Input.GetButtonDown("Jump"))
+    {
+      jumpMovement.Jump();
+    }
+  }
+```
+
+<details><summary>Existing code</summary>
+
+
+```csharp
+}
+```
+
+</details>
+
+
+
+Click play, you can now jump around.  But you can hold onto the side of a platform while falling and spam the space bar to fly away:
+
+<img src="http://i.imgur.com/RRpRio5.gif" width=250px />
+</details>
+<details><summary>Why AddForce here instead and what's 'Impulse'?</summary>
+
+As discussed above when creating the WalkMovement component, you could always create mechanics using either AddForce or by modifying the velocity.
+
+We are using AddForce to jump in this component.  Using velocity here instead would have actually created the same basic jump experience we are looking for.  
+
+Using AddForce for the jump may provide a better experience for some corner cases or future mechanics.  For example, if we wanted to support double jump in this game, initiating the second jump while in the air would feel much different.
+
+What is ForceMode2D.Impulse and how is it different from ForceMode2D.Force?
+
+These options appear to have the same effect on effects on objects, the difference is only the scale.  The unit for Impulse is defined as force per FixedUpdate.  The unit for Force is defined as force per second.  In the end, it means when configured your speed you may need a much larger value when using Force than while using Impulse.
+
+</details>
+<details><summary>How do you know when to use Update vs FixedUpdate for Input and rigidbodies?</summary>
+
+Unity recommends always using FixedUpdate when interacting with a rigidbody as physics is processed in FixedUpdate. 
+
+There is nothing blocking you from changing the rigidbody in an Update loop.  You could, for example, AddForce every Update.  This is not recommended and may lead to inconsistent experiences.
+
+For Input:
+
+ - When reading the current Input state (e.g. using Input.GetAxis), either FixedUpdate or Update is fine.  For example if you are checking the current position of the joystick, you'll get the same information in FixedUpdate and Update. 
+  - If you need to modify a rigidbody based on current Input state, I recommend reading Input in FixedUpdate to keep it simple.
+ - When checking for an Input event (e.g. using Input.GetButtonDown), you must use Update.  Input is polled in the Update loop.  Since it's possible for two Updates to happen before a FixedUpdate, some events may be missed when only checking in FixedUpdate.  
+   - Always read events in Update.  Unity will not block or warn you when checking for an event in FixedUpdate, and most of the time it will work - but occasional bugs will arrise.
+
+</details>
+
+
+## Add Platformer Effect to platforms
+
+Add the PlatformerEffect2D component to each platform, allowing the character to jump through them.
+
+Note collisions with the sides of the platforms may feel off, we'll update this in the next section.
+
+<details><summary>How</summary>
+
+ - Select all of the Platform GameObjects.
+ - Add Component: PlatformEffector2D.
+ - Under the BoxCollider2D, select 'Use by Effector'.
+
+<img src="http://i.imgur.com/55YiY3N.gif" width=200px />
+
+Click play to test it out.  You may need to increase the character's Jump Speed to really see how platformer effect works:
+
+<img src="http://i.imgur.com/hRe7CEJ.gif" width=200px />
+
+</details>
+<details><summary>Wow that was easy, what else like this can Unity do for 'free'?</summary>
+
+Effectors in Unity are easy ways to add various mechanics to the game.  The one-way collision effect we are using here happens to be a very common mechanic for 2D games, so Unity has this component ready to drop in.  
+
+Unity is not doing anything with these components that you technically could not have built yourself in a custom script, but that said adding the one-way effect the PlatformerEffector2D creates would not be easy to do.
+
+Read more about the [various 2d effectors in Unity](https://docs.unity3d.com/Manual/Effectors2D.html) including a conveyor belt, repulsion, and floating effects.
+
+</details>
+
+
+## Update the platforms' surface arc
+
+Reduce the PlatformerEffector2D Surface Arc to about 135.
+
+<details><summary>How</summary>
+
+ - Select all of the Platform GameObjects.
+ - Change the 'Surface Arc' to '135' under the Platform Effector 2D compenent.
+
+Play, now the character should not be able to stick to the sides while falling:
+
+<img src="http://i.imgur.com/GGzbkdp.gif" width=200px />
 
 </details>
 
@@ -893,599 +1194,6 @@ TODO Player DeathEffectThrobToDeath,
 
 TODO FaQ why not animation?  Could, more on that next chapter.  This is yet another way.
 
-## Rotate the character when he walks the other way
-
-Flip the character's sprite when he switches between walking left and walking right.
-
-<details><summary>How</summary>
-
- - Create a C# script "RotateFacingDirection" under Assets/Code/Components/Movement.
- - Select the character GameObject and add the RotateFacingDirection component.
- - Paste in the following code:
-
-```csharp
-using UnityEngine;
-
-/// <summary>
-/// Rotates an entity based on it's current horizontal velocity.
-/// 
-/// This causes entities to face the direction they are walking.
-/// </summary>
-[RequireComponent(typeof(Rigidbody2D))]
-public class RotateFacingDirection : MonoBehaviour
-{
-  /// <summary>
-  /// The rotation that's applied when looking left (vs right).
-  /// </summary>
-  /// <remarks>
-  /// Cached here for performance.
-  /// </remarks>
-  static readonly Quaternion backwardsRotation = Quaternion.Euler(0, 180, 0);
-
-  /// <summary>
-  /// Used to control movement.
-  /// </summary>
-  /// <remarks>
-  /// Cached here for performance.
-  /// </remarks>
-  Rigidbody2D myBody;
-
-  /// <summary>
-  /// The direction we are currently walking, 
-  /// used to know when we turn around.
-  /// </summary>
-  /// <remarks>
-  /// Defaults to true as our entities are configured facing right.
-  /// </remarks>
-  bool _isGoingRight = true;
-
-  /// <summary>
-  /// The direction we are currently walking.
-  /// When changed, flips the rotation so the entity is facing forward.
-  /// </summary>
-  public bool isGoingRight
-  {
-    get
-    {
-      return _isGoingRight;
-    }
-    private set
-    {
-      if(isGoingRight == value)
-      { // The value is not changing
-        return;
-      }
-
-      // Flip the entity
-      transform.rotation *= backwardsRotation;
-      _isGoingRight = value;
-    }
-  }
-
-  /// <summary>
-  /// A Unity event, called before this GameObject is instantiated.
-  /// </summary>
-  protected void Awake()
-  {
-    myBody = GetComponent<Rigidbody2D>();
-    Debug.Assert(myBody != null);
-  }
-
-  /// <summary>
-  /// A Unity event, called each frame.
-  /// 
-  /// Updates the entities rotation.
-  /// </summary>
-  protected void Update()
-  {
-    float xVelocity = myBody.velocity.x;
-    // If there is any horizontal movement
-    if(Mathf.Abs(xVelocity) > 0.1)
-    { 
-      // Determine the current walk direction
-      // This may rotate the sprite c/o
-      // the smart property above.
-      isGoingRight = xVelocity > 0;
-    }
-  }
-}
-```
-
-</details>
-<details><summary>What's a C# smart property?</summary>
-
-In C#, data may be exposed as either a Field or a Property.  Fields are simply data as one would expect.  Properties are accessed in code like a field is, but they are capable of more.
-
-In this example, when isGoingRight changes between true and false, the GameObject's transform is rotated so that the sprite faces the correct direction.  Leveraging the property changing to trigger the rotation change is an example of logic in the property making it 'smart'.
-
-There are pros and cons to smart properties.  For example, one may argue that including the transform change when isGoingRight is modified hides the mechanic and makes the code harder to follow.  There are always alternatives if you prefer to not use smart properties.  For example:
-
-```csharp
-bool isGoingRightNow = xVelocity > 0;
-if(isGoingRight != isGoingRightNow) 
-{
-  transform.rotation *= backwardsRotation;    
-  isGoingRight = isGoingRightNow;
-}
-```
-
-</details>
-
-<details><summary>What's a Quaternion?</summary>
-
-A Quaternion is how rotations are stored in a game engine.  They represent the rotation with (x, y, z, w) values, stored in this fashion because that it is an effecient way to do the necessary calculations when rendering on object on screen.
-
-You could argue that this is overkill for a 2D game as in 2D the only rotation that may be applied is around the Z axis, and I would agree.  However remember that Unity is a 3D game engine.  When creating a 2D game, you are still in a 3D environment.  Therefore under the hood, Unity still optimizes its data for 3D.
-
-Quaternions are not easy for people to understand.  When we think of rotations, we typically think in terms of 'Euler' (pronounced oil-er) rotations.  Euler rotations are degrees of rotation around each axis, e.g. (0, 0, 30) means rotate the object by 30 degrees around the Z axis.
-
-In the inspector, modifying a Transform's rotation is done in Euler.  In code, you can either work with Quatenions directly or use Euler and then convert it back to Quatenion for storage.
-
-Given a Quatenion, you can calculate the Euler value like so:
-
-```csharp
-Quaternion myRotationInQuaternion = transform.rotation;
-Vector3 myRotationInEuler = myRotationInQuaternion.eulerAngles;
-```
-
-Given an Euler value, you can calculate the Quatenion:
-
-```csharp
-Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
-```
-
-Quaternions may be combined using Quaternion multiplication:
-
-```csharp
-Quaternion rotationOfZ60Degrees 
-  = rotationOfZ30Degrees * rotationOfZ30Degrees;
-```
-
-</details>
-
-TODO why Quaternion.Euler(0, 180, 0) when you said before 2D games only rotate around the z axis?
-
-
-<details><summary>Why not compare to 0 when checking if there is no movement?</summary>
-
-In Unity, numbers are represented with the float data type.  Float is a way of representing decimal numbers but is a not precise representation like you may expect.  When you set a float to some value, internally it may be rounded ever so slightly.
-
-The rounding that happens with floats allows operations on floats to be executed very quickly.  However it means we should never look for exact values when comparing floats, as a tiny rounding issue may lead to the numbers not being equal.
-
-In the example above, as the velocity approaches zero, the significance of if the value is positive or negative, is lost.  It's possible that if we were to compare to 0 that at times the float may oscilate between a tiny negative value and a tiny positive value causing the sprite to flip back and forth.
-
-</details>
-
-## Restrict movement to stay on screen
-
-Create a script which ensures the character can not walk off screen.
-
-<details><summary>How</summary>
-
- - Create a C# script "KeepWalkMovementOnScreen" under Assets/Code/Components/Movement.
- - Select the Character GameObject and add the KeepWalkMovementOnScreen component.
- - Paste in the following code:
-
-```csharp
-using UnityEngine;
-
-/// <summary>
-/// Ensures that the entity stays on the screen. 
-/// It will flip the current walk direction automatically 
-/// (which has no impact on the Player but causes enemies to bounce).
-/// </summary>
-[RequireComponent(typeof(Rigidbody2D))]
-public class KeepWalkMovementOnScreen : MonoBehaviour
-{
-  #region Data
-  /// <summary>
-  /// Used to determine if we are currently moving.
-  /// </summary>
-  Rigidbody2D myBody;
-
-  /// <summary>
-  /// Used to cause the entity to start walking the 
-  /// opposite direction when it hits the edge of the screen.
-  /// 
-  /// This is not required and may be null.
-  /// </summary>
-  WalkMovement walkMovement;
-
-  /// <summary>
-  /// The area of the world the camera can see.
-  /// 
-  /// This is calculated on Awake, and therefore
-  /// does not consider effects like screen shake.
-  /// </summary>
-  Bounds screenBounds;
-  #endregion
-
-  #region Init
-  /// <summary>
-  /// A Unity event, called once before this GameObject
-  /// is spawned in the world.
-  /// </summary>
-  protected void Awake()
-  {
-    myBody = GetComponent<Rigidbody2D>();
-    walkMovement = GetComponent<WalkMovement>();
-
-    Camera camera = Camera.main;
-    Vector2 screenSize = new Vector2(
-      (float)Screen.width / Screen.height, 
-      1);
-    screenSize *= camera.orthographicSize * 2;
-
-    screenBounds = new Bounds(
-      (Vector2)camera.transform.position, 
-      screenSize);
-
-    Debug.Assert(myBody != null);
-  }
-  #endregion
-
-  #region Events
-  /// <summary>
-  /// A Unity event, called each frame.
-  /// 
-  /// If the entity is off screen, pop it back 
-  /// and flip the walk direction.
-  /// </summary>
-  protected void Update()
-  {
-    // Check if the entity is off screen
-    if(screenBounds.Contains(transform.position) == false)
-    { 
-      // Move the entity back to the edge of the screen
-      transform.position =
-        screenBounds.ClosestPoint(transform.position);
-      if(walkMovement != null)
-      {
-        // Flip the walk direction
-        walkMovement.desiredWalkDirection 
-          = -walkMovement.desiredWalkDirection;
-      }
-    }
-  }
-  #endregion
-}
-```
-
-</details>
-
-<details><summary>Why use bounds for these checks?</summary>
-
-There are a few ways you could check for an entity walking off the edge of the screen.  I choose to use the Unity bounds struct because it has methods which make the rest of this component easy.  Specifically:
-
- - Contains: Check if the current position is on the screen.
- - ClosestPoint: Return the closest point on screen for the character, used when he is off-screen to teleport him back.
-
-</details>
-
-<details><summary>What does flipping the walk direction do?</summary>
-
-Each frame the PlayerController sets the walk direction without consider the previous value.  So flipping the walk direction here is promptly overwritten by the PlayerController - resulting in little or no impact to movement in the game.
-
-We included this logic because not all controllers are going to work the same way.  Later in the tutorial we will be adding another entity that uses WalkMovement by only setting desiredWalkDirection periodically.  For that entity, flipping the direction will cause the entity to bounce off the side of the screen and walk the other way.
-
-This logic doesn't impact the character but it's not harmful either and it fits with the theme of this component, enabling reuse.
-
-</details>
-
-<details><summary>What's the different between setting transform.position and using myBody.MovePosition?</summary>
-
-Updates to the Transform directly will teleport your character immediatelly and bypass all physics logic.  
-
-Using the rigidbody.MovePosition method will smoothly transition the object to its new postion.  It's very fast, but if you try this and watch closely, MovePosition is animating a few frames on the way to the target position instead of going there immediatelly.
-
-We are not suggesting one approach should always be used over the other - consider the use case and how you want your game to feel, sometimes teleporting is exactly the feature you're looking for.  
-
-Be careful when you change position using either of these methods as opposed to using forces on the rigidbody.  It's possible that you teleport right into the middle of another object.  The next frame, Unity will try to react to that collision state and this may result in objects popping out in strange ways.
-
-In this component we are setting transform.position for the teleport effect.  If rigidbody.MovePosition was used instead, occasionally issues would arrise as MovePosition competes with other forces on the object.
-
-</details>
-
-## Jump
-
-Add the ability for the character to jump.  Add a sound effect as well, we are using 'phaseJump1' from [Kenney.nl's Digital Audio pack](http://kenney.nl/assets/digital-audio).
-
-Note the character will be able to double jump / fly, this will be addressed later in the tutorial.
-
-<details><summary>How</summary>
-
- - Create a C# script "JumpMovement" under Assets/Code/Components/Movement.
- - Select the Character GameObject and add the JumpMovement component.
- - Paste in the following code:
-
-```csharp
-using UnityEngine;
-
-/// <summary>
-/// Controls the entity's jump.  
-/// 
-/// Another component drives when to jump via Jump().
-/// </summary>
-[RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(AudioSource))]
-public class JumpMovement : MonoBehaviour
-{
-  /// <summary>
-  /// The sound to play when the character starts their jump.
-  /// </summary>
-  [SerializeField]
-  AudioClip jumpSound;
-
-  /// <summary>
-  /// How much force to apply on jump.
-  /// </summary>
-  [SerializeField]
-  float jumpSpeed = 6.5f;
-
-  /// <summary>
-  /// Used to add force on jump.
-  /// </summary>
-  Rigidbody2D myBody;
-
-  /// <summary>
-  /// Used to play sound effects.
-  /// </summary>
-  AudioSource audioSource;
-
-  /// <summary>
-  /// Used to process events in FixedUpdate that 
-  /// may have been captured on Update.
-  /// </summary>
-  bool wasJumpRequestedSinceLastFixedUpdate;
-
-  /// <summary>
-  /// A Unity event, called once before this GameObject
-  /// is spawned in the world.
-  /// </summary>
-  protected void Awake()
-  {
-    myBody = GetComponent<Rigidbody2D>();
-    audioSource = GetComponent<AudioSource>();
-
-    Debug.Assert(myBody != null);
-    Debug.Assert(audioSource != null);
-  }
-
-  /// <summary>
-  /// Adds force to the body to make the entity jump.
-  /// </summary>
-  public void Jump()
-  {
-    Debug.Assert(jumpSpeed >= 0,
-      "jumpSpeed must not be negative");
-
-    wasJumpRequestedSinceLastFixedUpdate = true;
-  }
-
-  protected void FixedUpdate()
-  {
-    if(wasJumpRequestedSinceLastFixedUpdate)
-    {
-      // Jump!
-      myBody.AddForce(
-          new Vector2(0, jumpSpeed),
-          ForceMode2D.Impulse);
-
-      // Play the sound effect
-      audioSource.PlayOneShot(jumpSound);
-
-      // Clear the jump flag, enabling the next jump
-      wasJumpRequestedSinceLastFixedUpdate = false;
-    }
-  }
-}
-```
-
- - Drag/drop the jump sound effect into Assets/Art.
- - Select the Character GameObject and add an 'AudioSource' component if it does not already have one.
- - Under the JumpMovement component for the character, assign the jummp sound.
-
-<img src="http://i.imgur.com/q4LEETw.gif" width=150px />
-
-
- - Edit the existing C# script "PlayerController" under Assets/Code/Components/Movement.
- - Add the following (or [click here for the full file to copy/paste from](TODO file link):
-
-<details><summary>Existing code</summary>
-
-```csharp
-using UnityEngine;
-
-/// <summary>
-/// Wires up user input, allowing the user to 
-/// control the player in game with a keyboard.
-/// </summary>
-[RequireComponent(typeof(WalkMovement))]
-```
-
-</details>
-
-```csharp
-[RequireComponent(typeof(JumpMovement))] 
-```
-
-<details><summary>Existing code</summary>
-
-
-```csharp
-public class PlayerController : MonoBehaviour
-{
-  /// <summary>
-  /// Used to cause the object to walk.
-  /// </summary>
-  WalkMovement walkMovement;
-```
-
-</details>
-
-```csharp
-  /// <summary>
-  /// Used to cause the object to jump.
-  /// </summary>
-  JumpMovement jumpMovement; 
-```
-
-<details><summary>Existing code</summary>
-
-
-```csharp
-  /// <summary>
-  /// A Unity event, called once before the GameObject
-  /// is instantiated.
-  /// </summary>
-  protected void Awake()
-  {
-    walkMovement = GetComponent<WalkMovement>();
-    Debug.Assert(walkMovement != null);
-```
-
-</details>
-
-```csharp
-    jumpMovement = GetComponent<JumpMovement>(); 
-    Debug.Assert(jumpMovement != null); 
-```
-
-<details><summary>Existing code</summary>
-
-
-```csharp
-  }
-
-  /// <summary>
-  /// A Unity event, called every x ms of game time.
-  /// 
-  /// Consider moving.
-  /// </summary>
-  /// <remarks>
-  /// Moving uses an input state, and therefore may be captured 
-  /// on Update or FixedUpdate, we use FixedUpdate since physics 
-  /// also runs on FixedUpdate, so trying to do this on update would
-  /// require an extra cache (w/o benefit).
-  /// </remarks>
-  protected void FixedUpdate()
-  {
-    // Consider moving left/right based off keyboard input.
-    walkMovement.desiredWalkDirection 
-      = Input.GetAxis("Horizontal");
-  }
-```
-
-</details>
-
-```csharp
-  /// <summary>
-  /// A Unity event, called once per frame.
-  /// 
-  /// Consider jumping.
-  /// </summary>
-  /// <remarks>
-  /// Jumping uses an input event, and therefore must be
-  /// captured on Update.
-  /// </remarks>
-  protected void Update()
-  {
-    if(Input.GetButtonDown("Jump"))
-    {
-      jumpMovement.Jump();
-    }
-  }
-```
-
-<details><summary>Existing code</summary>
-
-
-```csharp
-}
-```
-
-</details>
-
-
-
-Click play, you can now jump around.  But you can hold onto the side of a platform while falling and spam the space bar to fly away:
-
-<img src="http://i.imgur.com/RRpRio5.gif" width=250px />
-</details>
-<details><summary>Why AddForce here instead and what's 'Impulse'?</summary>
-
-As discussed above when creating the WalkMovement component, you could always create mechanics using either AddForce or by modifying the velocity.
-
-We are using AddForce to jump in this component.  Using velocity here instead would have actually created the same basic jump experience we are looking for.  
-
-Using AddForce for the jump may provide a better experience for some corner cases or future mechanics.  For example, if we wanted to support double jump in this game, initiating the second jump while in the air would feel much different.
-
-What is ForceMode2D.Impulse and how is it different from ForceMode2D.Force?
-
-These options appear to have the same effect on effects on objects, the difference is only the scale.  The unit for Impulse is defined as force per FixedUpdate.  The unit for Force is defined as force per second.  In the end, it means when configured your speed you may need a much larger value when using Force than while using Impulse.
-
-</details>
-<details><summary>How do you know when to use Update vs FixedUpdate for Input and rigidbodies?</summary>
-
-Unity recommends always using FixedUpdate when interacting with a rigidbody as physics is processed in FixedUpdate. 
-
-There is nothing blocking you from changing the rigidbody in an Update loop.  You could, for example, AddForce every Update.  This is not recommended and may lead to inconsistent experiences.
-
-For Input:
-
- - When reading the current Input state (e.g. using Input.GetAxis), either FixedUpdate or Update is fine.  For example if you are checking the current position of the joystick, you'll get the same information in FixedUpdate and Update. 
-  - If you need to modify a rigidbody based on current Input state, I recommend reading Input in FixedUpdate to keep it simple.
- - When checking for an Input event (e.g. using Input.GetButtonDown), you must use Update.  Input is polled in the Update loop.  Since it's possible for two Updates to happen before a FixedUpdate, some events may be missed when only checking in FixedUpdate.  
-   - Always read events in Update.  Unity will not block or warn you when checking for an event in FixedUpdate, and most of the time it will work - but occasional bugs will arrise.
-
-</details>
-
-
-## Add Platformer Effect to platforms
-
-Add the PlatformerEffect2D component to each platform, allowing the character to jump through them.
-
-Note collisions with the sides of the platforms may feel off, we'll update this in the next section.
-
-<details><summary>How</summary>
-
- - Select all of the Platform GameObjects.
- - Add Component: PlatformEffector2D.
- - Under the BoxCollider2D, select 'Use by Effector'.
-
-<img src="http://i.imgur.com/55YiY3N.gif" width=200px />
-
-Click play to test it out.  You may need to increase the character's Jump Speed to really see how platformer effect works:
-
-<img src="http://i.imgur.com/hRe7CEJ.gif" width=200px />
-
-</details>
-<details><summary>Wow that was easy, what else like this can Unity do for 'free'?</summary>
-
-Effectors in Unity are easy ways to add various mechanics to the game.  The one-way collision effect we are using here happens to be a very common mechanic for 2D games, so Unity has this component ready to drop in.  
-
-Unity is not doing anything with these components that you technically could not have built yourself in a custom script, but that said adding the one-way effect the PlatformerEffector2D creates would not be easy to do.
-
-Read more about the [various 2d effectors in Unity](https://docs.unity3d.com/Manual/Effectors2D.html) including a conveyor belt, repulsion, and floating effects.
-
-</details>
-
-
-## Update the platforms' surface arc
-
-Reduce the PlatformerEffector2D Surface Arc to about 135.
-
-<details><summary>How</summary>
-
- - Select all of the Platform GameObjects.
- - Change the 'Surface Arc' to '135' under the Platform Effector 2D compenent.
-
-Play, now the character should not be able to stick to the sides while falling:
-
-<img src="http://i.imgur.com/GGzbkdp.gif" width=200px />
-
-</details>
-
 
 ## Test!
 
@@ -1517,6 +1225,12 @@ On a related note, order does matter when for some scripts in terms of which com
 TODO
 
 </details>
+
+
+
+
+
+
 
 
 TODO talk about disabling the spawner for debugging
