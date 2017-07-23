@@ -1,4 +1,4 @@
-# 4) Animations and stuff
+# 4) Animations 
 
 TODO intro
 

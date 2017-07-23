@@ -1,4 +1,6 @@
 
+# 5) UI and Scene transitions
+
 win condition / win area
 
 end of level / respawn and scene changes
@@ -17,8 +19,12 @@ points -
 
 =====
 
-Level 2
 
 ..
 
 DieOnBumpers?
+
+
+# Next chapter
+
+[Chapter 6](https://github.com/hardlydifficult/Platformer/blob/master/Chapter6.md).

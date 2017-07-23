@@ -1,4 +1,3 @@
-
 # 3) Advanced scripting
 
 ## Rotate the character when he walks the other way
@@ -1599,3 +1598,7 @@ Configure to enable the WanderWalkMovement
 ## Test
 
 GG
+
+# Next chapter
+
+[Chapter 4](https://github.com/hardlydifficult/Platformer/blob/master/Chapter4.md).

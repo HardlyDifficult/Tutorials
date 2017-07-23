@@ -1,4 +1,4 @@
-# 2) Move, Jump, and Die
+# 2) A Character that walks, jumps, and dies
 
 Add a character to the scene.  Have him walk and jump, creating a basic platformer. TODO
 

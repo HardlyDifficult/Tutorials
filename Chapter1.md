@@ -22,7 +22,7 @@ TODO
  
 
 
-# 1) Create a game with enemies spawning
+# 1) A game with enemies spawning
 
 In chapter 1, we create a 2D game in Unity with spiked balls spawning at random intervals from an evil cloud.  They roll across platforms and fall from level to level.
 
