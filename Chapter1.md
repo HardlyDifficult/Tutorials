@@ -735,6 +735,9 @@ Optionally, you can rename the platform GameObjects and organize your platforms 
 
 Add a sprite and GameObject for the spike ball.  Set filter mode to Point.  We are using We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/spikeball1'.
 
+TODO change to use jumper spritesheet
+TODO spritesheet requires automatic slicing, different sizes per sprite.
+
 <details><summary>How</summary>
 
  - Drag/drop the sprite into Assets/Art.
@@ -1170,6 +1173,8 @@ For more, see [Catlike Coding's Object Pool tutorial](http://catlikecoding.com/u
 ## Add the Evil Cloud to the scene
 
 Add a sprite and GameObject for the evil cloud, place it in the top left and scale the size.  Set order in layer to 1. We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/cloud' with filter mode Point.
+
+TODO change to use jumper spritesheet
 
 <details><summary>How</summary>
 
