@@ -349,3 +349,8 @@ Character and fly guy fades in via AppearInSecondsAndFade
 # Next chapter
 
 [Chapter 4](https://github.com/hardlydifficult/Platformer/blob/master/Chapter4.md).
+
+
+
+TODO something for bomb? but that doesn't make sense till the hammer. 
+other death effects?

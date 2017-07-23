@@ -885,14 +885,20 @@ We use the collider's bounds to determine where to spawn the explosion.  The [bo
 
 </details>
 
+## Animate characters death
+
+TODO Player DeathEffectThrobToDeath, 
+
+TODO FaQ why not animation?  Could, more on that next chapter.  This is yet another way.
+
 ## Rotate the character when he walks the other way
 
 Flip the character's sprite when he switches between walking left and walking right.
 
 <details><summary>How</summary>
 
- - Create a C# script "RotateEntity" under Assets/Code/Components/Movement.
- - Select the character GameObject and add the RotateEntity component.
+ - Create a C# script "RotateFacingDirection" under Assets/Code/Components/Movement.
+ - Select the character GameObject and add the RotateFacingDirection component.
  - Paste in the following code:
 
 ```csharp
@@ -904,7 +910,7 @@ using UnityEngine;
 /// This causes entities to face the direction they are walking.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-public class RotateEntity : MonoBehaviour
+public class RotateFacingDirection : MonoBehaviour
 {
   /// <summary>
   /// The rotation that's applied when looking left (vs right).
@@ -935,13 +941,13 @@ public class RotateEntity : MonoBehaviour
   /// The direction we are currently walking.
   /// When changed, flips the rotation so the entity is facing forward.
   /// </summary>
-  bool isGoingRight
+  public bool isGoingRight
   {
     get
     {
       return _isGoingRight;
     }
-    set
+    private set
     {
       if(isGoingRight == value)
       { // The value is not changing
@@ -1912,36 +1918,167 @@ TODO jump cooldown by time
 ## Rotate to match the floor's angle
 (or with jumping)
 
-Create a Feet with isGrounded and Quaternion floorRotation. 
-Create a RotateToMatchFloorWhenGrounded
+TODO
 
-## Ladders
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// When on floor, rotates an entity to align with the floor. 
+/// 
+/// When in air, rotates towards identity 
+/// (back to standing straight up).
+/// </summary>
+[RequireComponent(typeof(RotateFacingDirection))]
+public class RotateToAlignWithFloor : MonoBehaviour
+{
+  /// <summary>
+  /// The rotation that's applied when looking left (vs right).
+  /// </summary>
+  /// <remarks>Cached here for performance.</remarks>
+  static readonly Quaternion backwardsRotation 
+    = Quaternion.Euler(0, 180, 0);
+
+  /// <summary>
+  /// How quickly the entity rotates so that 
+  /// its feet are both on the floor.
+  /// </summary>
+  [SerializeField]
+  float rotationLerpSpeed = .4f;
+
+  /// <summary>
+  /// Used to get info about the floor we are over.
+  /// </summary>
+  FloorDetector floorDetector;
+
+  /// <summary>
+  /// Used to determine the current facing direction.
+  /// </summary>
+  RotateFacingDirection facingDirection;
+
+  /// <summary>
+  /// A Unity event, called once before this GameObject
+  /// is spawned in the world.
+  /// </summary>
+  protected void Awake()
+  {
+    floorDetector = GetComponentInChildren<FloorDetector>();
+    facingDirection = GetComponent<RotateFacingDirection>();
+
+    Debug.Assert(floorDetector != null);
+    Debug.Assert(facingDirection != null);
+  }
+
+  /// <summary>
+  /// A Unity event, called each frame.
+  /// 
+  /// Update the entities rotation.
+  /// </summary>
+  protected void Update()
+  {
+    Quaternion targetRotation;
+    if(floorDetector.isTouchingFloor)
+    {
+      targetRotation = floorDetector.floorRotation.Value;
+    }
+    else
+    {
+      targetRotation = Quaternion.identity;
+    }
+
+    if(facingDirection.isGoingRight == false)
+    {
+      // If the entity is flipped, also flip the target 
+      // rotation we are lerping towards
+      targetRotation *= backwardsRotation;
+    }
+
+    transform.rotation = Quaternion.Lerp(
+      transform.rotation, 
+      targetRotation, 
+      rotationLerpSpeed * Time.deltaTime);
+  }
+}
+```
+
+## Add Ladder sprites to the world
+
+Layout ladders in the world.  We are using [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) spritesheet_tiles sprites 23 and 33.
+
+<details><summary>How</summary>
+
+ - Import the spritesheet, slice, set filter mode to point.
+ - Create a parent Ladder GameObject, add sprite(s) for the look you want.
+   - You may want to 'Flip' the Y in the SpriteRenderer to mirror the top and bottom on some ladders.
+   - The child sprite GameObjects should have a default Transform, with the execption of the Y position when multiple sprites are used.
+   - It usually looks fine to overlap sprites a bit, as we do to get the space between ladder steps looking good.
+ - Set the SpriteRenderers' Order is Layer to -1.
+ - Position the ladder and repeat, creating several ladders - some which look broken.
+ - Create a new parent GameObject to hold all the ladders (optional).
+
+<img src="http://i.imgur.com/NtZZZxD.gif" />
+
+</details>
+
+## Ladder trigger colliders
+
+TODO
+
+<details><summary>How</summary>
+
+ - Add BoxCollider2D.
+ - Size them so that:
+   - The width is thinner than the sprite.
+   - The bottom of the collider is about half the character's height above the lower platform.
+   - The top of the collider is about half the character's height above the upper platform.
+ - Check "Is Trigger".
+
+<img src="http://i.imgur.com/GyGCU4n.png" />
+
+</details>
+
+## Set tag to Ladder
+
+Parent gameObjects to ladder
+TODO
+
+## LadderMovement
 
 LadderMovement, for character and spike ball.
 
 
-Fly Guy too
- - Prevent walking into walls?
+<details><summary>How</summary>
+
+ - Create "LadderMovement"
+ - Add to character
+
+```csharp
+
+```
+
+</details>
+
+## PlayerController to climb ladders
 
 
 
+<details><summary>How</summary>
 
-## Ladders
+ - 
 
-Lots here
+</details>
 
-
-## Broken Ladders
-
-
-
-TODO Player DeathEffectThrobToDeath, something for bomb? but that doesn't make sense till the hammer. 
-other death effects?
 
 ## Fly guy
 
-Door,
+Door spawner
+ - Prevent walking into walls?
 
+<details><summary>How</summary>
+
+ - 
+
+</details>
 
 ## Test!
 
