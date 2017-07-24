@@ -157,10 +157,6 @@ We use constraints to remove capabilities from Unity, allowing us more control w
 
 Add a couple scripts to the character, one which enables moving left and right and another to map user input to movement.
 
-Create a WalkMovement script to control the rigidbody and a  PlayerController script to feed user input to the WalkMovement component.
-
-Note the character will always be looking right, even while walking left.  He can also walk off the screen and push the balls around.  This will all be addressed later in the tutorial.
-
 <details><summary>How</summary>
 
  - Create a C# script "WalkMovement" under Assets/Code/Components/Movement.
@@ -294,6 +290,14 @@ The character should walk around, but there is clearly work to be done:
 <img src="http://i.imgur.com/xOpivgJ.gif" />
 
 </details>
+
+<details><summary>TODO</summary>
+
+TODO
+Note the character will always be looking right, even while walking left.  He can also walk off the screen and push the balls around.  This will all be addressed later in the tutorial.
+
+<hr></details>
+
 <details><summary>What is an Input 'Axis' and how are they configured?</summary>
 
 Unity offers several ways of detecting keyboard/mouse/controller input.  'Axis' is the recommended approach.  Each input Axis may be configured in the inspector:
