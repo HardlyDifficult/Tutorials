@@ -27,7 +27,7 @@ In chapter 1, we create a 2D game in Unity with spiked balls spawning at random 
 
 TODO tutorial video link
 
-<img src="http://i.imgur.com/31l9mA1.gif" width=500 />
+<img src="http://i.imgur.com/V5qEyiQ.gif" width=300 />
 
 [Demo of the game](https://hardlydifficult.com/Kong/index.html)
 
@@ -77,7 +77,7 @@ We are using:
  - Drag/drop all the assets (images and sounds) into the folder you just created.
    - If you have a zip file, you may need to unzip to a temp directory before drag/drop will work.
 
-    <img src="http://i.imgur.com/7JleUl7.png" width=300px />
+<img src="http://i.imgur.com/7JleUl7.png" width=300px />
 
  - Create additional directories which we will be using to organize our game:
    - Assets/**Art**
@@ -166,7 +166,7 @@ After closing the 'Sprite Editor' and applying changes you can expand the sprite
 
 <hr></details>
 
-## Sprite Filter Mode: Point
+## Set the filter mode
 
 Update each sprite's and sprite sheet's import settings to use filter mode point.
 
@@ -195,7 +195,7 @@ For sprite sheets, often each object is touching the one next to it.  Filter Mod
 
 
 
-## Sprite Mesh Type: Full Rect
+## Set the mesh type
 
 Update each sprite's and sprite sheet's import settings to use mesh type full rect.
 
@@ -264,7 +264,7 @@ Anti-aliasing may lead to unexpected gaps or distortions when sprites are side b
 
 
 
-## Set a 5:4 Aspect ratio
+## Select an aspect ratio
 
 Change the aspect ratio to 5:4 in the Game window and build settings.
 
@@ -310,7 +310,7 @@ Different resolutions will scale the display larger or smaller but everyone will
 <hr></details>
 
 
-## Camera Size: 10
+## Set the camera size
 
 Update the camera size to about 10.
 
@@ -337,7 +337,7 @@ For an Orthographic camera, the amout of the world visible is driven by a specia
 
 <hr></details>
 
-## Background color 
+## Select a background color 
 
 Change the background color to black.
 
@@ -357,7 +357,7 @@ TODO
 
 <hr></details>
 
-## Save scene
+## Save the scene
 
 Save the current scene as "Level1".
 
@@ -374,7 +374,7 @@ The Scene represents a collection of GameObjects and components (defined below) 
 <hr></details>
 
 
-## Auto save script 
+## Add an auto save script 
 
 Create an editor script which automatically saves everytime you hit play.
 
@@ -383,7 +383,7 @@ Create an editor script which automatically saves everytime you hit play.
  - In the Project Assets/Code/Editor directory:
    - Right click
    - Select 'Create' -> 'C# Script'
-   - Name it "AutoSave"
+   - Name it **AutoSave**
  - Double click to open the file in Visual Studio.
  - Paste in the the following source code:
  
@@ -651,7 +651,7 @@ Using transform scale to change the width cause the sprite displayed to stretch.
 
 
 
-## Create Platform GameObject
+## Create platform GameObject
 
 Create a new parent GameObject for the platform sprite.
 
@@ -688,31 +688,29 @@ Typically all Transform updates during the game and in level design are done to 
 
 
 
-## Add rounded corners
+## Add rounded corners to platforms
 
 Add sprites with rounded edges to the left and right of the platform.  
 
 <details><summary>How</summary>
 
- - Click and drag each edge sprite onto the 'Platform' GameObject. We're using **spritesheet_ground_65** and **spritesheet_ground_79**.
+ - Click and drag an edge sprite onto the 'Platform' GameObject. We're using **spritesheet_ground_65** and **spritesheet_ground_79**.
    - The edge sprite should be a child GameObject, like the middle sprite.  If it does not appear indented, drag drop in the Hierarchy window to rearrange.
    - Confirm that each of the child sprites are still at 0 position, 0 rotation, and 1 scale.  The edge sprites may have an X position when we are done.
  - Move the edge sprite away from the main platform:   
    - Select the edge sprite (one of the child GameObjects).
    - Use the move tool to position it away from the other sprites.
 
-     <img src="http://i.imgur.com/bYsJhjs.png" width=300px />
+<img src="http://i.imgur.com/bYsJhjs.png" width=150px />
 
-   - Use Vertex Snap to position the edge next to the main platform:
+ - Use Vertex Snap to position the edge next to the main platform:
    - Hold V to enable Vertex Snap mode.
    - A box appears for each anchor point (e.g. the corners of the sprite).  Hover over the top right corner.
    - Click and drag the box.  The sprite will snap perfectly with other anchor points in the world.
 
-<img src="http://i.imgur.com/GNMGb0w.gif" width=300px />
+<img src="http://i.imgur.com/L82mkXu.gif" width=300px />
 
  - Repeat for both edges, creating smooth corners on both sides of the platform.
- - Copy paste "PlatformWithEdges", rename to "PlatformWithRightEdge" and delete it's left edge.  Do the same to create a "PlatformWithLeftEdge".
-
 
 <hr></details><br>
 <details><summary>TODO</summary>
@@ -730,19 +728,35 @@ Our level design calls for the bottom platform to rotate half way through.  Crea
 
 <details><summary>How</summary>
 
- - Use two copies of the Platform GameObject (without edges) and move their parent GameObjects so that the sprites appear near the bottom of the screen side by side. 
+ - Use two copies of the Platform GameObject.
+   - Select and copy / paste or right click and 'Duplicate'.
+ - Move their parent GameObjects so that the sprites appear near the bottom of the screen, side by side. 
  - Raise the right Platform a little above the left.
- - Select the child sprite in each and increase the tiled 'Width' to about 15 so that the platforms combined cover more than the width of the screen.
- - Select the parent GameObject for the Platform on the right and modify the Transform's rotation Z value to about 4.
- - Drag and drop the child GameObject out of the Platform you just rotated so it stands alone. (it will still appear at the same position/rotation). 
- - Hold V to enable Vertex Snap, hover over the bottom left corner and drag the box which appears to connect perfectly with the other platform.
- - Copy paste the Transform position from the child you just placed to it's original parent GameObject.
+ - Delete the rounded edges which would overlap:
+   - The right edge of the left platform.
+   - The left edge of the right platform.
+ - Increase the 'Width' of middle sprite of each platform to about 15 so that the platforms combined cover more than the width of the screen.
+ - Use Vertex Snap (by holding V) to reposition the edges.
+ - Select the parent GameObject for the Platform on the right and use the rotate tool to modify the Transform's rotation Z value to about 4.
+
+<img src="http://i.imgur.com/3s1bSBb.png" width=150px>
+
+
+The scene should look something like this:
+
+<img src="http://i.imgur.com/kL3NvA7.png" width=500px>
+
+
+ - Select the middle sprite's GameObject for the platform on the right.
+ - Drag and drop that child GameObject out of the Platform so it stands alone. (it will still appear at the same position/rotation). 
+ - With Vertex Snap, use the box in the bottom left corner to drag the platform and connect perfectly with the other.
+ - Copy paste the Transform position from the child you just placed to its original parent GameObject.
  - Drag and drop the sprite back into the original parent GameObject.
- - Confirm the child GameObject's Transform is positioned at 0.
+   - Confirm the child GameObject's Transform position and rotation are at 0.
 
-<img src="http://i.imgur.com/iJ4fdYQ.gif" />
+<img src="http://i.imgur.com/iJ4fdYQ.gif" width=700px />
 
-<hr></details>
+<hr></details><br>
 <details><summary>Why not use a single GameObject for this bottom platform?</summary>
 
 Up next we will be adding colliders to these platforms.  There are several ways this could be handled, as is always the case with GameDev. We will be placing BoxCollider2Ds on our Platforms' parent GameObjects.  This works great when the parent is a middle sprite segment along with a rounded corner sprite - but does not work as well when the platform changes it's rotation half way through.
@@ -758,52 +772,72 @@ The width of the world players are going to see is fixed so you could argue that
 <hr></details>
 
 
-## Rinse and repeat to complete Level1 platforms
+## Complete level 1 platform layout
 
-At this point we have covered everything you need to match the Level1 platform layout.  You can match the layout we used or come up with your own.
-
-Refer to the Game window to confirm your layout as they player will see it.
+At this point we have covered everything you need to match the level 1 platform layout.  You can match the layout we used or come up with your own.
 
 <details><summary>How</summary>
 
 The basic steps are:
 
  - Copy a parent Platform to start from.
- - Modify the tile 'Width' as needed.  Platforms should extend off the screen a bit.
+ - Modify the tile 'Width' for the middle segment as needed.  Platforms should extend off the screen a bit.
  - Use Vertex Snap to position the edge sprites.
  - Move and rotate the sprite by modifying the parent GameObject, leaving the children at position and rotation 0, with the exception of the corner sprites which have an X position.
+ - You can delete the rounded edges which are completely off screen.
 
 Optionally, you can rename the platform GameObjects and organize your platforms by placing them in a parent GameObject.  e.g.:
 
  - Click and drag to re-arrange the platform GameObjects so they appear in the same order in the hierarchy as they do in game.
- - Rename each to represent it's position - e.g. "Level2"
+ - Rename each to represent it's position - e.g. "Level2".
  - Create an Empty GameObject, name it "Platforms".  Ensure that it is a position 0.
  - Select all of your existing platforms (the parent GameObjects) and click and drag them onto "Platforms".
 
-<img src="http://i.imgur.com/f8GFdBD.png" width=50% />
+The project should looks something like this, but don't worry about trying to match it perfectly:
+
+<img src="http://i.imgur.com/utVCg6G.png" width=500px />
+
+<hr></details><br>
+
+<details><summary>TODO</summary>
+
+Refer to the Game window to confirm your layout as they player will see it.
+
+How to zoom and navigate the scene
 
 <hr></details>
 
 
-## Add BoxCollider2D to the Platforms
 
-Add a BoxCollider2D component with a .1 edge radius to each of the parent Platform GameObjects in the scene.
+## Add colliders to platforms
+
+Add a BoxCollider2D component to each of the parent Platform GameObjects in the scene.  Add a .1 edge radius and edit colliders to match the sprites.
 
 <details><summary>How</summary>
 
  - Select a platform's parent GameObject.
- - Add Component -> "BoxCollider2D".
- - Set 'Edge Radius' to '.1'
+ - Click the 'Add Component' button, type "BoxCollider2D" and select it from the list.
+ - Under Box Collider 2D in the Inspector, set 'Edge Radius' to '.1'
+
+<img src="http://i.imgur.com/yM4DRr6.png" width=300px>
+
  - Click 'Edit Collider' and click/drag the box which appears so that the outer green line encapsulates the platform.
     - Click and then hold Alt while adjusting the sides to pull both sides in evenly.
 
-<img src="http://i.imgur.com/rHhHSXL.gif" />
+<img src="http://i.imgur.com/Q4T1KfJ.gif" width=300px />
 
- - For the bottom platforms which are actually two connected parent platform GameObjects - allow the colliders to overlap some for a smooth experience when entities are walking from one to the next.
+ - Repeat for each of the platforms.
+   - For the bottom platforms which are two connected parent platform GameObjects - allow the colliders to overlap a little.
 
-<img src="http://i.imgur.com/cgfqZhY.gif" />
+<img src="http://i.imgur.com/D5gBSiW.gif" width=300px />
 
-</details>
+</details><br>
+
+<details><summary>TODO</summary>
+
+some for a smooth experience when entities are walking from one to the next
+
+<hr></details>
 <details><summary>What is a Collider?</summary>
 
 [Colliders](https://docs.unity3d.com/Manual/CollidersOverview.html) are components placed on GameObjects to define their shape for the purposes of physical collisions.  The collider shape may or may not align with the visuals on screen.
@@ -828,35 +862,38 @@ Additionally, fewer colliders may improve your game's performance - however the 
 
 
 
-## Create a Spike Ball GameObject
+## Create a spike ball
 
-Add a sprite and GameObject for the spike ball.  Set filter mode to Point.  We are using We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/spikeball1'. TODO now 40 in sheet
-
-TODO change to use jumper spritesheet
-TODO spritesheet requires automatic slicing, different sizes per sprite.
+Add a GameObject for the spike ball. 
 
 <details><summary>How</summary>
 
- - Drag/drop the sprite into Assets/Art.
- - Set the 'Filter Mode: Point (no filter)'.
- - Drag the sprite into the 'Hierarchy' window.  Rename to 'Spike Ball'.
+ - Drag the sprite into the Hierarchy to create a GameObject for the sprite. We are using **spritesheet_jumper_59**.
+ - Create a parent GameObject:
+   - Right click -> 'Create Empty' GameObject named "Spike Ball".
+   - Drag and drop the sprite into Spike Ball.
+ 
+</details><br>
+<details><summary>TODO</summary>
 
-</details>
+Why use a parent here?
+
+<hr></details>
 
 
 
-## Change Order in Layer to -1
+## Set the ball's order in layer
 
-Update the Spike Ball's SpriteRender Order in Layer to -1.
+Update the Spike Ball's Order in Layer to -1.
 
 <details><summary>How</summary>
 
- - Select the Spike Ball's GameObject
- - In the 'Inspector', set the SpriteRenderer's 'Order in Layer' to '-1'.
+ - Select the Spike Ball's sprite.
+ - Change the Sprite Renderer's 'Order in Layer' to '-1'.
 
-<img src="http://i.imgur.com/TSqk7hb.png" width=50% />
+<img src="http://i.imgur.com/TSqk7hb.png" width=300px />
 
-</details>
+</details><br>
 <details><summary>What does Order in Layer do?</summary>
 
 When multiple sprites are overlapping, Order in Layer is used to determine which one is on top of the other.  So if the spike ball sprite has Order in Layer '-1' and everything else uses the default Order in Layer '0', the spike ball will always appear behind of other sprites in the world.
@@ -867,20 +904,24 @@ Order in Layer may be any int value, positive or negative. Here's an example sho
 
 </details>
 
-## Add a Rigidbody2D
+## Add a rigidbody to the ball
 
-Add a Rigidbody2D component to the spike ball to enable gravity.
+Add a Rigidbody2D component to the spike ball.
 
 <details><summary>How</summary>
 
- - Select the Spike Ball's GameObject.
- - In the 'Inspector', click 'Add Component' and select "Rigidbody2D".
+ - Select the Spike Ball's parent GameObject.
+ - Click Add Component and select 'Rigidbody2D'.
+
+</details><br>
+
+<details><summary>TODO</summary>
 
 Hit play and watch the spike ball fall through the platforms and out of view:
 
 <img src="http://i.imgur.com/PuWWL3z.gif" width=50px />
 
-</details>
+<hr></details>
 <details><summary>What's a Rigidbody2D?</summary>
 
 A rigidbody is a core component for the Unity physics engine, Rigidbody2D is the 2D version of this component (vs 3D).  It's added to GameObjects which may be manipulated by physics during the game.
@@ -892,23 +933,27 @@ Physics refers to the logic in a game engine which moves objects based on forces
 </details>
 
 
-## Add a CircleCollider2D
+## Add a collider to the ball
 
-Add a CircleCollider2D component to the spike ball so it hits the platform and rolls.
+Add a CircleCollider2D component to the spike ball.  Adjust the radius as needed.
 
 <details><summary>How</summary>
 
- - Select the Spike Ball's GameObject.
- - 'Add Component' and select "CircleCollider2D".
+ - Add a 'CircleCollider2D' component to the spike ball.
  - Modify the radius so the collider is around the main body and not the spikes.
 
-<img src="http://i.imgur.com/ozPgCi4.gif" width=200px />
+<img src="http://i.imgur.com/crXdz35.gif" width=300px />
+
+</details><br>
+<details><summary>TODO</summary>
+
+Test, by placing the ball at the top of each platform.  If it gets stuck because some platforms are too close, update the platform position or rotation.
 
 Hit play to watch the spike ball fall onto a platform and roll.
 
-<img src="http://i.imgur.com/x4a848N.gif" width=200px />
+<img src="http://i.imgur.com/x4a848N.gif" width=300px />
 
-</details>
+<hr></details>
 <details><summary>Why shrink the collider?</summary>
 
 It's optional, use what you think creates the best experience.
@@ -930,69 +975,69 @@ On a related note, seting the 'Order in Layer' to '-1' ensures that the spikes a
 
 ## Add invisible bumpers
 
-Add additional BoxCollider2Ds offscreen to cause the spike balls to quickly turn around and roll back on-screen.
+Add additional BoxCollider2Ds offscreen to redirect balls back on screen.
 
 <details><summary>How</summary>
 
- - Right click in 'Hierarchy' -> 'Create Empty'.  Rename to "Bumper"
- - 'Add Component' and select "BoxCollider2D"
- - Increase the collider Size X to about 20
+ - Create an Empty GameObject named "Bumper".
+ - Add a 'BoxCollider2D' component.
+ - Increase the collider Size X to about 20.
+
+<img src="http://i.imgur.com/3ca7cy3.png" width=150px>
+
+
  - Move the GameObject off screen, near one of the platforms, like this:
 
-<img src="http://i.imgur.com/gNQUfh6.png" width=150px />
+<img src="http://i.imgur.com/VrjqmfY.png" width=300px />
 
- - Rotate the Transform Z to about -30.
- - Reposition so the edge of our bumper overlaps the platform.
+ - Use the Rotate tool and adjust until the Z rotation to about 30.
+ - Use the Move tool to reposition it so the edge of our bumper overlaps the platform.
 
-<img src="http://i.imgur.com/mUv143i.png" width=150px />
+<img src="http://i.imgur.com/5mUaPov.png" width=300px />
+
+
+
+ - Copy paste the bumper and modify it's position and rotation so that each platform that may send a spike ball offscreen has a bumper.
+   - We do not want a bumper for the bottom left as balls should not return after that point.
+
+ Your screen with bumpers should look something like this:
+
+<img src="http://i.imgur.com/NTMCw37.png" width=300px />
+
+ - Optionally organize your bumpers by placing them in a parent GameObject named "Bumpers", like we had done for the Platforms.
+
+</details><br>
+
+<details><summary>TODO</summary>
 
 Hit play, the spike ball should hit the bumper and quickly reverse and then accelerate the other direction: 
 
 <img src="http://i.imgur.com/vMjWoia.gif" width=150px />
+to cause the spike balls to quickly turn around and roll back on-screen
 
- - Copy paste the bumper and modify it's position and rotation so that each platform that may send a spike ball offscreen has a bumper.
- - Remove the bumper from the bottom left as we do not want spike balls to roll back on screen after reaching this point.
- - Optionally move each Bumper GameObject under a new parent empty GameObject "Bumpers" to keep the 'Hierarchy' organized, like we had done for Platforms.
+<hr></details>
 
- Your screen with bumpers should look something like this:
+## Add a script to get the ball moving
 
-<img src="http://i.imgur.com/cAl0od4.png" />
-
-</details>
-
-
-## Add a C# script to get the ball moving
-
-For the game, we  want the ball spawning in the top left.  But that's a flat surface so the ball does not roll down platforms.  Give it an initial Velocity of (3, 0) and AngularVelocity of -500.
+Add a script to the spike ball which sets an initial velocity and angular velocity.
 
 <details><summary>How</summary>
 
- - In the 'Project' window Assets/Code directory, create a new directory "Components/Movement".
- - Right click -> Create -> C# script and name it "InitializeRigidbodyOnStart".
- - Select the spike ball, click 'Add Component' and select "InitializeRigidbodyOnStart".
- - Double click the script to open it in Visual Studio (or Monodevelop).
- - Copy the source below:
+ - In the Assets/Code/Compenents/Movement directory, Create a C# Script and name it **InitializeRigidbody**.
+ - Double click the script to open it and paste the following:
 
  ```csharp
- using UnityEngine;
+using UnityEngine;
 
 /// <summary>
-/// When a GameObject is added to the scene, give it a starting
-/// velocity and angular speed.
+/// When a GameObject is added to the scene, set initial 
+/// values on the Rigidbody2D.
 /// 
 /// This script only impacts the GameObject on Start. 
-/// Physics drag will slow these down over time.  Gravity may 
-/// speed them up again.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-public class InitializeRigidbodyOnStart : MonoBehaviour
+public class InitializeRigidbody : MonoBehaviour
 {
-  /// <summary>
-  /// Cause the GameObject's rigidbody to start with this spin.
-  /// </summary>
-  [SerializeField]
-  float startingAngularVelocity = -500;
-
   /// <summary>
   /// Cause the GameObject's rigidbody to start with this 
   /// velocity.
@@ -1001,23 +1046,45 @@ public class InitializeRigidbodyOnStart : MonoBehaviour
   Vector2 startingVelocity = new Vector2(3, 0);
 
   /// <summary>
-  /// Unity event called when the GameObject is first spawned
-  /// in the world.
+  /// Cause the GameObject's rigidbody to start with this
+  /// spin. 
+  /// </summary>
+  [SerializeField]
+  float startingAngularVelocity = -500;
+
+  /// <summary>
+  /// Unity event called when the GameObject is first 
+  /// spawned in the world.
+  /// 
+  /// Set initial settings on the rigidbody.
   /// </summary>
   protected void Start()
   {
-    // Update the GameObject's rigidbody initial settings
     Rigidbody2D myBody = GetComponent<Rigidbody2D>();
-    myBody.angularVelocity = startingAngularVelocity;
+
+    // Update the GameObject's rigidbody initial settings
     myBody.velocity = startingVelocity;
+    myBody.angularVelocity = startingAngularVelocity;
   }
 }
-
 ```
 
-</details>
+ - Add the 'InitializeRigidbody' component to the spike ball.
+ - Confirm the values in the Inspector are at the defaults written in code:
+   - Initial Velocity of (3, 0) 
+   - Angular Velocity of -500
+
+<img src="http://i.imgur.com/34kpVEP.png" width=300px />
+
+
+</details><br>
+<details><summary>TODO</summary>
+For the game, we  want the ball spawning in the top left.  But that's a flat surface so the ball does not roll down platforms.  
+
+TODO
 
 TODO faq on GetComponent, GetChildComponents...
+<hr></details>
 
 
 <details><summary>Why not use a "SpikeBall" component instead?</summary>
@@ -1055,10 +1122,6 @@ So why not just public instead of [SerializeField]?
 The fields in question are often only leveraged inside the component itself.  Other components may not interact with these fields directly.  In those scenarios, I prefer to follow the Object-Oriented programming best practice of [data encapsulation](https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)) - meaning we only expose public fields when we want other classes to interact with them.
 
 </details>
-<>
-
-TODO GetComponent
-
 
 <details><summary>What's RequireComponent do?</summary>
 
@@ -1152,15 +1215,13 @@ Encapsulation.  If we were to make these methods public, it suggests that other 
 
 </details>
 
-## Add a C# script to destroy balls that roll off
+## Add a script to destroy balls that roll off
 
-After the ball rolls off the bottom platform, destroy the GameObject.
+Add a script to the spike ball which destroy's the GameObject after it rolls off the bottom platform.
 
 <details><summary>How</summary>
 
- - Create a C# script "SuicideOutOfBounds" under Assets\Code\Components\Death.
- - Select the spike ball, click 'Add Component' and select SuicideOutOfBounds.
- - Paste in the following code:
+ - Create a script **SuicideOutOfBounds** under Assets/Code/Compenents/Death and paste the following:
 
 ```csharp
 using UnityEngine;
@@ -1199,11 +1260,16 @@ public class SuicideOutOfBounds : MonoBehaviour
 }
 ```
 
+ - Add 'SuicideOutOfBounds' to the spike ball.
+
+</details><br>
+<details><summary>TODO</summary>
+
 Play and the ball should now destroy itself when it falls off screen:
 
 <img src="http://i.imgur.com/xcqUO8I.gif" />
 
-</details>
+<hr></details>
 <details><summary>Why bother, the GameObject is already off screen?</summary>
 
 When a GameObject is off screen, there is no attempt to render it so your GPU is not wasting time but Unity is still processing Physics and logic for any components on the GameObject.  In this case, once the GameObject has fallen off the bottom it will never return to the game.  
@@ -1267,25 +1333,40 @@ For more, see [Catlike Coding's Object Pool tutorial](http://catlikecoding.com/u
 
 </details>
 
+## Create a ball prefab
 
-
-## Add the Evil Cloud to the scene
-
-Add a sprite and GameObject for the evil cloud, place it in the top left and scale the size.  Set order in layer to 1. We are using [Kenney.nl's Jumper Pack](http://kenney.nl/assets/jumper-pack) 'PNG/enemy/cloud' with filter mode Point.
-
-TODO change to use jumper spritesheet
+Create a prefab for the spike ball, and remove the GameObject from the scene.
 
 <details><summary>How</summary>
 
- - Drag/drop the sprite into Assets/Art.
- - Set the 'Filter Mode: Point (no filter)'.
- - Drag the sprite into the 'Hierarchy' window. Rename to "Evil Cloud".
- - Move the cloud to the top left of the screen.
- - Scale the cloud (evenly on all dimensions) to fit nicely.
+ - Select the Spike Ball and click/drag it to the Assets/Prefabs folder.
+ - Delete the GameObject from the Hierarchy, removing it from the scene but leaving our prefab in-tact.
 
-<img src="http://i.imgur.com/fecCBCq.gif" width=200px />
+<img src="http://i.imgur.com/roE0SWK.gif" width=300px />
 
-</details>
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+## Create an evil cloud
+
+Add a GameObject for the evil cloud.  Size and position it in the top left.
+
+<details><summary>How</summary>
+
+ - Drag in the sprite, we are using **spritesheet_jumper_57**.
+ - Add it to an empty parent GameObject named "Evil Cloud".
+ - Move it to the top left of the screen.
+ - Use the Scale tool evenly on all dimensions till it fits nicely.
+
+<img src="http://i.imgur.com/MZWguje.png" width=150px />
+<br>
+<img src="http://i.imgur.com/kK9dKcD.gif" width=300px />
+
+</details><br>
 <details><summary>What does changing scale Z do?</summary>
 
 Nothing (for 2D games).  When we are scaling, in order to not distort the art we only need to ensure X and Y scales match.  Z could be left at the default of 1, but I prefer to keep it in sync with X and Y as well as Unity's scale tool will do this by default.
@@ -1294,23 +1375,21 @@ Nothing (for 2D games).  When we are scaling, in order to not distort the art we
 
 
 
+## Add a script to spawn balls
 
-## Add a C# script to spawn balls
-
-Have balls spawn periodically at the evil cloud and fall down the platforms.
+Add a script to the evil cloud which periodically spawns balls.
 
 <details><summary>How</summary>
 
- - Create a C# script Assets/Code/Components/Life/Spawner.
- - Add the Spawner component to the evil cloud GameObject.
- - Edit the Spawner script, paste the following code.
+ - Create a script **Spawner** under Assets/Code/Compenents/Life and paste the following:
 
- ```csharp
+```csharp
 using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// Instantiates a prefab at this object's location periodically.
+/// Instantiates a prefab at this object's location 
+/// periodically.
 /// </summary>
 public class Spawner : MonoBehaviour
 {
@@ -1339,13 +1418,13 @@ public class Spawner : MonoBehaviour
   float maxTimeBetweenSpawns = 10;
 
   /// <summary>
-  /// Unity event called when the GameObject is first spawned
-  /// in the world.
+  /// Unity event called when the GameObject is first 
+  /// spawned in the world.
   /// </summary>
   protected void Start()
   {
-    // Starts a Coroutine which executes a spawn script over
-    // a period of time.
+    // Starts a Coroutine which executes a spawn script 
+    // over a period of time.
     StartCoroutine(SpawnEnemies());
   }
 
@@ -1353,18 +1432,14 @@ public class Spawner : MonoBehaviour
   /// The spawn script.  Called initially on Start, then 
   /// executed as a Unity Coroutine over time.
   /// </summary>
-  /// <returns>Used by Coroutines to manage time.</returns>
   IEnumerator SpawnEnemies()
   {
     // Pre conditions
-    Debug.Assert(thingToSpawn != null,
-      "thingToSpawn has not been set");
-    Debug.Assert(initialWaitTime >= 0,
-      "initialWaitTime should not be negative");
-    Debug.Assert(minTimeBetweenSpawns >= 0,
-      "minTimeBetweenSpawns should not be negative");
-    Debug.Assert(maxTimeBetweenSpawns >= minTimeBetweenSpawns,
-      "maxTimeBetweenSpawns should be >= minTimeBetweenSpawns");
+    Debug.Assert(thingToSpawn != null);
+    Debug.Assert(initialWaitTime >= 0);
+    Debug.Assert(minTimeBetweenSpawns >= 0);
+    Debug.Assert(
+      maxTimeBetweenSpawns >= minTimeBetweenSpawns);
 
     // Wait before first spawn, 0 or more seconds
     yield return new WaitForSeconds(initialWaitTime);
@@ -1373,32 +1448,36 @@ public class Spawner : MonoBehaviour
     while(true)
     {
       // Spawn thingToSpawn at this GameObject's location
-      Instantiate(thingToSpawn, transform.position, Quaternion.identity);
+      Instantiate(
+        thingToSpawn, 
+        transform.position, 
+        Quaternion.identity);
 
-      // Sleep a random amount of time before the next spawn
-      float sleepTime = UnityEngine.Random.Range(minTimeBetweenSpawns, maxTimeBetweenSpawns);
+      // Sleep a random amount of time 
+      float sleepTime = UnityEngine.Random.Range(
+        minTimeBetweenSpawns, 
+        maxTimeBetweenSpawns);
       yield return new WaitForSeconds(sleepTime);
     }
   }
 }
- ```
+```
 
- - After the code has been saved, create a prefab for "Spike Ball":
-    - Create a folder Assets/Prefabs.
-    - Select the Spike Ball GameObject and click/drag it to the folder.
+ - Add 'Spawner' to the evil cloud.
+ - Confirm the values for the component match the defaults in code.
+ - Click/drag the Spike Ball prefab onto the 'Thing To Spawn' field.
+ 
+<img src="http://i.imgur.com/scu8YUR.gif" width=300px />
 
-<img src="http://i.imgur.com/w4leZGk.gif" width=250px />
-
- - Delete the "Spike Ball" GameObject from the 'Hierarchy', removing it from the scene but leaving our prefab in-tact.
- - Select the "Evil Cloud" GameObject and then click/drag the prefab you just created onto the "Thing To Spawn" field in the 'Inspector'.
-
-<img src="http://i.imgur.com/scu8YUR.gif" width=250px />
+</details><br>
+<details><summary>TODO</summary>
 
 Click play to see the spawner in action:
 
-<img src="http://i.imgur.com/ZJSulAj.gif" width=200px /> 
+<img src="http://i.imgur.com/ZJSulAj.gif" width=300px /> 
 
-</details>
+<hr></details>
+
 <details><summary>What's a prefab?</summary>
 
 A prefab is a file representing a configured GameObject.  This includes any child GameObjects as well as Components and their settings from the Inspector. 
@@ -1528,29 +1607,51 @@ TODO pre conditions and post conditions
 
 </details>
 
-## Update the collision matrix
+## Assign an enemy layer
 
-Add an Enemy layer for the balls and change the collision matrix to allow them to travel through other enemies in the world.
+Create a layer for Enemy and assign it to the Spike Ball prefab.
 
 <details><summary>How</summary>
 
- - Edit -> Project Settings -> Tags and Layers.
+ - Menu Edit -> Project Settings -> Tags and Layers.
  - Under 'Layers' add "Enemy" to one of the empty 'User Layer' slots.
 
-<img src="http://i.imgur.com/spZG3NZ.png" width=100px />
+<img src="http://i.imgur.com/spZG3NZ.png" width=300px />
 
- - Select the "Spike Ball" prefab under the 'Project' window Assets/Prefabs.
- - In the inspector, click the dropdown next to 'Layer' in the top right and select "Enemy".
+ - Select the 'Spike Ball' prefab under Assets/Prefabs.
+ - In the Inspector, click the dropdown next to 'Layer' in the top right and select 'Enemy'.
+   - Select 'No, this object only' when prompted.
 
- <img src="http://i.imgur.com/KPvq22a.png" width=150px />
+<img src="http://i.imgur.com/KPvq22a.png" width=300px />
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+why this object only - best practice as sometimes children are different.
+
+<hr></details>
+
+
+## Disable collisions between enemies
+
+Update the collision matrix, disabling enemy to enemy collisions.
+
+<details><summary>How</summary>
 
  - Edit -> Project Settings -> Physics 2D.
- - Under the 'Layer Collision Matrix', uncheck the box where "Enemy" meets "Enemy".
+ - Under the 'Layer Collision Matrix', uncheck the box where 'Enemy' meets 'Enemy'.
    - If you hover to confirm, a tooltip should appear saying 'Enemy / Enemy'.
 
- <img src="http://i.imgur.com/JkjXpZN.png" width=150px />
+ <img src="http://i.imgur.com/JkjXpZN.png" width=300px />
 
-</details>
+</details><br>
+<details><summary>TODO</summary>
+
+TODO
+ to allow enemies to travel through other enemies in the world.
+
+<hr></details>
 <details><summary>What's a Layer and how's it different from a Tag?</summary>
 
 A layer is a number representing a category or type of object in your game which may be compared to a LayerMask.  The Unity editor allows you to associate a string with this value as well for convienence.  Layers can be used to effeciently include or exclude objects based off of their type.  For this reason, the physics matrix in Unity works with layers.
@@ -1641,6 +1742,8 @@ TODO  - Why do some scripts have a check to disable and others do not.
 TODO - Debugging tip / talk about the defaults in code vs inspector.  Check your values.  Maybe we should be more explicit in the steps.
 
 TODO - FAQ.  Scripts don't work if the class is named different from the file.  Not normally true for C#. And no error presented.  It just won't be selectable as a component.
+
+TODO testing - increase the time scale while in play mode.
 
 # Next chapter
 

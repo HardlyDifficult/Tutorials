@@ -1,3 +1,10 @@
+ Add a 'Rigidbody2D' component to the spike ball.
+
+
+Image sizes: 150, 300, 500, 700.  Prefer: 300 
+
+'Script'
+
 How:
 <details><summary>How</summary>
 
