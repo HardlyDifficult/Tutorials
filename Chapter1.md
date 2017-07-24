@@ -6,20 +6,12 @@ Target audience: we try to assume little without boring those with experience.  
 
 This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
 
-TODO
- - Image size is all over the place
- - say links are included when relevant er something.
- - Target character count on scripts is 65
- - Table of contents with anchors
- - Maybe copy paste for a fully expanded view all in one page (but note gifs make it not print friendly)
- - Lots of FAQs along the way, please consider these questions as you go, we try not to be redundant later on.
- - Stop saying cached for perf.
- - Post questions/comments under the youtube video (since git doesn't do discussions well). Maybe survey at end?
- - Brief bio / why i did this
- - Filenames in bold
- - Maybe always have a 'Why' or 'What' question after how.
- 
-ea22a
+
+<br><br>
+
+**FYI**: The sequence and 'How' sections should be solid.  Questions as well as general 'what did that do' type content will be revisited.  
+
+<br><br>
 
 # 1) A game with enemies spawning
 
@@ -1084,6 +1076,13 @@ For the game, we  want the ball spawning in the top left.  But that's a flat sur
 TODO
 
 TODO faq on GetComponent, GetChildComponents...
+
+
+TODO - Debugging tip / talk about the defaults in code vs inspector.  Check your values.  Maybe we should be more explicit in the steps.
+
+TODO - FAQ.  Scripts don't work if the class is named different from the file.  Not normally true for C#. And no error presented.  It just won't be selectable as a component.
+
+
 <hr></details>
 
 
@@ -1719,7 +1718,10 @@ Every possible combination of layers is exposed as a checkbox in settings, inclu
 
 That's it for chapter 1!  Your game should now look a lot like the gif at the top.  You can compare to our  [demo build](https://hardlydifficult.com/PlatformerTutorialPart1/index.html) and review the [Unity Project / Source Code for Chapter 1](https://github.com/hardlydifficult/Unity2DPlatformerTutorial/tree/Part1). 
 
-Additionally to review, you may want to:
+
+<details><summary>To review...</summary>
+
+To review, you may want to:
  - Try adjusting the variables in Spawner to get a reasonable flow of enemies.
  - Try adjusting the initial velocity values for the spike ball.
    - Consider adding randomness to these values as well.
@@ -1727,23 +1729,14 @@ Additionally to review, you may want to:
  - Try adjusting the size of colliders, ensure that objects appear to be touching the ground reasonably.
  - Cut a test build and try it outside of the Unity editor environment.
 
+<hr></details><br>
+<details><summary>Testing / Debugging tips</summary>
+
 TODO add something about changing values in run mode vs save.
 
-
-
-
-== 
-
-
-
-TODO paypal, patreon, and twitch links.
-
-TODO  - Why do some scripts have a check to disable and others do not.
-TODO - Debugging tip / talk about the defaults in code vs inspector.  Check your values.  Maybe we should be more explicit in the steps.
-
-TODO - FAQ.  Scripts don't work if the class is named different from the file.  Not normally true for C#. And no error presented.  It just won't be selectable as a component.
-
 TODO testing - increase the time scale while in play mode.
+
+<hr></details>
 
 # Next chapter
 

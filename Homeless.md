@@ -1,4 +1,5 @@
  Add a 'Rigidbody2D' component to the spike ball.
+ - Create a script **Spawner** under Assets/Code/Compenents/Life and paste the following:
 
 
 Image sizes: 150, 300, 500, 700.  Prefer: 300 
@@ -11,8 +12,6 @@ How:
 TODO
 
 <hr></details><br>
-
-Questions:
 <details><summary>TODO</summary>
 
 TODO
@@ -25,9 +24,23 @@ TODO
 
 
 
+TODO  - Why do some scripts have a check to disable and others do not. (add to first instance)
 
 
+TODO paypal, patreon, and twitch links.
 
+TODO
+ - Image size is all over the place
+ - say links are included when relevant er something.
+ - Target character count on scripts is 65
+ - Table of contents with anchors
+ - Maybe copy paste for a fully expanded view all in one page (but note gifs make it not print friendly)
+ - Lots of FAQs along the way, please consider these questions as you go, we try not to be redundant later on.
+ - Stop saying cached for perf.
+ - Post questions/comments under the youtube video (since git doesn't do discussions well). Maybe survey at end?
+ - Brief bio / why i did this
+ - Filenames in bold
+ - Maybe always have a 'Why' or 'What' question after how.
 
 
 
