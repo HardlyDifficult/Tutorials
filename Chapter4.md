@@ -178,6 +178,9 @@ Now we resume walking as desired:
 
 </details>
 
+## Make a parent gameObject for the character
+
+TODO
 
 ## Hammer
 
@@ -213,22 +216,27 @@ Stop swinging by default.
  - Right click and 'Set as Layer Default State'.
 
 
+
+
 ## Weapon holder
 
 Create and add to character.
 
+## Flash death effect 
+
+script, add to hammer (auto adds the DeathEffectManager).
+
+Disable this.
 
 
 ## Hammer controller
 
-KillOnContactWith for Player.
-
 Create and add to Hammer. Config position.
-aoeu
 
 
 ## Hammer killing
 
+aoeu?
 
 ## Wire up animation controller
 

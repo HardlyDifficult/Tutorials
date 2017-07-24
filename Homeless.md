@@ -1,3 +1,48 @@
+How:
+<details><summary>How</summary>
+
+TODO
+
+<hr></details><br>
+
+Questions:
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Familiarize yourself with the Unity Editor a bit.  This [guide from Unity](https://docs.unity3d.com/Manual/LearningtheInterface.html) is a nice, quick overview.
+
+
+
+
+
+
+
 More about special folders:
 
 Everything under a folder named "Editor" is an editor script, including files in any subdirectories.  e.g. this script could be saved as Assets/Editor/AutoSave.cs or Assets/Code/Editor/Utils/AutoSave.cs  There are two special folder names that work anywhere in your folder hierarchy like this:

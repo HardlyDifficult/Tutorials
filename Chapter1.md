@@ -2,8 +2,6 @@
 
 TODO intro.
 
-[Demo of the game](https://hardlydifficult.com/Kong/index.html) we are creating. TODO update to final build.
-
 Target audience: we try to assume little without boring those with experience.  We expect you know some coding and can follow along with C# examples.  New concepts are introduced along the way to help beginners and intermediate developers.  No experience with Unity is required.
 
 This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
@@ -19,8 +17,9 @@ TODO
  - Post questions/comments under the youtube video (since git doesn't do discussions well). Maybe survey at end?
  - Brief bio / why i did this
  - Filenames in bold
+ - Maybe always have a 'Why' or 'What' question after how.
  
-
+ea22a
 
 # 1) A game with enemies spawning
 
@@ -28,9 +27,10 @@ In chapter 1, we create a 2D game in Unity with spiked balls spawning at random 
 
 TODO tutorial video link
 
-<img src="http://i.imgur.com/31l9mA1.gif" width=50% />
+<img src="http://i.imgur.com/31l9mA1.gif" width=500 />
 
-TODO demo build
+[Demo of the game](https://hardlydifficult.com/Kong/index.html)
+
 
 ## Start a 2D project
 
@@ -38,19 +38,18 @@ Get Unity and start a 2D project.
 
 <details><summary>How</summary>
 
+ - Download Visual Studio Community edition, if you don't already have it.
  - [Download Unity](https://unity3d.com/), the free Personal edition has everything you need. 
- - Select "2D" when creating a new project.
+   - You may be prompted to register / sign in.
+ - Select '2D' when creating a new project.
  - Enter a name/directory - the other options can be left at defaults.
 
-TODO account required
+<img src="http://i.imgur.com/q5NVa7p.png" width=300 />
 
-<img src="https://i.imgur.com/T2iZrmK.png" width=50% />
-
-Familiarize yourself with the Unity Editor a bit.  This [guide from Unity](https://docs.unity3d.com/Manual/LearningtheInterface.html) is a nice, quick overview.
-
-</details>
+<hr></details>
 
 
+<br>
 
 
 <details><summary>Whats the difference between 2D and 3D?</summary>
@@ -62,46 +61,39 @@ Presenting the 2D vs 3D option when you create a new project suggests this is a 
 <hr></details>
 
 
-## Save scene
 
-When you created the project, a default scene was created as well.  Save it as "Level1" as that's where this tutorial begins.
-
-<details><summary>How</summary>
-
- - File -> Save Scenes.
- - Create a "Scenes" directory, call it "Level1".
-
-<hr></details>
-
-<details><summary>What's a scene?</summary>
-
-The Scene represents a collection of GameObjects and components (defined below) configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial. 
-
-<hr></details>
-
-
-TODO change background color
 
 ## Import assets
 
 Create directories and import assets.  TODO link
 
-<details><summary>How</summary>
-
-TODO
-
-
-## Import Platform art
-
-Add a sprite sheet for the platform to the Assets directory.  We are using [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) 'spritesheets/spritesheet_ground.png'.
+We are using:
+ - [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) **spritesheets/spritesheet_ground.png**.
 
 <details><summary>How</summary>
 
-
- - Right click in the 'Project' Assets directory -> Create Folder named "Art"  (optional).
+ - Right click in the 'Project' window's Assets directory -> Create Folder named "Art".
    - You can rename folders by selecting and pressing F2.
- - Drag/drop the sprite sheet (or an entire folder of art) into the folder you just created.
+ - Drag/drop all the assets (images and sounds) into the folder you just created.
    - If you have a zip file, you may need to unzip to a temp directory before drag/drop will work.
+
+    <img src="http://i.imgur.com/7JleUl7.png" width=300px />
+
+ - Create additional directories which we will be using to organize our game:
+   - Assets/**Art**
+   - Assets/**Code**
+     - Assets/Code/**Components**
+     - Assets/Code/**Editor**
+     - Assets/Code/**Utils**
+   - Assets/**Prefabs**
+
+TODO create directory struture
+
+<hr></details>
+<br>
+<details><summary>Can I name folders differently?</summary>
+
+aoeu
 
 <hr></details>
 <details><summary>What's a sprite / sprite sheet?</summary>
@@ -122,28 +114,42 @@ Of course, this tutorial only assumes that you are using sprites.  You can build
 
 ## Slice sprite sheets
 
-Slice the sprite sheet in order to access each individual sprite within.
+Slice each of the sprite sheets in order to access the individual sprites within.
+
 
 <details><summary>How</summary>
 
-- Select the sprite sheet in the 'Project' tab (Assets/Art/spritesheet_ground).
+- Select a sprite sheet in the 'Project' (such as Assets/Art/**spritesheet_ground**).
 - In the 'Inspector', set 'Sprite Mode' to 'Multiple'.
+
+<img src="http://i.imgur.com/duYuVMy.png" width=300px />
+
 - Click 'Sprite Editor' and apply changes when prompted.
+- Click the 'Slice' menu item (see below for the type to use per sprite).
+  - If all the sprites in the sheet are the same size, use Grid By Cell Count and enter the number of sprites in the sheet horizontally (columns) and vertically (rows).
+  - If the sprites in the sheet are various sizes, use Automatic.
 
-<img src="http://i.imgur.com/duYuVMy.png" width=50% />
+<img src="http://i.imgur.com/3wLWBZG.png" width=300px />
 
-- Click the 'Slice' menu item
-  - Type: Grid By Cell Count
-  - Column & Row: 8 & 16
+<img src="http://i.imgur.com/d3XzhRU.png" width=300px />
 
-<img src="http://i.imgur.com/hA2cMfv.png" width=50% />
+- Click 'Slice' button.
+- Click 'Apply' and close the Sprite Editor.
+- Repeat for each sprite sheet.
 
-- Click 'Slice' button
-- Click 'Apply' and close the Sprite Editor 
+We are using:
+ - **spritesheet_ground**: Cell Count (8 x 16)
+ - **adventurer_tilesheet**: Cell Count (9 x 3)
+ - **spritesheet_jumper**: Automatic
+ - **spritesheet_tiles**: Cell Count (8 x 16)
 
-TODO for each
+<hr></details><br>
 
-TODO we also have multi-sized sprites.
+<details><summary>Why not always use Automatic?</summary>
+
+TODO
+
+<img src="http://i.imgur.com/lKfaiMj.png" width=300px />
 
 <hr></details>
 <details><summary>What does slicing achieve?</summary>
@@ -162,16 +168,17 @@ After closing the 'Sprite Editor' and applying changes you can expand the sprite
 
 ## Sprite Filter Mode: Point
 
-Update the sprite sheet's import settings to use filter mode point, preventing some visual artifacts.
+Update each sprite's and sprite sheet's import settings to use filter mode point.
 
 <details><summary>How</summary>
 
- - Select the sprite sheet in the 'Project' tab (Assets/Art/spritesheet_ground).
- - In the 'Inspector', set 'Filter Mode' to 'Point (no filter)' and apply when prompted.
+ - Select all of the sprites and sprite sheets.
+   - Use Ctrl click or shift click as you would while selecting in Windows Explorer.
+ - In the 'Inspector', set 'Filter Mode' to 'Point (no filter)' and apply.
 
-<img src="http://i.imgur.com/B0nqf75.png" width=50% />
+<img src="http://i.imgur.com/B0nqf75.png" width=300px />
 
-<hr></details>
+<hr></details><br>
 <details><summary>Why use Point and not the default of Bilinear?</summary>
 
 Filter mode of Bilinear or Trilinear blurs the image a bit in attempt to make smooth lines.  Often for a 2D game, we want control down to the pixel and this effect is not desirerable.  Here's an example with the character sprite we will be using:
@@ -190,16 +197,18 @@ For sprite sheets, often each object is touching the one next to it.  Filter Mod
 
 ## Sprite Mesh Type: Full Rect
 
-Update the sprite sheet's import settings to use mesh type full rect since we will be using tiling.
+Update each sprite's and sprite sheet's import settings to use mesh type full rect.
 
 <details><summary>How</summary>
 
- - Select the sprite sheet.
- - In the 'Inspector', set 'Mesh Type: Full Rect'.
+ - Select all the sprite sheets.
+   - For some reason, Unity won't allow this option to be changed for both sprites and sprite sheets at the same time.
+ - In the Inspector, set 'Mesh Type: Full Rect'.
+ - Then select each sprite and do the same.
 
-<img src="http://i.imgur.com/Dhe3Nzt.png" width=50% />
+<img src="http://i.imgur.com/Dhe3Nzt.png" width=300px />
 
-<hr></details>
+<hr></details><br>
 
 <details><summary>Why use Full Rect and not the default of Tight?</summary>
 
@@ -213,21 +222,30 @@ TODO .  Plus performance.  Rect uses 2 trigs while tight creates a complex polyg
 
 
 
-## Disable Anti Aliasing
+## Disable Anti-Aliasing
 
-Disable Anti-Aliasing, preventing some visual artifacts.
+Update the project settings, disabling Anti-Aliasing for each quality level.
 
 <details><summary>How</summary>
 
- - Menu 'Edit' -> 'Project Settings' -> 'Quality'
- - In the 'Inspector' change 'Anti Aliasing' to 'Disabled'
- - Repeat this for each quality 'Level' supported
-   - Click on the row to modify (e.g. 'Very High')
-   - Update 'Anti Aliasing' if needed
+ - Menu 'Edit' -> 'Project Settings' -> 'Quality'.
+ - In the Inspector change 'Anti Aliasing' to 'Disabled'.
+
+<img src="http://i.imgur.com/auHPjbi.png" width=300px />
+
+ - Repeat this for each quality 'Level'.
+   - Click on the row to modify (e.g. 'Very High').
+   - Update Anti Aliasing if needed.
+
+<img src="http://i.imgur.com/KYym6V0.png" width=300px />
+
+ - Click 'Ultra' to resume testing with the best settings.
+
+<hr></details><br>
+
+<details><summary>Why do we need to change this setting multiple times?</summary>
 
 The highlighted Level is what you are testing with ATM.  It will default to Ultra.  The green checkboxes represent the default quality level for different build types.  In this example I'm testing with Ultra, using Ultra by default for PC builds, and High by default for WebGL builds.  To avoid artifacts, I disable Anti Aliasing in every level and then switch back to Ultra.
-
-<img src="http://i.imgur.com/omFI4DD.png" width=50% />
 
 <hr></details>
 <details><summary>What is Anti Aliasing and why disable it?</summary>
@@ -248,33 +266,39 @@ Anti-aliasing may lead to unexpected gaps or distortions when sprites are side b
 
 ## Set a 5:4 Aspect ratio
 
-Change the aspect ratio to 5:4 as we want to simplify and always show the same amount of the world on screen.
+Change the aspect ratio to 5:4 in the Game window and build settings.
 
 <details><summary>How</summary>
 
- - In the 'Game' tab, near the top, change 'Free Aspect' to '5:4'.
+ - In the 'Game' window, near the top, change 'Free Aspect' to '5:4'.
 
-<img src="http://i.imgur.com/MTnZtu4.png" width=50% />
+<img src="http://i.imgur.com/MTnZtu4.png" width=300px />
 
- - Switch back to the 'Scene' tab.  
- 
+ - Switch back to the 'Scene' window.  
+
+You'll also want to update the supported resolutions for the different platforms you may cut a build for:
+
+ - Menu File -> 'Build Settings'.
+ - Select the desired platform and click 'Player Settings'.
+
+<img src="http://i.imgur.com/R1B43yZ.png" width=300px />
+
+ - In the Inspector, set the supported resolution or aspect ratio (this will be different for different platform types), for example:
+
+<img src="http://i.imgur.com/to0M9sA.png" width=300px />
+
+<img src="http://i.imgur.com/NhCWDTp.png" width=300px />
+
+<hr></details><br>
+
+<details><summary>TODO</summary>
+
 The white box here represents the area that players will see:
 
-<img src="http://i.imgur.com/eIq2LD2.png" width=50% />
-
-You'll also want to update the supported resolutions for the different platforms you are building for:
-
- - File -> Build Settings
- - Select the desired platform and click 'Player Settings'.
- - In the 'Inspector' tab, set the supported resolution or aspect ratio (this will be different for different platform types).
-
-<img src="http://i.imgur.com/nWDCAwX.png" width=200px />
-
-<img src="http://i.imgur.com/zTHTwHt.png" width=200px />
-
-<img src="http://i.imgur.com/UHP5YVL.png" width=200px />
+<img src="http://i.imgur.com/eIq2LD2.png" width=300px />
 
 <hr></details>
+
 <details><summary>Why use a fixed aspect ratio?</summary>
 
 We are building a game with a fixed display.  The camera is not going to follow the character which will simplify the game and level design for this tutorial.  With a fixed aspect ratio we can design a scene without any camera movement and be sure everyone has the same experience.
@@ -288,16 +312,21 @@ Different resolutions will scale the display larger or smaller but everyone will
 
 ## Camera Size: 10
 
-Update the camera size to about 10 to zoom out a bit.
+Update the camera size to about 10.
 
 <details><summary>How</summary>
 
- - In the 'Hierarchy' select the 'Main Camera'
- - In the 'Inspector' change 'Size' to 10
+ - In the 'Hierarchy' window, select the 'Main Camera'.
+ - In the Inspector, change 'Size' to '10'.
 
-<img src="http://i.imgur.com/PmeoqG7.png" width=50% />
+<img src="http://i.imgur.com/PmeoqG7.png" width=300px />
 
-In the Game tab, the platform should look smaller now.  In the Scene, the white box representing the viewable area has grown.
+
+<hr></details><br>
+
+<details><summary>What does this do?</summary>
+
+In the Game window, the platform should look smaller now.  In the Scene, the white box representing the viewable area has grown.
 
 <hr></details>
 <details><summary>Why change 'Size' and not camera position?</summary>
@@ -308,17 +337,55 @@ For an Orthographic camera, the amout of the world visible is driven by a specia
 
 <hr></details>
 
+## Background color 
 
-## Auto save script 
-
-Unity may crash.  I recommend adding an editor script which automatically saves everytime you hit play.
+Change the background color to black.
 
 <details><summary>How</summary>
 
- - Right click in the 'Project' Assets folder -> Create -> Folder and name it "Code".
- - Make an "Editor" folder under Assets/Code.
- - Create -> C# Script and name it "AutoSave".
- - Paste in the source code below.
+ - In the 'Hierarchy' window, select the 'Main Camera'.
+ - In the Inspector, change 'Background' color and select black.
+
+<img src="http://i.imgur.com/QKGcl9o.png" width=300px />
+
+
+<hr></details><br>
+
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+## Save scene
+
+Save the current scene as "Level1".
+
+<details><summary>How</summary>
+
+ - File -> 'Save Scenes'.
+ - Save it as Assets/Scenes/**Level1**.
+
+<hr></details><br>
+<details><summary>What's a scene?</summary>
+
+The Scene represents a collection of GameObjects and components (defined below) configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial. 
+
+<hr></details>
+
+
+## Auto save script 
+
+Create an editor script which automatically saves everytime you hit play.
+
+<details><summary>How</summary>
+
+ - In the Project Assets/Code/Editor directory:
+   - Right click
+   - Select 'Create' -> 'C# Script'
+   - Name it "AutoSave"
+ - Double click to open the file in Visual Studio.
+ - Paste in the the following source code:
  
 ```csharp
 using UnityEditor;
@@ -359,6 +426,11 @@ public class AutoSave
   }
 }
 ```
+
+
+<hr></details><br>
+
+<details><summary>What happened and how do I know it worked?</summary>
 
 You can confirm the save is working by noting the * in Unity's title.  This * indicates unsaved changes and should now go away everytime you click play.
 
@@ -506,22 +578,20 @@ public class MyCustomComponent : MonoBehaviour
 
 
 
+## Add a platform to the scene
 
-
-
-
-## Add the platform's middle segment to the scene
-
-Add a sprite to the scene representing the middle segment of a platform.  We are using spritesheet_ground/spritesheet_ground_72.
-
-Note: there may be visual artifacts which we will address below.
+Add a sprite to the scene representing the middle segment of a platform.  
 
 <details><summary>How</summary>
 
- - Click the arrow on the sprite sheet in your Assets/Art directory (this displays each individual sliced image).
- - Click and drag the platform sprite you want to use into the 'Hierarchy' tab.  We are using spritesheet_ground_72. 
+ - Click the arrow on the sprite sheet in your Assets/Art directory (this displays each individual sliced image).  We are using **spritesheet_ground**.
+ - Click and drag the platform sprite you want to use into the 'Hierarchy' window.  We are using **spritesheet_ground_72**. 
  
-<img src="http://i.imgur.com/kZC4i6d.png" width=50% />
+<img src="http://i.imgur.com/kZC4i6d.png" width=300px />
+
+
+<hr></details><br>
+<details><summary>TODO</summary>
 
 This creates a GameObject with a SpriteRenderer component for that sprite.
 
@@ -530,7 +600,7 @@ This creates a GameObject with a SpriteRenderer component for that sprite.
 
 Everything you see and interact with in a game is driven by GameObjects.  Typically a GameObject represents a single logical object in the world (e.g. a character).  It may be composed of child GameObjects, each responsible for part of the display and/or behaviour. It may also hold various components.  
 
-A component is a set of logic (i.e. code) which may be added to a GameObject, or child GameObject, and is exposed in the 'Inspector' tab for the GameObject you have selected in the 'Hierarchy'.  A GameObject may have any number of components and those components may by configured to customize the behaviour for that specific object.  
+A component is a set of logic (i.e. code) which may be added to a GameObject, or child GameObject, and is exposed in the 'Inspector' window for the GameObject you have selected in the 'Hierarchy'.  A GameObject may have any number of components and those components may by configured to customize the behaviour for that specific object.  
 
 Unity has a number of components available out of the box, we will be using several Unity components in this tutorial and will be making many custom components as well.
 
@@ -550,37 +620,34 @@ SpriteRenderer is a Unity component which renders a sprite on screen.  Select th
 
 
 
-## Sprite Draw Mode: Tiled
+## Tile the platform's width
 
-Update the platform's SpriteRenderer to Draw Mode: Tiled and adjust the width so we can begin to design the level.
-
-Note: a warning may appear in the inspector and there may be visual artifacts which we will address below.
+Change the SpriteRenderer draw mode to tiled and increase the width.
 
 <details><summary>How</summary>
 
- - Select the "spritesheet_ground_72" GameObject in the 'Hierarchy'.
- - In the 'Inspector', under the SpriteRenderer component:
+ - In the Hierarchy, select the 'spritesheet_ground_72' GameObject.
+ - In the Inspector, under the SpriteRenderer component:
    - Change 'Draw Mode' to 'Tiled'
-   - An option for 'Width' appears, try increasing this to about 10 (but don't change height).
+   - An option for 'Width' appears, increase this to about 10 (but don't change height).
 
-<img src="http://i.imgur.com/MIgzjdO.png" width=50% />
+<img src="http://i.imgur.com/MIgzjdO.png" width=300px />
+
+
+<hr></details><br>
+
+<details><summary>TODO</summary>
 
 You should see the platform sprite get wider, repeating it's pattern.
 
 <hr></details>
-<details>
-<summary>Why not use Transform scale?</summary>
+<details><summary>Why not use Transform scale?</summary>
 
 Using transform scale to change the width cause the sprite displayed to stretch.  We are using tiling so the sprite repeats instead:
 
 <img src="http://i.imgur.com/ejbs3RK.png" width=50% />
 
 <hr></details>
-
-
-
-
-
 
 
 
@@ -591,18 +658,20 @@ Create a new parent GameObject for the platform sprite.
 
 <details><summary>How</summary>
 
- - Right click in 'Hierarchy' and 'Create Empty'.
+ - In the Hierarchy, right click and 'Create Empty'.
  - Rename to "Platform".
- - Ensure the Transform is at defaults (position 0, rotation 0, scale 1) for both the Platform and the sprite spritesheet_ground_72.
+ - Ensure the Transform is at defaults (position 0, rotation 0, scale 1) for both the "Platform" and the sprite's GameObject "spritesheet_ground_72".
 
-<img src="http://i.imgur.com/FAkZf1H.png" width=50% />
+<img src="http://i.imgur.com/FAkZf1H.png" width=300px />
 
- - Drag and drop the sprite onto the "Platform" GameObject (it should appear indented under "Platform" in the Hierarchy)
+ - Drag and drop the sprite (spritesheet_ground_72) onto the "Platform" GameObject.  
+ 
+It should appear indented under "Platform" in the Hierarchy:
 
- <img src="http://i.imgur.com/XOve0Ap.png" width=50% />
+<img src="http://i.imgur.com/XOve0Ap.png" width=300px />
 
-<hr></details>
-<details><summary>Why creat a parent GameObject?</summary>
+<hr></details><br>
+<details><summary>Why create a parent GameObject?</summary>
 
 Most of the platforms we will be creating require multiple different sprites to display correctly.  We tackle this in the next section.  Even for platforms which are represented with a single sprite, it's nice to be consistent across all of our platforms.
 
@@ -619,33 +688,40 @@ Typically all Transform updates during the game and in level design are done to 
 
 
 
-## Add edges
+## Add rounded corners
 
-Add sprites with rounded edges to the left and right of the platform.  We are using spritesheet_ground_79 and spritesheet_ground_65.
+Add sprites with rounded edges to the left and right of the platform.  
 
 <details><summary>How</summary>
 
- - Copy the "Platform" GameObject, paste and rename to "PlatformWithEdges".
- - You may want to move these to separate them on-screen (making it easier to configure each).  When you do, be sure the parent GameObject is selected and not the child sprite.
- - Drag the each of edge sprites from the 'Project' tab Assets/spritesheet_ground into the 'Hierarchy' under the "PlatformWithEdges" GameObject (they should appear indented).  We're using spritesheet_ground_79 and spritesheet_ground_65.
- - Confirm that each of the child sprites are still at 0 position, 0 rotation, and 1 scale.  The edge sprites may have an X position.
- - Select the rounded edge sprite (one of the child GameObjects) and use the move tool to position it away from the other sprites.
- - With the edge still selected, hold V to enable Vertex Snap mode.  A box appears for each anchor point (e.g. the corners of the sprite).  Hover over the top right corner and click and drag the box which appears.  It will snap perfectly with other anchor points in the world as show below.
+ - Click and drag each edge sprite onto the 'Platform' GameObject. We're using **spritesheet_ground_65** and **spritesheet_ground_79**.
+   - The edge sprite should be a child GameObject, like the middle sprite.  If it does not appear indented, drag drop in the Hierarchy window to rearrange.
+   - Confirm that each of the child sprites are still at 0 position, 0 rotation, and 1 scale.  The edge sprites may have an X position when we are done.
+ - Move the edge sprite away from the main platform:   
+   - Select the edge sprite (one of the child GameObjects).
+   - Use the move tool to position it away from the other sprites.
 
-<img src="http://i.imgur.com/GNMGb0w.gif" width=50% />
+     <img src="http://i.imgur.com/bYsJhjs.png" width=300px />
+
+   - Use Vertex Snap to position the edge next to the main platform:
+   - Hold V to enable Vertex Snap mode.
+   - A box appears for each anchor point (e.g. the corners of the sprite).  Hover over the top right corner.
+   - Click and drag the box.  The sprite will snap perfectly with other anchor points in the world.
+
+<img src="http://i.imgur.com/GNMGb0w.gif" width=300px />
 
  - Repeat for both edges, creating smooth corners on both sides of the platform.
  - Copy paste "PlatformWithEdges", rename to "PlatformWithRightEdge" and delete it's left edge.  Do the same to create a "PlatformWithLeftEdge".
 
-There should now be four GameObjects in the world, as shown below.
 
-<img src="http://i.imgur.com/j1cz0aZ.png" width=50% />
-
-<hr></details>
+<hr></details><br>
+<details><summary>TODO</summary>
 
 TODO faq move, scale tools
 
 TODO copy paste vs duplicate
+
+<hr></details>
 
 
 ## Create a connected platform
@@ -686,7 +762,7 @@ The width of the world players are going to see is fixed so you could argue that
 
 At this point we have covered everything you need to match the Level1 platform layout.  You can match the layout we used or come up with your own.
 
-Refer to the Game tab to confirm your layout as they player will see it.
+Refer to the Game window to confirm your layout as they player will see it.
 
 <details><summary>How</summary>
 
@@ -763,7 +839,7 @@ TODO spritesheet requires automatic slicing, different sizes per sprite.
 
  - Drag/drop the sprite into Assets/Art.
  - Set the 'Filter Mode: Point (no filter)'.
- - Drag the sprite into the 'Hierarchy' tab.  Rename to 'Spike Ball'.
+ - Drag the sprite into the 'Hierarchy' window.  Rename to 'Spike Ball'.
 
 </details>
 
@@ -891,7 +967,7 @@ For the game, we  want the ball spawning in the top left.  But that's a flat sur
 
 <details><summary>How</summary>
 
- - In the 'Project' tab Assets/Code directory, create a new directory "Components/Movement".
+ - In the 'Project' window Assets/Code directory, create a new directory "Components/Movement".
  - Right click -> Create -> C# script and name it "InitializeRigidbodyOnStart".
  - Select the spike ball, click 'Add Component' and select "InitializeRigidbodyOnStart".
  - Double click the script to open it in Visual Studio (or Monodevelop).
@@ -968,7 +1044,7 @@ There are various APIs for manipulating forces on a rigidbody.  This script will
 </details>
 <details><summary>What's SerializeField and why not use public instead?</summary>
 
-[SerializeField] exposes the object's field (data) in the 'Inspector' tab.  The default value seen in the C# script becomes the default in the Inspector - however when the script runs, the value is whatever you set for that object in the Inspector. This allows you to change values per-object or have different values for a component which is used on various different object types.  You can also change values in the Inspector at runtime, which can be helpful while debugging.
+[SerializeField] exposes the object's field (data) in the 'Inspector' window.  The default value seen in the C# script becomes the default in the Inspector - however when the script runs, the value is whatever you set for that object in the Inspector. This allows you to change values per-object or have different values for a component which is used on various different object types.  You can also change values in the Inspector at runtime, which can be helpful while debugging.
 
 Read [more about Serialization in Unity](https://docs.unity3d.com/Manual/script-Serialization.html).
 
@@ -1203,7 +1279,7 @@ TODO change to use jumper spritesheet
 
  - Drag/drop the sprite into Assets/Art.
  - Set the 'Filter Mode: Point (no filter)'.
- - Drag the sprite into the 'Hierarchy' tab. Rename to "Evil Cloud".
+ - Drag the sprite into the 'Hierarchy' window. Rename to "Evil Cloud".
  - Move the cloud to the top left of the screen.
  - Scale the cloud (evenly on all dimensions) to fit nicely.
 
@@ -1463,7 +1539,7 @@ Add an Enemy layer for the balls and change the collision matrix to allow them t
 
 <img src="http://i.imgur.com/spZG3NZ.png" width=100px />
 
- - Select the "Spike Ball" prefab under the 'Project' tab Assets/Prefabs.
+ - Select the "Spike Ball" prefab under the 'Project' window Assets/Prefabs.
  - In the inspector, click the dropdown next to 'Layer' in the top right and select "Enemy".
 
  <img src="http://i.imgur.com/KPvq22a.png" width=150px />
@@ -1564,7 +1640,7 @@ TODO paypal, patreon, and twitch links.
 TODO  - Why do some scripts have a check to disable and others do not.
 TODO - Debugging tip / talk about the defaults in code vs inspector.  Check your values.  Maybe we should be more explicit in the steps.
 
-
+TODO - FAQ.  Scripts don't work if the class is named different from the file.  Not normally true for C#. And no error presented.  It just won't be selectable as a component.
 
 # Next chapter
 
