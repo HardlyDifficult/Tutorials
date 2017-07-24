@@ -1,28 +1,27 @@
 # 2) A character that walks, jumps, and dies
 
-Add a character to the scene.  Have him walk and jump, creating a basic platformer. TODO
+In chapter 2, we add a character to the scene.  He can walk and jump, and dies when hitting an enemy, creating a basic platformer. 
 
-TODO gif, demo build
+This assumes you completed chapter 1, or you can download the project so far. (TODO link)
 
-## Change the character to Pivot Bottom
+TODO tutorial video link
 
-Add a sprite sheet for the character, slice it with a bottom pivot and set filter mode to point.  We are using [Kenney.nl's Platformer Characters](http://kenney.nl/assets/platformer-characters-1) PNG/Adventurer/adventurer_tilesheet.png.
+TODO gif
 
+demo build of level 2
+
+## Change the character's pivot point
+
+Change the character's sprite sheet to use a bottom pivot point.
 
 <details><summary>How</summary>
 
- - Drag/drop the sprite sheet into Assets/Art.
- - Set 'Sprite Mode: Multiple'.
- - Click 'Sprite Editor':
-   - Cell Count: 9 rows 3 columns
-   - Pivot: Bottom
- - Set the 'Filter Mode: Point (no filter)'.
+ - Select the **adventurer_tilesheet** sprite sheet.
+ - Click Sprite Editor and Slice again, changing the 'Pivot' to 'Bottom'.
 
-<img src="http://i.imgur.com/BuIsVWD.png" width=204 />
+<img src="http://i.imgur.com/BuIsVWD.png" width=300px />
 
-Note we won't be tiling the character sprite, so the default of Mesh Type: Tight is okay.
-
-</details>
+</details><br>
 <details><summary>What's Pivot do?</summary>
 
 A pivot point is the main anchor point for the sprite.  By default, pivot points are at the center of the sprite.  
@@ -39,20 +38,23 @@ The pivot point you select is going to impact how we create animations and imple
 
 
 
-## Add Character to the Scene with a Walk Animation
+## Create an animated character
 
-Create a Character GameObject with a walk animation. Change Order in Layer to 2.  We are using adventurer_tilesheet_9 and adventurer_tilesheet_10.
+Add a GameObject for the character with a walk animation. Change the order in layer to 2.  Add a Rigidbody2D to its parent.
 
 <details><summary>How</summary>
 
- - Hold Ctrl and select 'adventurer_tilesheet_9' and 'adventurer_tilesheet_10' sprites from the sprite sheet 'adventurer_tilesheet'.
- - Drag them into the Hierarchy.
- - When prompted, save the animation as Assets/Animations/CharacterWalk.anim.
- - In the Inspector, set the SpriteRenderer's 'Order in Layer' to 2.
- - Rename the GameObject to "Character" (optional).
+ - Hold Ctrl to select both **adventurer_tilesheet_9** and **10**.
+ - Drag them into the Hierarchy.  When prompted, save the animation as Assets/Animations/**CharacterWalk**.
 
-<img src="http://i.imgur.com/k7bSlCp.gif" width=50% />
+<img src="http://i.imgur.com/jPvFvnq.gif" width=300px />
  
+ - Set 'Order in Layer: 2'.
+ - Add it to an empty parent GameObject named "Character".
+ - Add a 'Rigidbody2D' component to the parent.
+
+<hr></details><br>
+<details><summary>TODO</summary>
 
 This simple process created:
  - The character's GameObject.
@@ -61,11 +63,14 @@ This simple process created:
  - An Animator Controller for the character with a default state for the Walk animation.
  - An Animator component on the GameObject configured for the Animator Controller just created.
 
+(then the rigidbody..)
+
 Click Play to test - your character should be walking (in place)! 
 
 <img src="http://i.imgur.com/2bkJdtS.gif" width=100px />
 
 <hr></details>
+
 <details><summary>What's the difference between Animation and Animator?</summary>
 
 An animat**ion** is a collection of sprites on a timeline, creating an animated effect similiar to a flip book.  Animations can also include transform changes, fire events for scripts to react to, etc to create any number of effects.
@@ -79,25 +84,27 @@ We will be diving into more detail about animations and animators later in the t
 <hr></details>
 
 
-## Add a rigidbody and CapsuleCollider2D
+## Add a collider to the character
 
-Add Rigidbody2D and CapsuleCollider2D components to the character to enable gravity.  Adjust the collider size as needed.
+Add a CapsuleCollider2D to the character.  Adjust the size as needed.
 
 <details><summary>How</summary>
 
- - Select the Character's GameObject.
- - In the Inspector, click Add Component and select 'Rigidbody2D'.
- - Click Add Component and select 'CapsuleCollider2D'.
- - Click Edit Collider in the Inspector, under the CapsuleCollider2D component you just added and adjust to fit the character.
+ - Add a 'CapsuleCollider2D' component to the character.
+ - Click 'Edit Collider' and adjust to fit the character.
    - Click and then hold Alt while adjusting the sides to pull both sides in evenly.
 
-<img src="http://i.imgur.com/KFwBZeo.gif" width=100px />
+<img src="http://i.imgur.com/KFwBZeo.gif" width=150px />
 
+</details><br>
+<details><summary>TODO</summary>
+
+TODO
 Hit play and the character should now land on a platform... but might fall over:
 
-<img src="http://i.imgur.com/T0fdwa1.gif" width=150px />
+<img src="http://i.imgur.com/T0fdwa1.gif" width=300px />
 
-</details>
+<hr></details>
 
 <details><summary>How do I know what size to make the collider?</summary>
 
@@ -117,23 +124,24 @@ Most of the time the collisions in the game would not have been any different if
 </details>
 
 
+## Freeze the character's rotation
 
-
-## Freeze rotation
-
-Freeze the character's rotation so he doesn't fall over.
-
-Note: The character will stand straight up even on slanted platforms.  This will be addressed later in the tutorial.
+Add a constraint to the character's rigidbody to freeze its rotation.
 
 <details><summary>How</summary>
 
- - Select the character.
- - In the Rigidbody2D component, expand 'Constraints'.
- - Check 'Freeze Rotation'.
+ - Select the character and expand the rigidbody's 'Constraints'.
+ - Check 'Freeze Rotation: Z'.
 
-<img src="http://i.imgur.com/uXxDSwD.png" width=128px />
+<img src="http://i.imgur.com/uXxDSwD.png" width=300px />
 
-</details>
+<hr></details><br>
+
+<details><summary>TODO</summary>
+
+Note: The character will stand straight up even on slanted platforms.  This will be addressed later in the tutorial.
+
+<hr></details>
 <details><summary>Does freezing rotation mean the rotation can never change?</summary>
 
 No.  Adding constraints to the rigidbody only limits the Unity physics engine. Freezing the rigidbody position or rotation means that even if you got hit by a bus, you would not move or rotate.  However you could have a custom component set the position or rotation at any time.
@@ -145,7 +153,9 @@ We use constraints to remove capabilities from Unity, allowing us more control w
 </details>
 
 
-## Move left/right
+## Add a script to move left & right
+
+Add a couple scripts to the character, one which enables moving left and right and another to map user input to movement.
 
 Create a WalkMovement script to control the rigidbody and a  PlayerController script to feed user input to the WalkMovement component.
 

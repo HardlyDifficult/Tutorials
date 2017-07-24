@@ -1,6 +1,9 @@
  Add a 'Rigidbody2D' component to the spike ball.
  - Create a script **Spawner** under Assets/Code/Compenents/Life and paste the following:
 
+Add it to an empty parent GameObject named "Character".
+
+
 
 Image sizes: 150, 300, 500, 700.  Prefer: 300 
 
@@ -28,7 +31,7 @@ TODO  - Why do some scripts have a check to disable and others do not. (add to f
 
 
 TODO paypal, patreon, and twitch links.
-
+Check for HRs
 TODO
  - Image size is all over the place
  - say links are included when relevant er something.

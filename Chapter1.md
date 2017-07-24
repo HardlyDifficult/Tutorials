@@ -1,6 +1,7 @@
 # 2D Platformer Tutorial for Unity 2017
 
-TODO intro.
+TODO intro. 
+[Demo of the game](https://hardlydifficult.com/Kong/index.html)
 
 Target audience: we try to assume little without boring those with experience.  We expect you know some coding and can follow along with C# examples.  New concepts are introduced along the way to help beginners and intermediate developers.  No experience with Unity is required.
 
@@ -21,8 +22,7 @@ TODO tutorial video link
 
 <img src="http://i.imgur.com/V5qEyiQ.gif" width=300 />
 
-[Demo of the game](https://hardlydifficult.com/Kong/index.html)
-
+TODO demo of level 1
 
 ## Start a 2D project
 
