@@ -713,7 +713,6 @@ Our level design calls for the bottom platform to rotate half way through.  Crea
  - Select the parent GameObject for the Platform on the right and use the rotate tool to modify the Transform's rotation Z value to about 4.
 
 <img src="http://i.imgur.com/3s1bSBb.png" width=150px>
-TODO new image without edges.
 
 The scene should look something like this:
 
