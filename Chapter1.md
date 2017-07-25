@@ -635,13 +635,13 @@ Create a new parent GameObject for the platform sprite.
 
  - In the Hierarchy, right click and 'Create Empty'.
  - Rename to "Platform".
- - Ensure the Transform is at defaults (position 0, rotation 0, scale 1) for both the "Platform" and the sprite's GameObject "spritesheet_ground_72".
+ - Ensure the Transform is at defaults (position 0, rotation 0, scale 1) for both the 'Platform' and the sprite's GameObject 'spritesheet_ground_72'.
 
 <img src="http://i.imgur.com/FAkZf1H.png" width=300px />
 
- - Drag and drop the sprite (spritesheet_ground_72) onto the "Platform" GameObject.  
+ - Drag and drop the sprite (spritesheet_ground_72) onto the Platform GameObject.  
  
-It should appear indented under "Platform" in the Hierarchy:
+It should appear indented under Platform in the Hierarchy:
 
 <img src="http://i.imgur.com/XOve0Ap.png" width=300px />
 
