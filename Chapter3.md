@@ -1,5 +1,14 @@
 # 3) Advanced scripting
 
+## Fade the fly guy in
+
+Disable WanderWalkMovement component
+FadeIn script
+Configure to enable the WanderWalkMovement
+
+## Fade in the character
+
+
 
 ## Rotate the character when he walks the other way
 
@@ -1606,11 +1615,6 @@ For position, spawn happens at the parent GameObject's location.  Try to positio
 
 </details>
 
-## Fade the fly guy in
-
-Disable WanderWalkMovement component
-FadeIn script
-Configure to enable the WanderWalkMovement
 
 ## Test
 

@@ -1151,6 +1151,11 @@ TODO FaQ why not animation?  Could, more on that next chapter.  This is yet anot
 
 
 
+
+TODO move Fly guy and walk controller here.
+
+
+
 ## 2.19) Test!
 
 Chapter 2, complete!  Your game should now look a lot like the gif at the top.  You can compare to our  [demo build](https://hardlydifficult.com/PlatformerTutorialPart2/index.html) and review the [Unity Project / Source Code for Chapter 2](https://github.com/hardlydifficult/Unity2DPlatformerTutorial/tree/Part2). TODO links
