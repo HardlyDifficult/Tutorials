@@ -3,7 +3,7 @@
 TODO intro. 
 [Demo of the game](https://hardlydifficult.com/Kong/index.html)
 
-Target audience: we try to assume little without boring those with experience.  You don't need to know how to code and it's okay if this is your first time with Unity.  You can follow step-by-step and copy/paste scripts, but we aim to teach the process along the way as well.  New concepts are introduced as they come p to help beginners and intermediate developers understand.  
+Target audience: we try to assume little without boring those with experience.  You don't need to know how to code and it's okay if this is your first time with Unity.  You can follow step-by-step and copy/paste scripts, but we aim to teach the process along the way as well.  New concepts are introduced as they come to help beginners and intermediate developers understand.  
 
 This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
 
