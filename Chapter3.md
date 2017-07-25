@@ -1,5 +1,6 @@
 # 3) Advanced scripting
 
+
 ## Rotate the character when he walks the other way
 
 Flip the character's sprite when he switches between walking left and walking right.
@@ -294,6 +295,18 @@ public class GameController : MonoBehaviour
 ```
 
 </details>
+
+## Death effect to decrement lives
+
+TODO
+
+## Respawn on death
+
+TODO
+end of level / respawn and scene changes
+
+- Lives
+- other characters suicide
 
 ## Restrict movement to stay on screen
 
@@ -927,6 +940,10 @@ public class RotateToAlignWithFloor : MonoBehaviour
 </details>
 
 TODO what is lerp (and slerp?)
+
+## Add points for jumping over enemies
+
+TODO
 
 ## Add Ladder sprites to the world
 
