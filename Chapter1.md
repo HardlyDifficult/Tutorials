@@ -707,15 +707,13 @@ Our level design calls for the bottom platform to rotate half way through.  Crea
    - Select and copy / paste or right click and 'Duplicate'.
  - Move their parent GameObjects so that the sprites appear near the bottom of the screen, side by side. 
  - Raise the right Platform a little above the left.
- - Delete the rounded edges which would overlap:
-   - The right edge of the left platform.
-   - The left edge of the right platform.
+ - Delete the rounded edges from both Platforms.
  - Increase the 'Width' of middle sprite of each platform to about 15 so that the platforms combined cover more than the width of the screen.
  - Use Vertex Snap (by holding V) to reposition the edges.
  - Select the parent GameObject for the Platform on the right and use the rotate tool to modify the Transform's rotation Z value to about 4.
 
 <img src="http://i.imgur.com/3s1bSBb.png" width=150px>
-
+TODO new image without edges.
 
 The scene should look something like this:
 
@@ -1545,9 +1543,8 @@ Update the collision matrix, disabling enemy to enemy collisions.
 
  - Edit -> Project Settings -> Physics 2D.
  - Under the 'Layer Collision Matrix', uncheck the box where 'Enemy' meets 'Enemy'.
-   - If you hover to confirm, a tooltip should appear saying 'Enemy / Enemy'.
 
- <img src="http://i.imgur.com/JkjXpZN.png" width=300px />
+<img src="http://i.imgur.com/JkjXpZN.png" width=300px />
 
 </details><br>
 <details><summary>TODO</summary>
