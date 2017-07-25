@@ -783,7 +783,7 @@ How to zoom and navigate the scene
 
 ## Add colliders to platforms
 
-Add a BoxCollider2D component to each of the parent Platform GameObjects in the scene.  Add a .1 edge radius and edit colliders to match the sprites.
+Add a BoxCollider2D to each of the parent Platform GameObjects in the scene.  Add a .1 edge radius and edit colliders to match the sprites.
 
 <details><summary>How</summary>
 
@@ -878,7 +878,7 @@ Order in Layer may be any int value, positive or negative. Here's an example sho
 
 ## Add a rigidbody to the ball
 
-Add a Rigidbody2D component to the spike ball.
+Add a Rigidbody2D to the spike ball.
 
 <details><summary>How</summary>
 
@@ -907,7 +907,7 @@ Physics refers to the logic in a game engine which moves objects based on forces
 
 ## Add a collider to the ball
 
-Add a CircleCollider2D component to the spike ball.  Adjust the radius as needed.
+Add a CircleCollider2D to the spike ball.  Adjust the radius as needed.
 
 <details><summary>How</summary>
 
