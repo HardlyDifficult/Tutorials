@@ -3,6 +3,61 @@
 TODO intro
 
 
+## Hammer
+
+ - Change the sprite's pivot to Bottom
+ - Add to the world
+ - Scale, position, create a few
+ - Add a BoxCollider2D and resize
+ - Change to Trigger
+ - Add FadeInThenEnableComponents with TimeTillEnabled set to 3 and no components to enable.
+
+
+## Hammer animation 
+
+ - Open Animation tab and click create, save as Assets/Animations/HammerSwing
+ - Click record
+ - Modify the rotation, then set it back to 0, creating a keyframe for the default rotation.
+ - Double click under 1:00 to create another keyframe.
+ - Switch the current time position (the white line) to 0:30.
+ - Change rotation to (0, 0, -90).
+ - Click record to stop recording.
+ - Click play to preview the hammer swinging, adjust the middle keyframe's position until the hammer has a nice swing, about 0:10.
+
+ TODO gif of this change
+
+Hit play and the hammer is swinging in the air.
+
+## Hammer animaition controller
+
+Stop swinging by default.
+
+ - Double click the animation.
+ - Create new Empty State, name it "Idle".
+ - Right click and 'Set as Layer Default State'.
+
+
+
+
+## Weapon holder
+
+Create and add to character.
+
+## Flash death effect 
+
+script, add to hammer (auto adds the DeathEffectManager).
+
+Disable this.
+
+
+## Hammer controller
+
+Create and add to Hammer. Config position.
+
+
+## Hammer killing
+
+aoeu?
 
 ## Create an idle animation
 
@@ -178,65 +233,7 @@ Now we resume walking as desired:
 
 </details>
 
-## Make a parent gameObject for the character
 
-TODO
-
-## Hammer
-
- - Change the sprite's pivot to Bottom
- - Add to the world
- - Scale, position, create a few
- - Add a BoxCollider2D and resize
- - Change to Trigger
- - Add FadeInThenEnableComponents with TimeTillEnabled set to 3 and no components to enable.
-
-
-## Hammer animation 
-
- - Open Animation tab and click create, save as Assets/Animations/HammerSwing
- - Click record
- - Modify the rotation, then set it back to 0, creating a keyframe for the default rotation.
- - Double click under 1:00 to create another keyframe.
- - Switch the current time position (the white line) to 0:30.
- - Change rotation to (0, 0, -90).
- - Click record to stop recording.
- - Click play to preview the hammer swinging, adjust the middle keyframe's position until the hammer has a nice swing, about 0:10.
-
- TODO gif of this change
-
-Hit play and the hammer is swinging in the air.
-
-## Hammer animaition controller
-
-Stop swinging by default.
-
- - Double click the animation.
- - Create new Empty State, name it "Idle".
- - Right click and 'Set as Layer Default State'.
-
-
-
-
-## Weapon holder
-
-Create and add to character.
-
-## Flash death effect 
-
-script, add to hammer (auto adds the DeathEffectManager).
-
-Disable this.
-
-
-## Hammer controller
-
-Create and add to Hammer. Config position.
-
-
-## Hammer killing
-
-aoeu?
 
 ## Wire up animation controller
 
