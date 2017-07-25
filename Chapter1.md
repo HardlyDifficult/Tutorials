@@ -669,7 +669,7 @@ Add sprites with rounded edges to the left and right of the platform.
 
 <details><summary>How</summary>
 
- - Click and drag an edge sprite onto the 'Platform' GameObject. We're using **spritesheet_ground_65** and **spritesheet_ground_79**.
+ - Click and drag one of the edge sprites onto the 'Platform' GameObject. We're using **spritesheet_ground_65** and **spritesheet_ground_79**.
    - The edge sprite should be a child GameObject, like the middle sprite.  If it does not appear indented, drag drop in the Hierarchy window to rearrange.
    - Confirm that each of the child sprites are still at 0 position, 0 rotation, and 1 scale.  The edge sprites may have an X position when we are done.
  - Move the edge sprite away from the main platform:   
