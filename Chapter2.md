@@ -862,7 +862,7 @@ Create an explosion particle system and save it as a prefab.
 <img src="http://i.imgur.com/xkv8CJd.png" width=300px />
 
  - Back at the top of the Particle System component, set:
-   - Duration: 0.5
+   - Duration: 0.5 -- TODO duration does not matter.  Update image too!
    - Looping: Off
    - Start Lifetime: 0.5
    - Start Size: 30
