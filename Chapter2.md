@@ -1152,7 +1152,77 @@ TODO FaQ why not animation?  Could, more on that next chapter.  This is yet anot
 
 
 
-TODO move Fly guy and walk controller here.
+## Fly guy (TODO)
+
+Door spawner
+ - Prevent walking into walls?
+
+<details><summary>How</summary>
+
+ - Select the sprites for the walk animation, we are using 30, 84, and 90.
+ - Drag into the Hierarchy to create the GameObject and animation.  Save as Assets/Animations/FlyWalk.
+ - Rename to "FlyGuy"
+ - Set the Layer for FlyGuy to 'Enemy'.
+ - Set Order in Layer to 1.
+ - Add Rigidbody2D 
+ - Freeze the Z rotation.
+ - Add a CircleCollider2D.
+ - Size the collider.
+ - Create a Layer for "Feet".
+ - Set the Layer for the FlyGuy's Feet to 'Feet'.
+ - Size and position the collider 
+ - Add FloorDetector, WalkMovement, KeepWalkMovementOnScreen, LadderMovement, RotateFacingDirection.
+ - Add KillOnContactWith and set the layermask to Player.
+ - Update the matrix to disable Feet / Player, Feet / Enemy, and Feet / Feet collisions.
+</details>
+
+## Flying feet
+
+Add feet so that the body of this entity is above the ground.
+
+<details><summary>How</summary>
+
+ - Add an empty GameObject as a child under the FlyGuy.  Name it "aoeu".
+   - Confirm it has a default transform.
+ - Add a CapsuleCollider2D to the Feet.
+
+
+</details>
+
+## Make the fly guy walk
+
+Add a
+
+<details><summary>How</summary>
+
+
+aoeu
+
+```csharp
+
+```
+
+</details>
+
+
+## Add the spawner
+
+Add and configure a spawner for the FlyGuy.
+
+<details><summary>How</summary>
+
+ - Add the sprite(s) to the scene.
+ - Create a prefab for FlyGuy.
+ - Add the Spawner component and set the Thing to Spawn to the fly guy prefab.
+ - Door Order in Layer -1
+ 
+aoeu
+
+TODO - scale the parent gameObject.
+For position, spawn happens at the parent GameObject's location.  Try to position that near the middle of the visuals for the door.
+
+</details>
+
 
 
 
