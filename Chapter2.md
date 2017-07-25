@@ -504,14 +504,14 @@ public class JumpMovement : MonoBehaviour
 ```csharp
   [SerializeField]
   AudioClip jumpSound;
-
-  [SerializeField]
-  float jumpSpeed = 7f;
 ```
 
 <details><summary>Existing code</summary>
 
 ```csharp
+  [SerializeField]
+  float jumpSpeed = 7f;
+
   Rigidbody2D myBody;
 ```
 
