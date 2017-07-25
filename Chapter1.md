@@ -24,7 +24,7 @@ TODO tutorial video link
 
 TODO demo of level 1
 
-## Start a 2D project
+## 1.1) Start a 2D project
 
 Get Unity and start a 2D project. 
 
@@ -55,7 +55,7 @@ Presenting the 2D vs 3D option when you create a new project suggests this is a 
 
 
 
-## Import assets
+## 1.2) Import assets
 
 Create directories and import assets.  TODO link
 
@@ -104,7 +104,7 @@ Of course, this tutorial only assumes that you are using sprites.  You can build
 </details>
 
 
-## Slice sprite sheets
+## 1.3) Slice sprite sheets
 
 Slice each of the sprite sheets in order to access the individual sprites within.
 
@@ -158,7 +158,7 @@ After closing the 'Sprite Editor' and applying changes you can expand the sprite
 
 <hr></details>
 
-## Set the filter mode
+## 1.4) Set the filter mode
 
 Update each sprite's and sprite sheet's import settings to use filter mode point.
 
@@ -187,7 +187,7 @@ For sprite sheets, often each object is touching the one next to it.  Filter Mod
 
 
 
-## Set the mesh type
+## 1.5) Set the mesh type
 
 Update each sprite's and sprite sheet's import settings to use mesh type full rect.
 
@@ -214,7 +214,7 @@ TODO .  Plus performance.  Rect uses 2 trigs while tight creates a complex polyg
 
 
 
-## Disable Anti-Aliasing
+## 1.6) Disable Anti-Aliasing
 
 Update the project settings, disabling Anti-Aliasing for each quality level.
 
@@ -256,7 +256,7 @@ Anti-aliasing may lead to unexpected gaps or distortions when sprites are side b
 
 
 
-## Select an aspect ratio
+## 1.7) Select an aspect ratio
 
 Change the aspect ratio to 5:4 in the Game window and build settings.
 
@@ -300,7 +300,7 @@ Different resolutions will scale the display larger or smaller but everyone will
 <hr></details>
 
 
-## Set the camera size
+## 1.8) Set the camera size
 
 Update the camera size to about 10.
 
@@ -327,7 +327,7 @@ For an Orthographic camera, the amout of the world visible is driven by a specia
 
 <hr></details>
 
-## Select a background color 
+## 1.9) Select a background color 
 
 Change the background color to black.
 
@@ -347,7 +347,7 @@ TODO
 
 <hr></details>
 
-## Save the scene
+## 1.10) Save the scene
 
 Save the current scene as "Level1".
 
@@ -364,7 +364,7 @@ The Scene represents a collection of GameObjects and components (defined below) 
 <hr></details>
 
 
-## Add an auto save script 
+## 1.11) Add an auto save script 
 
 Create an editor script which automatically saves everytime you hit play.
 
@@ -553,7 +553,7 @@ public class MyCustomComponent : MonoBehaviour
 
 
 
-## Add a platform to the scene
+## 1.12) Add a platform to the scene
 
 Add a sprite to the scene representing the middle segment of a platform.  
 
@@ -595,7 +595,7 @@ SpriteRenderer is a Unity component which renders a sprite on screen.  Select th
 
 
 
-## Tile the platform's width
+## 1.13) Tile the platform's width
 
 Change the SpriteRenderer draw mode to tiled and increase the width.
 
@@ -626,7 +626,7 @@ Using transform scale to change the width cause the sprite displayed to stretch.
 
 
 
-## Create platform GameObject
+## 1.14) Create platform GameObject
 
 Create a new parent GameObject for the platform sprite.
 
@@ -663,7 +663,7 @@ Typically all Transform updates during the game and in level design are done to 
 
 
 
-## Add rounded corners to platforms
+## 1.15) Add rounded corners to platforms
 
 Add sprites with rounded edges to the left and right of the platform.  
 
@@ -697,7 +697,7 @@ TODO copy paste vs duplicate
 <hr></details>
 
 
-## Create a connected platform
+## 1.16) Create a connected platform
 
 Our level design calls for the bottom platform to rotate half way through.  Create two Platform GameObjects and position and rotate their parents' GameObjects so that they appear connected.
 
@@ -744,7 +744,7 @@ The width of the world players are going to see is fixed so you could argue that
 <hr></details>
 
 
-## Complete level 1 platform layout
+## 1.17) Complete level 1 platform layout
 
 At this point we have covered everything you need to match the level 1 platform layout.  You can match the layout we used or come up with your own.
 
@@ -781,7 +781,7 @@ How to zoom and navigate the scene
 
 
 
-## Add colliders to platforms
+## 1.18) Add colliders to platforms
 
 Add a BoxCollider2D to each of the Platforms.  Add an edge radius and edit colliders to match the sprites.
 
@@ -834,7 +834,7 @@ Additionally, fewer colliders may improve your game's performance - however the 
 
 
 
-## Create a spike ball
+## 1.19) Create a spike ball
 
 Add a GameObject for the spike ball. 
 
@@ -854,7 +854,7 @@ Why use a parent here?
 
 
 
-## Set the ball's order in layer
+## 1.20) Set the ball's order in layer
 
 Update the Spike Ball's Order in Layer to -1.
 
@@ -876,7 +876,7 @@ Order in Layer may be any int value, positive or negative. Here's an example sho
 
 </details>
 
-## Add a rigidbody to the ball
+## 1.21) Add a rigidbody to the ball
 
 Add a Rigidbody2D to the spike ball.
 
@@ -905,7 +905,7 @@ Physics refers to the logic in a game engine which moves objects based on forces
 </details>
 
 
-## Add a collider to the ball
+## 1.22) Add a collider to the ball
 
 Add a CircleCollider2D to the spike ball.  Adjust the radius as needed.
 
@@ -945,7 +945,7 @@ On a related note, seting the 'Order in Layer' to '-1' ensures that the spikes a
 
 
 
-## Add invisible bumpers
+## 1.23) Add invisible bumpers
 
 Add additional BoxCollider2Ds offscreen to redirect balls back on screen.
 
@@ -989,7 +989,7 @@ to cause the spike balls to quickly turn around and roll back on-screen
 
 <hr></details>
 
-## Add a script to get the ball moving
+## 1.24) Add a script to get the ball moving
 
 Add a script to the spike ball which sets an initial velocity and angular velocity.
 
@@ -1173,7 +1173,7 @@ Encapsulation.  If we were to make these methods public, it suggests that other 
 
 </details>
 
-## Add a script to destroy balls that roll off
+## 1.25) Add a script to destroy balls that roll off
 
 Add a script to the spike ball which destroy's the GameObject after it rolls off the bottom platform.
 
@@ -1271,7 +1271,7 @@ For more, see [Catlike Coding's Object Pool tutorial](http://catlikecoding.com/u
 
 </details>
 
-## Create a ball prefab
+## 1.26) Create a ball prefab
 
 Create a prefab for the spike ball, and remove the GameObject from the scene.
 
@@ -1289,7 +1289,7 @@ TODO
 
 <hr></details>
 
-## Create an evil cloud
+## 1.27) Create an evil cloud
 
 Add a GameObject for the evil cloud.  Size and position it in the top left.
 
@@ -1313,7 +1313,7 @@ Nothing (for 2D games).  When we are scaling, in order to not distort the art we
 
 
 
-## Add a script to spawn balls
+## 1.28) Add a script to spawn balls
 
 Add a script to the evil cloud which periodically spawns balls.
 
@@ -1508,7 +1508,7 @@ TODO pre conditions and post conditions
 
 </details>
 
-## Assign an enemy layer
+## 1.29) Assign an enemy layer
 
 Create a layer for Enemy and assign it to the Spike Ball prefab.
 
@@ -1534,7 +1534,7 @@ why this object only - best practice as sometimes children are different.
 <hr></details>
 
 
-## Disable collisions between enemies
+## 1.30) Disable collisions between enemies
 
 Update the collision matrix, disabling enemy to enemy collisions.
 
@@ -1615,7 +1615,7 @@ Every possible combination of layers is exposed as a checkbox in settings, inclu
 </details>
 
 
-## Test!
+## 1.31) Test!
 
 That's it for chapter 1!  Your game should now look a lot like the gif at the top.  You can compare to our  [demo build](https://hardlydifficult.com/PlatformerTutorialPart1/index.html) and review the [Unity Project / Source Code for Chapter 1](https://github.com/hardlydifficult/Unity2DPlatformerTutorial/tree/Part1). 
 

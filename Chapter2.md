@@ -10,7 +10,7 @@ TODO gif
 
 demo build of level 2
 
-## Change the character's pivot point
+## 2.1) Change the character's pivot point
 
 Change the character's sprite sheet to use a bottom pivot point.
 
@@ -38,7 +38,7 @@ The pivot point you select is going to impact how we create animations and imple
 
 
 
-## Create an animated character
+## 2.2) Create an animated character
 
 Add a GameObject for the character with a walk animation. Change the order in layer to 2.  Add a Rigidbody2D to its parent.
 
@@ -84,7 +84,7 @@ We will be diving into more detail about animations and animators later in the t
 <hr></details>
 
 
-## Add a collider to the character
+## 2.3) Add a collider to the character
 
 Add a CapsuleCollider2D to the character.  Adjust the size as needed.
 
@@ -124,7 +124,7 @@ Most of the time the collisions in the game would not have been any different if
 </details>
 
 
-## Freeze the character's rotation
+## 2.4) Freeze the character's rotation
 
 Add a constraint to the character's rigidbody to freeze its rotation.
 
@@ -152,7 +152,7 @@ We use constraints to remove capabilities from Unity, allowing us more control w
 
 </details>
 
-## Add a script to move left & right
+## 2.5) Add a script to move left & right
 
 Add a script to the character to be able to move left and right once a controller is added.
 
@@ -203,7 +203,7 @@ What's a controller?  Why not read input here?
 
 <hr></details>
 
-## Add a player controller to the character
+## 2.6) Add a player controller to the character
 
 Add a script to the character to read user input and drive movement.
 
@@ -309,7 +309,7 @@ As discussed in chapter 1, Unity encourages a component based solution.  This me
 </details>
 
 
-## Add a script to jump
+## 2.7) Add a script to jump
 
 Add a script to the character to be able to jump and update the player controller to match.
 
@@ -470,7 +470,7 @@ For Input:
 
 </details>
 
-## Play a sound effect on Jump
+## 2.8) Play a sound effect on Jump
 
 Update JumpMovement to play a sound effect anytime the entity jumps.
 
@@ -588,7 +588,7 @@ TODO
 
 
 
-## Add platformer effects
+## 2.9) Add platformer effects
 
 Add a PlatformerEffect2D to each platform.
 
@@ -620,7 +620,7 @@ Read more about the [various 2d effectors in Unity](https://docs.unity3d.com/Man
 </details>
 
 
-## Update the platforms' surface arc
+## 2.10) Update the platforms' surface arc
 
 Reduce the PlatformerEffector2D Surface Arc to about 135.
 
@@ -641,7 +641,7 @@ Play, now the character should not be able to stick to the sides while falling:
 <hr></details>
 
 
-## Create a pattern for death effects
+## 2.11) Create a pattern for death effects
 
 Create a pattern to use instead of destroying GameObjects directly, allowing an opportunity for objects to animate on death.
 
@@ -751,7 +751,7 @@ Unity offers the UnityEngine.Mathf class to try and make some things a little ea
 
 
 
-## Kill the player when he hits a ball
+## 2.12) Kill the player when he hits a ball
 
 When the player comes in contact with a spiked ball, kill him!
 
@@ -848,7 +848,7 @@ Bitwise operations... which are beyond the scope of this tutorial.  More specifi
 
 </details>
 
-## Create an explosion prefab
+## 2.13) Create an explosion prefab
 
 Create an explosion particle system and save it as a prefab.  
 
@@ -905,7 +905,7 @@ If you are not going to build for WebGL, go ahead and try using the ExplosionMob
 
 </details>
 
-## Spawn explosion when the character dies
+## 2.14) Spawn explosion when the character dies
 
 Add a script which spawns the explosion prefab when the character dies.
 
@@ -965,7 +965,7 @@ We use the collider's bounds to determine where to spawn the explosion.  The [bo
 </details>
 
 
-## Explosion sound effect
+## 2.15) Explosion sound effect
 
 Add a sound effect to the explosion prefab.  
 
@@ -1041,7 +1041,7 @@ protected void OnEnable()
 </details>
 
 
-## Explosion self destruct
+## 2.16) Explosion self destruct
 
 Create a script to destroy the explosion GameObject after the effect completes.
 
@@ -1078,7 +1078,7 @@ In other words, this script ensures that our explosions do not result in a memor
 </details>
 
 
-## Animate characters death
+## 2.17) Animate characters death
 
 Add a scaling effect for the character dieing, in addition to the explosion.
 
@@ -1151,7 +1151,7 @@ TODO FaQ why not animation?  Could, more on that next chapter.  This is yet anot
 
 
 
-## Test!
+## 2.19) Test!
 
 Chapter 2, complete!  Your game should now look a lot like the gif at the top.  You can compare to our  [demo build](https://hardlydifficult.com/PlatformerTutorialPart2/index.html) and review the [Unity Project / Source Code for Chapter 2](https://github.com/hardlydifficult/Unity2DPlatformerTutorial/tree/Part2). TODO links
 
