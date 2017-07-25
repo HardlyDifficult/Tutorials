@@ -783,7 +783,7 @@ How to zoom and navigate the scene
 
 ## Add colliders to platforms
 
-Add a BoxCollider2D to each of the Platforms.  Add a .1 edge radius and edit colliders to match the sprites.
+Add a BoxCollider2D to each of the Platforms.  Add an edge radius and edit colliders to match the sprites.
 
 <details><summary>How</summary>
 
