@@ -3,7 +3,7 @@
 
 Add it to an empty parent GameObject named "Character".
 
-
+TODO: Remove all comments inline, link to file with comments.
 
 Image sizes: 150, 300, 500, 700.  Prefer: 300 
 

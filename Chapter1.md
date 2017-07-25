@@ -10,7 +10,7 @@ This is very much a WIP.  I'm trying to make a tutorial helpful to a range of ex
 
 <br><br>
 
-**FYI**: The sequence and 'How' sections should be solid.  Questions as well as general 'what did that do' type content will be revisited.  
+**FYI**: The sequence and 'How' sections should be solid for chapter 1 and 2.  Questions as well as general 'what did that do' type content will be revisited.  If you try this, please take notes of any questions which come to mind and send those my way.  We'll be working on those after the process and how-to sections are complete.
 
 <br><br>
 
@@ -30,7 +30,7 @@ Get Unity and start a 2D project.
 
 <details><summary>How</summary>
 
- - Download Visual Studio Community edition, if you don't already have it.
+ - [Download Visual Studio Community edition](https://www.visualstudio.com/), if you don't already have it.
  - [Download Unity](https://unity3d.com/), the free Personal edition has everything you need. 
    - You may be prompted to register / sign in.
  - Select '2D' when creating a new project.
@@ -383,37 +383,22 @@ Create an editor script which automatically saves everytime you hit play.
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
-/// <summary>
-/// Auto saves the scene and project everytime you click play.
-/// 
-/// This happens before the game runs so even if that run causes 
-/// a crash, your work is safe.
-/// </summary>
 [InitializeOnLoad]
 public class AutoSave
 {
-  /// <summary>
-  /// Called automatically before the game runs
-  /// c/o InitializeOnLoad.  
-  /// </summary>
   static AutoSave()
   {
-    // Registers for play mode events.
     EditorApplication.playmodeStateChanged
       += OnPlaymodeStateChanged;
   }
 
-  /// <summary>
-  /// Called when the play mode changes.
-  /// </summary>
   static void OnPlaymodeStateChanged()
   {
     if(EditorApplication.isPlaying)
-    { // If currently playing, don't save
+    { 
       return;
     }
 
-    // Save!  
     EditorSceneManager.SaveOpenScenes();
   }
 }
@@ -1021,40 +1006,19 @@ Add a script to the spike ball which sets an initial velocity and angular veloci
  ```csharp
 using UnityEngine;
 
-/// <summary>
-/// When a GameObject is added to the scene, set initial 
-/// values on the Rigidbody2D.
-/// 
-/// This script only impacts the GameObject on Start. 
-/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class InitializeRigidbody : MonoBehaviour
 {
-  /// <summary>
-  /// Cause the GameObject's rigidbody to start with this 
-  /// velocity.
-  /// </summary>
   [SerializeField]
   Vector2 startingVelocity = new Vector2(3, 0);
 
-  /// <summary>
-  /// Cause the GameObject's rigidbody to start with this
-  /// spin. 
-  /// </summary>
   [SerializeField]
   float startingAngularVelocity = -500;
 
-  /// <summary>
-  /// Unity event called when the GameObject is first 
-  /// spawned in the world.
-  /// 
-  /// Set initial settings on the rigidbody.
-  /// </summary>
   protected void Start()
   {
     Rigidbody2D myBody = GetComponent<Rigidbody2D>();
 
-    // Update the GameObject's rigidbody initial settings
     myBody.velocity = startingVelocity;
     myBody.angularVelocity = startingAngularVelocity;
   }
@@ -1225,32 +1189,12 @@ Add a script to the spike ball which destroy's the GameObject after it rolls off
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Destroy this GameObject if it falls off screen.
-/// </summary>
 public class SuicideOutOfBounds : MonoBehaviour
 {
-  /// <summary>
-  /// Anything with a transform Y position less than 
-  /// this is considered out of bounds.
-  /// 
-  /// To calculate this dynamically, try:
-  /// Camera camera = Camera.main;
-  /// const float maxEntityHeight = 2;
-  /// float outOfBoundsYPosition =
-  ///   -camera.orthographicSize
-  ///   + camera.transform.position.y
-  ///   - maxEntityHeight;
-  /// </summary>
   const float outOfBoundsYPosition = -12;
 
-  /// <summary>
-  /// Unity event called each frame.
-  /// </summary>
   protected void Update()
   {
-    // If this is lower than the camera can see, 
-    // then it has fallen out of bounds
     if(transform.position.y < outOfBoundsYPosition) 
     { 
       Destroy(gameObject);
@@ -1386,73 +1330,36 @@ Add a script to the evil cloud which periodically spawns balls.
 using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// Instantiates a prefab at this object's location 
-/// periodically.
-/// </summary>
 public class Spawner : MonoBehaviour
 {
-  /// <summary>
-  /// Set to the prefab to instantiate.
-  /// </summary>
   [SerializeField]
   GameObject thingToSpawn;
 
-  /// <summary>
-  /// How long to wait before spawning begins.
-  /// </summary>
   [SerializeField]
   float initialWaitTime = 2;
 
-  /// <summary>
-  /// The least amount of time between each spawn.
-  /// </summary>
   [SerializeField]
   float minTimeBetweenSpawns = .5f;
 
-  /// <summary>
-  /// The most amount of time between each spawn.
-  /// </summary>
   [SerializeField]
   float maxTimeBetweenSpawns = 10;
 
-  /// <summary>
-  /// Unity event called when the GameObject is first 
-  /// spawned in the world.
-  /// </summary>
   protected void Start()
   {
-    // Starts a Coroutine which executes a spawn script 
-    // over a period of time.
     StartCoroutine(SpawnEnemies());
   }
 
-  /// <summary>
-  /// The spawn script.  Called initially on Start, then 
-  /// executed as a Unity Coroutine over time.
-  /// </summary>
   IEnumerator SpawnEnemies()
   {
-    // Pre conditions
-    Debug.Assert(thingToSpawn != null);
-    Debug.Assert(initialWaitTime >= 0);
-    Debug.Assert(minTimeBetweenSpawns >= 0);
-    Debug.Assert(
-      maxTimeBetweenSpawns >= minTimeBetweenSpawns);
-
-    // Wait before first spawn, 0 or more seconds
     yield return new WaitForSeconds(initialWaitTime);
 
-    // Loop until this is destroyed
     while(true)
     {
-      // Spawn thingToSpawn at this GameObject's location
       Instantiate(
         thingToSpawn, 
         transform.position, 
         Quaternion.identity);
 
-      // Sleep a random amount of time 
       float sleepTime = UnityEngine.Random.Range(
         minTimeBetweenSpawns, 
         maxTimeBetweenSpawns);

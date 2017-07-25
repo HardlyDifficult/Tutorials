@@ -164,71 +164,29 @@ Add a script to the character to be able to move left and right once a controlle
 using UnityEngine;
 using System;
 
-/// <summary>
-/// Controls the entity's ability to move left and right.
-/// 
-/// Another component drives walk w/ desiredWalkDirection.
-/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class WalkMovement : MonoBehaviour
 {
-  /// <summary>
-  /// Set by another component to inform this component 
-  /// it should walk. Positive to walk right, negative to 
-  /// walk left.  
-  /// </summary>
   [NonSerialized]
   public float desiredWalkDirection;
 
-  /// <summary>
-  /// A multiple to increase/decrease how quickly
-  /// the object walks.
-  /// </summary>
   [SerializeField]
   float walkSpeed = 100;
 
-  /// <summary>
-  /// Used to control movement.
-  /// </summary>
   Rigidbody2D myBody;
   
-  /// <summary>
-  /// A Unity event, called once before this GameObject
-  /// is spawned in the world.
-  /// </summary>
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-    Debug.Assert(myBody != null);
   }
 
-  /// <summary>
-  /// A Unity event, called every x ms of game time.
-  /// 
-  /// Adds velocity to the rigidbody to move it
-  /// horizontally.
-  /// </summary>
-  /// <remarks>
-  /// With this approach, forces may not be used to 
-  /// impact the X on this entity.  E.g. if we wanted a 
-  /// fan which slowly pushed characters to the left, the 
-  /// force added would be lost here.  This matches the
-  /// Unity example character asset as enabling forces on 
-  /// both dimentions cause movement to feel strange or 
-  /// leads to other experience problems which quickly 
-  /// complicate the code.
-  /// </remarks>
   protected void FixedUpdate()
   {
-    // Calculate the desired horizontal movement given 
-    // the input desiredWalkDirection.
     float desiredXVelocity 
       = desiredWalkDirection 
         * walkSpeed 
         * Time.fixedDeltaTime;
 
-    // Any y velocity is preserved, this allows gravity
-    // to continue working.
     myBody.velocity = new Vector2(
       desiredXVelocity, 
       myBody.velocity.y);
@@ -236,8 +194,6 @@ public class WalkMovement : MonoBehaviour
 }
 ```
  - Add 'WalkMovement' to the character.
- - Confirm the default values:
-   - Walk Speed: 100
 
 <hr></details><br>
 <details><summary>TODO</summary>
@@ -258,37 +214,18 @@ Add a script to the character to read user input and drive movement.
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Wires up user input, allowing the user to 
-/// control the player in game with a keyboard.
-/// </summary>
 [RequireComponent(typeof(WalkMovement))]
 public class PlayerController : MonoBehaviour
 {
-  /// <summary>
-  /// Used to cause the object to walk.
-  /// </summary>
   WalkMovement walkMovement;
   
-  /// <summary>
-  /// A Unity event, called once before the GameObject
-  /// is instantiated.
-  /// </summary>
   protected void Awake()
   {
     walkMovement = GetComponent<WalkMovement>();
-
-    Debug.Assert(walkMovement != null);
   }
 
-  /// <summary>
-  /// A Unity event, called every x ms of game time.
-  /// 
-  /// Consider moving.
-  /// </summary>
   protected void FixedUpdate()
   {
-    // Consider moving left/right
     walkMovement.desiredWalkDirection
       = Input.GetAxis("Horizontal");
   }
@@ -383,76 +320,40 @@ Add a script to the character to be able to jump and update the player controlle
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Controls the entity's jump.  
-/// 
-/// Another component drives when to jump via Jump().
-/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class JumpMovement : MonoBehaviour
 {
-  /// <summary>
-  /// How much force to apply on jump.
-  /// </summary>
   [SerializeField]
   float jumpSpeed = 7f;
 
-  /// <summary>
-  /// Used to add force on jump.
-  /// </summary>
   Rigidbody2D myBody;
 
-  /// <summary>
-  /// Used to process events in FixedUpdate that 
-  /// may have been captured on Update.
-  /// </summary>
   bool wasJumpRequestedSinceLastFixedUpdate;
 
-  /// <summary>
-  /// A Unity event, called once before this GameObject
-  /// is spawned in the world.
-  /// </summary>
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-
-    Debug.Assert(myBody != null);
   }
 
-  /// <summary>
-  /// Adds force to the body to make the entity jump.
-  /// </summary>
   public void Jump()
   {
-    Debug.Assert(jumpSpeed >= 0,
-      "jumpSpeed must not be negative");
-
     wasJumpRequestedSinceLastFixedUpdate = true;
   }
 
-  /// <summary>
-  /// A Unity event, called every x ms of game time.
-  /// 
-  /// Consider jumping.
-  /// </summary>
   protected void FixedUpdate()
   {
     if(wasJumpRequestedSinceLastFixedUpdate)
     {
-      // Jump!
       myBody.AddForce(
           new Vector2(0, jumpSpeed),
           ForceMode2D.Impulse);
     }
 
-    // Clear the jump flag, enabling the next jump
     wasJumpRequestedSinceLastFixedUpdate = false;
   }
 }
 ```
  - Add 'JumpMovement' to the character.
- - Confirm the default values:
-   - Jump Speed: 7
  - Update the 'PlayerController' script as follows (or copy/paste the full version - TODO link):
 
 <details><summary>Existing code</summary>
@@ -460,10 +361,6 @@ public class JumpMovement : MonoBehaviour
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Wires up user input, allowing the user to 
-/// control the player in game with a keyboard.
-/// </summary>
 [RequireComponent(typeof(WalkMovement))]
 ```
 
@@ -478,28 +375,18 @@ using UnityEngine;
 ```csharp
 public class PlayerController : MonoBehaviour
 {
-  /// <summary>
-  /// Used to cause the object to walk.
-  /// </summary>
   WalkMovement walkMovement;
 ```
 
 </details>
 
 ```csharp
-  /// <summary>
-  /// Used to cause the object to jump.
-  /// </summary>
   JumpMovement jumpMovement;
 ```
 
 <details><summary>Existing code</summary>
 
 ```csharp
-  /// <summary>
-  /// A Unity event, called once before the GameObject
-  /// is instantiated.
-  /// </summary>
   protected void Awake()
   {
     walkMovement = GetComponent<WalkMovement>();
@@ -509,37 +396,23 @@ public class PlayerController : MonoBehaviour
 
 ```csharp
     jumpMovement = GetComponent<JumpMovement>();
-    Debug.Assert(jumpMovement != null);
 ```
 
 <details><summary>Existing code</summary>
 
 ```csharp
-    Debug.Assert(walkMovement != null);
   }
 
-  /// <summary>
-  /// A Unity event, called every x ms of game time.
-  /// 
-  /// Consider moving.
-  /// </summary>
   protected void FixedUpdate()
   {
-    // Consider moving left/right
     walkMovement.desiredWalkDirection
       = Input.GetAxis("Horizontal");
-
   }
 ```
 
 </details>
 
 ```csharp
-  /// <summary>
-  /// A Unity event, called once per frame.
-  /// 
-  /// Consider jumping.
-  /// </summary>
   protected void Update()
   {
     if(Input.GetButtonDown("Jump"))
@@ -610,11 +483,6 @@ Update JumpMovement to play a sound effect anytime the entity jumps.
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Controls the entity's jump.  
-/// 
-/// Another component drives when to jump via Jump().
-/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 ```
 
@@ -634,16 +502,9 @@ public class JumpMovement : MonoBehaviour
 </details>
 
 ```csharp
-  /// <summary>
-  /// The sound to play when the character starts 
-  /// their jump.
-  /// </summary>
   [SerializeField]
   AudioClip jumpSound;
 
-  /// <summary>
-  /// How much force to apply on jump.
-  /// </summary>
   [SerializeField]
   float jumpSpeed = 7f;
 ```
@@ -651,34 +512,20 @@ public class JumpMovement : MonoBehaviour
 <details><summary>Existing code</summary>
 
 ```csharp
-  /// <summary>
-  /// Used to add force on jump.
-  /// </summary>
   Rigidbody2D myBody;
 ```
 
 </details>
 
 ```csharp
-  /// <summary>
-  /// Used to play sound effects.
-  /// </summary>
   AudioSource audioSource;
 ```
 
 <details><summary>Existing code</summary>
 
 ```csharp
-  /// <summary>
-  /// Used to process events in FixedUpdate that 
-  /// may have been captured on Update.
-  /// </summary>
   bool wasJumpRequestedSinceLastFixedUpdate;
 
-  /// <summary>
-  /// A Unity event, called once before this GameObject
-  /// is spawned in the world.
-  /// </summary>
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
@@ -688,36 +535,22 @@ public class JumpMovement : MonoBehaviour
 
 ```csharp
     audioSource = GetComponent<AudioSource>();
-    Debug.Assert(audioSource != null);
 ```
 
 <details><summary>Existing code</summary>
 
 ```csharp
-    Debug.Assert(myBody != null);
   }
 
-  /// <summary>
-  /// Adds force to the body to make the entity jump.
-  /// </summary>
   public void Jump()
   {
-    Debug.Assert(jumpSpeed >= 0,
-      "jumpSpeed must not be negative");
-
     wasJumpRequestedSinceLastFixedUpdate = true;
   }
 
-  /// <summary>
-  /// A Unity event, called every x ms of game time.
-  /// 
-  /// Consider jumping.
-  /// </summary>
   protected void FixedUpdate()
   {
     if(wasJumpRequestedSinceLastFixedUpdate)
     {
-      // Jump!
       myBody.AddForce(
           new Vector2(0, jumpSpeed),
           ForceMode2D.Impulse);
@@ -726,7 +559,6 @@ public class JumpMovement : MonoBehaviour
 </details>
 
 ```csharp
-      // Play the sound effect
       audioSource.PlayOneShot(jumpSound);
 ```
 
@@ -735,7 +567,6 @@ public class JumpMovement : MonoBehaviour
 ```csharp
     }
 
-    // Clear the jump flag, enabling the next jump
     wasJumpRequestedSinceLastFixedUpdate = false;
   }
 }
@@ -744,7 +575,7 @@ public class JumpMovement : MonoBehaviour
 </details>
 
  - Add 'AudioSource' to the character.
- - Under the JumpMovement component, select the Jump Sound.  We are using **JumpSound**.
+ - Under the JumpMovement component, select the Jump Sound.  We are using **Jump**.
 
 <img src="http://i.imgur.com/I5JWg9s.gif" width=300px />
 
@@ -757,11 +588,9 @@ TODO
 
 
 
-## Add Platformer Effect to platforms
+## Add platformer effects
 
-Add the PlatformerEffect2D component to each platform, allowing the character to jump through them.
-
-Note collisions with the sides of the platforms may feel off, we'll update this in the next section.
+Add a PlatformerEffect2D to each platform.
 
 <details><summary>How</summary>
 
@@ -771,11 +600,15 @@ Note collisions with the sides of the platforms may feel off, we'll update this 
 
 <img src="http://i.imgur.com/55YiY3N.gif" width=200px />
 
+
+</details><br>
+<details><summary>TODO</summary>
+
 Click play to test it out.  You may need to increase the character's Jump Speed to really see how platformer effect works:
 
 <img src="http://i.imgur.com/hRe7CEJ.gif" width=200px />
 
-</details>
+<hr></details>
 <details><summary>Wow that was easy, what else like this can Unity do for 'free'?</summary>
 
 Effectors in Unity are easy ways to add various mechanics to the game.  The one-way collision effect we are using here happens to be a very common mechanic for 2D games, so Unity has this component ready to drop in.  
@@ -794,13 +627,18 @@ Reduce the PlatformerEffector2D Surface Arc to about 135.
 <details><summary>How</summary>
 
  - Select all of the Platform GameObjects.
- - Change the 'Surface Arc' to '135' under the Platform Effector 2D compenent.
+ - Change the 'Surface Arc' to '135' under the Platform Effector 2D.
+
+<img src="http://i.imgur.com/PH2XyEd.png" width=150px>
+
+</details><br>
+<details><summary>TODO</summary>
 
 Play, now the character should not be able to stick to the sides while falling:
 
 <img src="http://i.imgur.com/GGzbkdp.gif" width=200px />
 
-</details>
+<hr></details>
 
 
 ## Create a pattern for death effects
@@ -809,89 +647,55 @@ Create a pattern to use instead of destroying GameObjects directly, allowing an 
 
 <details><summary>How</summary>
 
- - Create a C# script "DeathEffect" under Assets/Code/Components/Death.
- - Paste in the following code:
+ - Create a script DeathEffect under Assets/Code/Compenents/Death and paste the following:
 
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Any/all component(s) on the gameObject that inherit from this to add
-/// effects or animations on death, before the GameObject is destroyed.
-/// </summary>
 [RequireComponent(typeof(DeathEffectManager))]
 public abstract class DeathEffect : MonoBehaviour
 {
-  /// <summary>
-  /// How long we need to wait before destroying the
-  /// GameObject to allow this effect to complete.
-  /// </summary>
   public abstract float timeUntilObjectMayBeDestroyed
   {
     get;
   }
 
-  /// <summary>
-  /// Do not call directly.  Initiated only by the DeathEffectManager.
-  /// 
-  /// When we are ready to destroy a GameObject, PlayDeathEffects is called
-  /// and then we wait for at least timeUntilObjectMayBeDestroyed
-  /// before calling Destroy on the gameObject.
-  /// </summary>
   public abstract void PlayDeathEffects();
 }
 ```
 
- - Create a C# script "DeathEffectManager" under Assets/Code/Components/Death.
- - Paste in the following code:
+ - Create a script DeathEffectManager under Assets/Code/Compenents/Death and paste the following:
 
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Manages playing multiple effects, and destroying
-/// the gameObject when they all complete.
-/// 
-/// Required if the GameObject has any DeathEffects.
-/// </summary>
 public class DeathEffectManager : MonoBehaviour
 {
-  /// <summary>
-  /// Called when an object that may have a death effect
-  /// should be destroyed.
-  /// 
-  /// If no DeathEffects are found, the gameObject is 
-  /// destroyed immediatally.
-  /// </summary>
-  /// <param name="gameObject">
-  /// The gameObject to destroy.
-  /// </param>
+  bool isInProcessOfDieing;
+
   public static void PlayDeathEffectsThenDestroy(
     GameObject gameObject)
   {
-    DeathEffectManager deathEffectManager 
+    DeathEffectManager deathEffectManager
       = gameObject.GetComponent<DeathEffectManager>();
 
     if(deathEffectManager == null)
     {
-      // If there is no DeathEffectManager on 
-      // this gameObject, Destroy it now.
       Destroy(gameObject);
       return;
     }
 
-    // Start death sequence, which ends with 
-    // destroying the gameObject.
     deathEffectManager.PlayDeathEffectsThenDestroy();
   }
 
-  /// <summary>
-  /// Initiated only by PlayDeathEffectsThenDestroy.
-  /// 
-  /// Plays any DeathEffects then destroys this GameObject.
-  /// </summary>
   void PlayDeathEffectsThenDestroy()
   {
+    if(isInProcessOfDieing)
+    {
+      return;
+    }
+    isInProcessOfDieing = true;
+
     DeathEffect[] deathEffectList
       = gameObject.GetComponentsInChildren<DeathEffect>();
 
@@ -903,18 +707,15 @@ public class DeathEffectManager : MonoBehaviour
         maxTimeUntilObjectMayBeDestroyed,
         deathEffect.timeUntilObjectMayBeDestroyed);
 
-      // Start each individual DeathEffect to run in parallel.
       deathEffect.PlayDeathEffects();
     }
 
-    // Wait until the slowest DeathEffect completes then Destroy.
     Destroy(gameObject, maxTimeUntilObjectMayBeDestroyed);
   }
 }
 ```
 
-</details>
-
+<hr></details><br>
 <details><summary>Why not just play effects OnDestroy()?</summary>
 
 OnDestroy is called anytime the object is destroyed, but we only want the death effects to trigger in certain circumstances.  For example, when we quit back to the main menu, we do not want explosions spawning for character being destroyed while closing level 1.
@@ -956,33 +757,13 @@ When the player comes in contact with a spiked ball, kill him!
 
 <details><summary>How</summary>
 
- - Create a C# script "LayerMaskExtensions" under Assets/Code/Utils.
- - Paste in the following code:
+ - Create a script **LayerMaskExtensions** under Assets/Code/Utils and paste the following:
 
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Provides additional convenience methods for Unity's LayerMask.
-/// </summary>
 public static class LayerMaskExtensions
 {
-  /// <summary>
-  /// Determines if the layer is part of this layerMask.
-  /// </summary>
-  /// <param name="mask">
-  /// The layer mask defining which layers should be included.
-  /// </param>
-  /// <param name="layer">
-  /// The layer to check against the mask.
-  /// </param>
-  /// <returns>
-  /// True if the layer is part of the layerMask.
-  /// </returns>
-  /// <remarks>
-  /// This method is used to wrap the bit logic below as 
-  /// it's not an intuitive read.
-  /// </remarks>
   public static bool Includes(
     this LayerMask mask,
     int layer)
@@ -992,78 +773,56 @@ public static class LayerMaskExtensions
 }
 ```
 
- - Create a C# script "KillOnContactWith" under Assets/Code/Components/Death.
- - Select the Spike Ball prefab and add the KillOnContactWith component.
- - Paste in the following code:
+ - Create a script **KillOnContactWith** under Assets/Code/Components/Death and paste the following:
 
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Kills anything which collides with this GameObject
-/// if the thing that hit us is included in the provided LayerMask.
-/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class KillOnContactWith : MonoBehaviour
 {
-  /// <summary>
-  /// Defines which layers will be killed on contact.
-  /// </summary>
   [SerializeField]
   LayerMask layersToKill;
 
-  /// <summary>
-  /// A Unity event called anytime an object hits 
-  /// this GameObject's collider.
-  /// 
-  /// Consider killing the thing we touched.
-  /// </summary>
-  /// <param name="collision">
-  /// The thing we touched.
-  /// </param>
   protected void OnCollisionEnter2D(
     Collision2D collision)
   {
     ConsiderKilling(collision.gameObject);
   }
 
-  /// <summary>
-  /// Checks if we should kill the object just touched, 
-  /// if so Destroy that GameObject.
-  /// </summary>
-  /// <param name="gameObjectWeJustHit">
-  /// The gameObject just touched.
-  /// </param>
   void ConsiderKilling(
     GameObject gameObjectWeJustHit)
   {
-    // Compare the GameObject's layer to the LayerMask
     if(layersToKill.Includes(gameObjectWeJustHit.layer) == false)
-    { // This object gets to live.
+    {
       return;
     }
 
-    // Kill it!
     DeathEffectManager.PlayDeathEffectsThenDestroy(gameObjectWeJustHit);
   }
 }
 ```
 
- - Edit -> Project Settings -> Tags and Layers.
- - Create a custom Layer for 'Player'.
- - Select the Character GameObject and change its Layer to 'Player'.
- - Select the Spike Ball prefab, update 'Layers To Kill' to 'Player'.
+ - Under Project Settings -> Tags and Layers, add a layer for 'Player'.
+ - Select the Character GameObject and change its Layer to Player.
+ - Select the Spike Ball prefab in Assets/Prefabs:
+   - Add 'KillOnContactWith'
+   - Update 'Layers To Kill' to Player
 
-<img src="http://i.imgur.com/wrkb3eJ.png" width=100px />
+<img src="http://i.imgur.com/wrkb3eJ.png" width=300px />
+
+<hr></details><br>
+<details><summary>TODO</summary>
 
 Hit play to watch the player die:
 
-<img src="http://i.imgur.com/gKEl8wE.gif" width=200px />
+<img src="http://i.imgur.com/gKEl8wE.gif" width=300px />
 
 For now, to test again stop and hit play again.  We'll respawn the player later in the tutorial.
+TODO
 
+<hr></details>
 
-</details>
 <details><summary>What is a C# extension method and why use it?</summary>
 
 Extension methods are a way of adding additional methods to a class or struct you don't own.  In this example, Unity has a struct 'LayerMask'.  That struct does not offer an easy way to determine if a layer is part of that LayerMask.  Using extensions, we are able to create an 'Includes' method that then can be used as if Unity had written it for us.
@@ -1091,39 +850,46 @@ Bitwise operations... which are beyond the scope of this tutorial.  More specifi
 
 ## Create an explosion prefab
 
-Create an explosion prefab.  We are using a scaled Fireball from the standard assets' ExplosionMobile prefab.
-
-TODO change to make this from scratch instead.
+Create an explosion particle system and save it as a prefab.  
 
 <details><summary>How</summary>
 
- - In the Assets directory, right click -> Import Package -> ParticleSystems
- - You could import everything, but for this tutorial we only need the prefab 'ExplosionMobile'.
+ - Create an empty GameObject, name it "Explosion".
+ - Add a ParticleSystem. Under the 'Renderer' section, set:
+   - Material: Default-Particle
+   - Max Particle Size: 1000
 
-<img src="http://i.imgur.com/6lVqJtL.png" width=150px />
+<img src="http://i.imgur.com/xkv8CJd.png" width=300px />
 
- - Drag the prefab from Assets/Standard Assets/ParticleSystems/Prefabs/ExplosionMobile into the scene.
- - Drag the 'Fireball' child GameObject out of the 'ExplosionMobile' GameObject, making Fireball stand alone.
- - Delete the 'ExplosionMobile' GameObject.
- - Rename Fireball to 'Explosion'.
+ - Back at the top of the Particle System component, set:
+   - Duration: 0.5
+   - Looping: Off
+   - Start Lifetime: 0.5
+   - Start Size: 30
+   - Scaling Mode: Local
 
-<img src="http://i.imgur.com/IPPAzHG.gif" width=200px />
+<img src="http://i.imgur.com/1iwISYe.png" width=150px />
 
- - To preview the Explosion effect, select the GameObject.  In the 'Scene' tab a 'Particle effect' panel appears.  Click 'Stop' and then 'Simulate' to see the explosion.
- - Under the Particle Systems component, change the 'Scaling Mode' to 'Local'.
- - Change the Transform scale to about (.25, .25, .25).
- - Preview the Explosion effect again.
+ - Update the Transform scale to about (.05, .05, .05)
+ - Enable Color over Lifetime, and then:
+   - Click the color to open the Gradient editor.
+   - Click above the color bar, about 1/5th in from the left - creating a keyframe.
+   - Click on the top left keyframe, change Alpha to 0.  Do the same for the top right.
+   - Click on the bottom left keyframe, change the color to Hex 'FFF3DD'.
 
-<img src="http://i.imgur.com/bOWigXy.gif" width=300px />
+<img src="http://i.imgur.com/x7tYdUE.gif" width=300px />
 
- - Drag/drop the Explosion GameObject to Asserts/Prefabs to create a prefab.
- - Delete the Explosion GameObject.
+ - Under 'Emission':
+   - Rate over Time: 0
+   - Click the '+' under 'Bursts' to create an entry, change
+     - Min: 3
+     - Max: 3
 
-Note that by default Unity scales particle systems based on the viewport size.  This means that while previewing the effect in the 'Scene' tab, the size you see relative to the world may not be what's going to happen in game.  To limit impact from this, you can change the 'Max Particle Size' to 1 - but for best results always confirm your work in the 'Game' tab while playing.
+<img src="http://i.imgur.com/TPWUZjE.png" width=300px />
 
-<img src="http://i.imgur.com/h12U4xa.png" />
+ - Drag the 'Explosion' into Assets/Prefabs and delete the GameObject.
 
-</details>
+<hr></details><br>
 <details><summary>What's a particle / particle system?</summary>
 
 A particle is a small 2D image managed by a particle system.  It's optimized to display a large number of similar particles at the same time, possible with different colors, sizes, etc.
@@ -1139,80 +905,77 @@ If you are not going to build for WebGL, go ahead and try using the ExplosionMob
 
 </details>
 
-## Explosion self destruct
+## Spawn explosion when the character dies
 
-Create a script to destroy the explosion GameObject after the effect completes.
+Add a script which spawns the explosion prefab when the character dies.
 
 <details><summary>How</summary>
 
- - Create a C# script "SuicideIn" under Assets/Code/Components/Death.
- - Select the Fireball prefab, add the SuicideIn component.
- - Paste in the following code:
- 
+ - Create a script **DeathEffectSpawn** under Assets/Code/Compenents/Death and paste the following:
+
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Destroy's the GameObject after timeTillDeath seconds
-/// since the object was instatiated have passed.
-/// </summary>
-public class SuicideIn : MonoBehaviour
+[RequireComponent(typeof(Collider2D))]
+public class DeathEffectSpawn : DeathEffect
 {
-  /// <summary>
-  /// How long, in seconds, till this object should be destroyed.
-  /// </summary>
   [SerializeField]
-  float timeTillDeath = 5;
-  
-  /// <summary>
-  /// A Unity event, called when this GameObject
-  /// is instatiated.
-  /// 
-  /// Begin the countdown till Destroy.
-  /// </summary>
-  protected void Start()
-  {
-    Debug.Assert(timeTillDeath > 0,
-      "timeTillDeath must be greater than 0");
+  GameObject gameObjectToSpawnOnDeath;
 
-    Destroy(gameObject, timeTillDeath);
+  public override float timeUntilObjectMayBeDestroyed
+  {
+    get
+    {
+      return 0;
+    }
+  }
+
+  public override void PlayDeathEffects()
+  {
+    Collider2D collider = GetComponent<Collider2D>();
+
+    Instantiate(
+      gameObjectToSpawnOnDeath,
+      collider.bounds.center, 
+      Quaternion.identity);
   }
 }
 ```
 
-</details>
-<details><summary>Why bother, the explosion is not visible after a few seconds?</summary>
+ - Add 'DeathEffectSpawn' to the character (this will automatically add a DeathEffectManager as well).
+ - Assign the Explosion prefab to 'Game Object To Spawn'.
 
-Similar to how we destroyed balls which rolled off the bottom of the screen in chapter 1, we need to ensure the explosion GameObjects are destroyed at some point.
+<hr></details><br>
+<details><summary>TODO</summary>
 
-The explosion effect on screen only lasts for a few seconds, but Unity does not realize this on its own.  Destroying the GameObject prevents Unity from wasting resources on the old GameObjects which are never going to be visible again.
+TODO
+Click play and an explosion should spawn when the player dies:
 
-In other words, this script ensures that our explosions do not result in a memory leak.
+<img src="http://i.imgur.com/XhhkRpC.gif" width=200px />
+
+<hr></details>
+<details><summary>Why not spawn the explosion at transform.position?</summary>
+
+The character sprite was configured with Pivot 'Bottom'.  The transform.position refers to the location of this pivot point.  If we were to target tranform.position instead, the explosion would center around the character's feet.
+
+This component could be reused on other GameObjects which may have a different pivot point. It will work correctly so long as the object has a collider.
+
+We use the collider's bounds to determine where to spawn the explosion.  The [bounds struct](https://docs.unity3d.com/ScriptReference/Bounds.html) has a number of convienent methods for things like determining the center point of an object.
 
 </details>
 
 
 ## Explosion sound effect
 
-Add a sound effect to the explosion prefab.  We are using a [shotgun blast from Sound Bible](http://soundbible.com/1919-Shotgun-Blast.html).
+Add a sound effect to the explosion prefab.  
 
 <details><summary>How</summary>
 
- - Drag/drop the .wav file into Assets/Art.
- - Drag/drop the Explosion prefab into the Hierarchy to create a GameObject.
- - Drag/drop the .wav file from Assets/Art onto the Explosion GameObject.
+ - Select the Explosion prefab.
+ - Add 'AudioSource'.
+ - Change the AudioClip to 'Death'.
 
- This creates an AudioSource component on the GameObject.
-
- - Click 'Apply' prefab.
-
-<img src="http://i.imgur.com/atFbwlK.png" width=100px />
-
- - Delete the Explosion GameObject from the Hierarchy.
-
-Hit play, you should hear the sound when the player dies.
-
-</details>
+<hr></details><br>
 <details><summary>Why is Audio on a GameObject vs simply a clip which is played?</summary>
 
 Audio playback in Unity is built to support 3D audio.  3D audio refers to the feature where the closer an object making noise is to your ear, the louder it is.  Additionally 3D sound is directional, so sounds to the players left would be loudest in the left speaker.
@@ -1278,76 +1041,114 @@ protected void OnEnable()
 </details>
 
 
+## Explosion self destruct
 
-## Spawn explosion when the character dies
-
-Add a script which spawns the explosion prefab when the character dies.
+Create a script to destroy the explosion GameObject after the effect completes.
 
 <details><summary>How</summary>
 
- - Create a C# script "DeathEffectSpawn" under Assets/Code/Components/Death.
- - Select the Character GameObject and add the DeathEffectSpawn component.
- - Paste in the following code:
+ - Create a script **SuicideIn** under Assets/Code/Compenents/Death and paste the following:
 
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Spawns another GameObject before this GameObject is destroyed.
-/// </summary>
-[RequireComponent(typeof(Collider2D))]
-public class DeathEffectSpawn : DeathEffect
+public class SuicideIn : MonoBehaviour
 {
   [SerializeField]
-  GameObject gameObjectToSpawnOnDeath;
+  float timeTillDeath = 5;
+  
+  protected void Start()
+  {
+    Destroy(gameObject, timeTillDeath);
+  }
+}
+```
+
+ - Add 'SuicideIn' to the explosion prefab.
+
+<hr></details><br>
+<details><summary>Why bother, the explosion is not visible after a few seconds?</summary>
+
+Similar to how we destroyed balls which rolled off the bottom of the screen in chapter 1, we need to ensure the explosion GameObjects are destroyed at some point.
+
+The explosion effect on screen only lasts for a few seconds, but Unity does not realize this on its own.  Destroying the GameObject prevents Unity from wasting resources on the old GameObjects which are never going to be visible again.
+
+In other words, this script ensures that our explosions do not result in a memory leak.
+
+</details>
+
+
+## Animate characters death
+
+Add a scaling effect for the character dieing, in addition to the explosion.
+
+<details><summary>How</summary>
+
+ - Create a script **DeathEffectThrob** under Assets/Code/Compenents/Death and paste the following:
+
+```csharp
+using UnityEngine;
+using System.Collections;
+using System;
+
+public class DeathEffectThrob : DeathEffect
+{
+  [SerializeField]
+  float lengthOfEffectInSeconds = 1;
+
+  [SerializeField]
+  int numberOfPulses = 5;
 
   public override float timeUntilObjectMayBeDestroyed
   {
     get
     {
-      return 0;
+      return lengthOfEffectInSeconds;
     }
   }
 
   public override void PlayDeathEffects()
   {
-    Debug.Assert(gameObjectToSpawnOnDeath != null,
-      "gameObjectToSpawnOnDeath must not be null");
+    StartCoroutine(ThrobToDeath());
+  }
+  
+  IEnumerator ThrobToDeath()
+  {
+    Debug.Assert(lengthOfEffectInSeconds > 0);
+    Debug.Assert(numberOfPulses > 0);
 
-    Collider2D collider = GetComponent<Collider2D>();
+    float timePerPulse 
+      = lengthOfEffectInSeconds / numberOfPulses;
+    float timeRun = 0;
+    while(timeRun < lengthOfEffectInSeconds)
+    {
+      float percentComplete 
+        = timeRun / lengthOfEffectInSeconds;
+      float sinValue 
+        = Mathf.Sin(Mathf.PI * timeRun / timePerPulse);
+      float pulse = (.5f + Mathf.Abs(sinValue));
+      float scale = (1 - percentComplete) * pulse;
+      gameObject.transform.localScale 
+        = Vector3.one * scale;
 
-    // Spawn the other GameObject at my current location
-    Instantiate(
-      gameObjectToSpawnOnDeath,
-      collider.bounds.center, 
-      Quaternion.identity);
+      yield return 0;
+      timeRun += Time.deltaTime;
+    }
+
+    Destroy(gameObject);
   }
 }
 ```
 
- - Select the Character GameObject and under DeathEffectSpawn, assign the Explosion prefab to 'Game Object To Spawn'.
+ - Add 'DeathEffectThrob' to the character.
 
-Click play and an explosion should spawn when the player dies:
-
-<img src="http://i.imgur.com/XhhkRpC.gif" width=200px />
-
-</details>
-
-<details><summary>Why not spawn the explosion at transform.position?</summary>
-
-The character sprite was configured with Pivot 'Bottom'.  The transform.position refers to the location of this pivot point.  If we were to target tranform.position instead, the explosion would center around the character's feet.
-
-This component could be reused on other GameObjects which may have a different pivot point. It will work correctly so long as the object has a collider.
-
-We use the collider's bounds to determine where to spawn the explosion.  The [bounds struct](https://docs.unity3d.com/ScriptReference/Bounds.html) has a number of convienent methods for things like determining the center point of an object.
-
-</details>
-
-## Animate characters death
-
-TODO Player DeathEffectThrobToDeath, 
+<hr></details><br>
+<details><summary>TODO</summary>
 
 TODO FaQ why not animation?  Could, more on that next chapter.  This is yet another way.
+
+<hr></details>
+
 
 
 ## Test!
