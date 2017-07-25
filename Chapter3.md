@@ -40,6 +40,7 @@ Create a prefab for the fly guy reusing components from the spike ball and chara
 
  - Create a prefab for 'FlyGuy' and delete the GameObject.
  - Add Spawner to the door and assign FlyGuy as the thing to spawn.
+ - Change the initial wait time to 10.
 
 </details>
 
@@ -356,8 +357,12 @@ Quaternion rotationOfZ60Degrees
 ```
 
 </details>
+<details><summary>TODO</summary>
 
 TODO why Quaternion.Euler(0, 180, 0) when you said before 2D games only rotate around the z axis?
+
+<hr></details>
+
 
 
 <details><summary>Why not compare to 0 when checking if there is no movement?</summary>
@@ -518,7 +523,7 @@ To test, look at the life count go down in the GameController component.
 
 ## Respawn on death
 
-Add scripts to reset the spawner and clear the world when the character dies.
+Add scripts to respawn the character when he dies.
 
 <details><summary>How</summary>
 
@@ -530,154 +535,87 @@ public interface ICareWhenPlayerDies
   void OnPlayerDeath();
 }
 ```
-
- - Update the 'GameController' script as follows (or copy/paste the full version - TODO link):
-
-
-
-<details><summary>Existing code</summary>
+ - Create a script **LevelManager** under Assets/Code/Compenents/Controllers and paste the following:
 
 ```csharp
+using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class LevelManager : MonoBehaviour
+{
+  [SerializeField]
+  GameObject playerPrefab;
+
+  protected bool isGameOver;
+  
+  protected void Start()
+  {
+    GameController.instance.onLifeCounterChange 
+      += Instance_onLifeCounterChange;
+    Instantiate(playerPrefab);
+  }
+
+  protected void OnDestroy()
+  {
+    GameController.instance.onLifeCounterChange 
+      -= Instance_onLifeCounterChange;
+  }
+
+  void Instance_onLifeCounterChange()
+  {
+    if(isGameOver)
+    {
+      return;
+    }
+
+    if(GameController.instance.lifeCounter <= 0)
+    {
+      isGameOver = true;
+      YouLose();
+    }
+    else
+    {
+      RestartLevel();
+    }
+  }
+
+  public virtual void YouWin()
+  {
+    if(isGameOver == true)
+    { 
+      return;
+    }
+
+    isGameOver = true;
+  }
+
+  void RestartLevel()
+  {
+    GameObject[] gameObjectList = GameObject.FindObjectsOfType<GameObject>();
+    for(int i = 0; i < gameObjectList.Length; i++)
+    {
+      ICareWhenPlayerDies[] careList = gameObjectList[i].GetComponents<ICareWhenPlayerDies>();
+      for(int j = 0; j < careList.Length; j++)
+      {
+        ICareWhenPlayerDies care = careList[j];
+        care.OnPlayerDeath();
+      }
+    }
+    Instantiate(playerPrefab);
+  }
+  
+  void YouLose()
+  {
+    // TODO
+  }
+}
 ```
 
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-```csharp
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-```
-
-</details>
-
-
-
- - Distribute message
- - Reset spawner
- - Kill enemies
- - 
+ - Add GameObject for LevelManager.
+ - Position the character over the door.
+ - Create a prefab for the character, and delete the GameObject.
+ - In the LevelManager, assign the character prefab.
 
 <hr></details><br>
 <details><summary>TODO</summary>
@@ -687,11 +625,120 @@ TODO
 <hr></details>
 
 
-TODO
-end of level / respawn and scene changes
+## Clear and restart the level on death
 
-- Lives
-- other characters suicide
+Add scripts to kill all the enemies and restart spawners when the character dies.
+
+<details><summary>How</summary>
+
+ - Create a script **SuicideWhenPlayerDies** under Assets/Code/Utils and paste the following:
+
+```csharp
+using UnityEngine;
+
+public class SuicideWhenPlayerDies : MonoBehaviour, ICareWhenPlayerDies
+{
+  void ICareWhenPlayerDies.OnPlayerDeath()
+  { 
+    Destroy(gameObject);
+  }
+}
+```
+
+ - Add SuicideWhenPlayerDies to the fly guy and the spike ball prefabs.
+ - Update the 'Spawner' script as follows (or copy/paste TODO link):
+
+<details><summary>Existing code</summary>
+
+```csharp
+using System;
+using System.Collections;
+using UnityEngine;
+
+/// <summary>
+/// Instantiates a prefab at this object's location 
+/// periodically.
+/// </summary>
+public class Spawner : MonoBehaviour
+```
+
+</details>
+
+```csharp
+  , ICareWhenPlayerDies 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+{
+  [SerializeField]
+  GameObject thingToSpawn;
+
+  [SerializeField]
+  float initialWaitTime = 2;
+
+  [SerializeField]
+  float minTimeBetweenSpawns = .5f;
+
+  [SerializeField]
+  float maxTimeBetweenSpawns = 10;
+
+  protected void Start()
+  {
+    StartCoroutine(SpawnEnemies());
+  }
+```
+
+</details>
+
+```csharp
+  void ICareWhenPlayerDies.OnPlayerDeath() 
+  {
+    StopAllCoroutines();
+    StartCoroutine(SpawnEnemies());
+  }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  IEnumerator SpawnEnemies()
+  {
+    Debug.Assert(thingToSpawn != null);
+    Debug.Assert(initialWaitTime >= 0);
+    Debug.Assert(minTimeBetweenSpawns >= 0);
+    Debug.Assert(
+      maxTimeBetweenSpawns >= minTimeBetweenSpawns);
+
+    yield return new WaitForSeconds(initialWaitTime);
+
+    while(true)
+    {
+      Instantiate(
+        thingToSpawn, 
+        transform.position, 
+        Quaternion.identity);
+
+      float sleepTime = UnityEngine.Random.Range(
+        minTimeBetweenSpawns, 
+        maxTimeBetweenSpawns);
+      yield return new WaitForSeconds(sleepTime);
+    }
+  }
+}
+```
+
+</details>
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+
 
 ## Restrict movement to stay on screen
 
@@ -1921,6 +1968,26 @@ aoeu
 ```
 
 </details>
+
+## Prevent enemies spawning on top of the character
+
+Update the door spawner so that it does not spawn if the character is too close.
+
+<details><summary>How</summary>
+
+ - Update the 'Spawner' script with the following (or copy/paste TODO link):
+
+Use Collider2D overlap.
+
+
+TODO
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
 
 
 ## Add points for jumping over enemies
