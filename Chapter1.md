@@ -59,9 +59,6 @@ Presenting the 2D vs 3D option when you create a new project suggests this is a 
 
 Create directories and import assets.  TODO link
 
-We are using:
- - [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) **spritesheets/spritesheet_ground.png**.
-
 <details><summary>How</summary>
 
  - Right click in the 'Project' window's Assets directory -> Create Folder named "Art".
@@ -81,8 +78,15 @@ We are using:
 
 TODO create directory struture
 
+<hr></details><br>
+<details><summary>TODO</summary>
+
+We are using:
+ - [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) **spritesheets/spritesheet_ground.png**.
+
 <hr></details>
-<br>
+
+
 <details><summary>Can I name folders differently?</summary>
 
 aoeu

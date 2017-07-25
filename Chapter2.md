@@ -6,7 +6,7 @@ This assumes you completed chapter 1, or you can download the project so far. (T
 
 TODO tutorial video link
 
-TODO gif
+<img src="http://i.imgur.com/s0EO9f5.gif" width=300px />
 
 demo build of level 2
 

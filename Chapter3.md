@@ -1,140 +1,268 @@
 # 3) Advanced scripting
 
+In chapter 3, TODO intro...
 
+This assumes you completed chapter 2, or you can download the project so far. (TODO link)
 
+TODO tutorial video link
 
-## Fly guy (TODO)
+TODO gif
 
-Door spawner
- - Prevent walking into walls?
+demo build of level 3
+
+## Spawn a flying enemy
+
+Create a prefab for the fly guy reusing components from the spike ball and character.  Create a second spawner at the bottom for fly guys.
 
 <details><summary>How</summary>
 
- - Select the sprites for the walk animation, we are using 30, 84, and 90.
- - Drag into the Hierarchy to create the GameObject and animation.  Save as Assets/Animations/FlyWalk.
- - Rename to "FlyGuy"
- - Set the Layer for FlyGuy to 'Enemy'.
+ - Select **spritesheet_jumper_30**, **84**, and **90** and drag them into the Hierarchy, creating Assets/Animations/**FlyGuyWalk**.
  - Set Order in Layer to 1.
- - Add Rigidbody2D 
- - Freeze the Z rotation.
- - Add a CircleCollider2D.
- - Size the collider.
- - Create a Layer for "Feet".
- - Set the Layer for the FlyGuy's Feet to 'Feet'.
- - Size and position the collider 
- - Add FloorDetector, WalkMovement, KeepWalkMovementOnScreen, LadderMovement, RotateFacingDirection.
+ - Add it to a parent GameObject named "FlyGuy".
+ - Set the Layer for FlyGuy to 'Enemy'.
+ - Add a Rigidbody2D and freeze the Z rotation.
+ - Add a CapsuleCollider2D and adjust the size.
+
+<img src="http://i.imgur.com/d1lxoEj.png" width=150px />
+ 
+ - Add WalkMovement.
  - Add KillOnContactWith and set the layermask to Player.
- - Update the matrix to disable Feet / Player, Feet / Enemy, and Feet / Feet collisions.
+ - Drag in **spritesheet_tiles_43** and then drag in **47**, add them to a parent named "Door".
+ - Set Order in Layer to -2.
+ - Scale up the size of the door to about (1.5, 1.5, 1.5).
+ - Move the door to the bottom left of the level and position its Y so that the midpoint of the Door approximitally aligns with the midpoint of the FlyGuy (at the height we would want it to spawn).
+
+<img src="http://i.imgur.com/EjVJkZ4.gif" width=300px />
+
+ - Move the sprite for the top into position, then vertex snap the bottom.
+
+<img src="http://i.imgur.com/SF57oFs.gif" width=150px />
+
+ - Create a prefab for 'FlyGuy' and delete the GameObject.
+ - Add Spawner to the door and assign FlyGuy as the thing to spawn.
+
 </details>
 
-## Flying feet
-
-Add feet so that the body of this entity is above the ground.
-
-<details><summary>How</summary>
-
- - Add an empty GameObject as a child under the FlyGuy.  Name it "aoeu".
-   - Confirm it has a default transform.
- - Add a CapsuleCollider2D to the Feet.
-
-
-</details>
 
 ## Make the fly guy walk
 
-Add a
+Add a script to the fly guy to drive random walk movement.
 
 <details><summary>How</summary>
 
-
-aoeu
+ - Create a script **WanderWalkController** under Assets/Code/Compenents/Movement and paste the following:
 
 ```csharp
+using System.Collections;
+using UnityEngine;
 
+[RequireComponent(typeof(WalkMovement))]
+public class WanderWalkController : MonoBehaviour
+{
+  [SerializeField]
+  float oddsOfGoingUpHill = .8f;
+
+  [SerializeField]
+  float timeBeforeFirstWander = 5;
+
+  [SerializeField]
+  float minTimeBetweenReconsideringDirection = 1;
+
+  [SerializeField]
+  float maxTimeBetweenReconsideringDirection = 10;
+
+  WalkMovement walkMovement;
+
+  protected void Awake()
+  {
+    walkMovement = GetComponent<WalkMovement>();
+  }
+
+  protected void Start()
+  {
+    StartCoroutine(Wander());
+  }
+
+  IEnumerator Wander()
+  {
+    walkMovement.desiredWalkDirection = 1;
+    yield return new WaitForSeconds(timeBeforeFirstWander);
+
+    while(true)
+    {
+      SelectARandomWalkDirection();
+      float timeToSleep = UnityEngine.Random.Range(
+        minTimeBetweenReconsideringDirection,
+        maxTimeBetweenReconsideringDirection);
+      yield return new WaitForSeconds(timeToSleep);
+    }
+  }
+
+  void SelectARandomWalkDirection()
+  {
+    walkMovement.desiredWalkDirection
+      = UnityEngine.Random.value >= .5f ? 1 : -1;
+  }
+}
 ```
+
+ - Add WanderWalkController to the FlyGuy prefab.
 
 </details>
 
 
-## Add the spawner
+## Flying feet
 
-Add and configure a spawner for the FlyGuy.
+Add a second collider so that the body of this entity is above the ground but does not kill a character walking underneath.
 
 <details><summary>How</summary>
 
- - Add the sprite(s) to the scene.
- - Create a prefab for FlyGuy.
- - Add the Spawner component and set the Thing to Spawn to the fly guy prefab.
- - Door Order in Layer -1
- 
-aoeu
+ - Drag the prefab into the Hierarchy so we can edit the GameObject.
+ - Add an empty GameObject as a child under the FlyGuy.  Name it "Feet".
+ - Create a Layer for "Feet" and assign it to the Feet GameObject.
+ - Update the Physics 2D collision matrix to disable Feet / Player, Feet / Enemy, and Feet / Feet collisions.
+ - Add a CircleCollider2D to the Feet and size and position it below the body.
 
-TODO - scale the parent gameObject.
-For position, spawn happens at the parent GameObject's location.  Try to position that near the middle of the visuals for the door.
+<img src="http://i.imgur.com/VMPqiFE.png" width=300px />
 
-</details>
+ - Apply changes to the prefab and delete the GameObject.
 
+<img src="http://i.imgur.com/vJFzcOk.png" width=300px />
+
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
 
 
 ## Fade in entities
 
-Disable WanderWalkMovement component
-FadeIn script
-Configure to enable the WanderWalkMovement
-
-both flyguy and character
-
-
-## Rotate the character when he walks the other way
-
-Flip the character's sprite when he switches between walking left and walking right.
+Add a script to entities so they fade in before moving.
 
 <details><summary>How</summary>
 
- - Create a C# script "RotateFacingDirection" under Assets/Code/Components/Movement.
- - Select the character GameObject and add the RotateFacingDirection component.
- - Paste in the following code:
+ - Create a script **SpriteExtensions** under Assets/Code/Utils and paste the following:
 
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Rotates an entity based on it's current horizontal velocity.
-/// 
-/// This causes entities to face the direction they are walking.
-/// </summary>
+public static class SpriteExtensions
+{
+  public static void SetColor(
+    this SpriteRenderer[] spriteList,
+    Color color)
+  {
+    for(int i = 0; i < spriteList.Length; i++)
+    {
+      SpriteRenderer sprite = spriteList[i];
+      sprite.color = color;
+    }
+  }
+
+  public static void SetAlpha(
+    this SpriteRenderer[] spriteList,
+    float alpha)
+  {
+    for(int i = 0; i < spriteList.Length; i++)
+    {
+      SpriteRenderer sprite = spriteList[i];
+      Color originalColor = sprite.color;
+      sprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+    }
+  }
+}
+```
+
+ - Create a script **FadeInThenEnable** under Assets/Code/Compenents/Life and paste the following:
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+public class FadeInThenEnable : MonoBehaviour
+{
+  [SerializeField]
+  float timeTillEnabled;
+
+  [SerializeField]
+  MonoBehaviour[] componentsToEnable;
+
+  protected void Start()
+  {
+    StartCoroutine(FadeIn());
+  }
+
+  IEnumerator FadeIn()
+  {
+    SpriteRenderer[] spriteList
+      = gameObject.GetComponentsInChildren<SpriteRenderer>();
+
+    float timePassed = 0;
+    while(timePassed < timeTillEnabled)
+    {
+      float percentComplete = timePassed / timeTillEnabled;
+      spriteList.SetAlpha(percentComplete);
+
+      yield return 0;
+
+      timePassed += Time.deltaTime;
+    }
+
+    for(int i = 0; i < componentsToEnable.Length; i++)
+    {
+      MonoBehaviour component = componentsToEnable[i];
+      component.enabled = true;
+    }
+  }
+}
+```
+
+ - Add FadeInThenEnable to the character.
+ - Disable the character's PlayerController.
+
+<img src="http://i.imgur.com/5WtzPmv.png" width=300px />
+
+ - Configure FadeInThenEnable:
+   - Add 1 entry to the Components to Enable list.
+   - Drag/drop the PlayerController into the list.
+
+<img src="http://i.imgur.com/hrXMt1f.gif" width=300px />
+
+ - Add FadeInThenEnable to the fly guy prefab, disabling the WanderWalkController and assigning that to the Components to Enable list.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+
+
+## Rotate entities when they walk the other way
+
+Flip the entity when they switch between walking left and walking right.
+
+<details><summary>How</summary>
+
+ - Create a script **RotateFacingDirection** under Assets/Code/Compenents/Movement and paste the following:
+
+```csharp
+using UnityEngine;
+
 [RequireComponent(typeof(Rigidbody2D))]
 public class RotateFacingDirection : MonoBehaviour
 {
-  /// <summary>
-  /// The rotation that's applied when looking left (vs right).
-  /// </summary>
-  /// <remarks>
-  /// Cached here for performance.
-  /// </remarks>
-  static readonly Quaternion backwardsRotation = Quaternion.Euler(0, 180, 0);
+  static readonly Quaternion backwardsRotation 
+    = Quaternion.Euler(0, 180, 0);
 
-  /// <summary>
-  /// Used to control movement.
-  /// </summary>
-  /// <remarks>
-  /// Cached here for performance.
-  /// </remarks>
   Rigidbody2D myBody;
 
-  /// <summary>
-  /// The direction we are currently walking, 
-  /// used to know when we turn around.
-  /// </summary>
-  /// <remarks>
-  /// Defaults to true as our entities are configured facing right.
-  /// </remarks>
   bool _isGoingRight = true;
 
-  /// <summary>
-  /// The direction we are currently walking.
-  /// When changed, flips the rotation so the entity is facing forward.
-  /// </summary>
   public bool isGoingRight
   {
     get
@@ -144,46 +272,40 @@ public class RotateFacingDirection : MonoBehaviour
     private set
     {
       if(isGoingRight == value)
-      { // The value is not changing
+      { 
         return;
       }
 
-      // Flip the entity
       transform.rotation *= backwardsRotation;
       _isGoingRight = value;
     }
   }
 
-  /// <summary>
-  /// A Unity event, called before this GameObject is instantiated.
-  /// </summary>
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
     Debug.Assert(myBody != null);
   }
 
-  /// <summary>
-  /// A Unity event, called each frame.
-  /// 
-  /// Updates the entities rotation.
-  /// </summary>
   protected void Update()
   {
     float xVelocity = myBody.velocity.x;
-    // If there is any horizontal movement
     if(Mathf.Abs(xVelocity) > 0.1)
     { 
-      // Determine the current walk direction
-      // This may rotate the sprite c/o
-      // the smart property above.
       isGoingRight = xVelocity > 0;
     }
   }
 }
 ```
 
-</details>
+ - Add RotateFacingDirection to the character and the fly guy prefab.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+Why, the fly guy looks the same rotated.  Well may not be true for all art.  And simplifies the rotate to align with platforms coming up.
+
+<hr></details>
 <details><summary>What's a C# smart property?</summary>
 
 In C#, data may be exposed as either a Field or a Property.  Fields are simply data as one would expect.  Properties are accessed in code like a field is, but they are capable of more.
@@ -248,87 +370,67 @@ In the example above, as the velocity approaches zero, the significance of if th
 
 </details>
 
+
 ## Create a GameController script
 
 Create a singleton GameController to track points, lives, and hold global data such as the world size.
 
 <details><summary>How</summary>
 
-  - Create a new GameObject named "GameController"
-  - Create a script also named "GameController" and add it to the GameObject just created.
-  - Paste the following:
+ - Create a script **GameController** under Assets/Code/Compenents/Controllers and paste the following:
 
 ```csharp
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Tracks information which persists between scenes.
-/// 
-/// Singleton: This should appear in every scene, 
-/// and only the first will survive.
-/// </summary>
 public class GameController : MonoBehaviour
 {
-  /// <summary>
-  /// A convenient way to access this singleton.
-  /// </summary>
-  /// <remarks>
-  /// Optional, could us GameObject.FindObjectByType instead.
-  /// </remarks>
   public static GameController instance;
 
-  /// <summary>
-  /// Player's remaining life.  
-  /// 
-  /// Each game we reset to the initial value.
-  /// </summary>
-  public int lifeCounter = 3;
+  public event Action onLifeCounterChange;
 
-  /// <summary>
-  /// Stores the original lifeCounter value, 
-  /// allowing us to reset to the between games.
-  /// </summary>
+  [SerializeField] 
+  int _lifeCounter = 3; 
+
+  public int lifeCounter
+  {
+    get
+    {
+      return _lifeCounter;
+    }
+    set
+    {
+      _lifeCounter = value;
+      if(onLifeCounterChange != null)
+      {
+        onLifeCounterChange();
+      }
+    }
+  }
+
   int originalLifeCount;
 
-  /// <summary>
-  /// Player's total points so far this game.
-  /// </summary>
-  [NonSerialized]
   public int points;
 
-  /// <summary>
-  /// The visible area of the world.  Used to react to 
-  /// things being at the edge of the screen.
-  /// </summary>
   public Bounds screenBounds
   {
     get; private set;
   }
 
-  /// <summary>
-  /// A Unity event, called before this GameObject is instantiated.
-  /// 
-  /// Destroy gameobject if this is the second game controller 
-  /// (guaranteeing one in the scene).
-  /// </summary>
   protected void Awake()
   {
     Debug.Assert(lifeCounter > 0);
 
     if(instance != null)
     {
-      // There is already a GameController,
-      // we don't need another.
       Destroy(gameObject);
       return;
     }
-    
+
     instance = this;
     originalLifeCount = lifeCounter;
 
-    // Calculate size of the visible world
     Camera camera = Camera.main;
     Vector2 screenSize = new Vector2(
       (float)Screen.width / Screen.height,
@@ -338,36 +440,24 @@ public class GameController : MonoBehaviour
       (Vector2)camera.transform.position,
       screenSize);
 
-    // Ensure this GameObject never dies.
     DontDestroyOnLoad(gameObject);
 
-    // Subscribe to scene changes, to consider
-    // reseting the game (points/lives).
     SceneManager.sceneLoaded += SceneManager_sceneLoaded;
 
     Debug.Assert(originalLifeCount > 0);
     Debug.Assert(screenBounds.size.magnitude > 0);
   }
 
-  /// <summary>
-  /// On scene change, consider reset game data (i.e. points/life).
-  /// </summary>
-  /// <param name="scene">The scene being loaded ATM.</param>
-  /// <param name="loadMode">ignored</param>
   void SceneManager_sceneLoaded(
     Scene scene,
     LoadSceneMode loadMode)
   {
-    // When you return to the menu, reset the game.
     if(scene.name == "MainMenu")
     {
       Reset();
     }
   }
 
-  /// <summary>
-  /// Resets life and points in preparation for a new game.
-  /// </summary>
   void Reset()
   {
     lifeCounter = originalLifeCount;
@@ -378,13 +468,224 @@ public class GameController : MonoBehaviour
 }
 ```
 
-</details>
+  - Create a new GameObject named "GameController" and add the 'GameController' component.
 
-## Death effect to decrement lives
+<hr></details><br>
+<details><summary>TODO</summary>
 
 TODO
 
+Moves the GameObject to a DontDestroyOnLoad section in the Hierarchy.
+
+<hr></details>
+
+
+## Death effect to decrement lives
+
+Add a script to the character to decrement lives in the GameController on death.
+
+<details><summary>How</summary>
+
+ - Create a script **DeathEffectDecrementLives** under Assets/Code/Compenents/Death and paste the following:
+
+```csharp
+public class DeathEffectDecrementLives : DeathEffect
+{
+  public override float timeUntilObjectMayBeDestroyed
+  {
+    get
+    {
+      return 0;
+    }
+  }
+
+  public override void PlayDeathEffects()
+  {
+    GameController.instance.lifeCounter--;
+  }
+}
+```
+
+ - Add it to the character.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+To test, look at the life count go down in the GameController component.
+
+<hr></details>
+
+
 ## Respawn on death
+
+Add scripts to reset the spawner and clear the world when the character dies.
+
+<details><summary>How</summary>
+
+ - Create a script **ICareWhenPlayerDies** under Assets/Code/Compenents/Death and paste the following:
+
+```csharp
+public interface ICareWhenPlayerDies
+{
+  void OnPlayerDeath();
+}
+```
+
+ - Update the 'GameController' script as follows (or copy/paste the full version - TODO link):
+
+
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+```csharp
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+```
+
+</details>
+
+
+
+ - Distribute message
+ - Reset spawner
+ - Kill enemies
+ - 
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
 
 TODO
 end of level / respawn and scene changes
@@ -507,6 +808,11 @@ In this component we are setting transform.position for the teleport effect.  If
 </details>
 
 
+
+
+TODO WanderWalk needs floordetector, laddermovement, and GameController screen bounds.
+ - Add components FloorDetector,  KeepWalkMovementOnScreen, LadderMovement, RotateFacingDirection.
+ - Prevent walking into walls?
 
 ## Detect floors
 
@@ -1025,9 +1331,6 @@ public class RotateToAlignWithFloor : MonoBehaviour
 
 TODO what is lerp (and slerp?)
 
-## Add points for jumping over enemies
-
-TODO
 
 ## Add Ladder sprites to the world
 
@@ -1619,6 +1922,10 @@ aoeu
 
 </details>
 
+
+## Add points for jumping over enemies
+
+TODO
 
 ## Test
 
