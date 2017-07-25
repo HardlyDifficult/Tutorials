@@ -21,7 +21,7 @@ Change the character's sprite sheet to use a bottom pivot point.
 
 <img src="http://i.imgur.com/BuIsVWD.png" width=300px />
 
-</details><br>
+<hr></details><br>
 <details><summary>What's Pivot do?</summary>
 
 A pivot point is the main anchor point for the sprite.  By default, pivot points are at the center of the sprite.  
@@ -152,25 +152,22 @@ We use constraints to remove capabilities from Unity, allowing us more control w
 
 </details>
 
-
 ## Add a script to move left & right
 
-Add a couple scripts to the character, one which enables moving left and right and another to map user input to movement.
+Add a script to the character to be able to move left and right once a controller is added.
 
 <details><summary>How</summary>
 
- - Create a C# script "WalkMovement" under Assets/Code/Components/Movement.
- - Select the Character GameObject and add the WalkMovement component.
- - Paste in the following code:
- 
+ - Create a script **WalkMovement** under Assets/Code/Compenents/Movement and paste the following:
+
 ```csharp
 using UnityEngine;
 using System;
 
 /// <summary>
-/// Controls the entity's walk movement.
+/// Controls the entity's ability to move left and right.
 /// 
-/// Another component drives walk via desiredWalkDirection.
+/// Another component drives walk w/ desiredWalkDirection.
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class WalkMovement : MonoBehaviour
@@ -178,7 +175,7 @@ public class WalkMovement : MonoBehaviour
   /// <summary>
   /// Set by another component to inform this component 
   /// it should walk. Positive to walk right, negative to 
-  /// walk left.  The magnitude is the walk speed.
+  /// walk left.  
   /// </summary>
   [NonSerialized]
   public float desiredWalkDirection;
@@ -202,42 +199,61 @@ public class WalkMovement : MonoBehaviour
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-
     Debug.Assert(myBody != null);
   }
 
   /// <summary>
   /// A Unity event, called every x ms of game time.
   /// 
-  /// Adds velocity to the rigidbody to move it horizontally.
+  /// Adds velocity to the rigidbody to move it
+  /// horizontally.
   /// </summary>
   /// <remarks>
-  /// With this approach, forces may not be used to impact the 
-  /// X on this entity.  E.g. if we wanted a fan which slowly 
-  /// pushed characters to the left, the force added would be 
-  /// lost here.  This matches the Unity example character asset 
-  /// as enabling forces on both dimentions cause movement to 
-  /// feel strange or leads to other experience problems which 
-  /// quickly complicate the code (but possible of course, 
-  /// just thing things through).
+  /// With this approach, forces may not be used to 
+  /// impact the X on this entity.  E.g. if we wanted a 
+  /// fan which slowly pushed characters to the left, the 
+  /// force added would be lost here.  This matches the
+  /// Unity example character asset as enabling forces on 
+  /// both dimentions cause movement to feel strange or 
+  /// leads to other experience problems which quickly 
+  /// complicate the code.
   /// </remarks>
   protected void FixedUpdate()
   {
     // Calculate the desired horizontal movement given 
     // the input desiredWalkDirection.
     float desiredXVelocity 
-      = desiredWalkDirection * walkSpeed * Time.fixedDeltaTime;
+      = desiredWalkDirection 
+        * walkSpeed 
+        * Time.fixedDeltaTime;
 
     // Any y velocity is preserved, this allows gravity
     // to continue working.
-    myBody.velocity = new Vector2(desiredXVelocity, myBody.velocity.y);
+    myBody.velocity = new Vector2(
+      desiredXVelocity, 
+      myBody.velocity.y);
   }
 }
 ```
+ - Add 'WalkMovement' to the character.
+ - Confirm the default values:
+   - Walk Speed: 100
 
- - Create a C# script "PlayerController" under Assets/Code/Components/Movement.
- - Select the Character GameObject and add the PlayerController component.
- - Paste in the following code:
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+What's a controller?  Why not read input here?
+
+<hr></details>
+
+## Add a player controller to the character
+
+Add a script to the character to read user input and drive movement.
+
+<details><summary>How</summary>
+
+ - Create a script **PlayerController** under Assets/Code/Compenents/Movement and paste the following:
 
 ```csharp
 using UnityEngine;
@@ -253,7 +269,7 @@ public class PlayerController : MonoBehaviour
   /// Used to cause the object to walk.
   /// </summary>
   WalkMovement walkMovement;
-
+  
   /// <summary>
   /// A Unity event, called once before the GameObject
   /// is instantiated.
@@ -261,7 +277,7 @@ public class PlayerController : MonoBehaviour
   protected void Awake()
   {
     walkMovement = GetComponent<WalkMovement>();
-    
+
     Debug.Assert(walkMovement != null);
   }
 
@@ -270,28 +286,23 @@ public class PlayerController : MonoBehaviour
   /// 
   /// Consider moving.
   /// </summary>
-  /// <remarks>
-  /// Moving uses an input state, and therefore may be captured 
-  /// on Update or FixedUpdate, we use FixedUpdate since physics 
-  /// also runs on FixedUpdate, so trying to do this on update would
-  /// require an extra cache (w/o benefit).
-  /// </remarks>
   protected void FixedUpdate()
   {
-    // Consider moving left/right based off keyboard input.
-    walkMovement.desiredWalkDirection 
+    // Consider moving left/right
+    walkMovement.desiredWalkDirection
       = Input.GetAxis("Horizontal");
   }
 }
 ```
 
+ - Add 'PlayerController' to the character.
+
+</details><br>
+<details><summary>TODO</summary>
+
 The character should walk around, but there is clearly work to be done:
 
 <img src="http://i.imgur.com/xOpivgJ.gif" />
-
-</details>
-
-<details><summary>TODO</summary>
 
 TODO
 Note the character will always be looking right, even while walking left.  He can also walk off the screen and push the balls around.  This will all be addressed later in the tutorial.
@@ -361,17 +372,13 @@ As discussed in chapter 1, Unity encourages a component based solution.  This me
 </details>
 
 
-## Jump
+## Add a script to jump
 
-Add the ability for the character to jump.  Add a sound effect as well, we are using 'phaseJump1' from [Kenney.nl's Digital Audio pack](http://kenney.nl/assets/digital-audio).
-
-Note the character will be able to double jump / fly, this will be addressed later in the tutorial.
+Add a script to the character to be able to jump and update the player controller to match.
 
 <details><summary>How</summary>
 
- - Create a C# script "JumpMovement" under Assets/Code/Components/Movement.
- - Select the Character GameObject and add the JumpMovement component.
- - Paste in the following code:
+ - Create a script **JumpMovement** under Assets/Code/Compenents/Movement and paste the following:
 
 ```csharp
 using UnityEngine;
@@ -382,30 +389,18 @@ using UnityEngine;
 /// Another component drives when to jump via Jump().
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(AudioSource))]
 public class JumpMovement : MonoBehaviour
 {
-  /// <summary>
-  /// The sound to play when the character starts their jump.
-  /// </summary>
-  [SerializeField]
-  AudioClip jumpSound;
-
   /// <summary>
   /// How much force to apply on jump.
   /// </summary>
   [SerializeField]
-  float jumpSpeed = 6.5f;
+  float jumpSpeed = 7f;
 
   /// <summary>
   /// Used to add force on jump.
   /// </summary>
   Rigidbody2D myBody;
-
-  /// <summary>
-  /// Used to play sound effects.
-  /// </summary>
-  AudioSource audioSource;
 
   /// <summary>
   /// Used to process events in FixedUpdate that 
@@ -420,10 +415,8 @@ public class JumpMovement : MonoBehaviour
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-    audioSource = GetComponent<AudioSource>();
 
     Debug.Assert(myBody != null);
-    Debug.Assert(audioSource != null);
   }
 
   /// <summary>
@@ -437,6 +430,11 @@ public class JumpMovement : MonoBehaviour
     wasJumpRequestedSinceLastFixedUpdate = true;
   }
 
+  /// <summary>
+  /// A Unity event, called every x ms of game time.
+  /// 
+  /// Consider jumping.
+  /// </summary>
   protected void FixedUpdate()
   {
     if(wasJumpRequestedSinceLastFixedUpdate)
@@ -445,26 +443,17 @@ public class JumpMovement : MonoBehaviour
       myBody.AddForce(
           new Vector2(0, jumpSpeed),
           ForceMode2D.Impulse);
-
-      // Play the sound effect
-      audioSource.PlayOneShot(jumpSound);
-
-      // Clear the jump flag, enabling the next jump
-      wasJumpRequestedSinceLastFixedUpdate = false;
     }
+
+    // Clear the jump flag, enabling the next jump
+    wasJumpRequestedSinceLastFixedUpdate = false;
   }
 }
 ```
-
- - Drag/drop the jump sound effect into Assets/Art.
- - Select the Character GameObject and add an 'AudioSource' component if it does not already have one.
- - Under the JumpMovement component for the character, assign the jummp sound.
-
-<img src="http://i.imgur.com/q4LEETw.gif" width=150px />
-
-
- - Edit the existing C# script "PlayerController" under Assets/Code/Components/Movement.
- - Add the following (or [click here for the full file to copy/paste from](TODO file link):
+ - Add 'JumpMovement' to the character.
+ - Confirm the default values:
+   - Jump Speed: 7
+ - Update the 'PlayerController' script as follows (or copy/paste the full version - TODO link):
 
 <details><summary>Existing code</summary>
 
@@ -481,11 +470,10 @@ using UnityEngine;
 </details>
 
 ```csharp
-[RequireComponent(typeof(JumpMovement))] 
+[RequireComponent(typeof(JumpMovement))]
 ```
 
 <details><summary>Existing code</summary>
-
 
 ```csharp
 public class PlayerController : MonoBehaviour
@@ -502,11 +490,10 @@ public class PlayerController : MonoBehaviour
   /// <summary>
   /// Used to cause the object to jump.
   /// </summary>
-  JumpMovement jumpMovement; 
+  JumpMovement jumpMovement;
 ```
 
 <details><summary>Existing code</summary>
-
 
 ```csharp
   /// <summary>
@@ -516,20 +503,19 @@ public class PlayerController : MonoBehaviour
   protected void Awake()
   {
     walkMovement = GetComponent<WalkMovement>();
-    Debug.Assert(walkMovement != null);
 ```
 
 </details>
 
 ```csharp
-    jumpMovement = GetComponent<JumpMovement>(); 
-    Debug.Assert(jumpMovement != null); 
+    jumpMovement = GetComponent<JumpMovement>();
+    Debug.Assert(jumpMovement != null);
 ```
 
 <details><summary>Existing code</summary>
 
-
 ```csharp
+    Debug.Assert(walkMovement != null);
   }
 
   /// <summary>
@@ -537,17 +523,12 @@ public class PlayerController : MonoBehaviour
   /// 
   /// Consider moving.
   /// </summary>
-  /// <remarks>
-  /// Moving uses an input state, and therefore may be captured 
-  /// on Update or FixedUpdate, we use FixedUpdate since physics 
-  /// also runs on FixedUpdate, so trying to do this on update would
-  /// require an extra cache (w/o benefit).
-  /// </remarks>
   protected void FixedUpdate()
   {
-    // Consider moving left/right based off keyboard input.
-    walkMovement.desiredWalkDirection 
+    // Consider moving left/right
+    walkMovement.desiredWalkDirection
       = Input.GetAxis("Horizontal");
+
   }
 ```
 
@@ -559,10 +540,6 @@ public class PlayerController : MonoBehaviour
   /// 
   /// Consider jumping.
   /// </summary>
-  /// <remarks>
-  /// Jumping uses an input event, and therefore must be
-  /// captured on Update.
-  /// </remarks>
   protected void Update()
   {
     if(Input.GetButtonDown("Jump"))
@@ -574,19 +551,24 @@ public class PlayerController : MonoBehaviour
 
 <details><summary>Existing code</summary>
 
-
 ```csharp
 }
 ```
 
 </details>
 
+<hr></details><br>
 
+
+<details><summary>TODO</summary>
 
 Click play, you can now jump around.  But you can hold onto the side of a platform while falling and spam the space bar to fly away:
 
 <img src="http://i.imgur.com/RRpRio5.gif" width=250px />
-</details>
+
+TODO gif is wrong
+
+<hr></details>
 <details><summary>Why AddForce here instead and what's 'Impulse'?</summary>
 
 As discussed above when creating the WalkMovement component, you could always create mechanics using either AddForce or by modifying the velocity.
@@ -614,6 +596,165 @@ For Input:
    - Always read events in Update.  Unity will not block or warn you when checking for an event in FixedUpdate, and most of the time it will work - but occasional bugs will arrise.
 
 </details>
+
+## Play a sound effect on Jump
+
+Update JumpMovement to play a sound effect anytime the entity jumps.
+
+<details><summary>How</summary>
+
+ - Update the 'JumpMovement' script as follows (or copy/paste the full version - TODO link):
+
+<details><summary>Existing code</summary>
+
+```csharp
+using UnityEngine;
+
+/// <summary>
+/// Controls the entity's jump.  
+/// 
+/// Another component drives when to jump via Jump().
+/// </summary>
+[RequireComponent(typeof(Rigidbody2D))]
+```
+
+</details>
+
+```csharp
+[RequireComponent(typeof(AudioSource))]
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+public class JumpMovement : MonoBehaviour
+{
+```
+
+</details>
+
+```csharp
+  /// <summary>
+  /// The sound to play when the character starts 
+  /// their jump.
+  /// </summary>
+  [SerializeField]
+  AudioClip jumpSound;
+
+  /// <summary>
+  /// How much force to apply on jump.
+  /// </summary>
+  [SerializeField]
+  float jumpSpeed = 7f;
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  /// <summary>
+  /// Used to add force on jump.
+  /// </summary>
+  Rigidbody2D myBody;
+```
+
+</details>
+
+```csharp
+  /// <summary>
+  /// Used to play sound effects.
+  /// </summary>
+  AudioSource audioSource;
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  /// <summary>
+  /// Used to process events in FixedUpdate that 
+  /// may have been captured on Update.
+  /// </summary>
+  bool wasJumpRequestedSinceLastFixedUpdate;
+
+  /// <summary>
+  /// A Unity event, called once before this GameObject
+  /// is spawned in the world.
+  /// </summary>
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+```
+
+</details>
+
+```csharp
+    audioSource = GetComponent<AudioSource>();
+    Debug.Assert(audioSource != null);
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+    Debug.Assert(myBody != null);
+  }
+
+  /// <summary>
+  /// Adds force to the body to make the entity jump.
+  /// </summary>
+  public void Jump()
+  {
+    Debug.Assert(jumpSpeed >= 0,
+      "jumpSpeed must not be negative");
+
+    wasJumpRequestedSinceLastFixedUpdate = true;
+  }
+
+  /// <summary>
+  /// A Unity event, called every x ms of game time.
+  /// 
+  /// Consider jumping.
+  /// </summary>
+  protected void FixedUpdate()
+  {
+    if(wasJumpRequestedSinceLastFixedUpdate)
+    {
+      // Jump!
+      myBody.AddForce(
+          new Vector2(0, jumpSpeed),
+          ForceMode2D.Impulse);
+```
+
+</details>
+
+```csharp
+      // Play the sound effect
+      audioSource.PlayOneShot(jumpSound);
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+    }
+
+    // Clear the jump flag, enabling the next jump
+    wasJumpRequestedSinceLastFixedUpdate = false;
+  }
+}
+```
+
+</details>
+
+ - Add 'AudioSource' to the character.
+ - Under the JumpMovement component, select the Jump Sound.  We are using **JumpSound**.
+
+<img src="http://i.imgur.com/I5JWg9s.gif" width=300px />
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
 
 
 ## Add Platformer Effect to platforms
