@@ -266,8 +266,6 @@ Change the aspect ratio to 5:4 in the Game window and build settings.
 
 <img src="http://i.imgur.com/MTnZtu4.png" width=300px />
 
- - Switch back to the 'Scene' window.  
-
 You'll also want to update the supported resolutions for the different platforms you may cut a build for:
 
  - Menu File -> 'Build Settings'.
