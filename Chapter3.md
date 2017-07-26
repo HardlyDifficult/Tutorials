@@ -1438,52 +1438,29 @@ TODO how do you know what size to make the collider?
 
 ## Add a script for the player to climb ladders
 
-LadderMovement, for character and spike ball.
-and player controller update
-
+Create a script to climb ladders and update the player controller to match.
 
 <details><summary>How</summary>
 
- - Create "LadderMovement"
- - Add to character
+ - Create script Code/Components/Movement/**LadderMovement**:
 
 ```csharp
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Controls the motion up/down ladders.
-/// 
-/// Driven primarily by desiredClimbDirection.
-/// 
-/// When on a ladder, this component overwrites the 
-/// rigidbody velocity.y (not the .x), preventing gravity.
-/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(FloorDetector))]
 public class LadderMovement : MonoBehaviour
 {
-  /// <summary>
-  /// Set by another component to attempt climbing a ladder 
-  /// up/down.
-  /// </summary>
   [NonSerialized]
   public float desiredClimbDirection;
 
-  /// <summary>
-  /// Called when the entity first gets on a ladder.
-  /// </summary>
   public event Action onGettingOnLadder;
 
-  /// <summary>
-  /// Called when the entity gets off a ladder it was 
-  /// previously climbing.
-  /// </summary>
   public event Action onGettingOffLadder;
 
-  /// <summary>
-  /// True if the entity is currently on a ladder.
-  /// </summary>
   public bool isOnLadder
   {
     get
@@ -1492,30 +1469,17 @@ public class LadderMovement : MonoBehaviour
     }
   }
 
-  /// <summary>
-  /// How quickly the entity moves up/down ladders.
-  /// </summary>
   [SerializeField]
   float climbSpeed = 60;
 
-  /// <summary>
-  /// Used to turn off gravity while we are climbing.
-  /// </summary>
   Rigidbody2D myBody;
 
-  /// <summary>
-  /// Used to determine the distance to the ground.
-  /// </summary>
+  Collider2D myCollider;
+
   FloorDetector floorDetector;
 
-  /// <summary>
-  /// Backs the ladderWeAreOn property.
-  /// </summary>
   GameObject _ladderWeAreOn;
 
-  /// <summary>
-  /// The ladder we are currently climbing, if any.
-  /// </summary>
   GameObject ladderWeAreOn
   {
     get
@@ -1526,7 +1490,6 @@ public class LadderMovement : MonoBehaviour
     {
       if(_ladderWeAreOn == value)
       {
-        // No changes
         return;
       }
 
@@ -1543,96 +1506,64 @@ public class LadderMovement : MonoBehaviour
     }
   }
 
-  /// <summary>
-  /// Used to turn off colliders when we get on a ladder,
-  /// and then turn them back on when we get off a ladder.
-  /// This allows us to walk through floors while climbing.
-  /// </summary>
-  ChangeCollidersToTriggersCommand triggerCommand;
-
-  /// <summary>
-  /// Via trigger enter/exit we maintain a list of all 
-  /// the ladders the entity is currently standing on.
-  /// </summary>
   List<GameObject> currentLadderList;
 
-  /// <summary>
-  /// A Unity event, called once before this GameObject
-  /// is spawned in the world.
-  /// </summary>
   protected void Awake()
   {
     currentLadderList = new List<GameObject>();
     myBody = GetComponent<Rigidbody2D>();
+    myCollider = GetComponent<Collider2D>();
     floorDetector = GetComponentInChildren<FloorDetector>();
-
-    Debug.Assert(myBody != null);
-    Debug.Assert(floorDetector != null);
   }
 
-  /// <summary>
-  /// When we encounter a new ladder, add it to the list.
-  /// </summary>
-  /// <param name="collision">The gameObject we just encountered.</param>
   protected void OnTriggerEnter2D(
     Collider2D collision)
   {
-    // Ignore anything which is not a ladder
     if(collision.CompareTag("Ladder") == false)
     {
       return;
     }
 
-    // Add this to the list of ladders we are on top of
     currentLadderList.Add(collision.gameObject);
   }
 
-  /// <summary>
-  /// When we walk away from a ladder, remove it from the currentLadderList.
-  /// </summary>
-  /// <param name="collision">The gameObject we are walking away from.</param>
   protected void OnTriggerExit2D(
     Collider2D collision)
   {
-    // If the ladder being removed is the currentLadder, force getting off.
     if(collision.gameObject == ladderWeAreOn)
     {
       GetOffLadder();
     }
 
-    // Remove the ladder from the list
     currentLadderList.Remove(collision.gameObject);
   }
 
-  /// <summary>
-  /// Consider getting on/off a ladder given climbDirection. 
-  /// When on a ladder, control the entity's y movement.
-  /// </summary>
   protected void FixedUpdate()
   {
     GameObject ladder = ladderWeAreOn;
 
     if(ladder == null)
     {
-      // If we are not on a ladder, check if we are near one.
       ladder = FindClosestLadder();
       if(ladder == null)
       {
-        // If we are not near a ladder, there's nothing to do
         return;
       }
     }
 
-    // Get the climbable region for the ladder
-    Bounds bounds = ladder.GetComponent<Collider2D>().bounds;
+    Bounds ladderBounds = ladder.GetComponent<Collider2D>().bounds;
+    Bounds entityBounds = myCollider.bounds;
 
-    if(isOnLadder == false && Mathf.Abs(desiredClimbDirection) > 0.01)
+    if(isOnLadder == false
+      && Mathf.Abs(desiredClimbDirection) > 0.01
+      && IsInBounds(ladderBounds, entityBounds))
     {
-      // If the desiredClimbDirection is not zero, consider getting on
-      if(((desiredClimbDirection > 0 && myBody.position.y < bounds.center.y)
-        || (desiredClimbDirection < 0 && myBody.position.y > bounds.center.y)))
+      if(
+          desiredClimbDirection > 0 
+            && entityBounds.min.y < ladderBounds.center.y
+          || desiredClimbDirection < 0 
+            && entityBounds.min.y > ladderBounds.center.y)
       {
-        // Get on if moving up and on lower half or moving down and on upper half
         ladderWeAreOn = ladder;
       }
     }
@@ -1640,82 +1571,84 @@ public class LadderMovement : MonoBehaviour
     if(isOnLadder)
     {
       float currentVerticalVelocity = myBody.velocity.y;
-      if(floorDetector.distanceToFloor > .1f && floorDetector.distanceToFloor < .3f
-        && ((currentVerticalVelocity > 0 && myBody.position.y > bounds.center.y)
-          || (currentVerticalVelocity < 0 && myBody.position.y < bounds.center.y)))
+      if(IsInBounds(ladderBounds, entityBounds) == false)
       {
-        // If feet near ground and moving towards end of ladder
         GetOffLadder();
       }
-      else
+      else if(floorDetector.distanceToFloor < .3f
+        && floorDetector.distanceToFloor > .1f)
       {
-        // Move up/down ladder or hold current location
+        if(currentVerticalVelocity > 0
+            && entityBounds.min.y > ladderBounds.center.y)
+        {
+          GetOffLadder();
+        }
+        else if(currentVerticalVelocity < 0
+          && entityBounds.min.y < ladderBounds.center.y)
+        {
+          GetOffLadder();
+        }
+      }
+
+      if(isOnLadder)
+      {
         myBody.velocity = new Vector2(myBody.velocity.x,
           desiredClimbDirection * climbSpeed * Time.fixedDeltaTime);
       }
     }
   }
 
-  /// <summary>
-  /// Get off the ladder.
-  /// </summary>
+  bool IsInBounds(
+    Bounds ladderBounds,
+    Bounds entityBounds)
+  {
+    float entityCenterX = entityBounds.center.x;
+    if(ladderBounds.min.x > entityCenterX
+      || ladderBounds.max.x < entityCenterX)
+    {
+      return false;
+    }
+
+    float entityFeetY = entityBounds.min.y;
+    if(ladderBounds.min.y > entityFeetY
+      || ladderBounds.max.y < entityFeetY)
+    {
+      return false;
+    }
+
+    return true;
+  }
+
   public void GetOffLadder()
   {
     ladderWeAreOn = null;
   }
 
-  /// <summary>
-  /// Called when the entity first gets on a ladder.
-  /// </summary>
   void OnGettingOnLadder()
   {
-    Debug.Assert(triggerCommand == null);
-
-    // When we first get on a ladder, disable physics to allow climbing through the floor
-    triggerCommand = new ChangeCollidersToTriggersCommand(gameObject);
-    myBody.gravityScale = 0;
-    myBody.velocity = Vector2.zero;
-
     if(onGettingOnLadder != null)
     {
-      // Fire event for other components
       onGettingOnLadder();
     }
   }
 
-  /// <summary>
-  /// Called when an entity gets off a ladder they are climbing.
-  /// </summary>
   void OnGettingOffLadder()
   {
-    // When we get off a ladder, re-enable physics
-    triggerCommand.Undo();
-    triggerCommand = null;
     desiredClimbDirection = 0;
-    myBody.GetComponent<Collider2D>().isTrigger = false;
-    myBody.gravityScale = 1;
 
     if(onGettingOffLadder != null)
     {
-      // Fire event for other components
       onGettingOffLadder();
     }
   }
 
-  /// <summary>
-  /// The best fit ladder the entity is standing on/near, 
-  /// if any.
-  /// </summary>
-  /// <returns>The closest ladder's GameObject, or null.</returns>
-  GameObject FindClosestLadder()
+  public GameObject FindClosestLadder()
   {
     if(currentLadderList.Count == 0)
     {
-      // We are not near any ladder ATM
       return null;
     }
 
-    // Select the closest ladder, if we are standing near several
     GameObject closestLadder = null;
     float distanceToClosestLadder = 0;
     for(int i = 0; i < currentLadderList.Count; i++)
@@ -1742,19 +1675,15 @@ public class LadderMovement : MonoBehaviour
 }
 ```
 
+ - Add it to the character.
+ - Update PlayerController as follows (or copy/paste TODO link):
 
-
- - TODO
 
 <details><summary>Existing code</summary>
 
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Wires up user input, allowing the user to 
-/// control the player in game with a keyboard.
-/// </summary>
 [RequireComponent(typeof(WalkMovement))]
 [RequireComponent(typeof(JumpMovement))]
 ```
@@ -1768,35 +1697,23 @@ using UnityEngine;
 <details><summary>Existing code</summary>
 
 ```csharp
+
 public class PlayerController : MonoBehaviour
 {
-  /// <summary>
-  /// Used to cause the object to walk.
-  /// </summary>
   WalkMovement walkMovement;
 
-  /// <summary>
-  /// Used to cause the object to jump.
-  /// </summary>
   JumpMovement jumpMovement;
 ```
 
 </details>
 
 ```csharp
-  /// <summary>
-  /// Used to cause the object to climb up or down.
-  /// </summary>
   LadderMovement ladderMovement; 
 ```
 
 <details><summary>Existing code</summary>
 
 ```csharp
-  /// <summary>
-  /// A Unity event, called once before the GameObject
-  /// is instantiated.
-  /// </summary>
   protected void Awake()
   {
     walkMovement = GetComponent<WalkMovement>();
@@ -1807,31 +1724,15 @@ public class PlayerController : MonoBehaviour
 
 ```csharp
     ladderMovement = GetComponent<LadderMovement>(); 
-    Debug.Assert(ladderMovement != null); 
 ```
 
 <details><summary>Existing code</summary>
 
 ```csharp
-
-    Debug.Assert(walkMovement != null);
-    Debug.Assert(jumpMovement != null);
   }
 
-  /// <summary>
-  /// A Unity event, called every x ms of game time.
-  /// 
-  /// Consider moving.
-  /// </summary>
-  /// <remarks>
-  /// Moving uses an input state, and therefore may be captured 
-  /// on Update or FixedUpdate, we use FixedUpdate since physics 
-  /// also runs on FixedUpdate, so trying to do this on update would
-  /// require an extra cache (w/o benefit).
-  /// </remarks>
   protected void FixedUpdate()
   {
-    // Consider moving left/right based off keyboard input.
     walkMovement.desiredWalkDirection
       = Input.GetAxis("Horizontal");
 ```
@@ -1839,7 +1740,6 @@ public class PlayerController : MonoBehaviour
 </details>
 
 ```csharp
-    // Consider climbing a ladder
     ladderMovement.desiredClimbDirection 
       = Input.GetAxis("Vertical");
 ```
@@ -1849,15 +1749,6 @@ public class PlayerController : MonoBehaviour
 ```csharp
   }
 
-  /// <summary>
-  /// A Unity event, called once per frame.
-  /// 
-  /// Consider jumping.
-  /// </summary>
-  /// <remarks>
-  /// Jumping uses an input event, and therefore must be
-  /// captured on Update.
-  /// </remarks>
   protected void Update()
   {
     if(Input.GetButtonDown("Jump"))
@@ -1870,87 +1761,344 @@ public class PlayerController : MonoBehaviour
 
 </details>
 
-</details>
 
 
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+Can't go down.
+Why does he pop a bit on the way up?
+
+<hr></details>
 
 
-## Disable colliders to enable climbing down
+## Disable physics when climbing
 
-Create a script to change all colliders for a GameObject to triggers, and then allow undo later on.  Use this when climbing.
+While climbing a ladder, disable physics.
 
 <details><summary>How</summary>
 
- - Create a script Assets/Code/Utils/ChangeCollidersToTriggersCommand
- - Paste in the following:
+ - Create script Code/Utils/**ChangeBodyToKinematicCommand**:
 
 ```csharp
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// This uses the 'Command pattern' to disable colliders on a 
-/// gameObject (by changing them to triggers).
-/// 
-/// It stores the colliders modified so it may undo the change
-/// later.
-/// </summary>
-public class ChangeCollidersToTriggersCommand
+public class ChangeBodyToKinematicCommand
 {
-  /// <summary>
-  /// The colliders which were modified.
-  /// Saved to enable undo later on.
-  /// </summary>
-  List<Collider2D> impactedColliderList;
+  readonly List<Rigidbody2D> impactedBodyList
+    = new List<Rigidbody2D>();
 
-  /// <summary>
-  /// Disables all colliders on the gameObject 
-  /// and stores them allowing undo later.
-  /// </summary>
-  /// <param name="gameObject">
-  /// The gameObject to disable colliders for.
-  /// </param>
-  public ChangeCollidersToTriggersCommand(
+  public ChangeBodyToKinematicCommand(
     GameObject gameObject)
   {
-    impactedColliderList = new List<Collider2D>();
-    Collider2D[] colliderList 
-      = gameObject.GetComponentsInChildren<Collider2D>();
-    for(int i = 0; i < colliderList.Length; i++)
+    Rigidbody2D[] bodyList 
+      = gameObject.GetComponentsInChildren<Rigidbody2D>();
+    for(int i = 0; i < bodyList.Length; i++)
     {
-      Collider2D collider = colliderList[i];
-      // Only modify colliders 
-      // (vs anything that is already a trigger)
-      if(collider.isTrigger == false)
-      { 
-        // Store this for undo later
-        impactedColliderList.Add(collider);
-
-        // Change to trigger, allowing this to pass-through 
-        // obstacles
-        collider.isTrigger = true;
+      Rigidbody2D body = bodyList[i];
+      if(body.bodyType == RigidbodyType2D.Dynamic)
+      {
+        body.bodyType = RigidbodyType2D.Kinematic;
+        impactedBodyList.Add(body);
       }
     }
   }
 
-  /// <summary>
-  /// Re-enable all colliders this command originally disabled.
-  /// </summary>
   public void Undo()
   {
-    for(int i = 0; i < impactedColliderList.Count; i++)
+    for(int i = 0; i < impactedBodyList.Count; i++)
     {
-      Collider2D collider = impactedColliderList[i];
-      collider.isTrigger = false;
+      Rigidbody2D body = impactedBodyList[i];
+      body.bodyType = RigidbodyType2D.Dynamic;
     }
+  }
+}
+```
+
+ - Update LadderMovement as follows (or copy paste TODO link):
+
+
+
+<details><summary>Existing code</summary>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(FloorDetector))]
+public class LadderMovement : MonoBehaviour
+{
+  [NonSerialized]
+  public float desiredClimbDirection;
+
+  public event Action onGettingOnLadder;
+
+  public event Action onGettingOffLadder;
+
+  public bool isOnLadder
+  {
+    get
+    {
+      return ladderWeAreOn != null;
+    }
+  }
+
+  [SerializeField]
+  float climbSpeed = 60;
+
+  Rigidbody2D myBody;
+
+  Collider2D myCollider;
+
+  FloorDetector floorDetector;
+
+  GameObject _ladderWeAreOn;
+
+  GameObject ladderWeAreOn
+  {
+    get
+    {
+      return _ladderWeAreOn;
+    }
+    set
+    {
+      if(_ladderWeAreOn == value)
+      {
+        return;
+      }
+
+      _ladderWeAreOn = value;
+
+      if(ladderWeAreOn != null)
+      {
+        OnGettingOnLadder();
+      }
+      else
+      {
+        OnGettingOffLadder();
+      }
+    }
+  }
+```
+
+</details>
+
+```csharp
+  ChangeBodyToKinematicCommand changeBodyCommand; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  List<GameObject> currentLadderList;
+
+  protected void Awake()
+  {
+    currentLadderList = new List<GameObject>();
+    myBody = GetComponent<Rigidbody2D>();
+    myCollider = GetComponent<Collider2D>();
+    floorDetector = GetComponentInChildren<FloorDetector>();
+  }
+
+  protected void OnTriggerEnter2D(
+    Collider2D collision)
+  {
+    if(collision.CompareTag("Ladder") == false)
+    {
+      return;
+    }
+
+    currentLadderList.Add(collision.gameObject);
+  }
+
+  protected void OnTriggerExit2D(
+    Collider2D collision)
+  {
+    if(collision.gameObject == ladderWeAreOn)
+    {
+      GetOffLadder();
+    }
+
+    currentLadderList.Remove(collision.gameObject);
+  }
+
+  protected void FixedUpdate()
+  {
+    GameObject ladder = ladderWeAreOn;
+
+    if(ladder == null)
+    {
+      ladder = FindClosestLadder();
+      if(ladder == null)
+      {
+        return;
+      }
+    }
+
+    Bounds ladderBounds = ladder.GetComponent<Collider2D>().bounds;
+    Bounds entityBounds = myCollider.bounds;
+
+    if(isOnLadder == false
+      && Mathf.Abs(desiredClimbDirection) > 0.01
+      && IsInBounds(ladderBounds, entityBounds))
+    {
+      if(
+          desiredClimbDirection > 0 
+            && entityBounds.min.y < ladderBounds.center.y
+          || desiredClimbDirection < 0 
+            && entityBounds.min.y > ladderBounds.center.y)
+      {
+        ladderWeAreOn = ladder;
+      }
+    }
+
+    if(isOnLadder)
+    {
+      float currentVerticalVelocity = myBody.velocity.y;
+      if(IsInBounds(ladderBounds, entityBounds) == false)
+      {
+        GetOffLadder();
+      }
+      else if(floorDetector.distanceToFloor < .3f
+        && floorDetector.distanceToFloor > .1f)
+      {
+        if(currentVerticalVelocity > 0
+            && entityBounds.min.y > ladderBounds.center.y)
+        {
+          GetOffLadder();
+        }
+        else if(currentVerticalVelocity < 0
+          && entityBounds.min.y < ladderBounds.center.y)
+        {
+          GetOffLadder();
+        }
+      }
+
+      if(isOnLadder)
+      {
+        myBody.velocity = new Vector2(myBody.velocity.x,
+          desiredClimbDirection * climbSpeed * Time.fixedDeltaTime);
+      }
+    }
+  }
+
+  bool IsInBounds(
+    Bounds ladderBounds,
+    Bounds entityBounds)
+  {
+    float entityCenterX = entityBounds.center.x;
+    if(ladderBounds.min.x > entityCenterX
+      || ladderBounds.max.x < entityCenterX)
+    {
+      return false;
+    }
+
+    float entityFeetY = entityBounds.min.y;
+    if(ladderBounds.min.y > entityFeetY
+      || ladderBounds.max.y < entityFeetY)
+    {
+      return false;
+    }
+
+    return true;
+  }
+
+
+  public void GetOffLadder()
+  {
+    ladderWeAreOn = null;
+  }
+
+  void OnGettingOnLadder()
+  {
+```
+
+</details>
+
+```csharp
+    changeBodyCommand = new ChangeBodyToKinematicCommand(gameObject); 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+    if(onGettingOnLadder != null)
+    {
+      onGettingOnLadder();
+    }
+  }
+
+  void OnGettingOffLadder()
+  {
+```
+
+</details>
+
+```csharp
+    changeBodyCommand.Undo(); 
+    changeBodyCommand = null;
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+
+    desiredClimbDirection = 0;
+
+    if(onGettingOffLadder != null)
+    {
+      onGettingOffLadder();
+    }
+  }
+
+  public GameObject FindClosestLadder()
+  {
+    if(currentLadderList.Count == 0)
+    {
+      return null;
+    }
+
+    GameObject closestLadder = null;
+    float distanceToClosestLadder = 0;
+    for(int i = 0; i < currentLadderList.Count; i++)
+    {
+      GameObject ladder = currentLadderList[i];
+      float distanceToLadder = (ladder.transform.position - transform.position).sqrMagnitude;
+      if(closestLadder == null)
+      {
+        closestLadder = ladder;
+        distanceToClosestLadder = distanceToLadder;
+      }
+      else
+      {
+        if(distanceToLadder < distanceToClosestLadder)
+        {
+          closestLadder = ladder;
+          distanceToClosestLadder = distanceToLadder;
+        }
+      }
+    }
+
+    return closestLadder;
   }
 }
 ```
 
 </details>
 
+<hr></details><br>
+<details><summary>TODO</summary>
+
 TODO What do you mean by command pattern?
 TODO why?
+
+<hr></details>
+
 
 ## Random climber controller
 
@@ -1961,10 +2109,12 @@ Fly guy / bomb climb script.
 
 Change the wander walk.
 
+
 ## ladder vs bomb velocity
 
 Save/restore velocity.
 
+## Move towards the center of the ladder
 
 
 ## Prevent enemies spawning on top of the character
