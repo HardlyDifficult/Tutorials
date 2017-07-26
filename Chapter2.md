@@ -791,6 +791,12 @@ public class KillOnContactWith : MonoBehaviour
     ConsiderKilling(collision.gameObject);
   }
 
+  protected void OnTriggerEnter2D(
+    Collider2D collision)
+  {
+    ConsiderKilling(collision.gameObject);
+  }
+
   void ConsiderKilling(
     GameObject gameObjectWeJustHit)
   {

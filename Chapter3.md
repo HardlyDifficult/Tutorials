@@ -99,7 +99,7 @@ public class WanderWalkController : MonoBehaviour
   void SelectARandomWalkDirection()
   {
     walkMovement.desiredWalkDirection
-      = UnityEngine.Random.value >= .5f ? 1 : -1;
+      = UnityEngine.Random.value <= .5f ? 1 : -1;
   }
 }
 ```
@@ -886,7 +886,10 @@ public class FloorDetector : MonoBehaviour
   static readonly Quaternion backwardsRotation 
     = Quaternion.Euler(0, 0, 180);
 
-  Collider2D myCollider;
+  public Collider2D myCollider
+  {
+    get; private set;
+  }
 
   ContactFilter2D floorFilter;
 
@@ -1268,12 +1271,12 @@ public class WanderWalkController : MonoBehaviour
     if(dot < 0)
     { 
       walkMovement.desiredWalkDirection
-        = UnityEngine.Random.value >= oddsOfGoingUpHill ? 1 : -1;
+        = UnityEngine.Random.value <= oddsOfGoingUpHill ? 1 : -1;
     }
     else if(dot > 0)
     { 
       walkMovement.desiredWalkDirection
-        = UnityEngine.Random.value >= oddsOfGoingUpHill ? -1 : 1;
+        = UnityEngine.Random.value <= oddsOfGoingUpHill ? -1 : 1;
     }
     else
     { 
@@ -1283,7 +1286,7 @@ public class WanderWalkController : MonoBehaviour
 
 ```csharp
       walkMovement.desiredWalkDirection
-        = UnityEngine.Random.value >= .5f ? 1 : -1; 
+        = UnityEngine.Random.value <= .5f ? 1 : -1; 
 ```
 
 </details>
@@ -1347,8 +1350,8 @@ public class RotateToAlignWithFloor : MonoBehaviour
 
   protected void Update()
   {
-    Quaternion targetRotation;
-    if(floorDetector.isTouchingFloor)
+    Quaternion targetRotation;    
+    if(floorDetector.floorRotation != null)
     {
       targetRotation = floorDetector.floorRotation.Value;
     }
@@ -1388,7 +1391,7 @@ Create GameObjects and layout ladders in the world and set their tag to Ladder.
 <details><summary>How</summary>
 
  - Create a parent Ladder GameObject, add the ladder sprite(s).  We are using **spritesheet_tiles_23** and **33**.
- - Order in Layer -1.
+ - Order in Layer -2.
  - Position the ladder and repeat, creating several ladders - some which look broken.
    - The child sprite GameObjects should have a default Transform, with the execption of the Y position when multiple sprites are used.
    - It usually looks fine to overlap sprites a bit, as we do to get the space between ladder steps looking good.
@@ -1451,7 +1454,6 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
-[RequireComponent(typeof(FloorDetector))]
 public class LadderMovement : MonoBehaviour
 {
   [NonSerialized]
@@ -1480,13 +1482,13 @@ public class LadderMovement : MonoBehaviour
 
   GameObject _ladderWeAreOn;
 
-  GameObject ladderWeAreOn
+  public GameObject ladderWeAreOn
   {
     get
     {
       return _ladderWeAreOn;
     }
-    set
+    private set
     {
       if(_ladderWeAreOn == value)
       {
@@ -1552,7 +1554,7 @@ public class LadderMovement : MonoBehaviour
     }
 
     Bounds ladderBounds = ladder.GetComponent<Collider2D>().bounds;
-    Bounds entityBounds = myCollider.bounds;
+    Bounds entityBounds = floorDetector.myCollider.bounds;
 
     if(isOnLadder == false
       && Mathf.Abs(desiredClimbDirection) > 0.01
@@ -1642,7 +1644,7 @@ public class LadderMovement : MonoBehaviour
     }
   }
 
-  public GameObject FindClosestLadder()
+  GameObject FindClosestLadder()
   {
     if(currentLadderList.Count == 0)
     {
@@ -1675,7 +1677,7 @@ public class LadderMovement : MonoBehaviour
 }
 ```
 
- - Add it to the character.
+ - Add it to the character, fly guy, and spike ball.
  - Update PlayerController as follows (or copy/paste TODO link):
 
 
@@ -1779,47 +1781,61 @@ While climbing a ladder, disable physics.
 
 <details><summary>How</summary>
 
- - Create script Code/Utils/**ChangeBodyToKinematicCommand**:
+ - Create script Code/Components/Movement/**DisablePhysics**:
 
 ```csharp
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChangeBodyToKinematicCommand
+[RequireComponent(typeof(Rigidbody2D))]
+public class DisablePhysics : MonoBehaviour
 {
-  readonly List<Rigidbody2D> impactedBodyList
-    = new List<Rigidbody2D>();
+  Rigidbody2D myBody;
+  List<Collider2D> impactedColliderList;
 
-  public ChangeBodyToKinematicCommand(
-    GameObject gameObject)
+  protected void Awake()
   {
-    Rigidbody2D[] bodyList 
-      = gameObject.GetComponentsInChildren<Rigidbody2D>();
-    for(int i = 0; i < bodyList.Length; i++)
+    myBody = GetComponent<Rigidbody2D>();
+
+    impactedColliderList = new List<Collider2D>();
+    Collider2D[] colliderList = GetComponentsInChildren<Collider2D>();
+    for(int i = 0; i < colliderList.Length; i++)
     {
-      Rigidbody2D body = bodyList[i];
-      if(body.bodyType == RigidbodyType2D.Dynamic)
+      Collider2D collider = colliderList[i];
+      if(collider.isTrigger == false)
       {
-        body.bodyType = RigidbodyType2D.Kinematic;
-        impactedBodyList.Add(body);
+        impactedColliderList.Add(collider);
       }
     }
+
+    Debug.Assert(myBody != null);
   }
 
-  public void Undo()
+  protected void OnEnable()
   {
-    for(int i = 0; i < impactedBodyList.Count; i++)
+    for(int i = 0; i < impactedColliderList.Count; i++)
     {
-      Rigidbody2D body = impactedBodyList[i];
-      body.bodyType = RigidbodyType2D.Dynamic;
+      Collider2D collider = impactedColliderList[i];
+      collider.isTrigger = true;
+      myBody.gravityScale = 0;
+    }
+  }
+   
+  protected void OnDisable()
+  {
+    for(int i = 0; i < impactedColliderList.Count; i++)
+    {
+      Collider2D collider = impactedColliderList[i];
+      collider.isTrigger = false;
+      myBody.gravityScale = 1;
     }
   }
 }
 ```
 
+ - Add it to the character, fly guy, and spike ball.
+ - Disable the DisablePhysics component on each prefab.
  - Update LadderMovement as follows (or copy paste TODO link):
-
-
 
 <details><summary>Existing code</summary>
 
@@ -1831,6 +1847,17 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(FloorDetector))]
+```
+
+</details>
+
+```csharp
+[RequireComponent(typeof(DisablePhysics))]
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
 public class LadderMovement : MonoBehaviour
 {
   [NonSerialized]
@@ -1859,13 +1886,13 @@ public class LadderMovement : MonoBehaviour
 
   GameObject _ladderWeAreOn;
 
-  GameObject ladderWeAreOn
+  public GameObject ladderWeAreOn
   {
     get
     {
       return _ladderWeAreOn;
     }
-    set
+    private set
     {
       if(_ladderWeAreOn == value)
       {
@@ -1889,7 +1916,7 @@ public class LadderMovement : MonoBehaviour
 </details>
 
 ```csharp
-  ChangeBodyToKinematicCommand changeBodyCommand; 
+  DisablePhysics disablePhysics; 
 ```
 
 <details><summary>Existing code</summary>
@@ -1903,6 +1930,17 @@ public class LadderMovement : MonoBehaviour
     myBody = GetComponent<Rigidbody2D>();
     myCollider = GetComponent<Collider2D>();
     floorDetector = GetComponentInChildren<FloorDetector>();
+```
+
+</details>
+
+```csharp
+    disablePhysics = GetComponent<DisablePhysics>();
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
   }
 
   protected void OnTriggerEnter2D(
@@ -2021,7 +2059,7 @@ public class LadderMovement : MonoBehaviour
 </details>
 
 ```csharp
-    changeBodyCommand = new ChangeBodyToKinematicCommand(gameObject); 
+    disablePhysics.enabled = true; 
 ```
 
 <details><summary>Existing code</summary>
@@ -2040,8 +2078,7 @@ public class LadderMovement : MonoBehaviour
 </details>
 
 ```csharp
-    changeBodyCommand.Undo(); 
-    changeBodyCommand = null;
+    disablePhysics.enabled = false;
 ```
 
 <details><summary>Existing code</summary>
@@ -2056,7 +2093,7 @@ public class LadderMovement : MonoBehaviour
     }
   }
 
-  public GameObject FindClosestLadder()
+  GameObject FindClosestLadder()
   {
     if(currentLadderList.Count == 0)
     {
@@ -2105,17 +2142,333 @@ TODO why?
 Fly guy / bomb climb script.
 
 
-## laddermovement (fly guy don't walk off the side of a ladder).
+<details><summary>How</summary>
 
-Change the wander walk.
+ - Create script Code/Components/Movement/**RandomClimbController**:
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+[RequireComponent(typeof(LadderMovement))]
+public class RandomClimbController : MonoBehaviour
+{
+  [SerializeField]
+  float oddsOfClimbingLadderUp = .5f;
+
+  [SerializeField]
+  float oddsOfClimbingLadderDown = .1f;
+
+  [SerializeField]
+  float timeBeforeFirstPossibleClimb = 5;
+
+  [SerializeField]
+  float minTimeBetweenReconsideringDirection = 1;
+
+  [SerializeField]
+  float maxTimeBetweenReconsideringDirection = 10;
+
+  LadderMovement ladderMovement;
+
+  protected void Awake()
+  {
+    ladderMovement = GetComponent<LadderMovement>();
+  }
+
+  protected void Start()
+  {
+    StartCoroutine(Wander());
+  }
+
+  IEnumerator Wander()
+  {
+    yield return new WaitForSeconds(timeBeforeFirstPossibleClimb);
+
+    while(true)
+    {
+      SelectARandomClimbDirection();
+      float timeToSleep = UnityEngine.Random.Range(
+        minTimeBetweenReconsideringDirection, 
+        maxTimeBetweenReconsideringDirection);
+      yield return new WaitForSeconds(timeToSleep);
+    }
+  }
+
+  void SelectARandomClimbDirection()
+  {
+    if(ladderMovement.isOnLadder == false)
+    {
+      if(UnityEngine.Random.value <= oddsOfClimbingLadderUp)
+      {
+        ladderMovement.desiredClimbDirection = 1;
+      }
+      else if(UnityEngine.Random.value <= oddsOfClimbingLadderDown)
+      {
+        ladderMovement.desiredClimbDirection = -1;
+      }
+      else
+      {
+        ladderMovement.desiredClimbDirection = 0;
+      }
+    }
+  }
+}
+```
+
+ - Add it to the fly guy and spike ball.
+ - On the spike ball, change:
+   - Odds of climbing up to 0
+   - Odds of climbing down to about .5
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+They won't actually climb, just go up or down a touch then pop back.
+
+<hr></details>
 
 
-## ladder vs bomb velocity
+## Stop walking off ladders
 
-Save/restore velocity.
+Stop WanderWalkController when climbing up or down.
+
+<details><summary>How</summary>
+
+ - Update WanderWalkController as follows (or copy/paste todo link):
+
+<details><summary>Existing code</summary>
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+[RequireComponent(typeof(WalkMovement))]
+public class WanderWalkController : MonoBehaviour
+{
+  [SerializeField]
+  float oddsOfGoingUpHill = .8f; 
+
+  [SerializeField]
+  float timeBeforeFirstWander = 5;
+
+  [SerializeField]
+  float minTimeBetweenReconsideringDirection = 1;
+
+  [SerializeField]
+  float maxTimeBetweenReconsideringDirection = 10;
+
+  WalkMovement walkMovement;
+
+  FloorDetector floorDetector;
+```
+
+</details>
+
+```csharp
+  LadderMovement ladderMovement; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  protected void Awake()
+  {
+    Debug.Assert(oddsOfGoingUpHill >= 0);
+    Debug.Assert(timeBeforeFirstWander >= 0);
+
+    walkMovement = GetComponent<WalkMovement>();
+    floorDetector = GetComponentInChildren<FloorDetector>();
+```
+
+</details>
+
+```csharp
+    ladderMovement = GetComponent<LadderMovement>(); 
+
+    if(ladderMovement != null)
+    {
+      ladderMovement.onGettingOnLadder 
+        += LadderMovement_onGettingOnLadder;
+      ladderMovement.onGettingOffLadder 
+        += LadderMovement_onGettingOffLadder;
+    }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  }
+
+  protected void Start()
+  {
+    StartCoroutine(Wander());
+  }
+```
+
+</details>
+
+```csharp
+  void LadderMovement_onGettingOnLadder() 
+  {
+    walkMovement.desiredWalkDirection = 0;
+  }
+
+  void LadderMovement_onGettingOffLadder()
+  {
+    SelectARandomWalkDirection();
+  }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  IEnumerator Wander()
+  {
+    walkMovement.desiredWalkDirection = 1;
+    yield return new WaitForSeconds(timeBeforeFirstWander);
+
+    while(true)
+    {
+      SelectARandomWalkDirection();
+
+      float timeToSleep = UnityEngine.Random.Range(
+        minTimeBetweenReconsideringDirection,
+        maxTimeBetweenReconsideringDirection);
+      yield return new WaitForSeconds(timeToSleep);
+    }
+  }
+
+  void SelectARandomWalkDirection()
+  {
+```
+
+</details>
+
+```csharp
+    if(ladderMovement != null && ladderMovement.isOnLadder) 
+    {
+      return;
+    }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+    float dot;
+    if(floorDetector.floorUp != null)
+    {
+      dot = Vector2.Dot(floorDetector.floorUp.Value, Vector2.right);
+    }
+    else
+    {
+      dot = 0;
+    }
+
+    if(dot < 0)
+    { 
+      walkMovement.desiredWalkDirection
+        = UnityEngine.Random.value <= oddsOfGoingUpHill ? 1 : -1;
+    }
+    else if(dot > 0)
+    { 
+      walkMovement.desiredWalkDirection
+        = UnityEngine.Random.value <= oddsOfGoingUpHill ? -1 : 1;
+    }
+    else
+    { 
+      walkMovement.desiredWalkDirection
+        = UnityEngine.Random.value <= .5f ? 1 : -1; 
+    }
+  }
+}
+```
+
+</details>
+
+
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+
+
+## Stop rolling off ladders
+
+Create a script to stop the ball's momentum when getting on ladders, and restore it when getting off.
+
+<details><summary>How</summary>
+
+ - Create a script Code/Components/Movement/**StopMomentumOnLadder**:
+
+```csharp
+using UnityEngine;
+using System;
+
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(LadderMovement))]
+public class StopMomentumOnLadder : MonoBehaviour
+{
+  Rigidbody2D myBody;
+
+  float previousAngularVelocity;
+
+  float previousXVelocity;
+
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+
+    LadderMovement ladderMovement = GetComponent<LadderMovement>();
+    ladderMovement.onGettingOffLadder 
+      += ClimbLadder_onGettingOffLadder;
+    ladderMovement.onGettingOnLadder 
+      += LadderMovement_onGettingOnLadder;
+  }
+
+  void LadderMovement_onGettingOnLadder()
+  {
+    previousAngularVelocity = myBody.angularVelocity;
+    previousXVelocity = myBody.velocity.x;
+    myBody.velocity = Vector2.zero;
+  }
+
+  void ClimbLadder_onGettingOffLadder()
+  {
+    myBody.angularVelocity = -previousAngularVelocity;
+    myBody.velocity = new Vector2(-previousXVelocity, myBody.velocity.y);
+  }
+}
+```
+
+ - Add it to the spike ball.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
 
 ## Move towards the center of the ladder
 
+Add a script to the fly guy and spike ball to direct them towards the center of a ladder while climbing.
+
+<details><summary>How</summary>
+
+TODO
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
 
 ## Prevent enemies spawning on top of the character
 
