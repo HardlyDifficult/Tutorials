@@ -51,7 +51,7 @@ Add a script to the fly guy to drive random walk movement.
 
 <details><summary>How</summary>
 
- - Create a script **WanderWalkController** under Assets/Code/Compenents/Movement and paste the following:
+ - Create script Code/Compenents/Movement/**WanderWalkController**:
 
 ```csharp
 using System.Collections;
@@ -60,9 +60,6 @@ using UnityEngine;
 [RequireComponent(typeof(WalkMovement))]
 public class WanderWalkController : MonoBehaviour
 {
-  [SerializeField]
-  float oddsOfGoingUpHill = .8f;
-
   [SerializeField]
   float timeBeforeFirstWander = 5;
 
@@ -742,85 +739,48 @@ TODO
 
 ## Restrict movement to stay on screen
 
-Create a script which ensures the character can not walk off screen.
+Create a script which ensures entities can not walk off screen.
 
 <details><summary>How</summary>
 
- - Create a C# script "KeepWalkMovementOnScreen" under Assets/Code/Components/Movement.
- - Select the Character GameObject and add the KeepWalkMovementOnScreen component.
- - Paste in the following code:
+ - Create script Code/Components/Movement/**KeepOnScreen**:
 
 ```csharp
+using System;
 using UnityEngine;
 
-/// <summary>
-/// Ensures that the entity stays on the screen. 
-/// It will flip the current walk direction automatically 
-/// (which has no impact on the Player but causes enemies to bounce).
-/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-public class KeepWalkMovementOnScreen : MonoBehaviour
+public class KeepOnScreen : MonoBehaviour
 {
-  #region Data
-  /// <summary>
-  /// Used to determine if we are currently moving.
-  /// </summary>
   Rigidbody2D myBody;
 
-  /// <summary>
-  /// Used to cause the entity to start walking the 
-  /// opposite direction when it hits the edge of the screen.
-  /// 
-  /// This is not required and may be null.
-  /// </summary>
-  WalkMovement walkMovement;
-  #endregion
+  public event Action onAttemptToLeaveScreen;
 
-  #region Init
-  /// <summary>
-  /// A Unity event, called once before this GameObject
-  /// is spawned in the world.
-  /// </summary>
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-    walkMovement = GetComponent<WalkMovement>();
-
-    
-
     Debug.Assert(myBody != null);
   }
-  #endregion
 
-  #region Events
-  /// <summary>
-  /// A Unity event, called each frame.
-  /// 
-  /// If the entity is off screen, pop it back 
-  /// and flip the walk direction.
-  /// </summary>
   protected void Update()
   {
-    // Check if the entity is off screen
-    if(GameController.instance.screenBounds.Contains(transform.position) == false)
-    { 
-      // Move the entity back to the edge of the screen
+    Bounds screenBounds = GameController.instance.screenBounds;
+    if(screenBounds.Contains(transform.position) == false)
+    {
       transform.position =
-        GameController.instance.screenBounds.ClosestPoint(transform.position);
-      if(walkMovement != null)
+        screenBounds.ClosestPoint(transform.position);
+      if(onAttemptToLeaveScreen != null)
       {
-        // Flip the walk direction
-        walkMovement.desiredWalkDirection 
-          = -walkMovement.desiredWalkDirection;
+        onAttemptToLeaveScreen();
       }
     }
   }
-  #endregion
 }
 ```
 
-</details>
+ - Add it to the character and fly guy prefabs.
 
+<hr></details><br>
 <details><summary>Why use bounds for these checks?</summary>
 
 There are a few ways you could check for an entity walking off the edge of the screen.  I choose to use the Unity bounds struct because it has methods which make the rest of this component easy.  Specifically:
@@ -855,11 +815,57 @@ In this component we are setting transform.position for the teleport effect.  If
 </details>
 
 
+## Fly guy turns around when reaching the edge
+
+Create a script to have the fly guy bounce off the edge of the screen and never stop walking.
+
+<details><summary>How</summary>
+
+ - Create script Code/Components/Movement/**BounceOffScreenEdges**:
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using UnityEngine;
+
+[RequireComponent(typeof(KeepOnScreen))]
+[RequireComponent(typeof(WalkMovement))]
+public class BounceOffScreenEdges : MonoBehaviour
+{
+  WalkMovement walkMovement;
+
+  protected void Awake()
+  {
+    walkMovement = GetComponent<WalkMovement>();
+    Debug.Assert(walkMovement != null);
+  }
+
+  protected void Start()
+  {
+    KeepOnScreen keepOnScreen = GetComponent<KeepOnScreen>();
+    keepOnScreen.onAttemptToLeaveScreen 
+      += KeepOnScreen_onAttemptToLeaveScreen;
+  }
+
+  void KeepOnScreen_onAttemptToLeaveScreen()
+  {
+    walkMovement.desiredWalkDirection
+      = -walkMovement.desiredWalkDirection;
+  }
+}
+```
+
+ - Add it to the fly guy prefab.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
 
 
-TODO WanderWalk needs floordetector, laddermovement, and GameController screen bounds.
- - Add components FloorDetector,  KeepWalkMovementOnScreen, LadderMovement, RotateFacingDirection.
- - Prevent walking into walls?
 
 ## Detect floors
 
@@ -869,82 +875,41 @@ Create a script to calculate the distance to and rotation of the floor under an 
 
  - Create a layer 'Floor'.
  - Select all the Platform GameObjects and change to Layer Floor.
-   - When prompted, you can 'Yes, change children'.
- - Create a C# script "FloorDetector" under Assets/Code/Components/Movement.
- - Select the Character and add the FloorDetector component.
- - Paste in the following code:
+ - Create script Code/Components/Movement/**FloorDetector**:
 
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Used to determine if the entity is on the ground.  
-/// Also provides properties about the ground we are standing on.
-/// 
-/// This component may be placed on the main entity GameObject 
-/// or a child GameObject.  A child may be used to offset the feet
-/// from the collider used for other things.
-/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class FloorDetector : MonoBehaviour
 {
-  /// <summary>
-  /// The rotation that's applied when a floor is upside down.
-  /// </summary>
-  static readonly Quaternion backwardsRotation = Quaternion.Euler(0, 0, 180);
+  static readonly Quaternion backwardsRotation 
+    = Quaternion.Euler(0, 0, 180);
 
-  /// <summary>
-  /// The collider on this gameObject, used to determine if we 
-  /// are currently on the ground (vs jumping or falling).
-  /// </summary>
   Collider2D myCollider;
 
-  /// <summary>
-  /// Sets a LayerMask to 'Floor' for use when calling Physics 
-  /// to check if we are on ground.
-  /// </summary>
   ContactFilter2D floorFilter;
 
-  /// <summary>
-  /// True if the entity is currently standing on the ground.
-  /// </summary>
   public bool isTouchingFloor
   {
     get; private set;
   }
 
-  /// <summary>
-  /// The up direction / normal for the floor we are standing on.
-  /// Null if we isTouchingFloor == false.
-  /// </summary>
   public Vector2? floorUp
   {
     get; private set;
   }
 
-  /// <summary>
-  /// The rotation for the floor we are standing on.
-  /// Null if we isTouchingFloor == false.
-  /// </summary>
   public Quaternion? floorRotation
   {
     get; private set;
   }
 
-  /// <summary>
-  /// How far above the floor we are ATM.  
-  /// 0 if isTouchingFloor.
-  /// Null if there is no floor under us.
-  /// </summary>
   public float? distanceToFloor
   {
     get; private set;
   }
 
-  /// <summary>
-  /// A Unity event, called once before this GameObject
-  /// is spawned in the world.
-  /// </summary>
   protected void Awake()
   {
     myCollider = GetComponent<Collider2D>();
@@ -958,11 +923,6 @@ public class FloorDetector : MonoBehaviour
     Debug.Assert(myCollider != null);
   }
 
-  /// <summary>
-  /// A Unity event, called every x ms of game time.
-  /// 
-  /// Checks for floor and updates properties.
-  /// </summary>
   protected void FixedUpdate()
   {
     Collider2D floorWeAreStandingOn = DetectTheFloorWeAreStandingOn();
@@ -971,8 +931,11 @@ public class FloorDetector : MonoBehaviour
     Collider2D floorUnderUs;
     if(floorWeAreStandingOn != null)
     {
-      floorUp = CalculateFloorUp(floorWeAreStandingOn);
-      floorRotation = CalculateFloorRotation(floorWeAreStandingOn);
+      Vector2 up;
+      Quaternion rotation;
+      CalculateFloorRotation(floorWeAreStandingOn, out up, out rotation);
+      floorUp = up;
+      floorRotation = rotation;
       floorUnderUs = floorWeAreStandingOn;
     }
     else
@@ -985,16 +948,10 @@ public class FloorDetector : MonoBehaviour
     distanceToFloor = CalculateDistanceToFloor(floorWeAreStandingOn, floorUnderUs);
   }
 
-  /// <summary>
-  /// Returns the collider for the floor / platform we are 
-  /// standing on, if we are not in the air.
-  /// </summary>
-  /// <returns>The floor's collider, or null.</returns>
   Collider2D DetectTheFloorWeAreStandingOn()
   {
     Collider2D[] possibleResultList = new Collider2D[3];
 
-    // Ask Unity which floors we are colliding with
     int foundColliderCound
       = Physics2D.OverlapCollider(myCollider, floorFilter, possibleResultList);
 
@@ -1003,9 +960,6 @@ public class FloorDetector : MonoBehaviour
       Collider2D collider = possibleResultList[i];
       ColliderDistance2D distance = collider.Distance(myCollider);
 
-      // If my collider is on or above the floor
-      // (vs jumping up through a floor)
-      // and we are making contact with the top (vs bottom) 
       if(distance.distance >= -.1f
         && Vector2.Dot(Vector2.up, distance.normal) > 0)
       {
@@ -1013,106 +967,48 @@ public class FloorDetector : MonoBehaviour
       }
     }
 
-    // Didn't find a valid floor, we must be in the air.
     return null;
   }
 
-  /// <summary>
-  /// If we are not standing on a floor, this may be used
-  /// to raycast from the center of the entity downwards,
-  /// looking for the first floor underneath us.
-  /// </summary>
-  /// <returns>The floor's collider, or null.</returns>
   Collider2D DetectFloorUnderUs()
   {
-    // Raycast to find any floor under us if we can.
     RaycastHit2D[] result = new RaycastHit2D[1];
     if(Physics2D.Raycast(transform.position, Vector2.down, floorFilter, result) > 0)
     {
       return result[0].collider;
     }
 
-    // Can't find any floor
-    // this should never happen with our level design.
     return null;
   }
 
-  /// <summary>
-  /// If we are standing on a floor, this may be used
-  /// to determine its up direction.
-  /// </summary>
-  /// <returns>
-  /// The floor 'up' normally.  
-  /// 'Down' when the floor is upsidedown.
-  /// i.e. always facing positive Y.
-  /// </returns>
-  static Vector2 CalculateFloorUp(
-    Collider2D floorWeAreStandingOn)
+  static void CalculateFloorRotation(
+    Collider2D floorWeAreStandingOn,
+    out Vector2 floorUp,
+    out Quaternion floorRotation)
   {
     Debug.Assert(floorWeAreStandingOn != null);
 
-    // The transform up represents the platform's normal because any rotation in the platform sprite 
-    // is part of it's gameObject (vs drawn with rotation or rotated in a child object).
-    Vector2 floorUp = floorWeAreStandingOn.transform.up;
-    if(Vector2.Dot(Vector2.up, floorUp) >= 0)
+    floorUp = floorWeAreStandingOn.transform.up;
+    floorRotation = floorWeAreStandingOn.transform.rotation;
+    if(Vector2.Dot(Vector2.up, floorUp) < 0)
     {
-      return floorUp;
-    }
-    else
-    {
-      // Use down instead
-      return -floorUp;
+      floorUp = -floorUp;
+      floorRotation *= backwardsRotation;
     }
   }
-
-  /// <summary>
-  /// If we are standing on a floor, this may be used
-  /// to determine its rotation.
-  /// </summary>
-  /// <returns>
-  /// The floor rotation normally.  
-  /// The floor rotation * (0, 0, 180) when the floor is upsidedown.
-  /// i.e. always facing the world up.
-  /// </returns>
-  static Quaternion CalculateFloorRotation(
-    Collider2D floorWeAreStandingOn)
-  {
-    Debug.Assert(floorWeAreStandingOn != null);
-
-    Quaternion floorRotation = floorWeAreStandingOn.transform.rotation;
-    if(Quaternion.Dot(floorRotation, Quaternion.identity) >= 0)
-    {
-      return floorRotation;
-    }
-    else
-    {
-      return floorRotation * backwardsRotation;
-    }
-  }
-
-  /// <summary>
-  /// Determines the distance to the closest floor.
-  /// </summary>
-  /// <returns>
-  /// 0 if standing on a floor.
-  /// > 0 if there is floor under us.
-  /// null if we couldn't find a floor.
-  /// </returns>
+  
   float? CalculateDistanceToFloor(
     Collider2D floorWeAreStandingOn,
     Collider2D floorUnderUs)
   {
     if(floorWeAreStandingOn != null)
     {
-      // If standing, distance is assumed to be 0
       return 0;
     }
     else if(floorUnderUs != null)
     {
-      // Compare bounds to determine the separation between them
       float yOfTopOfFloor = floorUnderUs.bounds.max.y;
 
-      // If an edgeRadius was used, this must be added to the bounds info
       if(floorUnderUs is BoxCollider2D)
       {
         BoxCollider2D boxCollider = (BoxCollider2D)floorUnderUs;
@@ -1123,19 +1019,27 @@ public class FloorDetector : MonoBehaviour
     }
     else
     {
-      // Couldn't find a floor
       return null;
     }
   }
 }
 ```
 
-</details>
+ - Add it to:
+   - The character prefab.
+   - The spike ball prefab.
+   - The fly guy's **Feet** child GameObject (and apply changes to the fly guy prefab).
+
+<hr></details><br>
+<details><summary>TODO</summary>
 
 TODO question - when changing layers, yes change children..
 http://i.imgur.com/xFiD5Vc.png
 
 TODO question - why not require floordetector component? / why GetComponentInChildren
+
+<hr></details>
+
 
 
 
@@ -1145,146 +1049,267 @@ Update JumpMovement to prevent double jump and flying (by spamming space), by le
 
 <details><summary>How</summary>
 
- - Update JumpMovement with the following changes (or copy paste the full version TODO link).
+ - Update JumpMovement with the following changes (or copy paste the full version TODO link):
+
+
 
 <details><summary>Existing code</summary>
 
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// Controls the entity's jump.  
-/// 
-/// Another component drives when to jump via Jump().
-/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(AudioSource))]
+```
+
+</details>
+
+```csharp
+[RequireComponent(typeof(FloorDetector))] 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
 public class JumpMovement : MonoBehaviour
 {
-  /// <summary>
-  /// The sound to play when the character starts their jump.
-  /// </summary>
   [SerializeField]
   AudioClip jumpSound;
 
-  /// <summary>
-  /// How much force to apply on jump.
-  /// </summary>
   [SerializeField]
-  float jumpSpeed = 6.5f;
+  float jumpSpeed = 7f;
 
-  /// <summary>
-  /// Used to add force on jump.
-  /// </summary>
   Rigidbody2D myBody;
 ```
 
 </details>
 
 ```csharp
-  /// <summary>
-  /// Used to confirm we are grounded before jumping.
-  /// </summary>
-  FloorDetector floorDector; 
+  FloorDetector floorDetector; 
 ```
 
 <details><summary>Existing code</summary>
 
 ```csharp
-  /// <summary>
-  /// Used to play sound effects.
-  /// </summary>
   AudioSource audioSource;
 
-  /// <summary>
-  /// Used to process events in FixedUpdate that 
-  /// may have been captured on Update.
-  /// </summary>
   bool wasJumpRequestedSinceLastFixedUpdate;
 
-  /// <summary>
-  /// A Unity event, called once before this GameObject
-  /// is spawned in the world.
-  /// </summary>
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-    
 ```
 
 </details>
 
 ```csharp
-    floorDector = GetComponentInChildren<FloorDetector>(); 
-    Debug.Assert(floorDector != null); 
+    floorDetector = GetComponent<FloorDetector>(); 
 ```
 
 <details><summary>Existing code</summary>
 
 ```csharp
     audioSource = GetComponent<AudioSource>();
-
-    Debug.Assert(myBody != null);
-    Debug.Assert(audioSource != null);
   }
 
-  /// <summary>
-  /// Adds force to the body to make the entity jump.
-  /// </summary>
   public void Jump()
   {
-    Debug.Assert(jumpSpeed >= 0,
-      "jumpSpeed must not be negative");
-
     wasJumpRequestedSinceLastFixedUpdate = true;
   }
 
   protected void FixedUpdate()
   {
-    if(wasJumpRequestedSinceLastFixedUpdate)
+    if(wasJumpRequestedSinceLastFixedUpdate
+```
+
+</details>
+
+```csharp
+      && floorDetector.isTouchingFloor
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+      ) 
     {
-```
+      myBody.AddForce(
+          new Vector2(0, jumpSpeed),
+          ForceMode2D.Impulse);
 
-</details>
-
-```csharp
-      if(floorDector.isTouchingFloor) 
-      {
-```
-
-<details><summary>Existing code</summary>
-
-
-```csharp
-        // Jump!
-        myBody.AddForce(
-            new Vector2(0, jumpSpeed),
-            ForceMode2D.Impulse);
-
-        // Play the sound effect
-        audioSource.PlayOneShot(jumpSound);
-```
-
-</details>
-
-```csharp
-      } 
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-      // Clear the jump flag, enabling the next jump
-      wasJumpRequestedSinceLastFixedUpdate = false;
+      audioSource.PlayOneShot(jumpSound);
     }
+
+    wasJumpRequestedSinceLastFixedUpdate = false;
   }
 }
 ```
-</details>
 
 </details>
 
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
 TODO could add a jump cooldown by time as well - but that would not be a complete solution unless a long cooldown was used.
+
+<hr></details>
+
+
+## Update WanderWalkController to prefer traveling up hill
+
+Update the WanderWalkController so that the fly guy is more likely to walk up hill than down.
+
+<details><summary>How</summary>
+
+ - Update the WanderWalkController as follows (or copy paste TODO link):
+
+
+<details><summary>Existing code</summary>
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+[RequireComponent(typeof(WalkMovement))]
+public class WanderWalkController : MonoBehaviour
+{
+```
+
+</details>
+
+```csharp
+  [SerializeField]
+  float oddsOfGoingUpHill = .8f; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  [SerializeField]
+  float timeBeforeFirstWander = 5;
+
+  [SerializeField]
+  float minTimeBetweenReconsideringDirection = 1;
+
+  [SerializeField]
+  float maxTimeBetweenReconsideringDirection = 10;
+
+  WalkMovement walkMovement;
+```
+
+</details>
+
+```csharp
+  FloorDetector floorDetector; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  protected void Awake()
+  {
+    Debug.Assert(oddsOfGoingUpHill >= 0);
+    Debug.Assert(timeBeforeFirstWander >= 0);
+
+    walkMovement = GetComponent<WalkMovement>();
+```
+
+</details>
+
+```csharp
+    floorDetector = GetComponentInChildren<FloorDetector>(); 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  }
+
+  protected void Start()
+  {
+    StartCoroutine(Wander());
+  }
+
+  IEnumerator Wander()
+  {
+    walkMovement.desiredWalkDirection = 1;
+    yield return new WaitForSeconds(timeBeforeFirstWander);
+
+    while(true)
+    {
+      SelectARandomWalkDirection();
+
+      float timeToSleep = UnityEngine.Random.Range(
+        minTimeBetweenReconsideringDirection,
+        maxTimeBetweenReconsideringDirection);
+      yield return new WaitForSeconds(timeToSleep);
+    }
+  }
+
+  void SelectARandomWalkDirection()
+  {
+```
+
+</details>
+
+```csharp
+    float dot;
+    if(floorDetector.floorUp != null)
+    {
+      dot = Vector2.Dot(floorDetector.floorUp.Value, Vector2.right);
+    }
+    else
+    {
+      dot = 0;
+    }
+
+    if(dot < 0)
+    { 
+      walkMovement.desiredWalkDirection
+        = UnityEngine.Random.value >= oddsOfGoingUpHill ? 1 : -1;
+    }
+    else if(dot > 0)
+    { 
+      walkMovement.desiredWalkDirection
+        = UnityEngine.Random.value >= oddsOfGoingUpHill ? -1 : 1;
+    }
+    else
+    { 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+      walkMovement.desiredWalkDirection
+        = UnityEngine.Random.value >= .5f ? 1 : -1; 
+```
+
+</details>
+
+```csharp
+    }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  }
+}
+```
+
+</details>
+
+
+
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
 
 
 ## Rotate to match the floor's angle
@@ -1293,46 +1318,24 @@ Create a script to rotate an entity, aligning with the floor when touching one, 
 
 <details><summary>How</summary>
 
+ - Create script Code/Components/Movement/**RotateToAlignWithFloor**:
+
 ```csharp
 using UnityEngine;
 
-/// <summary>
-/// When on floor, rotates an entity to align with the floor. 
-/// 
-/// When in air, rotates towards identity 
-/// (back to standing straight up).
-/// </summary>
 [RequireComponent(typeof(RotateFacingDirection))]
 public class RotateToAlignWithFloor : MonoBehaviour
 {
-  /// <summary>
-  /// The rotation that's applied when looking left (vs right).
-  /// </summary>
-  /// <remarks>Cached here for performance.</remarks>
-  static readonly Quaternion backwardsRotation 
+  static readonly Quaternion backwardsRotation
     = Quaternion.Euler(0, 180, 0);
 
-  /// <summary>
-  /// How quickly the entity rotates so that 
-  /// its feet are both on the floor.
-  /// </summary>
   [SerializeField]
   float rotationLerpSpeed = .4f;
 
-  /// <summary>
-  /// Used to get info about the floor we are over.
-  /// </summary>
   FloorDetector floorDetector;
 
-  /// <summary>
-  /// Used to determine the current facing direction.
-  /// </summary>
   RotateFacingDirection facingDirection;
 
-  /// <summary>
-  /// A Unity event, called once before this GameObject
-  /// is spawned in the world.
-  /// </summary>
   protected void Awake()
   {
     floorDetector = GetComponentInChildren<FloorDetector>();
@@ -1342,11 +1345,6 @@ public class RotateToAlignWithFloor : MonoBehaviour
     Debug.Assert(facingDirection != null);
   }
 
-  /// <summary>
-  /// A Unity event, called each frame.
-  /// 
-  /// Update the entities rotation.
-  /// </summary>
   protected void Update()
   {
     Quaternion targetRotation;
@@ -1361,159 +1359,87 @@ public class RotateToAlignWithFloor : MonoBehaviour
 
     if(facingDirection.isGoingRight == false)
     {
-      // If the entity is flipped, also flip the target 
-      // rotation we are lerping towards
       targetRotation *= backwardsRotation;
     }
 
     transform.rotation = Quaternion.Lerp(
-      transform.rotation, 
-      targetRotation, 
+      transform.rotation,
+      targetRotation,
       rotationLerpSpeed * Time.deltaTime);
   }
 }
 ```
 
-</details>
+ - Add it to the character and fly guy prefabs.
 
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
 TODO what is lerp (and slerp?)
 
+<hr></details>
 
-## Add Ladder sprites to the world
 
-Layout ladders in the world.  We are using [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) spritesheet_tiles sprites 23 and 33.
+## Add ladders to the world
+
+Create GameObjects and layout ladders in the world and set their tag to Ladder.  
 
 <details><summary>How</summary>
 
- - Create a parent Ladder GameObject, add sprite(s) for the look you want.
-   - You may want to 'Flip' the Y in the SpriteRenderer to mirror the top and bottom on some ladders.
+ - Create a parent Ladder GameObject, add the ladder sprite(s).  We are using **spritesheet_tiles_23** and **33**.
+ - Order in Layer -1.
+ - Position the ladder and repeat, creating several ladders - some which look broken.
    - The child sprite GameObjects should have a default Transform, with the execption of the Y position when multiple sprites are used.
    - It usually looks fine to overlap sprites a bit, as we do to get the space between ladder steps looking good.
- - Set the SpriteRenderers' Order is Layer to -1.
- - Position the ladder and repeat, creating several ladders - some which look broken.
+
+<img src="http://i.imgur.com/CDwdJ3c.gif" width=500px />
+
  - Create a new parent GameObject to hold all the ladders (optional).
+ - Create a tag for "Ladder".
+ - Select all the ladder GameObjects and change their tag to Ladder.
 
-<img src="http://i.imgur.com/NtZZZxD.gif" />
+<hr></details><br>
+<details><summary>TODO</summary>
 
-</details>
+TODO why tag and not layer here?
+
+<hr></details>
 
 
 ## Ladder trigger colliders
 
-Create trigger colliders for each of the ladders to be used for climbing.
+Add BoxCollider2D to the ladders, size to use for climbing and set as trigger colliders.  
+
+An entity will be able climb ladders when its bottom is above the bottom of the ladder's collider and its center is inside.
 
 <details><summary>How</summary>
 
- - Add BoxCollider2D.
- - Size them so that:
-   - The width is thinner than the sprite.
-   - The bottom of the collider is about half the character's height above the lower platform.
-   - The top of the collider is about half the character's height above the upper platform.
- - Check "Is Trigger".
+ - Add a BoxCollider2D and size it such that:
+   - The width is thinner than the sprite (about .6).
+   - The bottom of the collider:
+     - Just below the platform for complete ladders.
+     - Aligned with the last step of broken ladders.
+   - The top of the collider is just above the upper platform.
 
-<img src="http://i.imgur.com/GyGCU4n.png" />
+<img src="http://i.imgur.com/r0k4eq3.png" width=300px />
 
-TODO update collider size screenshot
+ - Check 'Is Trigger'.
 
-</details>
+<hr></details><br>
+<details><summary>TODO</summary>
 
+TODO
 TODO how do you know what size to make the collider?
 
-## Set tag to Ladder
-
-Update all the ladder GameObjects to have the Ladder tag.
-
-<details><summary>How</summary>
-
- - Create a tag for "Ladder".
- - Select all the ladder GameObjects and change their tag to Ladder.
-   - You can select "Yes, change children" when prompted.
-
-</details>
-
-TODO why tag and not layer here?
+<hr></details>
 
 
-## Change colliders to trigger
 
-Create a script to change all colliders for a GameObject to triggers, and then allow undo later on.
-
-<details><summary>How</summary>
-
- - Create a script Assets/Code/Utils/ChangeCollidersToTriggersCommand
- - Paste in the following:
-
-```csharp
-using System.Collections.Generic;
-using UnityEngine;
-
-/// <summary>
-/// This uses the 'Command pattern' to disable colliders on a 
-/// gameObject (by changing them to triggers).
-/// 
-/// It stores the colliders modified so it may undo the change
-/// later.
-/// </summary>
-public class ChangeCollidersToTriggersCommand
-{
-  /// <summary>
-  /// The colliders which were modified.
-  /// Saved to enable undo later on.
-  /// </summary>
-  List<Collider2D> impactedColliderList;
-
-  /// <summary>
-  /// Disables all colliders on the gameObject 
-  /// and stores them allowing undo later.
-  /// </summary>
-  /// <param name="gameObject">
-  /// The gameObject to disable colliders for.
-  /// </param>
-  public ChangeCollidersToTriggersCommand(
-    GameObject gameObject)
-  {
-    impactedColliderList = new List<Collider2D>();
-    Collider2D[] colliderList 
-      = gameObject.GetComponentsInChildren<Collider2D>();
-    for(int i = 0; i < colliderList.Length; i++)
-    {
-      Collider2D collider = colliderList[i];
-      // Only modify colliders 
-      // (vs anything that is already a trigger)
-      if(collider.isTrigger == false)
-      { 
-        // Store this for undo later
-        impactedColliderList.Add(collider);
-
-        // Change to trigger, allowing this to pass-through 
-        // obstacles
-        collider.isTrigger = true;
-      }
-    }
-  }
-
-  /// <summary>
-  /// Re-enable all colliders this command originally disabled.
-  /// </summary>
-  public void Undo()
-  {
-    for(int i = 0; i < impactedColliderList.Count; i++)
-    {
-      Collider2D collider = impactedColliderList[i];
-      collider.isTrigger = false;
-    }
-  }
-}
-```
-
-</details>
-
-TODO What do you mean by command pattern?
-TODO why?
-
-## LadderMovement
+## Add a script for the player to climb ladders
 
 LadderMovement, for character and spike ball.
+and player controller update
 
 
 <details><summary>How</summary>
@@ -1817,13 +1743,6 @@ public class LadderMovement : MonoBehaviour
 ```
 
 
-</details>
-
-## PlayerController to climb ladders
-
-
-
-<details><summary>How</summary>
 
  - TODO
 
@@ -1954,20 +1873,99 @@ public class PlayerController : MonoBehaviour
 </details>
 
 
-## Make the fly guy climb
 
 
+## Disable colliders to enable climbing down
+
+Create a script to change all colliders for a GameObject to triggers, and then allow undo later on.  Use this when climbing.
 
 <details><summary>How</summary>
 
-
-aoeu
+ - Create a script Assets/Code/Utils/ChangeCollidersToTriggersCommand
+ - Paste in the following:
 
 ```csharp
+using System.Collections.Generic;
+using UnityEngine;
 
+/// <summary>
+/// This uses the 'Command pattern' to disable colliders on a 
+/// gameObject (by changing them to triggers).
+/// 
+/// It stores the colliders modified so it may undo the change
+/// later.
+/// </summary>
+public class ChangeCollidersToTriggersCommand
+{
+  /// <summary>
+  /// The colliders which were modified.
+  /// Saved to enable undo later on.
+  /// </summary>
+  List<Collider2D> impactedColliderList;
+
+  /// <summary>
+  /// Disables all colliders on the gameObject 
+  /// and stores them allowing undo later.
+  /// </summary>
+  /// <param name="gameObject">
+  /// The gameObject to disable colliders for.
+  /// </param>
+  public ChangeCollidersToTriggersCommand(
+    GameObject gameObject)
+  {
+    impactedColliderList = new List<Collider2D>();
+    Collider2D[] colliderList 
+      = gameObject.GetComponentsInChildren<Collider2D>();
+    for(int i = 0; i < colliderList.Length; i++)
+    {
+      Collider2D collider = colliderList[i];
+      // Only modify colliders 
+      // (vs anything that is already a trigger)
+      if(collider.isTrigger == false)
+      { 
+        // Store this for undo later
+        impactedColliderList.Add(collider);
+
+        // Change to trigger, allowing this to pass-through 
+        // obstacles
+        collider.isTrigger = true;
+      }
+    }
+  }
+
+  /// <summary>
+  /// Re-enable all colliders this command originally disabled.
+  /// </summary>
+  public void Undo()
+  {
+    for(int i = 0; i < impactedColliderList.Count; i++)
+    {
+      Collider2D collider = impactedColliderList[i];
+      collider.isTrigger = false;
+    }
+  }
+}
 ```
 
 </details>
+
+TODO What do you mean by command pattern?
+TODO why?
+
+## Random climber controller
+
+Fly guy / bomb climb script.
+
+
+## laddermovement (fly guy don't walk off the side of a ladder).
+
+Change the wander walk.
+
+## ladder vs bomb velocity
+
+Save/restore velocity.
+
+
 
 ## Prevent enemies spawning on top of the character
 

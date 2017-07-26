@@ -3,7 +3,9 @@
 
 Add it to an empty parent GameObject named "Character".
 
-TODO: Remove all comments inline, link to file with comments.
+TODO: Long sections with more than x bullets need subtitles to split things up
+TODO: End of script sections may be shortened a bit
+TODO: Remove all comments and Asserts inline, link to file with comments.
 
 Image sizes: 150, 300, 500, 700.  Prefer: 300 
 
@@ -22,6 +24,11 @@ TODO
 <hr></details>
 
 
+ - Create script Code/Components/Movement/**TODO**:
+
+```csharp
+TODO
+```
 
 
 <details><summary>Existing code</summary>
