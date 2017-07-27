@@ -64,7 +64,7 @@ using UnityEngine;
 public class Hammer : MonoBehaviour
 {
   [SerializeField]
-  Vector2 positionWhenEquipt = new Vector2(.214f, -.321f);
+  Vector2 positionWhenEquipt = new Vector2(.214f, .17f);
 
   [SerializeField]
   Vector3 rotationWhenEquiptInEuler = new Vector3(0, 0, -90);
@@ -525,6 +525,7 @@ public class FadeInThenEnable : MonoBehaviour
 
       timePassed += Time.deltaTime;
     }
+    spriteList.SetAlpha(1);
 
     for(int i = 0; i < componentsToEnable.Length; i++)
     {

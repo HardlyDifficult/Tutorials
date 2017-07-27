@@ -216,10 +216,11 @@ Add an animation to the character for jumping.
 <img src="http://i.imgur.com/WgOfzQY.png" width=150px />
 
  - Change the condition to read 'isTouchingFloor false'.
+ - Under 'Settings' change the 'Transition Duration' to 0.
  - Create a transition from CharacterJump to CharacterWalk.
  - Select the transition and set the condition to 'isTouchingFloor true'.
  - Uncheck 'Has Exit Time'.
- - Under 'Settings' change the 'Transition Duration' to 0.
+ - Change the 'Transition Duration' to 0.
 
 </details>
 
@@ -250,47 +251,33 @@ TODO
 
 <hr></details>
 
-## Add an idle animation
+## Idle animation
 
-Create an animation for the character to set the sprite to an idle stance.  
-
-As there character stands there, animate the scale to make the character look like he is breathing.
+Create an animation for the character to set the sprite to an idle stance.  As there character stands there, animate the scale to make the character look like he is breathing.
 
 <details><summary>How</summary>
 
- - Open menu Window -> Animation.
- - Drag the character prefab into the scene and select the child sprite GameObject.
- - Click the dropdown (it should say 'CharacterWalk') and 'Create New Clip'.
-
-<img src="http://i.imgur.com/uJ0VeOp.png" width=300px />
-
- - Save the clip as Assets/Animations/CharacterIdle.
- - Click the red record button.
- - Change the 'Sprite' under the character's Sprite Renderer component to an idle stance.  We are using adventurer_tilesheet_0. 
- - Click the record button again to stop recording.
-
-
- - Open menu Window -> Animator.
- - Right click on the CharacterWalk state and select 'Make Transition'.
- - An arrow will follow your mouse, click on the CharacterIdle state to create the transition.
-
-<img src="http://i.imgur.com/4X3rXti.gif" width=300px />
-
- - Click on the transition arrow you just created, then in the Inspector
-   - Uncheck 'Has Exit Time'.
-   - Under 'Conditions' click the '+' button.
-   - Update the condition to be when 'Speed' is 'Less' than '.1'
-
-<img src="http://i.imgur.com/kPE2Iup.png" width=150px />
-
-Hit play, the character should 'walk' as he falls... but once he comes to a complete stop he never starts the walk animation again.
-
-<img src="http://i.imgur.com/O7XQUeP.gif" width=150px />
-
- - Right click on the CharacterIdle state and Make a Transition to CharacterWalk.
- - Click on the transition just created:
+ - Create a new animation for the character Assets/Animations/**CharacterIdle**.
+ - Click record
+   - Change the 'Sprite' under the character's Sprite Renderer component to an idle stance. We are using **adventurer_tilesheet_0**.
+   - Double click to create a keyframe at 1:00.
+   - Switch the current time position to 0:30 and set the Transform scale to (1, .95, 1).
+   - Switch the time to 1:00 and set the Transform scale to (1, 1, 1).
+   - Then stop recording.   
+ - In the Animator, create a transition from CharacterWalk to CharacterIdle.
    - Uncheck Has Exit Time.
-   - Add a condition for 'Speed' is 'Greater' than '.1'.
+   - Set transition duration to 0.
+   - Add a condition when 'Speed' is 'Less' than '.1'
+ - Make a transition from CharacterIdle to CharacterWalk.
+   - Uncheck Has Exit Time.
+   - Set transition duration to 0.
+   - Add a condition for 'Speed' is 'Greater' than '.1'
+
+
+
+
+<hr></details><br>
+<details><summary>TODO</summary>
 
 The character's animator controller should look something like this now:
 
@@ -301,18 +288,20 @@ Hit play so see the character switch between walking and standing:
 <img src="http://i.imgur.com/YjZ1zrE.gif" width=200px />
 
 You can adjust the 'Transition Duration' if you want the character to switch sprites faster or slower.
+Hit play, the character should 'walk' as he falls... but once he comes to a complete stop he never starts the walk animation again.
 
- - Select one of the transition arrows.
- - Under 'Settings', change the 'Transition Duration' value.
- - Do the same for the other transition arrow.
 
 Hit play and note the difference, to help demonstrate what is happening we are using a transition duration of 1 here for both transitions:
 
 <img src="http://i.imgur.com/QV38yfS.gif" width=200px />
+<img src="http://i.imgur.com/O7XQUeP.gif" width=150px />
 
+The Animation should now look like this, note the preview of the character's idle sprite and there is no timeline, it is just a single keyframe.
 
- - In the Animation tab, select the CharacterIdle animation and hit record.
- - Select the character's GameObject, in the Inspector change scale to 0 and then back to one.
+<img src="http://i.imgur.com/j2S25Ex.png" width=300px />
+
+The Animator tab should now have a new state for CharacterIdle (a grey box).
+
 
 When we make a change to scale while in record mode, a keyframe is added.  So by changing the scale and then changing it back to the default of 1, we simply added a keyframe for scale 1 at the start of the animation. 
 
@@ -346,42 +335,35 @@ The breath rate should be more reasonable now:
 
 <img src="http://i.imgur.com/bfYKFkC.gif" width=100px />
 
-
-
-<hr></details><br>
-<details><summary>TODO</summary>
-
-The Animation should now look like this, note the preview of the character's idle sprite and there is no timeline, it is just a single keyframe.
-
-<img src="http://i.imgur.com/j2S25Ex.png" width=300px />
-
-The Animator tab should now have a new state for CharacterIdle (a grey box).
-
 <hr></details>
-
-
-
 
 
 ## Add a breakdance animation
 
-Create an animation for the character dancing.  We are using adventurer_tilesheet 11 - 21 (10 sprites).
+Add an animation for the character dancing after standing still for a bit.  
 
 <details><summary>How</summary>
 
- - Select the character and in the Animation tab create a new clip, save it as Assets/Animations/CharacterDance.
- - Select all the sprites for this animation. We are using adventurer_tilesheet 11 - 21 (10 sprites).
- - Drag and drop them into the animation timeline.
+ - Create a new animation for the character Assets/Animations/**CharacterDance**.
+ - Select all the sprites for this animation and drag them into the timeline. We are using **adventurer_tilesheet_11** **- 21** (10 sprites).
+ - Change the CharacterDance speed to '.1'
+ - Create a transition from CharacterIdle to CharacterDance.
+   - Change the 'Exit Time' to about '3'
+   - Set Transition Duration to 0.
+ - Create a transition from CharacterDance to CharacterIdle.
+   - Set Transition Duration to 0.
+ - Create a transition from CharacterDance to CharacterWalk.
+   - Uncheck 'Has Exit Time'.
+   - Set Transition Duration to 0.
+   - Add a Condition for 'Speed' is 'Greater' than '.1'
 
+<hr></details><br>
+<details><summary>TODO</summary>
 
+Click play in the animation tab to see a preview of the dance, but it may be a little fast:
 
- - Select the character and in the Animator tab, create a transition from CharacterIdle to CharacterDance.
- - Select the transition you just created, in the Inspector under 'Settings' change the 'Exit Time' to about '3'.
+<img src="http://i.imgur.com/thjyiMM.gif" width=200px />
 
-Click play and wait a few seconds for the dance to begin.
-
- - Select the CharacterDance state and adjust the speed to about .1
- - Create a transition from CharacterDance to CharacterIdle (using the default settings).
 
 Play to preview the dance:
 
@@ -391,24 +373,11 @@ However if you start to walk during the dance, it doesn't look quite right:
 
 <img src="http://i.imgur.com/d9wCdad.gif" width=250px />
 
- - Create a transition from CharacterDance to CharacterWalk.
- - Select the transition you just created and:
-   - Uncheck 'Has Exit Time'.
-   - Change the 'Transition Duration' to '0'
-   - Add a Condition for 'Speed' is 'Greater' than '.1'
 
 Now we resume walking as desired:
 
 <img src="http://i.imgur.com/t7cUVPI.gif" width=250px />
 
-
-
-<hr></details><br>
-<details><summary>TODO</summary>
-
-Click play in the animation tab to see a preview of the dance, but it may be a little fast:
-
-<img src="http://i.imgur.com/thjyiMM.gif" width=200px />
 
 <hr></details>
 
@@ -441,24 +410,287 @@ Vector2.Dot(gameObjectAToWatch.transform.up, gameObjectBToWatch.transform.up);
 </details>
 
 
+## Add an intro animation for the cloud
+
+Create an animation for the cloud entrance at the start of the level.
+
+<details><summary>How</summary>
+
+ - Create an animation for the evil cloud sprite Assets/Animations/**CloudLevel1Entrance**.
+ - Click record:
+   - Start by moving the cloud off screen.
+   - Then over time, modify its position to create a dramatic entrance.
+ - Select Assets/Animations/CloudLevel1Entrance and in the Inspector uncheck 'Loop Time'.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
 
 
+## Add an intro timeline
 
-## Intro
+Create a timeline which enables LevelManager and hammers after the intro is complete.
 
-Try Unity Timeline.
+<details><summary>How</summary>
 
-Character and fly guy fades in via AppearInSecondsAndFade
+ - Open menu Window -> Timeline.
+ - Select the evil cloud sprite and click 'Create'.  Save as Assets/Animations/**Level1Entrance**.
+ - Select 'Add from Animation Clip' and select CloudLevel1Entrance.
 
-+ other intro effects
- - Cloud and animation
+<img src="http://i.imgur.com/7HXZs7Z.gif" width=300px />
 
+ - For each hammer in the scene:
+   - Drag it onto the timeline and select 'Activation Track'.
+   - Move the box for the script so that it starts after the cloud animation completes.  Leave the size at about the default length.
+
+<img src="http://i.imgur.com/6XyJZlh.gif" width=300px />
+
+ - Do the same for the LevelManager and each of the ladders.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+
+## Disable spawners till the intro is complete
+
+Create a script to enable components when the level intro completes.
+
+<details><summary>How</summary>
+
+ - Create script Code/Components/Life/**EnableComponentsOnLevelLoad**:
+
+```csharp
+using UnityEngine;
+
+public class EnableComponentsOnLevelLoad : MonoBehaviour
+{
+  [SerializeField]
+  MonoBehaviour[] componentToEnableOnAlmostLoaded;
+  
+  [SerializeField]
+  MonoBehaviour[] componentToEnableOnComplete;
+
+  public void OnLevelAlmostLoaded()
+  {
+    for(int i = 0; i < componentToEnableOnAlmostLoaded.Length; i++)
+    {
+      MonoBehaviour component = componentToEnableOnAlmostLoaded[i];
+      component.enabled = true;
+    }
+  }
+
+  public void OnLevelLoaded()
+  {
+    for(int i = 0; i < componentToEnableOnComplete.Length; i++)
+    {
+      MonoBehaviour component = componentToEnableOnComplete[i];
+      component.enabled = true;
+    }
+  }
+}
+```
+
+ - For both the cloud and door:
+   - Disable the Spawner component.
+   - Add EnableComponentsOnLevelLoad.
+   - Set the Components To Enable On Complete to the Spawner component.
+ - Create script Code/Components/Animations/**EndOfLevelPlayable**:
+
+```csharp
+using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
+
+public class EndOfLevelPlayable : BasicPlayableBehaviour
+{
+  public enum EndOfLevelEventType
+  {
+    AlmostComplete, Complete
+  }
+
+  [SerializeField]
+  EndOfLevelEventType eventType;
+
+  public override void OnBehaviourPlay(
+    Playable playable,
+    FrameData info)
+  {
+    base.OnBehaviourPlay(playable, info);
+
+    EnableComponentsOnLevelLoad[] endOfLevelList
+      = GameObject.FindObjectsOfType<EnableComponentsOnLevelLoad>();
+
+    for(int i = 0; i < endOfLevelList.Length; i++)
+    {
+      EnableComponentsOnLevelLoad endOfLevel = endOfLevelList[i];
+      switch(eventType)
+      {
+        case EndOfLevelEventType.AlmostComplete:
+          endOfLevel.OnLevelAlmostLoaded();
+          break;
+        case EndOfLevelEventType.Complete:
+          endOfLevel.OnLevelLoaded();
+          break;
+      }
+    }
+  }
+}
+```
+
+ - Drag drop the script into the timeline.  Set the time like we did for the hammers.
+ - In the Inspector, change the 'Event Type' to 'Complete'.
+
+<img src="http://i.imgur.com/ynW3z5a.png" width=300px />
+
+ - Drag the script in a second time and set the time to fire a bit before the animation ends.
+
+<img src="http://i.imgur.com/AYkG3Jc.png" width=300px />
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+## Rotate platforms during intro
+
+<details><summary>How</summary>
+
+Platforms should start out straight and then when the intro animation is nearly complete, shake down into position.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+ - Create script Code/Components/Movement/**RotateOvertimeToOriginal**:
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+public class RotateOvertimeToOriginal : MonoBehaviour
+{
+  [SerializeField]
+  float rotationTimeFactor = 1;
+
+  [SerializeField]
+  float maxTimeBetweenRotations = .25f;
+
+  Quaternion targetRotation;
+
+  protected void Awake()
+  {
+    // Start with no rotation
+    targetRotation = transform.rotation;
+    transform.rotation = Quaternion.identity;
+  }
+
+  protected void Start()
+  {
+    StartCoroutine(AnimateRotation());
+  }
+
+  IEnumerator AnimateRotation()
+  {
+    float percentComplete = 0;
+    float sleepTimeLastFrame = 0;
+    while(true)
+    {
+      sleepTimeLastFrame = UnityEngine.Random.Range(0, maxTimeBetweenRotations);
+      yield return new WaitForSeconds(sleepTimeLastFrame);
+
+      float percentCompleteThisFrame = sleepTimeLastFrame * rotationTimeFactor;
+      percentCompleteThisFrame *= UnityEngine.Random.Range(0, 10);
+      percentComplete += percentCompleteThisFrame;
+      if(percentComplete >= 1)
+      {
+        transform.rotation = targetRotation;
+        yield break;
+      }
+      transform.rotation = Quaternion.Lerp(Quaternion.identity, targetRotation, percentComplete);
+    }
+  }
+}
+```
+
+ - For each Platform:
+   - Add RotateOvertimeToOriginal and disable the component.
+   - Add EnableComponentsOnLevelLoad and add RotateOvertimeToOriginal to the 'Components to enable on almost loaded'.
+
+<hr></details>
+
+## Add screen shake
+
+Shake the screen when the platforms fall into place.
+
+<details><summary>How</summary>
+
+ - Create script Code/Components/Animations/**ScreenShake**.
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+public class ScreenShake : MonoBehaviour
+{
+  [SerializeField]
+  float timeToShakeFor = 1;
+
+  [SerializeField]
+  float maxTimeBetweenShakes = .2f;
+
+  [SerializeField]
+  float shakeMagnitude = 1;
+
+  protected void Start()
+  {
+    StartCoroutine(ShakeCamera());
+  }
+
+  IEnumerator ShakeCamera()
+  {
+    Camera camera = Camera.main;
+    Vector3 startingPosition = camera.transform.position;
+
+    float timePassed = 0;
+    while(timePassed < timeToShakeFor)
+    {
+      float percentComplete = timePassed / timeToShakeFor;
+      percentComplete *= 2;
+      if(percentComplete > 1)
+      {
+        percentComplete = 2 - percentComplete;
+      }
+      camera.transform.position = startingPosition + (Vector3)UnityEngine.Random.insideUnitCircle * shakeMagnitude * percentComplete;
+
+      float sleepTime = UnityEngine.Random.Range(0, maxTimeBetweenShakes * (1 - percentComplete));
+      yield return new WaitForSeconds(sleepTime);
+      sleepTime = Mathf.Max(Time.deltaTime, sleepTime);
+      timePassed += sleepTime;
+    }
+
+    camera.transform.position = startingPosition;
+  }
+}
+```
+
+ - Add it to the camera and disable the component.
+ - Add EnableComponentsOnLevelLoad, add screenshake to the list to enable on almost complete.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
 
 # Next chapter
 
 [Chapter 6](https://github.com/hardlydifficult/Platformer/blob/master/Chapter6.md).
-
-
-
-TODO something for bomb? but that doesn't make sense till the hammer. 
-other death effects?

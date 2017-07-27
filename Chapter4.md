@@ -1,4 +1,4 @@
-# 4) Ground detection
+# 4) Ground detection & Ladders
 
 ## 4.1) Rotate entities when they walk the other way
 
@@ -667,6 +667,7 @@ Create GameObjects and layout ladders in the world and set their tag to Ladder.
  - Create a new parent GameObject to hold all the ladders (optional).
  - Create a tag for "Ladder".
  - Select all the ladder GameObjects and change their tag to Ladder.
+ - Add FadeInThenEnable to all the ladders.
 
 <hr></details><br>
 <details><summary>TODO</summary>
