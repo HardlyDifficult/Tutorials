@@ -12,6 +12,7 @@ ui...
 
  - maybe a timer?
 
+ - Settings page, remap controls and volume slider.
 
 
 

@@ -10,11 +10,13 @@ TODO gif
 
 demo build of level 3
 
-## Spawn a flying enemy
+## 3.1) Spawn a flying enemy
 
 Create a prefab for the fly guy reusing components from the spike ball and character.  Create a second spawner at the bottom for fly guys.
 
 <details><summary>How</summary>
+
+Fly guy:
 
  - Select **spritesheet_jumper_30**, **84**, and **90** and drag them into the Hierarchy, creating Assets/Animations/**FlyGuyWalk**.
  - Set Order in Layer to 1.
@@ -24,9 +26,12 @@ Create a prefab for the fly guy reusing components from the spike ball and chara
  - Add a CapsuleCollider2D and adjust the size.
 
 <img src="http://i.imgur.com/d1lxoEj.png" width=150px />
- 
+
  - Add WalkMovement.
  - Add KillOnContactWith and set the layermask to Player.
+
+Door:
+
  - Drag in **spritesheet_tiles_43** and then drag in **47**, add them to a parent named "Door".
  - Set Order in Layer to -2.
  - Scale up the size of the door to about (1.5, 1.5, 1.5).
@@ -45,7 +50,7 @@ Create a prefab for the fly guy reusing components from the spike ball and chara
 </details>
 
 
-## Make the fly guy walk
+## 3.2) Make the fly guy walk
 
 Add a script to the fly guy to drive random walk movement.
 
@@ -61,7 +66,7 @@ using UnityEngine;
 public class WanderWalkController : MonoBehaviour
 {
   [SerializeField]
-  float timeBeforeFirstWander = 5;
+  float timeBeforeFirstWander = 10;
 
   [SerializeField]
   float minTimeBetweenReconsideringDirection = 1;
@@ -109,7 +114,7 @@ public class WanderWalkController : MonoBehaviour
 </details>
 
 
-## Flying feet
+## 3.3) Flying feet
 
 Add a second collider so that the body of this entity is above the ground but does not kill a character walking underneath.
 
@@ -136,7 +141,7 @@ TODO
 <hr></details>
 
 
-## Fade in entities
+## 3.4) Fade in entities
 
 Add a script to entities so they fade in before moving.
 
@@ -240,7 +245,7 @@ TODO
 
 
 
-## Rotate entities when they walk the other way
+## 3.5) Rotate entities when they walk the other way
 
 Flip the entity when they switch between walking left and walking right.
 
@@ -373,7 +378,7 @@ In the example above, as the velocity approaches zero, the significance of if th
 </details>
 
 
-## Create a GameController script
+## 3.6) Create a GameController script
 
 Create a singleton GameController to track points, lives, and hold global data such as the world size.
 
@@ -482,7 +487,7 @@ Moves the GameObject to a DontDestroyOnLoad section in the Hierarchy.
 <hr></details>
 
 
-## Death effect to decrement lives
+## 3.7) Death effect to decrement lives
 
 Add a script to the character to decrement lives in the GameController on death.
 
@@ -518,7 +523,7 @@ To test, look at the life count go down in the GameController component.
 <hr></details>
 
 
-## Respawn on death
+## 3.8) Respawn on death
 
 Add scripts to respawn the character when he dies.
 
@@ -622,7 +627,7 @@ TODO
 <hr></details>
 
 
-## Clear and restart the level on death
+## 3.9) Clear and restart the level on death
 
 Add scripts to kill all the enemies and restart spawners when the character dies.
 
@@ -737,7 +742,7 @@ TODO
 
 
 
-## Restrict movement to stay on screen
+## 3.10) Restrict movement to stay on screen
 
 Create a script which ensures entities can not walk off screen.
 
@@ -815,7 +820,7 @@ In this component we are setting transform.position for the teleport effect.  If
 </details>
 
 
-## Fly guy turns around when reaching the edge
+## 3.11) Fly guy turns around when reaching the edge
 
 Create a script to have the fly guy bounce off the edge of the screen and never stop walking.
 
@@ -867,7 +872,7 @@ TODO
 
 
 
-## Detect floors
+## 3.12) Detect floors
 
 Create a script to calculate the distance to and rotation of the floor under an entity.
 
@@ -1046,7 +1051,7 @@ TODO question - why not require floordetector component? / why GetComponentInChi
 
 
 
-## Prevent double jump
+## 3.13) Prevent double jump
 
 Update JumpMovement to prevent double jump and flying (by spamming space), by leveraging the FloorDetector just created.
 
@@ -1160,7 +1165,7 @@ TODO could add a jump cooldown by time as well - but that would not be a complet
 <hr></details>
 
 
-## Update WanderWalkController to prefer traveling up hill
+## 3.14) Update WanderWalkController to prefer traveling up hill
 
 Update the WanderWalkController so that the fly guy is more likely to walk up hill than down.
 
@@ -1191,7 +1196,7 @@ public class WanderWalkController : MonoBehaviour
 
 ```csharp
   [SerializeField]
-  float timeBeforeFirstWander = 5;
+  float timeBeforeFirstWander = 10;
 
   [SerializeField]
   float minTimeBetweenReconsideringDirection = 1;
@@ -1315,7 +1320,7 @@ TODO
 <hr></details>
 
 
-## Rotate to match the floor's angle
+## 3.15) Rotate to match the floor's angle
 
 Create a script to rotate an entity, aligning with the floor when touching one, otherwise rotating back to the default position.
 
@@ -1384,7 +1389,7 @@ TODO what is lerp (and slerp?)
 <hr></details>
 
 
-## Add ladders to the world
+## 3.16) Add ladders to the world
 
 Create GameObjects and layout ladders in the world and set their tag to Ladder.  
 
@@ -1410,7 +1415,7 @@ TODO why tag and not layer here?
 <hr></details>
 
 
-## Ladder trigger colliders
+## 3.17) Ladder trigger colliders
 
 Add BoxCollider2D to the ladders, size to use for climbing and set as trigger colliders.  
 
@@ -1439,7 +1444,7 @@ TODO how do you know what size to make the collider?
 
 
 
-## Add a script for the player to climb ladders
+## 3.18) Add a script for the player to climb ladders
 
 Create a script to climb ladders and update the player controller to match.
 
@@ -1775,7 +1780,7 @@ Why does he pop a bit on the way up?
 <hr></details>
 
 
-## Disable physics when climbing
+## 3.19) Disable physics when climbing
 
 While climbing a ladder, disable physics.
 
@@ -2137,7 +2142,7 @@ TODO why?
 <hr></details>
 
 
-## Random climber controller
+## 3.20) Random climber controller
 
 Fly guy / bomb climb script.
 
@@ -2154,7 +2159,7 @@ using UnityEngine;
 public class RandomClimbController : MonoBehaviour
 {
   [SerializeField]
-  float oddsOfClimbingLadderUp = .5f;
+  float oddsOfClimbingLadderUp = .9f;
 
   [SerializeField]
   float oddsOfClimbingLadderDown = .1f;
@@ -2229,7 +2234,7 @@ They won't actually climb, just go up or down a touch then pop back.
 <hr></details>
 
 
-## Stop walking off ladders
+## 3.21) Stop walking off ladders
 
 Stop WanderWalkController when climbing up or down.
 
@@ -2250,7 +2255,7 @@ public class WanderWalkController : MonoBehaviour
   float oddsOfGoingUpHill = .8f; 
 
   [SerializeField]
-  float timeBeforeFirstWander = 5;
+  float timeBeforeFirstWander = 10;
 
   [SerializeField]
   float minTimeBetweenReconsideringDirection = 1;
@@ -2397,7 +2402,7 @@ TODO
 
 
 
-## Stop rolling off ladders
+## 3.22) Stop rolling off ladders
 
 Create a script to stop the ball's momentum when getting on ladders, and restore it when getting off.
 
@@ -2455,13 +2460,55 @@ TODO
 <hr></details>
 
 
-## Move towards the center of the ladder
+## 3.23) Move towards the center of the ladder
 
 Add a script to the fly guy and spike ball to direct them towards the center of a ladder while climbing.
 
 <details><summary>How</summary>
 
-TODO
+ - Create script Code/Components/Movement/**MoveTowardsCenterWhileClimbing**:
+
+```csharp
+using UnityEngine;
+
+[RequireComponent(typeof(LadderMovement))]
+public class MoveTowardsCenterWhileClimbing : MonoBehaviour
+{
+  [SerializeField]
+  float lerpSpeed = .1f;
+
+  LadderMovement ladderMovement;
+
+  protected void Awake()
+  {
+    ladderMovement = GetComponent<LadderMovement>();
+
+    Debug.Assert(ladderMovement != null);
+  }
+
+  protected void FixedUpdate()
+  {
+    GameObject ladder = ladderMovement.ladderWeAreOn;
+    if(ladder != null)
+    {
+      float targetX = ladder.transform.position.x;
+      float myX = transform.position.x;
+      float deltaX = targetX - myX;
+      if(Mathf.Abs(deltaX) > 0.01)
+      {
+        Vector2 target = transform.position;
+        target.x += deltaX;
+        transform.position = Vector2.Lerp(
+          transform.position, 
+          target, 
+          lerpSpeed);
+      }
+    }
+  }
+}
+```
+
+ - Add it to fly guy and spike ball.
 
 <hr></details><br>
 <details><summary>TODO</summary>
@@ -2470,18 +2517,122 @@ TODO
 
 <hr></details>
 
-## Prevent enemies spawning on top of the character
+## 3.24) Prevent enemies spawning on top of the character
 
-Update the door spawner so that it does not spawn if the character is too close.
+Update the door so that it does not spawn if the character is too close.
 
 <details><summary>How</summary>
 
+ - Add a BoxCollider2D and size it to cover the entrance area.
+
+<img src="http://i.imgur.com/Jq4rU93.png" width=300px />
+
+ - Check 'Is Trigger'.
  - Update the 'Spawner' script with the following (or copy/paste TODO link):
 
-Use Collider2D overlap.
+<details><summary>Existing code</summary>
+
+```csharp
+using System;
+using System.Collections;
+using UnityEngine;
+
+public class Spawner : MonoBehaviour, ICareWhenPlayerDies
+{
+  [SerializeField]
+  GameObject thingToSpawn;
+
+  [SerializeField]
+  float initialWaitTime = 2;
+
+  [SerializeField]
+  float minTimeBetweenSpawns = .5f;
+
+  [SerializeField]
+  float maxTimeBetweenSpawns = 10;
+```
+
+</details>
+
+```csharp  
+  Collider2D safeZoneCollider;
+
+  ContactFilter2D contactFilter;
+
+  Collider2D[] tempColliderList = new Collider2D[1];
+  
+  protected void Awake()
+  {
+    safeZoneCollider = GetComponent<Collider2D>();
+    contactFilter = new ContactFilter2D()
+    {
+      layerMask = LayerMask.GetMask(new[] { "Player" }),
+      useLayerMask = true
+    };
+  }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  protected void Start()
+  {
+    StartCoroutine(SpawnEnemies());
+  }
+
+  void ICareWhenPlayerDies.OnPlayerDeath()
+  {
+    StopAllCoroutines();
+    StartCoroutine(SpawnEnemies());
+  }
+
+  IEnumerator SpawnEnemies()
+  {
+    yield return new WaitForSeconds(initialWaitTime);
+
+    while(true)
+    {
+```
+
+</details>
+
+```csharp
+      if(safeZoneCollider == null 
+        || safeZoneCollider.OverlapCollider(contactFilter, tempColliderList) == 0)
+      {
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+        Instantiate(
+          thingToSpawn,
+          transform.position,
+          Quaternion.identity);
+```
+
+</details>
+
+```csharp
+      }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+      float sleepTime = UnityEngine.Random.Range(
+        minTimeBetweenSpawns,
+        maxTimeBetweenSpawns);
+      yield return new WaitForSeconds(sleepTime);
+    }
+  }
+}
+```
+
+</details>
 
 
-TODO
+ - Set the Layers to Consider to Player.
 
 <hr></details><br>
 <details><summary>TODO</summary>
@@ -2491,11 +2642,137 @@ TODO
 <hr></details>
 
 
-## Add points for jumping over enemies
+## 3.25) Add points for jumping over enemies
+
+Add a collider and script to award points anytime the character jumps over an enemy.
+
+
+<details><summary>How</summary>
+
+ - Create a new Layer for "Points" and disable everything except for Points / Player.
+
+<img src="http://i.imgur.com/5sxuf2I.png" width=150px />
+
+ - Add the fly guy and spike ball to scene.
+ - For each, add a new empty GameObject as a child named "Points" and then:
+   - Assign the Points layer to the Points GameObject.
+   - Add a Rigidbody2D and change the Body Type to 'Kinematic'.
+   - Add a BoxCollider2D and check Is Trigger.
+   - Size the collider to capture the area above.
+
+<img src="http://i.imgur.com/gmMDJlD.png" width=150px />
+
+ - Create script Code/Components/Effects/**AwardPointsOnJumpOver**:
+
+```csharp
+using UnityEngine;
+
+[RequireComponent(typeof(BoxCollider2D))]
+public class AwardPointsOnJumpOver : MonoBehaviour
+{
+  [SerializeField]
+  int pointsToAward = 100;
+
+  [SerializeField]
+  LayerMask playerAndAllPossibleObstacles;
+
+  BoxCollider2D myCollider;
+
+  ContactFilter2D contactFilter;
+
+  RaycastHit2D[] tempHitList = new RaycastHit2D[1];
+
+  LayerMask myLayerMask;
+
+  protected void Awake()
+  {
+    myCollider = GetComponent<BoxCollider2D>();
+
+    contactFilter = new ContactFilter2D()
+    {
+      layerMask = playerAndAllPossibleObstacles,
+      useLayerMask = true,
+      useTriggers = true
+    };
+
+    myLayerMask = Physics2D.GetLayerCollisionMask(gameObject.layer);
+
+    Debug.Assert(myCollider != null);
+  }
+
+  protected void OnTriggerStay2D(
+    Collider2D collision)
+  {
+    if(myLayerMask.Includes(collision.gameObject.layer) == false)
+    {
+      return;
+    }
+
+    Physics2D.Raycast(
+      transform.parent.position, 
+      Vector2.up, 
+      contactFilter, 
+      tempHitList);
+
+    if(tempHitList[0].collider == collision)
+    {
+      GameController.instance.points += pointsToAward;
+
+      Destroy(this);
+    }
+  }
+}
+```
+
+ - Add it to both Points GameObjects.
+ - Set layer mask to Player and Floor.
+ - Apply changes to the prefabs and delete the GameObjects.
+
+<hr></details><br>
+<details><summary>TODO</summary>
 
 TODO
 
-## Test
+<hr></details>
+
+
+## 3.26) Hold rotation on the point collider
+
+Create a script to hold the child GameObjects rotation while the parent spins.
+
+<details><summary>How</summary>
+
+ - Create script Code/Components/Movement/**HoldRotation**:
+
+```csharp
+using UnityEngine;
+
+public class HoldRotation : MonoBehaviour
+{
+  Quaternion originalRotation;
+
+  protected void Awake()
+  {
+    originalRotation = transform.rotation;
+  }
+
+  protected void Update()
+  {
+    transform.rotation = originalRotation;
+  }
+}
+```
+
+ - Add it to the Points GameObject under the spike ball prefab.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+## 3.27) Test
 
 GG
 
