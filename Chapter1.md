@@ -10,7 +10,7 @@ This is very much a WIP.  I'm trying to make a tutorial helpful to a range of ex
 
 <br><br>
 
-**FYI**: The sequence and 'How' sections should be solid for chapter 1-3.  Questions as well as general 'what did that do' type content will be revisited.  If you try this, please take notes of any questions which come to mind and send those my way.  We'll be working on those after the process and how-to sections are complete.
+**FYI**: The sequence and 'How' sections should be solid for chapter 1-2.  Questions as well as general 'what did that do' type content will be revisited.  If you try this, please take notes of any questions which come to mind and send those my way.  We'll be working on those after the process and how-to sections are complete.
 
 <br><br>
 

@@ -785,6 +785,8 @@ public class KillOnContactWith : MonoBehaviour
   [SerializeField]
   LayerMask layersToKill;
 
+  protected void Start() {}
+
   protected void OnCollisionEnter2D(
     Collision2D collision)
   {
@@ -800,6 +802,11 @@ public class KillOnContactWith : MonoBehaviour
   void ConsiderKilling(
     GameObject gameObjectWeJustHit)
   {
+    if(enabled == false)
+    {
+      return;
+    }
+    
     if(layersToKill.Includes(gameObjectWeJustHit.layer) == false)
     {
       return;
@@ -827,6 +834,9 @@ Hit play to watch the player die:
 
 For now, to test again stop and hit play again.  We'll respawn the player later in the tutorial.
 TODO
+
+Why   protected void Start() {}
+
 
 <hr></details>
 
@@ -1066,7 +1076,15 @@ public class SuicideIn : MonoBehaviour
   
   protected void Start()
   {
-    Destroy(gameObject, timeTillDeath);
+    Debug.Assert(timeTillDeath > 0);
+
+    StartCoroutine(CountdownToDeath());
+  }
+
+  IEnumerator CountdownToDeath()
+  {
+    yield return new WaitForSeconds(timeTillDeath);
+    DeathEffectManager.PlayDeathEffectsThenDestroy(gameObject);
   }
 }
 ```
@@ -1155,7 +1173,6 @@ public class DeathEffectThrob : DeathEffect
 TODO FaQ why not animation?  Could, more on that next chapter.  This is yet another way.
 
 <hr></details>
-
 
 
 

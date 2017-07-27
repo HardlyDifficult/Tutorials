@@ -1,367 +1,1786 @@
-# 4) Animations 
+# 4) Ground detection
 
-TODO intro
+## 4.1) Rotate entities when they walk the other way
 
-
-## Hammer
-
- - Change the sprite's pivot to Bottom
- - Add to the world
- - Scale, position, create a few
- - Add a BoxCollider2D and resize
- - Change to Trigger
- - Add FadeInThenEnableComponents with TimeTillEnabled set to 3 and no components to enable.
-
-
-## Hammer animation 
-
- - Open Animation tab and click create, save as Assets/Animations/HammerSwing
- - Click record
- - Modify the rotation, then set it back to 0, creating a keyframe for the default rotation.
- - Double click under 1:00 to create another keyframe.
- - Switch the current time position (the white line) to 0:30.
- - Change rotation to (0, 0, -90).
- - Click record to stop recording.
- - Click play to preview the hammer swinging, adjust the middle keyframe's position until the hammer has a nice swing, about 0:10.
-
- TODO gif of this change
-
-Hit play and the hammer is swinging in the air.
-
-## Hammer animaition controller
-
-Stop swinging by default.
-
- - Double click the animation.
- - Create new Empty State, name it "Idle".
- - Right click and 'Set as Layer Default State'.
-
-
-
-
-## Weapon holder
-
-Create and add to character.
-
-## Flash death effect 
-
-script, add to hammer (auto adds the DeathEffectManager).
-
-Disable this.
-
-
-## Hammer controller
-
-Create and add to Hammer. Config position.
-
-
-## Hammer killing
-
-aoeu?
-
-## Create an idle animation
-
-Create an animation for the character to set the sprite to an idle stance.  We are using adventurer_tilesheet_0.
+Flip the entity when they switch between walking left and walking right.
 
 <details><summary>How</summary>
 
- - Open the 'Animation' tab by selecting menu Window -> Animation.
- - Select the character GameObject.
- - Click the dropdown (it should say 'CharacterWalk') and 'Create New Clip'.
-
-<img src="http://i.imgur.com/uJ0VeOp.png" width=150px />
-
- - Save the clip as Assets/Animations/CharacterIdle.
- - Click the red record button.
-
-<img src="http://i.imgur.com/XxrsDpf.png" width=200px />
-
- - Change the 'Sprite' under the character's Sprite Renderer component to an idle stance.  We are using adventurer_tilesheet_0.
-
-<img src="http://i.imgur.com/yvWU5vP.gif" width=150px />
- 
- - Click the record button again to stop recording.
-
-The Animation should now look like this, note the preview of the character's idle sprite and there is no timeline, it is just a single keyframe.
-
-<img src="http://i.imgur.com/j2S25Ex.png" width=200px />
-
-The Animator tab should now have a new state for CharacterIdle (a grey box).
-
-</details>
-
-## Transition to and from idle
-
-Have the character switch to an idle stance when he is not moving. 
-
-<details><summary>How</summary>
-
- - Right click on the CharacterWalk state and select 'Make Transition'.
- - An arrow will follow your mouse, click on the CharacterIdle state to create the transition.
-
-<img src="http://i.imgur.com/4X3rXti.gif" width=300px />
-
- - Click on the transition arrow you just created, then in the Inspector
-   - Uncheck 'Has Exit Time'.
-   - Under 'Conditions' click the '+' button.
-   - Update the condition to be when 'Speed' is 'Less' than '.1'
-
-<img src="http://i.imgur.com/kPE2Iup.png" width=150px />
-
-Hit play, the character should 'walk' as he falls... but once he comes to a complete stop he never starts the walk animation again.
-
-<img src="http://i.imgur.com/O7XQUeP.gif" width=150px />
-
- - Right click on the CharacterIdle state and Make a Transition to CharacterWalk.
- - Click on the transition just created:
-   - Uncheck Has Exit Time.
-   - Add a condition for 'Speed' is 'Greater' than '.1'.
-
-The character's animator controller should look something like this now:
-
-<img src="http://i.imgur.com/VotmF1k.png" width=200px />
-
-Hit play so see the character switch between walking and standing:
-
-<img src="http://i.imgur.com/YjZ1zrE.gif" width=200px />
-
-You can adjust the 'Transition Duration' if you want the character to switch sprites faster or slower.
-
- - Select one of the transition arrows.
- - Under 'Settings', change the 'Transition Duration' value.
- - Do the same for the other transition arrow.
-
-Hit play and note the difference, to help demonstrate what is happening we are using a transition duration of 1 here for both transitions:
-
-<img src="http://i.imgur.com/QV38yfS.gif" width=200px />
-
-</details>
-
-## Add scale effect to the idle animation
-
-As there character stands there, animate the scale to make the character look like he is breathing.
-
-<details><summary>How</summary>
-
- - In the Animation tab, select the CharacterIdle animation and hit record.
- - Select the character's GameObject, in the Inspector change scale to 0 and then back to one.
-
-When we make a change to scale while in record mode, a keyframe is added.  So by changing the scale and then changing it back to the default of 1, we simply added a keyframe for scale 1 at the start of the animation. 
-
-<img src="http://i.imgur.com/qVndjho.png" width=200px />
-
- - Click on 0:02 in the timeline.
-
-This will move the white line, indicating where in the timeline modifications will be made:
-
-<img src="http://i.imgur.com/1pwa5EU.gif" width=200px />
-
- - In the Inspector, change the scale to 0 and the back to one.
-
-This updated the timeline, creating a second keyframe.
-
- - Click on 0:01 in the timeline.
- - Change the the scale to (1, .95, 1).
- - Hit record to stop recording.
-
-Your animation should look like this:
-
-<img src="http://i.imgur.com/ebuSIxb.png" width=200px />
-
-Hit play to see the character breathing, but maybe a little fast:
-
-<img src="http://i.imgur.com/81bajQP.gif" width=100px />
-
- - Change the CharacterIdle animator state's 'Speed' to about .01
-
-The breath rate should be more reasonable now:
-
-<img src="http://i.imgur.com/bfYKFkC.gif" width=100px />
-
-</details>
-
-
-## Create a breakdance animation
-
-Create an animation for the character dancing.  We are using adventurer_tilesheet 11 - 21 (10 sprites).
-
-<details><summary>How</summary>
-
- - Select the character and in the Animation tab create a new clip, save it as Assets/Animations/CharacterDance.
- - Select all the sprites for this animation. We are using adventurer_tilesheet 11 - 21 (10 sprites).
- - Drag and drop them into the animation timeline.
-
-<img src="http://i.imgur.com/JSsHfeU.gif" width=400px />
-
-Click play in the animation tab to see a preview of the dance, but it may be a little fast:
-
-<img src="http://i.imgur.com/thjyiMM.gif" width=200px />
-
-</details>
-
-## Transition to and from dancing
-
-Have the character start dancing after idling for a few seconds.
-
-<details><summary>How</summary>
-
- - Select the character and in the Animator tab, create a transition from CharacterIdle to CharacterDance.
- - Select the transition you just created, in the Inspector under 'Settings' change the 'Exit Time' to about '3'.
-
-Click play and wait a few seconds for the dance to begin.
-
- - Select the CharacterDance state and adjust the speed to about .1
- - Create a transition from CharacterDance to CharacterIdle (using the default settings).
-
-Play to preview the dance:
-
-<img src="http://i.imgur.com/pE6tUfe.gif" width=150px />
-
-However if you start to walk during the dance, it doesn't look quite right:
-
-<img src="http://i.imgur.com/d9wCdad.gif" width=250px />
-
- - Create a transition from CharacterDance to CharacterWalk.
- - Select the transition you just created and:
-   - Uncheck 'Has Exit Time'.
-   - Change the 'Transition Duration' to '0'
-   - Add a Condition for 'Speed' is 'Greater' than '.1'
-
-Now we resume walking as desired:
-
-<img src="http://i.imgur.com/t7cUVPI.gif" width=250px />
-
-</details>
-
-
-
-## Wire up animation controller
-
-TODO
-
-Update the walk animation speed so that the animation plays faster when the character moves quickly.
-
-Note that the character will walk when jumping too, we'll address this later in the tutorial.
-
-<details><summary>How</summary>
-
- - Select the character's GameObject.
- - Double click the box next to 'Controller' to open the 'Animator' tab for the character's animation controller.
-
-<img src="http://i.imgur.com/F7AkEaH.gif" width=200px />
-
- - Switch to the 'Parameters' tab on the left.
- - Click the '+' button and select 'Float'.
-
-<img src="http://i.imgur.com/p6F4gHG.png" width=100px />
-
- - Name the parameter "Speed".
- - Select the 'CharacterWalk' state (the orange box).
- - In the Inspector, under speed check the box near 'Multiplier' to enable a 'Parameter'.
- - Confirm Speed is selected (should be the default).
-
-Hit play and you'll see that the walk animation has stopped completely.
-
- - Create a C# script "PlayerAnimator" under Assets/Code/Components/Animations.
- - Select the Character GameObject and add the PlayerAnimator component.
- - Paste in the following code:
+ - Create a script **RotateFacingDirection** under Assets/Code/Compenents/Movement and paste the following:
 
 ```csharp
-TODO
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody2D))]
+public class RotateFacingDirection : MonoBehaviour
+{
+  static readonly Quaternion backwardsRotation 
+    = Quaternion.Euler(0, 180, 0);
+
+  Rigidbody2D myBody;
+
+  bool _isGoingRight = true;
+
+  public bool isGoingRight
+  {
+    get
+    {
+      return _isGoingRight;
+    }
+    private set
+    {
+      if(isGoingRight == value)
+      { 
+        return;
+      }
+
+      transform.rotation *= backwardsRotation;
+      _isGoingRight = value;
+    }
+  }
+
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+    Debug.Assert(myBody != null);
+  }
+
+  protected void Update()
+  {
+    float xVelocity = myBody.velocity.x;
+    if(Mathf.Abs(xVelocity) > 0.1)
+    { 
+      isGoingRight = xVelocity > 0;
+    }
+  }
+}
 ```
 
-Hit play to see the character playing the walk animation only while moving.
+ - Add RotateFacingDirection to the character and the fly guy prefab.
 
-<img src="http://i.imgur.com/KZYjZf2.gif" width=150px />
+<hr></details><br>
+<details><summary>TODO</summary>
 
-</details>
+Why, the fly guy looks the same rotated.  Well may not be true for all art.  And simplifies the rotate to align with platforms coming up.
 
-## Adjust the walk speed
+<hr></details>
+<details><summary>What's a C# smart property?</summary>
 
-Change the walk animator state's speed to about .4.
+In C#, data may be exposed as either a Field or a Property.  Fields are simply data as one would expect.  Properties are accessed in code like a field is, but they are capable of more.
 
+In this example, when isGoingRight changes between true and false, the GameObject's transform is rotated so that the sprite faces the correct direction.  Leveraging the property changing to trigger the rotation change is an example of logic in the property making it 'smart'.
 
-<details><summary>How</summary>
-
- - Select the 'CharacterWalk' state in the Animator tab.
- - Adjust the 'Speed' to about '.4'
-
-<img src="http://i.imgur.com/dhFASHe.png" width=150px />
-
-Now the character's walk animation should align with the moment a little better.  Adjust the value to something you think looks good. However the walk animation also plays while jumping:
-
-<img src="http://i.imgur.com/2dfN2RE.gif" width=150px />
-
-</details>
-
-
-## Wire up an animation parameter for isGrounded
-
-
-## Add a Jump animation
-
-Add an animation for jumping to play when isGrounded.  We are using adverturer_spritesheet_7 and 8.
-
-<details><summary>How</summary>
-
- - Select the character and in the Animation tab, create a new clip Assets/Animations/CharacterJump.
- - Select the sprites for the jump animation We are using adverturer_spritesheet_7 and 8.
- - Drag and drop the sprites onto the Animation timeline.
-
-TODO transitions.
-
-</details>
-
-
-
-## Climb animation
-
-
-
-
-
-<details><summary>How does Dot product work?</summary>
-
-The Dot product is a fast operation which can be used to effeciently determine if two directions represented with Vectors are facing the same (or a similiar) way.
-
-In the visualization below, we are rotating two ugly arrows.  These arrows are pointing in a direction and we are using Vector2.Dot to compare those two directions.  The Dot product is shown as we rotate around.
-
-<img src="http://i.imgur.com/XrjcWQm.gif" width=200px />
-
-A few notables about Dot products:
-
- - '1' means the two directions are facing the same way.
- - '-1' means the two directions are facing opposite ways.
- - '0' means the two directions are perpendicular.
- - Numbers smoothly transition between these points, so .9 means that the two directions are nearly identical.
- - When two directions are not the same, the Dot product will not tell you which direction an object should rotate in order to make them align - it only informs you about how similar they are at the moment.  
-
-For this visualization, we are calculating the Dot product like so:
+There are pros and cons to smart properties.  For example, one may argue that including the transform change when isGoingRight is modified hides the mechanic and makes the code harder to follow.  There are always alternatives if you prefer to not use smart properties.  For example:
 
 ```csharp
-Vector2.Dot(gameObjectAToWatch.transform.up, gameObjectBToWatch.transform.up);
+bool isGoingRightNow = xVelocity > 0;
+if(isGoingRight != isGoingRightNow) 
+{
+  transform.rotation *= backwardsRotation;    
+  isGoingRight = isGoingRightNow;
+}
 ```
 
 </details>
 
+<details><summary>What's a Quaternion?</summary>
+
+A Quaternion is how rotations are stored in a game engine.  They represent the rotation with (x, y, z, w) values, stored in this fashion because that it is an effecient way to do the necessary calculations when rendering on object on screen.
+
+You could argue that this is overkill for a 2D game as in 2D the only rotation that may be applied is around the Z axis, and I would agree.  However remember that Unity is a 3D game engine.  When creating a 2D game, you are still in a 3D environment.  Therefore under the hood, Unity still optimizes its data for 3D.
+
+Quaternions are not easy for people to understand.  When we think of rotations, we typically think in terms of 'Euler' (pronounced oil-er) rotations.  Euler rotations are degrees of rotation around each axis, e.g. (0, 0, 30) means rotate the object by 30 degrees around the Z axis.
+
+In the inspector, modifying a Transform's rotation is done in Euler.  In code, you can either work with Quatenions directly or use Euler and then convert it back to Quatenion for storage.
+
+Given a Quatenion, you can calculate the Euler value like so:
+
+```csharp
+Quaternion myRotationInQuaternion = transform.rotation;
+Vector3 myRotationInEuler = myRotationInQuaternion.eulerAngles;
+```
+
+Given an Euler value, you can calculate the Quatenion:
+
+```csharp
+Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
+```
+
+Quaternions may be combined using Quaternion multiplication:
+
+```csharp
+Quaternion rotationOfZ60Degrees 
+  = rotationOfZ30Degrees * rotationOfZ30Degrees;
+```
+
+</details>
+<details><summary>TODO</summary>
+
+TODO why Quaternion.Euler(0, 180, 0) when you said before 2D games only rotate around the z axis?
+
+<hr></details>
 
 
 
-## Intro
+<details><summary>Why not compare to 0 when checking if there is no movement?</summary>
 
-Try Unity Timeline.
+In Unity, numbers are represented with the float data type.  Float is a way of representing decimal numbers but is a not precise representation like you may expect.  When you set a float to some value, internally it may be rounded ever so slightly.
 
-Character and fly guy fades in via AppearInSecondsAndFade
+The rounding that happens with floats allows operations on floats to be executed very quickly.  However it means we should never look for exact values when comparing floats, as a tiny rounding issue may lead to the numbers not being equal.
 
-+ other intro effects
- - Cloud and animation
+In the example above, as the velocity approaches zero, the significance of if the value is positive or negative, is lost.  It's possible that if we were to compare to 0 that at times the float may oscilate between a tiny negative value and a tiny positive value causing the sprite to flip back and forth.
 
+</details>
+
+
+## 4.2) Detect floors
+
+Create a script to calculate the distance to and rotation of the floor under an entity.
+
+<details><summary>How</summary>
+
+ - Create a layer 'Floor'.
+ - Select all the Platform GameObjects and change to Layer Floor.
+ - Create script Code/Components/Movement/**FloorDetector**:
+
+```csharp
+using UnityEngine;
+
+[RequireComponent(typeof(Collider2D))]
+public class FloorDetector : MonoBehaviour
+{
+  static readonly Quaternion backwardsRotation 
+    = Quaternion.Euler(0, 0, 180);
+
+  public Collider2D myCollider
+  {
+    get; private set;
+  }
+
+  ContactFilter2D floorFilter;
+
+  public bool isTouchingFloor
+  {
+    get; private set;
+  }
+
+  public Vector2? floorUp
+  {
+    get; private set;
+  }
+
+  public Quaternion? floorRotation
+  {
+    get; private set;
+  }
+
+  public float? distanceToFloor
+  {
+    get; private set;
+  }
+
+  protected void Awake()
+  {
+    myCollider = GetComponent<Collider2D>();
+
+    floorFilter = new ContactFilter2D()
+    {
+      layerMask = LayerMask.GetMask(new[] { "Floor" }),
+      useLayerMask = true
+    };
+
+    Debug.Assert(myCollider != null);
+  }
+
+  protected void FixedUpdate()
+  {
+    Collider2D floorWeAreStandingOn = DetectTheFloorWeAreStandingOn();
+    isTouchingFloor = floorWeAreStandingOn != null;
+
+    Collider2D floorUnderUs;
+    if(floorWeAreStandingOn != null)
+    {
+      Vector2 up;
+      Quaternion rotation;
+      CalculateFloorRotation(floorWeAreStandingOn, out up, out rotation);
+      floorUp = up;
+      floorRotation = rotation;
+      floorUnderUs = floorWeAreStandingOn;
+    }
+    else
+    {
+      floorUp = null;
+      floorRotation = null;
+      floorUnderUs = DetectFloorUnderUs();
+    }
+
+    distanceToFloor = CalculateDistanceToFloor(floorWeAreStandingOn, floorUnderUs);
+  }
+
+  Collider2D DetectTheFloorWeAreStandingOn()
+  {
+    Collider2D[] possibleResultList = new Collider2D[3];
+
+    int foundColliderCound
+      = Physics2D.OverlapCollider(myCollider, floorFilter, possibleResultList);
+
+    for(int i = 0; i < foundColliderCound; i++)
+    {
+      Collider2D collider = possibleResultList[i];
+      ColliderDistance2D distance = collider.Distance(myCollider);
+
+      if(distance.distance >= -.1f
+        && Vector2.Dot(Vector2.up, distance.normal) > 0)
+      {
+        return collider;
+      }
+    }
+
+    return null;
+  }
+
+  Collider2D DetectFloorUnderUs()
+  {
+    RaycastHit2D[] result = new RaycastHit2D[1];
+    if(Physics2D.Raycast(transform.position, Vector2.down, floorFilter, result) > 0)
+    {
+      return result[0].collider;
+    }
+
+    return null;
+  }
+
+  static void CalculateFloorRotation(
+    Collider2D floorWeAreStandingOn,
+    out Vector2 floorUp,
+    out Quaternion floorRotation)
+  {
+    Debug.Assert(floorWeAreStandingOn != null);
+
+    floorUp = floorWeAreStandingOn.transform.up;
+    floorRotation = floorWeAreStandingOn.transform.rotation;
+    if(Vector2.Dot(Vector2.up, floorUp) < 0)
+    {
+      floorUp = -floorUp;
+      floorRotation *= backwardsRotation;
+    }
+  }
+  
+  float? CalculateDistanceToFloor(
+    Collider2D floorWeAreStandingOn,
+    Collider2D floorUnderUs)
+  {
+    if(floorWeAreStandingOn != null)
+    {
+      return 0;
+    }
+    else if(floorUnderUs != null)
+    {
+      float yOfTopOfFloor = floorUnderUs.bounds.max.y;
+
+      if(floorUnderUs is BoxCollider2D)
+      {
+        BoxCollider2D boxCollider = (BoxCollider2D)floorUnderUs;
+        yOfTopOfFloor += boxCollider.edgeRadius;
+      }
+
+      return myCollider.bounds.min.y - yOfTopOfFloor;
+    }
+    else
+    {
+      return null;
+    }
+  }
+}
+```
+
+ - Add it to:
+   - The character prefab.
+   - The spike ball prefab.
+   - The fly guy's **Feet** child GameObject (and apply changes to the fly guy prefab).
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO question - when changing layers, yes change children..
+http://i.imgur.com/xFiD5Vc.png
+
+TODO question - why not require floordetector component? / why GetComponentInChildren
+
+<hr></details>
+
+
+
+
+## 4.3) Prevent double jump
+
+Update JumpMovement to prevent double jump and flying (by spamming space), by leveraging the FloorDetector just created.
+
+<details><summary>How</summary>
+
+ - Update JumpMovement with the following changes (or copy paste the full version TODO link):
+
+
+
+<details><summary>Existing code</summary>
+
+```csharp
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(AudioSource))]
+```
+
+</details>
+
+```csharp
+[RequireComponent(typeof(FloorDetector))] 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+public class JumpMovement : MonoBehaviour
+{
+  [SerializeField]
+  AudioClip jumpSound;
+
+  [SerializeField]
+  float jumpSpeed = 7f;
+
+  Rigidbody2D myBody;
+```
+
+</details>
+
+```csharp
+  FloorDetector floorDetector; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  AudioSource audioSource;
+
+  bool wasJumpRequestedSinceLastFixedUpdate;
+
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+```
+
+</details>
+
+```csharp
+    floorDetector = GetComponent<FloorDetector>(); 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+    audioSource = GetComponent<AudioSource>();
+  }
+
+  public void Jump()
+  {
+    wasJumpRequestedSinceLastFixedUpdate = true;
+  }
+
+  protected void FixedUpdate()
+  {
+    if(wasJumpRequestedSinceLastFixedUpdate
+```
+
+</details>
+
+```csharp
+      && floorDetector.isTouchingFloor
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+      ) 
+    {
+      myBody.AddForce(
+          new Vector2(0, jumpSpeed),
+          ForceMode2D.Impulse);
+
+      audioSource.PlayOneShot(jumpSound);
+    }
+
+    wasJumpRequestedSinceLastFixedUpdate = false;
+  }
+}
+```
+
+</details>
+
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+TODO could add a jump cooldown by time as well - but that would not be a complete solution unless a long cooldown was used.
+
+<hr></details>
+
+
+## 4.4) Update wander to prefer traveling up hill
+
+Update the WanderWalkController so that the fly guy is more likely to walk up hill than down.
+
+<details><summary>How</summary>
+
+ - Update the WanderWalkController as follows (or copy paste TODO link):
+
+
+<details><summary>Existing code</summary>
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+[RequireComponent(typeof(WalkMovement))]
+public class WanderWalkController : MonoBehaviour
+{
+```
+
+</details>
+
+```csharp
+  [SerializeField]
+  float oddsOfGoingUpHill = .8f; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  [SerializeField]
+  float timeBeforeFirstWander = 10;
+
+  [SerializeField]
+  float minTimeBetweenReconsideringDirection = 1;
+
+  [SerializeField]
+  float maxTimeBetweenReconsideringDirection = 10;
+
+  WalkMovement walkMovement;
+```
+
+</details>
+
+```csharp
+  FloorDetector floorDetector; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  protected void Awake()
+  {
+    Debug.Assert(oddsOfGoingUpHill >= 0);
+    Debug.Assert(timeBeforeFirstWander >= 0);
+
+    walkMovement = GetComponent<WalkMovement>();
+```
+
+</details>
+
+```csharp
+    floorDetector = GetComponentInChildren<FloorDetector>(); 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  }
+
+  protected void Start()
+  {
+    StartCoroutine(Wander());
+  }
+
+  IEnumerator Wander()
+  {
+    walkMovement.desiredWalkDirection = 1;
+    yield return new WaitForSeconds(timeBeforeFirstWander);
+
+    while(true)
+    {
+      SelectARandomWalkDirection();
+
+      float timeToSleep = UnityEngine.Random.Range(
+        minTimeBetweenReconsideringDirection,
+        maxTimeBetweenReconsideringDirection);
+      yield return new WaitForSeconds(timeToSleep);
+    }
+  }
+
+  void SelectARandomWalkDirection()
+  {
+```
+
+</details>
+
+```csharp
+    float dot;
+    if(floorDetector.floorUp != null)
+    {
+      dot = Vector2.Dot(floorDetector.floorUp.Value, Vector2.right);
+    }
+    else
+    {
+      dot = 0;
+    }
+
+    if(dot < 0)
+    { 
+      walkMovement.desiredWalkDirection
+        = UnityEngine.Random.value <= oddsOfGoingUpHill ? 1 : -1;
+    }
+    else if(dot > 0)
+    { 
+      walkMovement.desiredWalkDirection
+        = UnityEngine.Random.value <= oddsOfGoingUpHill ? -1 : 1;
+    }
+    else
+    { 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+      walkMovement.desiredWalkDirection
+        = UnityEngine.Random.value <= .5f ? 1 : -1; 
+```
+
+</details>
+
+```csharp
+    }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  }
+}
+```
+
+</details>
+
+
+
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+
+## 4.5) Rotate to match the floor's angle
+
+Create a script to rotate an entity, aligning with the floor when touching one, otherwise rotating back to the default position.
+
+<details><summary>How</summary>
+
+ - Create script Code/Components/Movement/**RotateToAlignWithFloor**:
+
+```csharp
+using UnityEngine;
+
+[RequireComponent(typeof(RotateFacingDirection))]
+public class RotateToAlignWithFloor : MonoBehaviour
+{
+  static readonly Quaternion backwardsRotation
+    = Quaternion.Euler(0, 180, 0);
+
+  [SerializeField]
+  float rotationLerpSpeed = .4f;
+
+  FloorDetector floorDetector;
+
+  RotateFacingDirection facingDirection;
+
+  protected void Awake()
+  {
+    floorDetector = GetComponentInChildren<FloorDetector>();
+    facingDirection = GetComponent<RotateFacingDirection>();
+
+    Debug.Assert(floorDetector != null);
+    Debug.Assert(facingDirection != null);
+  }
+
+  protected void Update()
+  {
+    Quaternion targetRotation;    
+    if(floorDetector.floorRotation != null)
+    {
+      targetRotation = floorDetector.floorRotation.Value;
+    }
+    else
+    {
+      targetRotation = Quaternion.identity;
+    }
+
+    if(facingDirection.isGoingRight == false)
+    {
+      targetRotation *= backwardsRotation;
+    }
+
+    transform.rotation = Quaternion.Lerp(
+      transform.rotation,
+      targetRotation,
+      rotationLerpSpeed * Time.deltaTime);
+  }
+}
+```
+
+ - Add it to the character and fly guy prefabs.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+TODO what is lerp (and slerp?)
+
+<hr></details>
+
+
+## 4.6) Add ladders to the world
+
+Create GameObjects and layout ladders in the world and set their tag to Ladder.  
+
+<details><summary>How</summary>
+
+ - Create a parent Ladder GameObject, add the ladder sprite(s).  We are using **spritesheet_tiles_23** and **33**.
+ - Order in Layer -2.
+ - Position the ladder and repeat, creating several ladders - some which look broken.
+   - The child sprite GameObjects should have a default Transform, with the execption of the Y position when multiple sprites are used.
+   - It usually looks fine to overlap sprites a bit, as we do to get the space between ladder steps looking good.
+
+<img src="http://i.imgur.com/CDwdJ3c.gif" width=500px />
+
+ - Create a new parent GameObject to hold all the ladders (optional).
+ - Create a tag for "Ladder".
+ - Select all the ladder GameObjects and change their tag to Ladder.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO why tag and not layer here?
+
+<hr></details>
+
+
+## 4.7) Add trigger colliders to the ladders
+
+Add BoxCollider2D to the ladders, size to use for climbing and set as trigger colliders.  
+
+An entity will be able climb ladders when its bottom is above the bottom of the ladder's collider and its center is inside.
+
+<details><summary>How</summary>
+
+ - Add a BoxCollider2D and size it such that:
+   - The width is thinner than the sprite (about .6).
+   - The bottom of the collider:
+     - Just below the platform for complete ladders.
+     - Aligned with the last step of broken ladders.
+   - The top of the collider is just above the upper platform.
+
+<img src="http://i.imgur.com/r0k4eq3.png" width=300px />
+
+ - Check 'Is Trigger'.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+TODO how do you know what size to make the collider?
+
+<hr></details>
+
+
+
+## 4.8) Add a script to climb ladders
+
+Create a script to climb ladders for all entities to use, and update the player controller to match.
+
+<details><summary>How</summary>
+
+ - Create script Code/Components/Movement/**LadderMovement**:
+
+```csharp
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
+public class LadderMovement : MonoBehaviour
+{
+  [NonSerialized]
+  public float desiredClimbDirection;
+
+  public event Action onGettingOnLadder;
+
+  public event Action onGettingOffLadder;
+
+  public bool isOnLadder
+  {
+    get
+    {
+      return ladderWeAreOn != null;
+    }
+  }
+
+  [SerializeField]
+  float climbSpeed = 60;
+
+  Rigidbody2D myBody;
+
+  Collider2D myCollider;
+
+  FloorDetector floorDetector;
+
+  GameObject _ladderWeAreOn;
+
+  public GameObject ladderWeAreOn
+  {
+    get
+    {
+      return _ladderWeAreOn;
+    }
+    private set
+    {
+      if(_ladderWeAreOn == value)
+      {
+        return;
+      }
+
+      _ladderWeAreOn = value;
+
+      if(ladderWeAreOn != null)
+      {
+        OnGettingOnLadder();
+      }
+      else
+      {
+        OnGettingOffLadder();
+      }
+    }
+  }
+
+  List<GameObject> currentLadderList;
+
+  protected void Awake()
+  {
+    currentLadderList = new List<GameObject>();
+    myBody = GetComponent<Rigidbody2D>();
+    myCollider = GetComponent<Collider2D>();
+    floorDetector = GetComponentInChildren<FloorDetector>();
+  }
+
+  protected void OnTriggerEnter2D(
+    Collider2D collision)
+  {
+    if(collision.CompareTag("Ladder") == false)
+    {
+      return;
+    }
+
+    currentLadderList.Add(collision.gameObject);
+  }
+
+  protected void OnTriggerExit2D(
+    Collider2D collision)
+  {
+    if(collision.gameObject == ladderWeAreOn)
+    {
+      GetOffLadder();
+    }
+
+    currentLadderList.Remove(collision.gameObject);
+  }
+
+  protected void FixedUpdate()
+  {
+    GameObject ladder = ladderWeAreOn;
+
+    if(ladder == null)
+    {
+      ladder = FindClosestLadder();
+      if(ladder == null)
+      {
+        return;
+      }
+    }
+
+    Bounds ladderBounds = ladder.GetComponent<Collider2D>().bounds;
+    Bounds entityBounds = floorDetector.myCollider.bounds;
+
+    if(isOnLadder == false
+      && Mathf.Abs(desiredClimbDirection) > 0.01
+      && IsInBounds(ladderBounds, entityBounds))
+    {
+      if(
+          desiredClimbDirection > 0 
+            && entityBounds.min.y < ladderBounds.center.y
+          || desiredClimbDirection < 0 
+            && entityBounds.min.y > ladderBounds.center.y)
+      {
+        ladderWeAreOn = ladder;
+      }
+    }
+
+    if(isOnLadder)
+    {
+      float currentVerticalVelocity = myBody.velocity.y;
+      if(IsInBounds(ladderBounds, entityBounds) == false)
+      {
+        GetOffLadder();
+      }
+      else if(floorDetector.distanceToFloor < .3f
+        && floorDetector.distanceToFloor > .1f)
+      {
+        if(currentVerticalVelocity > 0
+            && entityBounds.min.y > ladderBounds.center.y)
+        {
+          GetOffLadder();
+        }
+        else if(currentVerticalVelocity < 0
+          && entityBounds.min.y < ladderBounds.center.y)
+        {
+          GetOffLadder();
+        }
+      }
+
+      if(isOnLadder)
+      {
+        myBody.velocity = new Vector2(myBody.velocity.x,
+          desiredClimbDirection * climbSpeed * Time.fixedDeltaTime);
+      }
+    }
+  }
+
+  bool IsInBounds(
+    Bounds ladderBounds,
+    Bounds entityBounds)
+  {
+    float entityCenterX = entityBounds.center.x;
+    if(ladderBounds.min.x > entityCenterX
+      || ladderBounds.max.x < entityCenterX)
+    {
+      return false;
+    }
+
+    float entityFeetY = entityBounds.min.y;
+    if(ladderBounds.min.y > entityFeetY
+      || ladderBounds.max.y < entityFeetY)
+    {
+      return false;
+    }
+
+    return true;
+  }
+
+  public void GetOffLadder()
+  {
+    ladderWeAreOn = null;
+  }
+
+  void OnGettingOnLadder()
+  {
+    if(onGettingOnLadder != null)
+    {
+      onGettingOnLadder();
+    }
+  }
+
+  void OnGettingOffLadder()
+  {
+    desiredClimbDirection = 0;
+
+    if(onGettingOffLadder != null)
+    {
+      onGettingOffLadder();
+    }
+  }
+
+  GameObject FindClosestLadder()
+  {
+    if(currentLadderList.Count == 0)
+    {
+      return null;
+    }
+
+    GameObject closestLadder = null;
+    float distanceToClosestLadder = 0;
+    for(int i = 0; i < currentLadderList.Count; i++)
+    {
+      GameObject ladder = currentLadderList[i];
+      float distanceToLadder = (ladder.transform.position - transform.position).sqrMagnitude;
+      if(closestLadder == null)
+      {
+        closestLadder = ladder;
+        distanceToClosestLadder = distanceToLadder;
+      }
+      else
+      {
+        if(distanceToLadder < distanceToClosestLadder)
+        {
+          closestLadder = ladder;
+          distanceToClosestLadder = distanceToLadder;
+        }
+      }
+    }
+
+    return closestLadder;
+  }
+}
+```
+
+ - Add it to the character, fly guy, and spike ball.
+ - Update PlayerController as follows (or copy/paste TODO link):
+
+
+<details><summary>Existing code</summary>
+
+```csharp
+using UnityEngine;
+
+[RequireComponent(typeof(WalkMovement))]
+[RequireComponent(typeof(JumpMovement))]
+```
+
+</details>
+
+```csharp
+[RequireComponent(typeof(LadderMovement))] 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+
+public class PlayerController : MonoBehaviour
+{
+  WalkMovement walkMovement;
+
+  JumpMovement jumpMovement;
+```
+
+</details>
+
+```csharp
+  LadderMovement ladderMovement; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  protected void Awake()
+  {
+    walkMovement = GetComponent<WalkMovement>();
+    jumpMovement = GetComponent<JumpMovement>();
+```
+
+</details>
+
+```csharp
+    ladderMovement = GetComponent<LadderMovement>(); 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  }
+
+  protected void FixedUpdate()
+  {
+    walkMovement.desiredWalkDirection
+      = Input.GetAxis("Horizontal");
+```
+
+</details>
+
+```csharp
+    ladderMovement.desiredClimbDirection 
+      = Input.GetAxis("Vertical");
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  }
+
+  protected void Update()
+  {
+    if(Input.GetButtonDown("Jump"))
+    {
+      jumpMovement.Jump();
+    }
+  }
+}
+```
+
+</details>
+
+
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+Can't go down.
+Why does he pop a bit on the way up?
+
+<hr></details>
+
+
+## 4.9) Disable physics when climbing
+
+While climbing a ladder, disable physics.
+
+<details><summary>How</summary>
+
+ - Create script Code/Components/Movement/**DisablePhysics**:
+
+```csharp
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody2D))]
+public class DisablePhysics : MonoBehaviour
+{
+  Rigidbody2D myBody;
+  List<Collider2D> impactedColliderList;
+
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+
+    impactedColliderList = new List<Collider2D>();
+    Collider2D[] colliderList = GetComponentsInChildren<Collider2D>();
+    for(int i = 0; i < colliderList.Length; i++)
+    {
+      Collider2D collider = colliderList[i];
+      if(collider.isTrigger == false)
+      {
+        impactedColliderList.Add(collider);
+      }
+    }
+
+    Debug.Assert(myBody != null);
+  }
+
+  protected void OnEnable()
+  {
+    for(int i = 0; i < impactedColliderList.Count; i++)
+    {
+      Collider2D collider = impactedColliderList[i];
+      collider.isTrigger = true;
+      myBody.gravityScale = 0;
+    }
+  }
+   
+  protected void OnDisable()
+  {
+    for(int i = 0; i < impactedColliderList.Count; i++)
+    {
+      Collider2D collider = impactedColliderList[i];
+      collider.isTrigger = false;
+      myBody.gravityScale = 1;
+    }
+  }
+}
+```
+
+ - Add it to the character, fly guy, and spike ball.
+ - Disable the DisablePhysics component on each prefab.
+ - Update LadderMovement as follows (or copy paste TODO link):
+
+<details><summary>Existing code</summary>
+
+```csharp
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
+[RequireComponent(typeof(FloorDetector))]
+```
+
+</details>
+
+```csharp
+[RequireComponent(typeof(DisablePhysics))]
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+public class LadderMovement : MonoBehaviour
+{
+  [NonSerialized]
+  public float desiredClimbDirection;
+
+  public event Action onGettingOnLadder;
+
+  public event Action onGettingOffLadder;
+
+  public bool isOnLadder
+  {
+    get
+    {
+      return ladderWeAreOn != null;
+    }
+  }
+
+  [SerializeField]
+  float climbSpeed = 60;
+
+  Rigidbody2D myBody;
+
+  Collider2D myCollider;
+
+  FloorDetector floorDetector;
+
+  GameObject _ladderWeAreOn;
+
+  public GameObject ladderWeAreOn
+  {
+    get
+    {
+      return _ladderWeAreOn;
+    }
+    private set
+    {
+      if(_ladderWeAreOn == value)
+      {
+        return;
+      }
+
+      _ladderWeAreOn = value;
+
+      if(ladderWeAreOn != null)
+      {
+        OnGettingOnLadder();
+      }
+      else
+      {
+        OnGettingOffLadder();
+      }
+    }
+  }
+```
+
+</details>
+
+```csharp
+  DisablePhysics disablePhysics; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  List<GameObject> currentLadderList;
+
+  protected void Awake()
+  {
+    currentLadderList = new List<GameObject>();
+    myBody = GetComponent<Rigidbody2D>();
+    myCollider = GetComponent<Collider2D>();
+    floorDetector = GetComponentInChildren<FloorDetector>();
+```
+
+</details>
+
+```csharp
+    disablePhysics = GetComponent<DisablePhysics>();
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  }
+
+  protected void OnTriggerEnter2D(
+    Collider2D collision)
+  {
+    if(collision.CompareTag("Ladder") == false)
+    {
+      return;
+    }
+
+    currentLadderList.Add(collision.gameObject);
+  }
+
+  protected void OnTriggerExit2D(
+    Collider2D collision)
+  {
+    if(collision.gameObject == ladderWeAreOn)
+    {
+      GetOffLadder();
+    }
+
+    currentLadderList.Remove(collision.gameObject);
+  }
+
+  protected void FixedUpdate()
+  {
+    GameObject ladder = ladderWeAreOn;
+
+    if(ladder == null)
+    {
+      ladder = FindClosestLadder();
+      if(ladder == null)
+      {
+        return;
+      }
+    }
+
+    Bounds ladderBounds = ladder.GetComponent<Collider2D>().bounds;
+    Bounds entityBounds = myCollider.bounds;
+
+    if(isOnLadder == false
+      && Mathf.Abs(desiredClimbDirection) > 0.01
+      && IsInBounds(ladderBounds, entityBounds))
+    {
+      if(
+          desiredClimbDirection > 0 
+            && entityBounds.min.y < ladderBounds.center.y
+          || desiredClimbDirection < 0 
+            && entityBounds.min.y > ladderBounds.center.y)
+      {
+        ladderWeAreOn = ladder;
+      }
+    }
+
+    if(isOnLadder)
+    {
+      float currentVerticalVelocity = myBody.velocity.y;
+      if(IsInBounds(ladderBounds, entityBounds) == false)
+      {
+        GetOffLadder();
+      }
+      else if(floorDetector.distanceToFloor < .3f
+        && floorDetector.distanceToFloor > .1f)
+      {
+        if(currentVerticalVelocity > 0
+            && entityBounds.min.y > ladderBounds.center.y)
+        {
+          GetOffLadder();
+        }
+        else if(currentVerticalVelocity < 0
+          && entityBounds.min.y < ladderBounds.center.y)
+        {
+          GetOffLadder();
+        }
+      }
+
+      if(isOnLadder)
+      {
+        myBody.velocity = new Vector2(myBody.velocity.x,
+          desiredClimbDirection * climbSpeed * Time.fixedDeltaTime);
+      }
+    }
+  }
+
+  bool IsInBounds(
+    Bounds ladderBounds,
+    Bounds entityBounds)
+  {
+    float entityCenterX = entityBounds.center.x;
+    if(ladderBounds.min.x > entityCenterX
+      || ladderBounds.max.x < entityCenterX)
+    {
+      return false;
+    }
+
+    float entityFeetY = entityBounds.min.y;
+    if(ladderBounds.min.y > entityFeetY
+      || ladderBounds.max.y < entityFeetY)
+    {
+      return false;
+    }
+
+    return true;
+  }
+
+
+  public void GetOffLadder()
+  {
+    ladderWeAreOn = null;
+  }
+
+  void OnGettingOnLadder()
+  {
+```
+
+</details>
+
+```csharp
+    disablePhysics.enabled = true; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+    if(onGettingOnLadder != null)
+    {
+      onGettingOnLadder();
+    }
+  }
+
+  void OnGettingOffLadder()
+  {
+```
+
+</details>
+
+```csharp
+    disablePhysics.enabled = false;
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+
+    desiredClimbDirection = 0;
+
+    if(onGettingOffLadder != null)
+    {
+      onGettingOffLadder();
+    }
+  }
+
+  GameObject FindClosestLadder()
+  {
+    if(currentLadderList.Count == 0)
+    {
+      return null;
+    }
+
+    GameObject closestLadder = null;
+    float distanceToClosestLadder = 0;
+    for(int i = 0; i < currentLadderList.Count; i++)
+    {
+      GameObject ladder = currentLadderList[i];
+      float distanceToLadder = (ladder.transform.position - transform.position).sqrMagnitude;
+      if(closestLadder == null)
+      {
+        closestLadder = ladder;
+        distanceToClosestLadder = distanceToLadder;
+      }
+      else
+      {
+        if(distanceToLadder < distanceToClosestLadder)
+        {
+          closestLadder = ladder;
+          distanceToClosestLadder = distanceToLadder;
+        }
+      }
+    }
+
+    return closestLadder;
+  }
+}
+```
+
+</details>
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO What do you mean by command pattern?
+TODO why?
+
+<hr></details>
+
+
+## 4.10) Random climb controller
+
+Create a script for the fly guy and spike ball to control when to climb a ladder.
+
+<details><summary>How</summary>
+
+ - Create script Code/Components/Movement/**RandomClimbController**:
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+[RequireComponent(typeof(LadderMovement))]
+public class RandomClimbController : MonoBehaviour
+{
+  [SerializeField]
+  float oddsOfClimbingLadderUp = .9f;
+
+  [SerializeField]
+  float oddsOfClimbingLadderDown = .1f;
+
+  [SerializeField]
+  float timeBeforeFirstPossibleClimb = 5;
+
+  [SerializeField]
+  float minTimeBetweenReconsideringDirection = 1;
+
+  [SerializeField]
+  float maxTimeBetweenReconsideringDirection = 10;
+
+  LadderMovement ladderMovement;
+
+  protected void Awake()
+  {
+    ladderMovement = GetComponent<LadderMovement>();
+  }
+
+  protected void Start()
+  {
+    StartCoroutine(Wander());
+  }
+
+  IEnumerator Wander()
+  {
+    yield return new WaitForSeconds(timeBeforeFirstPossibleClimb);
+
+    while(true)
+    {
+      SelectARandomClimbDirection();
+      float timeToSleep = UnityEngine.Random.Range(
+        minTimeBetweenReconsideringDirection, 
+        maxTimeBetweenReconsideringDirection);
+      yield return new WaitForSeconds(timeToSleep);
+    }
+  }
+
+  void SelectARandomClimbDirection()
+  {
+    if(ladderMovement.isOnLadder == false)
+    {
+      if(UnityEngine.Random.value <= oddsOfClimbingLadderUp)
+      {
+        ladderMovement.desiredClimbDirection = 1;
+      }
+      else if(UnityEngine.Random.value <= oddsOfClimbingLadderDown)
+      {
+        ladderMovement.desiredClimbDirection = -1;
+      }
+      else
+      {
+        ladderMovement.desiredClimbDirection = 0;
+      }
+    }
+  }
+}
+```
+
+ - Add it to the fly guy and spike ball.
+ - On the spike ball, change:
+   - Odds of climbing up to 0
+   - Odds of climbing down to about .5
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+They won't actually climb, just go up or down a touch then pop back.
+
+<hr></details>
+
+
+## 4.11) Stop walking off ladders
+
+Stop WanderWalkController when climbing up or down.
+
+<details><summary>How</summary>
+
+ - Update WanderWalkController as follows (or copy/paste todo link):
+
+<details><summary>Existing code</summary>
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+[RequireComponent(typeof(WalkMovement))]
+public class WanderWalkController : MonoBehaviour
+{
+  [SerializeField]
+  float oddsOfGoingUpHill = .8f; 
+
+  [SerializeField]
+  float timeBeforeFirstWander = 10;
+
+  [SerializeField]
+  float minTimeBetweenReconsideringDirection = 1;
+
+  [SerializeField]
+  float maxTimeBetweenReconsideringDirection = 10;
+
+  WalkMovement walkMovement;
+
+  FloorDetector floorDetector;
+```
+
+</details>
+
+```csharp
+  LadderMovement ladderMovement; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  protected void Awake()
+  {
+    Debug.Assert(oddsOfGoingUpHill >= 0);
+    Debug.Assert(timeBeforeFirstWander >= 0);
+
+    walkMovement = GetComponent<WalkMovement>();
+    floorDetector = GetComponentInChildren<FloorDetector>();
+```
+
+</details>
+
+```csharp
+    ladderMovement = GetComponent<LadderMovement>(); 
+
+    if(ladderMovement != null)
+    {
+      ladderMovement.onGettingOnLadder 
+        += LadderMovement_onGettingOnLadder;
+      ladderMovement.onGettingOffLadder 
+        += LadderMovement_onGettingOffLadder;
+    }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  }
+
+  protected void Start()
+  {
+    StartCoroutine(Wander());
+  }
+```
+
+</details>
+
+```csharp
+  void LadderMovement_onGettingOnLadder() 
+  {
+    walkMovement.desiredWalkDirection = 0;
+  }
+
+  void LadderMovement_onGettingOffLadder()
+  {
+    SelectARandomWalkDirection();
+  }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  IEnumerator Wander()
+  {
+    walkMovement.desiredWalkDirection = 1;
+    yield return new WaitForSeconds(timeBeforeFirstWander);
+
+    while(true)
+    {
+      SelectARandomWalkDirection();
+
+      float timeToSleep = UnityEngine.Random.Range(
+        minTimeBetweenReconsideringDirection,
+        maxTimeBetweenReconsideringDirection);
+      yield return new WaitForSeconds(timeToSleep);
+    }
+  }
+
+  void SelectARandomWalkDirection()
+  {
+```
+
+</details>
+
+```csharp
+    if(ladderMovement != null && ladderMovement.isOnLadder) 
+    {
+      return;
+    }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+    float dot;
+    if(floorDetector.floorUp != null)
+    {
+      dot = Vector2.Dot(floorDetector.floorUp.Value, Vector2.right);
+    }
+    else
+    {
+      dot = 0;
+    }
+
+    if(dot < 0)
+    { 
+      walkMovement.desiredWalkDirection
+        = UnityEngine.Random.value <= oddsOfGoingUpHill ? 1 : -1;
+    }
+    else if(dot > 0)
+    { 
+      walkMovement.desiredWalkDirection
+        = UnityEngine.Random.value <= oddsOfGoingUpHill ? -1 : 1;
+    }
+    else
+    { 
+      walkMovement.desiredWalkDirection
+        = UnityEngine.Random.value <= .5f ? 1 : -1; 
+    }
+  }
+}
+```
+
+</details>
+
+
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+
+
+## 4.12) Stop rolling off ladders
+
+Create a script to stop the ball's momentum when getting on ladders, and restore it when getting off.
+
+<details><summary>How</summary>
+
+ - Create a script Code/Components/Movement/**StopMomentumOnLadder**:
+
+```csharp
+using UnityEngine;
+using System;
+
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(LadderMovement))]
+public class StopMomentumOnLadder : MonoBehaviour
+{
+  Rigidbody2D myBody;
+
+  float previousAngularVelocity;
+
+  float previousXVelocity;
+
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+
+    LadderMovement ladderMovement = GetComponent<LadderMovement>();
+    ladderMovement.onGettingOffLadder 
+      += ClimbLadder_onGettingOffLadder;
+    ladderMovement.onGettingOnLadder 
+      += LadderMovement_onGettingOnLadder;
+  }
+
+  void LadderMovement_onGettingOnLadder()
+  {
+    previousAngularVelocity = myBody.angularVelocity;
+    previousXVelocity = myBody.velocity.x;
+    myBody.velocity = Vector2.zero;
+  }
+
+  void ClimbLadder_onGettingOffLadder()
+  {
+    myBody.angularVelocity = -previousAngularVelocity;
+    myBody.velocity = new Vector2(-previousXVelocity, myBody.velocity.y);
+  }
+}
+```
+
+ - Add it to the spike ball.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+
+## 4.13) Move towards the center of the ladder
+
+Add a script to the fly guy and spike ball to direct them towards the center of a ladder while climbing.
+
+<details><summary>How</summary>
+
+ - Create script Code/Components/Movement/**MoveTowardsCenterWhileClimbing**:
+
+```csharp
+using UnityEngine;
+
+[RequireComponent(typeof(LadderMovement))]
+public class MoveTowardsCenterWhileClimbing : MonoBehaviour
+{
+  [SerializeField]
+  float lerpSpeed = .1f;
+
+  LadderMovement ladderMovement;
+
+  protected void Awake()
+  {
+    ladderMovement = GetComponent<LadderMovement>();
+
+    Debug.Assert(ladderMovement != null);
+  }
+
+  protected void FixedUpdate()
+  {
+    GameObject ladder = ladderMovement.ladderWeAreOn;
+    if(ladder != null)
+    {
+      float targetX = ladder.transform.position.x;
+      float myX = transform.position.x;
+      float deltaX = targetX - myX;
+      if(Mathf.Abs(deltaX) > 0.01)
+      {
+        Vector2 target = transform.position;
+        target.x += deltaX;
+        transform.position = Vector2.Lerp(
+          transform.position, 
+          target, 
+          lerpSpeed);
+      }
+    }
+  }
+}
+```
+
+ - Add it to fly guy and spike ball.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+## 4.14) Test
+
+TODO
 
 # Next chapter
 
 [Chapter 5](https://github.com/hardlydifficult/Platformer/blob/master/Chapter5.md).
-
-
-
-TODO something for bomb? but that doesn't make sense till the hammer. 
-other death effects?
