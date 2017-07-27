@@ -109,6 +109,7 @@ public class Hammer : MonoBehaviour
  - Add SuicideIn, disable the component.
  - Add KillOnContactWith configured for layer 'Enemy', disable the component.
  - Under Hammer components to enable, add SuicideIn and KillOnContactWith.
+ - Select the spike ball prefab, add DeathEffectSpawn and configure it to use the explosion prefab.
 
 <hr></details><br>
 <details><summary>TODO</summary>
@@ -204,6 +205,7 @@ Create a GameObject for the fly guy reusing components from the spike ball and c
 <img src="http://i.imgur.com/d1lxoEj.png" width=150px />
 
  - Add WalkMovement.
+ - Add DeathEffectSpawn and configure it to use the explosion prefab.
  - Add KillOnContactWith and set the layermask to Player.
 
 </details>

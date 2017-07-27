@@ -5,25 +5,36 @@ TODO intro
 
 ## Hammer animation 
 
+Create an animation for the hammer swinging.
+
 <details><summary>How</summary>
 
- - Open Animation tab and click create, save as Assets/Animations/HammerSwing
- - Click record
+ - Open menu Window -> Animation.
+ - Select a hammer.
+ - Click create, save as Assets/Animations/**HammerSwing**.
+
+<img src="http://i.imgur.com/Kokz29S.png" width=300px />
+
+ - Click the red record button.
+
+<img src="http://i.imgur.com/bha8EJC.png" width=150px />
+
+
  - Modify the rotation, then set it back to 0, creating a keyframe for the default rotation.
  - Double click under 1:00 to create another keyframe.
- - Switch the current time position (the white line) to 0:30.
+
+<img src="http://i.imgur.com/ZVNovlp.png" width=300px />
+
+ - Switch the current time position (the white line) to 0:10.
  - Change rotation to (0, 0, -90).
  - Click record to stop recording.
- - Click play to preview the hammer swinging, adjust the middle keyframe's position until the hammer has a nice swing, about 0:10.
-
-TODO gif of this change
-
-Hit play and the hammer is swinging in the air.
 
 <hr></details><br>
 <details><summary>TODO</summary>
 
 TODO
+ - Click play to preview the hammer swinging, adjust the middle keyframe's position until the hammer has a nice swing, about 0:10.
+Hit play and the hammer is swinging in the air.
 
 <hr></details>
 
@@ -34,7 +45,10 @@ Update the hammer animator to not play any animation by default.
 
 <details><summary>How</summary>
 
- - Double click the animation.
+ - Open menu Window -> Animator.
+ - Select a hammer.
+ - Right click -> Create State -> Empty.  
+ - Select the box which appeared and in the Inspector name it "Idle".
  - Create new Empty State, name it "Idle".
  - Right click and 'Set as Layer Default State'.
 
@@ -48,74 +62,164 @@ TODO
 
 ## Start swinging hammer on equipt
 
-TODO
-
-## Character animation parameters
-
-TODO
+Add a script to the hammer to start the swing animation when it's equipt.
 
 <details><summary>How</summary>
 
- - Select the character's GameObject.
- - Double click the box next to 'Controller' to open the 'Animator' tab for the character's animation controller.
+ - Create script Code/Components/Effects/**PlayAnimationOnEnable**:
 
-<img src="http://i.imgur.com/F7AkEaH.gif" width=200px />
+```csharp
+using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
+public class PlayAnimationOnEnable : MonoBehaviour
+{
+  [SerializeField]
+  string animationToPlay;
+
+  Animator animator;
+
+  protected void Awake()
+  {
+    animator = GetComponent<Animator>();
+  }
+
+  protected void OnEnable()
+  {
+    animator.Play(animationToPlay);
+  }
+}
+```
+
+ - Add it to a hammer prefab and set the animation to play to "HammerSwing".
+ - Disable the PlayAnimationOnEnable component and add it under the hammer component's to enable list.
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
+## Character animation parameters
+
+Create parameters to use in the character's animation controller and a script to feed the data.
+
+<details><summary>How</summary>
+
+ - Open menu Window -> Animator.
+ - Select the character's child sprite GameObject.
  - Switch to the 'Parameters' tab on the left.
  - Click the '+' button and select 'Float'.
 
-<img src="http://i.imgur.com/p6F4gHG.png" width=100px />
+<img src="http://i.imgur.com/p6F4gHG.png" width=150px />
 
  - Name the parameter "Speed".
- - Select the 'CharacterWalk' state (the orange box).
- - In the Inspector, under speed check the box near 'Multiplier' to enable a 'Parameter'.
- - Confirm Speed is selected (should be the default).
-
-Hit play and you'll see that the walk animation has stopped completely.
-
- - Create a C# script "PlayerAnimator" under Assets/Code/Components/Animations.
- - Select the Character GameObject and add the PlayerAnimator component.
- - Paste in the following code:
+ - Repeat to create:
+   - A bool named 'isTouchingFloor'.
+   - A bool named 'isClimbing'.
+   - A bool named 'hasWeapon'.
+ - Create script Code/Components/Animations/**PlayerAnimator**:
 
 ```csharp
-TODO
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(LadderMovement))]
+[RequireComponent(typeof(WeaponHolder))]
+public class PlayerAnimatorController : MonoBehaviour
+{
+  Animator animator;
+
+  Rigidbody2D myBody;
+
+  LadderMovement ladderMovement;
+
+  FloorDetector floorDetector;
+
+  WeaponHolder weaponHolder;
+
+  protected void Awake()
+  {
+    animator = GetComponentInChildren<Animator>();
+    myBody = GetComponent<Rigidbody2D>();
+    ladderMovement = GetComponent<LadderMovement>();
+    floorDetector = GetComponentInChildren<FloorDetector>();
+    weaponHolder = GetComponent<WeaponHolder>();
+  }
+
+  protected void Update()
+  {
+    animator.SetFloat("Speed", myBody.velocity.magnitude);
+    animator.SetBool("isTouchingFloor", floorDetector.isTouchingFloor);
+    animator.SetBool("isClimbing", ladderMovement.isOnLadder);
+    animator.SetBool("hasWeapon", weaponHolder.currentWeapon != null);
+  }
+}
 ```
+
+ - Add it to the character.
+
+<hr></details><br>
+<details><summary>TODO</summary>
 
 Hit play to see the character playing the walk animation only while moving.
 
 <img src="http://i.imgur.com/KZYjZf2.gif" width=150px />
 
-</details>
+
+<hr></details>
 
 ## Adjust the walk speed
 
-Change the walk animator state's speed to about .4.
-
+Update the walk speed to leverage the speed parameter created.
 
 <details><summary>How</summary>
 
- - Select the 'CharacterWalk' state in the Animator tab.
+ - In the Animator for the character, select the 'CharacterWalk' state (the orange box).
+ - In the Inspector, under speed check the box near 'Multiplier' to enable a 'Parameter'.
+ - Confirm Speed is selected (should be the default).
  - Adjust the 'Speed' to about '.4'
 
-<img src="http://i.imgur.com/dhFASHe.png" width=150px />
+<img src="http://i.imgur.com/9A6mp98.png" width=300px />
+
+
+<hr></details><br>
+<details><summary>TODO</summary>
 
 Now the character's walk animation should align with the moment a little better.  Adjust the value to something you think looks good. However the walk animation also plays while jumping:
 
 <img src="http://i.imgur.com/2dfN2RE.gif" width=150px />
 
-</details>
+<hr></details>
 
-## Add a Jump animation
+## Jump animation
 
-Add an animation for jumping to play when isGrounded.  We are using adverturer_spritesheet_7 and 8.
+Add an animation to the character for jumping. 
 
 <details><summary>How</summary>
 
- - Select the character and in the Animation tab, create a new clip Assets/Animations/CharacterJump.
- - Select the sprites for the jump animation We are using adverturer_spritesheet_7 and 8.
+ - Select the character's sprite and in the Animation window, create a new clip Assets/Animations/**CharacterJump**.
+ - Select the sprites for the jump animation. We are using **adverturer_spritesheet_7** and **8**.
  - Drag and drop the sprites onto the Animation timeline.
 
-TODO transitions.
+<img src="http://i.imgur.com/0rHCGDm.gif" width=300px />
+
+ - In the Animator window, select the CharacterJump state and use the Speed paramater times about .05
+ - Right click on the 'Any State' box and select 'Make Transition'.
+ - An arrow will follow your mouse, click on the CharacterJump state to create the transition.
+
+<img src="http://i.imgur.com/Fl0WTPO.gif" width=300px />
+
+ - Select the transition arrow just created, in the Inspector click the plus to create a new condition.
+
+<img src="http://i.imgur.com/WgOfzQY.png" width=150px />
+
+ - Change the condition to read 'isTouchingFloor false'.
+ - Create a transition from CharacterJump to CharacterWalk.
+ - Select the transition and set the condition to 'isTouchingFloor true'.
+ - Uncheck 'Has Exit Time'.
+ - Under 'Settings' change the 'Transition Duration' to 0.
 
 </details>
 
@@ -124,6 +228,27 @@ TODO transitions.
 
 Add an animation for when climbing ladders.
 
+<details><summary>How</summary>
+
+ - Create a new animation for the character Assets/Animations/**CharacterClimb**.
+ - Drag in the sprites for the climb animation.  We are using **adverturer_spritesheet_5** and **6**.
+ - Select the CharacterClimb state and use the Speed paramater times about .1
+ - Create a transition from Any State to CharacterClimb.
+   - Add a condition 'isClimbing true'.
+ - Create a transition from CharacterClimb to CharacterWalk.
+   - Uncheck Has Exit Time.
+   - Set Transition Duration to 0.
+   - Add a condition 'isClimbing false'.
+ - Select the transition from Any State to CharacterJump
+   - Add a condition 'isClimbing false'.
+
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
 
 ## Add an idle animation
 
@@ -141,9 +266,6 @@ As there character stands there, animate the scale to make the character look li
 
  - Save the clip as Assets/Animations/CharacterIdle.
  - Click the red record button.
-
-<img src="http://i.imgur.com/XxrsDpf.png" width=300px />
-
  - Change the 'Sprite' under the character's Sprite Renderer component to an idle stance.  We are using adventurer_tilesheet_0. 
  - Click the record button again to stop recording.
 
@@ -251,11 +373,6 @@ Create an animation for the character dancing.  We are using adventurer_tileshee
  - Select all the sprites for this animation. We are using adventurer_tilesheet 11 - 21 (10 sprites).
  - Drag and drop them into the animation timeline.
 
-<img src="http://i.imgur.com/JSsHfeU.gif" width=400px />
-
-Click play in the animation tab to see a preview of the dance, but it may be a little fast:
-
-<img src="http://i.imgur.com/thjyiMM.gif" width=200px />
 
 
  - Select the character and in the Animator tab, create a transition from CharacterIdle to CharacterDance.
@@ -285,7 +402,15 @@ Now we resume walking as desired:
 <img src="http://i.imgur.com/t7cUVPI.gif" width=250px />
 
 
-</details>
+
+<hr></details><br>
+<details><summary>TODO</summary>
+
+Click play in the animation tab to see a preview of the dance, but it may be a little fast:
+
+<img src="http://i.imgur.com/thjyiMM.gif" width=200px />
+
+<hr></details>
 
 
 
