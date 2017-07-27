@@ -3,7 +3,7 @@
 TODO intro
 
 
-## Hammer animation 
+## 5.1) Hammer animation 
 
 Create an animation for the hammer swinging.
 
@@ -38,7 +38,7 @@ Hit play and the hammer is swinging in the air.
 
 <hr></details>
 
-## Stop swinging by default
+## 5.2) Stop swinging by default
 
 Update the hammer animator to not play any animation by default.
 
@@ -60,7 +60,7 @@ TODO
 <hr></details>
 
 
-## Start swinging hammer on equipt
+## 5.3) Start swinging hammer on equipt
 
 Add a script to the hammer to start the swing animation when it's equipt.
 
@@ -101,7 +101,7 @@ TODO
 
 <hr></details>
 
-## Character animation parameters
+## 5.4) Character animation parameters
 
 Create parameters to use in the character's animation controller and a script to feed the data.
 
@@ -170,7 +170,7 @@ Hit play to see the character playing the walk animation only while moving.
 
 <hr></details>
 
-## Adjust the walk speed
+## 5.6) Adjust the walk speed
 
 Update the walk speed to leverage the speed parameter created.
 
@@ -193,7 +193,7 @@ Now the character's walk animation should align with the moment a little better.
 
 <hr></details>
 
-## Jump animation
+## 5.7) Jump animation
 
 Add an animation to the character for jumping. 
 
@@ -225,7 +225,7 @@ Add an animation to the character for jumping.
 </details>
 
 
-## Climb animation
+## 5.8) Climb animation
 
 Add an animation for when climbing ladders.
 
@@ -251,7 +251,7 @@ TODO
 
 <hr></details>
 
-## Idle animation
+## 5.9) Idle animation
 
 Create an animation for the character to set the sprite to an idle stance.  As there character stands there, animate the scale to make the character look like he is breathing.
 
@@ -338,7 +338,7 @@ The breath rate should be more reasonable now:
 <hr></details>
 
 
-## Add a breakdance animation
+## 5.10) Add a breakdance animation
 
 Add an animation for the character dancing after standing still for a bit.  
 
@@ -410,7 +410,7 @@ Vector2.Dot(gameObjectAToWatch.transform.up, gameObjectBToWatch.transform.up);
 </details>
 
 
-## Add an intro animation for the cloud
+## 5.11) Add an intro animation for the cloud
 
 Create an animation for the cloud entrance at the start of the level.
 
@@ -430,7 +430,7 @@ TODO
 <hr></details>
 
 
-## Add an intro timeline
+## 5.12) Add an intro timeline
 
 Create a timeline which enables LevelManager and hammers after the intro is complete.
 
@@ -458,7 +458,7 @@ TODO
 <hr></details>
 
 
-## Disable spawners till the intro is complete
+## 5.13) Disable spawners till the intro is complete
 
 Create a script to enable components when the level intro completes.
 
@@ -560,7 +560,7 @@ TODO
 
 <hr></details>
 
-## Rotate platforms during intro
+## 5.14) Rotate platforms during intro
 
 <details><summary>How</summary>
 
@@ -626,7 +626,7 @@ public class RotateOvertimeToOriginal : MonoBehaviour
 
 <hr></details>
 
-## Add screen shake
+## 5.15) Add screen shake
 
 Shake the screen when the platforms fall into place.
 
@@ -690,6 +690,10 @@ public class ScreenShake : MonoBehaviour
 TODO
 
 <hr></details>
+
+## 5.16) Test
+
+TODO
 
 # Next chapter
 
