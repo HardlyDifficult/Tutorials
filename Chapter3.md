@@ -1,6 +1,8 @@
-# 3) An item and another enemy
+# 3) An item and another enemy (TODO)
 
-In chapter 3, TODO intro...
+In chapter 3, we add hammers (an item/weapon), fly guy (a second enemy), lives (and respawn), and points. 
+
+TODO intro...
 
 This assumes you completed chapter 2, or you can download the project so far. (TODO link)
 
@@ -11,7 +13,6 @@ TODO gif
 demo build of level 3
 
 
-
 ## 3.1) Create a Hammer
 
 Create a Hammer prefab and then layout several in the world.
@@ -20,22 +21,48 @@ Create a Hammer prefab and then layout several in the world.
 
  - Change the sprite's pivot to Bottom. We are using **Hammer**.
  - Add to the world and scale (to about .2).
- - Add a PolygonCollider2D.
-
-<img src="http://i.imgur.com/mfrIum0.png" width=300px /> 
-
- - Check Is Trigger.
+ - Add a **PolygonCollider2D**:
+   - Check Is Trigger.
  - Create a prefab.
  - Add several Hammers and lay them out for the level.
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
+We sized the hammer to be about as large as the character.  You could go larger or smaller if you think that looks better.  
+
+However we are using a polygon collider, which outlines the sprite art. In order for the hammer to kill an enemy later on, the hammer needs to make contact with the enemy before the character's body does.  If the hammer is too small, the character may start dieing instead.
+
+<img src="http://i.imgur.com/mfrIum0.png" width=300px /> 
+
+3 were placed around the level.  Add as many as you'd like, but when positioning be sure that the hammer is in a location the player can get too.  It's frustrating for players if they see a hammer but can't ever reach it.
+
+Picking up the hammer and killing enemies with it is covered in the next sections.
 
 <hr></details>
+<details><summary>Why use pivot bottom?</summary>
 
+We will be equipting the hammer on the character and have him swing.  Moving the pivot point to bottom sets it to approximitally where the character will grip the hammer.  
 
+When rotating the hammer for a swing, the bottom pivot causes the bottom of the handle to keep its position while the hammer's head swings.  The default middle pivot would create equal motion at the hammer's head and the base of the hammer's handle.
+
+<img src="http://i.imgur.com/UUoyqJ3.gif" width=300px />
+
+<hr></details>
+<details><summary>Why use a polygon collider and not a box or capsule?</summary>
+
+You could.  
+
+The hammer's shape does not match either a Box or Capsule collider.  If you were to use one of those, the difference between the collider and the sprite art could be great enough that collisions in the game feel wrong.  e.g. you may miss picking up a hammer you thought you should have gotten or not kill an enemy you clearly hit.
+
+The hammer's shape could be approximated well by using 2 box colliders.  A polygon collider does require more processing time, although not a significant difference, so this may be a potential optimization worth the tradeoff sacraficing some percision on collisions.  
+
+<hr></details>
+<details><summary>Why use Is Trigger?</summary>
+
+When the character jumps for the hammer to pick it up, we do not want the character to bounce off of it.  The collider used on the hammer when the hammer is a pick up item shouldn't respond to anything expect equipting when the character touches it.  This is best achieved with 'Is Trigger'.
+
+<hr></details>
 
 
 ## 3.2) Equipt the hammer
@@ -55,7 +82,7 @@ public class WeaponHolder : MonoBehaviour
 }
 ```
 
- - Add it to the character.
+ - Add **WeaponHolder** to the character.
  - Create script Code/Components/Weapon/**Hammer**:
 
 ```csharp
@@ -104,14 +131,29 @@ public class Hammer : MonoBehaviour
   }
 }
 ```
-
- - Add it to the Hammer prefab.
- - Add SuicideIn, disable the component.
- - Add KillOnContactWith configured for layer 'Enemy', disable the component.
- - Under Hammer components to enable, add SuicideIn and KillOnContactWith.
- - Select the spike ball prefab, add DeathEffectSpawn and configure it to use the explosion prefab.
+ - Select the Hammer prefab:
+   - Add **SuicideIn**:
+     - Disable the component.
+   - Add **KillOnContactWith**:
+     - Configured for layer 'Enemy'.
+     - Disable the component.
+   - Add **Hammer**:
+     - Add SuicideIn and KillOnContactWith to the list 'To Enable On Equipt'.
+ - Select the SpikeBall prefab:
+   - Add **DeathEffectSpawn** configured to use the explosion prefab.
 
 <hr></details><br>
+<details><summary>What did that do?</summary>
+
+We create a weapon holder component to ensure we don't hold more than one weapon at a time.  When the weapon despawns (i.e. OnDestroy), we free up the character's weapon holder so it can pick up another.
+
+When the character picks up a hammer, the hammer becomes a child of the character GameObject.  The hammer is then given a position and rotation which represents where to grip the hammer relative to the character's feet (because the character has a bottom pivot point).
+
+When the hammer is equipt, a list of components are enabled.  We use use this to make the necessary changes to switch this from a pickup item to a limited time killing machine.
+
+When you modify the hammer prefab, all the objects in the world automatically got updated as well.  If you prefer to work with GameObjects in the scene, you can modify any one hammer and then click 'Apply' to save the changes to the prefab.
+
+<hr></details>
 <details><summary>TODO</summary>
 
 TODO

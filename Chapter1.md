@@ -8,6 +8,8 @@ Target audience: we try to assume little without boring those with experience.  
 This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
 
 
+TODO encourage experimenting along the way.  At the start of each chapter we have a download with the project up to that point.  Hack away, then reset to the baseline and hack some more.
+
 <br><br>
 
 **FYI**: The sequence and 'How' sections should be solid for chapter 1-5.  Questions as well as general 'what did that do' type content will be revisited.  If you try this, please take notes of any questions which come to mind and send those my way.  We'll be working on those after the process and how-to sections are complete.
