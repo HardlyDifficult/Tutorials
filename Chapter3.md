@@ -53,7 +53,7 @@ When rotating the hammer for a swing, the bottom pivot causes the bottom of the 
 
 You could.  
 
-The hammer's shape does not match either a Box or Capsule collider.  If you were to use one of those, the difference between the collider and the sprite art could be great enough that collisions in the game feel wrong.  e.g. you may miss picking up a hammer you thought you should have gotten or not kill an enemy you clearly hit.
+The hammer's shape does not match either a Box or Capsule collider.  If you were to use one of those, the difference between the collider and the sprite art could be great enough that collisions in the game feel wrong.  e.g. you may miss picking up a hammer you thought you got or not kill an enemy you clearly hit.
 
 The hammer's shape could be approximated well by using 2 box colliders.  A polygon collider does require more processing time, although not a significant difference, so this may be a potential optimization worth the tradeoff sacraficing some percision on collisions.  
 
@@ -65,7 +65,7 @@ When the character jumps for the hammer to pick it up, we do not want the charac
 <hr></details>
 
 
-## 3.2) Equipt the hammer
+## 3.2) Equip the hammer
 
 Add a script to the hammer and character, allowing the character to pickup the hammer and then kill enemies until it despawns.
 
@@ -91,13 +91,13 @@ using UnityEngine;
 public class Hammer : MonoBehaviour
 {
   [SerializeField]
-  Vector2 positionWhenEquipt = new Vector2(.214f, .17f);
+  Vector2 positionWhenEquip = new Vector2(.214f, .17f);
 
   [SerializeField]
-  Vector3 rotationWhenEquiptInEuler = new Vector3(0, 0, -90);
+  Vector3 rotationWhenEquipInEuler = new Vector3(0, 0, -90);
 
   [SerializeField]
-  MonoBehaviour[] componentListToEnableOnEquipt;
+  MonoBehaviour[] componentListToEnableOnEquip;
 
   WeaponHolder currentHolder;
 
@@ -119,12 +119,12 @@ public class Hammer : MonoBehaviour
       currentHolder.currentWeapon = gameObject;
 
       transform.SetParent(currentHolder.transform);
-      transform.localPosition = positionWhenEquipt;
-      transform.localRotation = Quaternion.Euler(rotationWhenEquiptInEuler);
+      transform.localPosition = positionWhenEquip;
+      transform.localRotation = Quaternion.Euler(rotationWhenEquipInEuler);
 
-      for(int i = 0; i < componentListToEnableOnEquipt.Length; i++)
+      for(int i = 0; i < componentListToEnableOnEquip.Length; i++)
       {
-        MonoBehaviour component = componentListToEnableOnEquipt[i];
+        MonoBehaviour component = componentListToEnableOnEquip[i];
         component.enabled = true;
       }
     }
@@ -133,12 +133,13 @@ public class Hammer : MonoBehaviour
 ```
  - Select the Hammer prefab:
    - Add **SuicideIn**:
+     - Set the Time Till Death to 10.
      - Disable the component.
    - Add **KillOnContactWith**:
      - Configured for layer 'Enemy'.
      - Disable the component.
    - Add **Hammer**:
-     - Add SuicideIn and KillOnContactWith to the list 'To Enable On Equipt'.
+     - Add SuicideIn and KillOnContactWith to the list 'To Enable On Equip'.
  - Select the SpikeBall prefab:
    - Add **DeathEffectSpawn** configured to use the explosion prefab.
 
@@ -149,7 +150,7 @@ We create a weapon holder component to ensure we don't hold more than one weapon
 
 When the character picks up a hammer, the hammer becomes a child of the character GameObject.  The hammer is then given a position and rotation which represents where to grip the hammer relative to the character's feet (because the character has a bottom pivot point).
 
-When the hammer is equipt, a list of components are enabled.  We use use this to make the necessary changes to switch this from a pickup item to a limited time killing machine.  
+When the hammer is equip, a list of components are enabled.  We use use this to make the necessary changes to switch this from a pickup item to a limited time killing machine.  
 
  - SuicideIn creates a timer till despawn.
  - KillOnContactWith enables killing enemies, previously disabled because it would be usual for the hammer as a pickup item to kill passers by.
@@ -177,11 +178,9 @@ You could switch to Quaternion, and it would be slightly more performant that wa
 
 
 
-
 ## 3.3) Hammer blinks red before despawning
 
 Add a script to the hammer to flash red before it's gone.
-
 
 <details><summary>How</summary>
 
@@ -193,9 +192,6 @@ using UnityEngine;
 
 public class DeathEffectFlash : DeathEffect
 {
-  [SerializeField]
-  float lengthBeforeFlash = 7;
-
   [SerializeField]
   float lengthToFlashFor = 5;
 
@@ -209,7 +205,7 @@ public class DeathEffectFlash : DeathEffect
   {
     get
     {
-      return lengthBeforeFlash + lengthToFlashFor;
+      return lengthToFlashFor;
     }
   }
 
@@ -220,8 +216,6 @@ public class DeathEffectFlash : DeathEffect
 
   IEnumerator FlashToDeath()
   {
-    yield return new WaitForSeconds(lengthBeforeFlash);
-
     SpriteRenderer[] spriteList = GetComponentsInChildren<SpriteRenderer>();
     float timePassed = 0;
     bool isRed = false;
@@ -239,35 +233,70 @@ public class DeathEffectFlash : DeathEffect
 }
 ```
 
- - Add it to the hammer prefab (will automatically add a DeathEffectManager).
+ - Add **DeathEffectFlash** to the hammer prefab, (it should automatically add DeathEffectManager as well).
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
+DeathEffectFlash will start when another component triggers death on the GameObject (using DeathEffectManager).  Over a period of time the sprite will flash red faster and faster until the object dies.  
+
+This is added to the hammer and the effect begins when SuicideIn's time completes.  When configuring the length of time a player has the hammer for, sum the SuicideIn time as well as the length to flash for configured in DeathEffectFlash.
+
+The other fields in DeathEffectFlash may be used to control how quickly flash occurs as well as how it accelerates over time.  You could play with these values or modify the formula use in FlashToDeath to create your own effect.
+
+<hr></details>
+<details><summary>Why not simply sum the time used in WaitForSeconds instead of max with deltaTime?</summary>
+
+In the following example, we are requesting the coroutine sleep for a period of time:
+
+```csharp
+yield return new WaitForSeconds(timePerColorChange);
+timePerColorChange = Mathf.Max(Time.deltaTime, timePerColorChange);
+```
+
+Unity does not make any guarantee that the amount of time before the coroutine resumes aligns with the wait time requested.  If we request a near zero time to wait, Unity will wait for a single frame -- we want to ensure that the effect progresses by at least that amount of time as well.
+
+Alternatively this method could be rewritten to use Time.timeSinceLevelLoaded.  With that we do not need to sum each itteration but instead can make decisions based off of the current time vs the time the effect began.
 
 <hr></details>
 
+
+
 ## 3.4) Create a flying enemy
 
-Create a GameObject for the fly guy reusing components from the spike ball and character.  
+Create a GameObject for the fly guy, reusing components from the spike ball and character.  
 
 <details><summary>How</summary>
 
  - Select **spritesheet_jumper_30**, **84**, and **90** and drag them into the Hierarchy, creating Assets/Animations/**FlyGuyWalk**.
- - Set Order in Layer to 1.
- - Add it to a parent GameObject named "FlyGuy".
- - Set the Layer for FlyGuy to 'Enemy'.
- - Add a Rigidbody2D and freeze the Z rotation.
- - Add a CapsuleCollider2D and adjust the size.
+   - Set Order in Layer to 1.
+ - Add the sprite to a parent GameObject named "FlyGuy":
+   - Set the Layer for FlyGuy to 'Enemy'.
+   - Add a **Rigidbody2D**:
+     - Freeze the Z rotation.
+   - Add a **CapsuleCollider2D**:
+     - Adjust the size to fit the sprite's body.
 
 <img src="http://i.imgur.com/d1lxoEj.png" width=150px />
 
- - Add WalkMovement.
- - Add DeathEffectSpawn and configure it to use the explosion prefab.
- - Add KillOnContactWith and set the layermask to Player.
+ - Select FlyGuy:
+   - Add **DeathEffectSpawn**:
+     - Configure it to use the explosion prefab.
+   - Add **KillOnContactWith**:
+     - Set the layermask to Player.
 
-</details>
+<hr></details><br>
+<details><summary>What did that do?</summary>
+
+The fly guy animation we created simply kicks its feet around.  We are not going to do anything more with this animation in this tutorial.  But you could use some of the same techniques we did for the character if you want to improve the experience.
+
+The rigidbody and collider enables physics and allows them to stay on platforms.  We freeze the z rotation so the fly guy does not fall over.
+
+The collider, layer, and KillOnContactWith replicates the configuration we used for the spike ball to kill the character on contact.
+
+DeathEffectSpawn creates an explosion when the fly guy is hit by a hammer.
+
+<hr></details>
 
 
 ## 3.5) Make the fly guy walk
@@ -329,10 +358,30 @@ public class WanderWalkController : MonoBehaviour
 }
 ```
 
- - Add WanderWalkController to the FlyGuy.
+ - Select the FlyGuy:
+   - Add **WanderWalkController** (it should automatically add WalkMovement as well).
 
-</details>
+<hr></details><br>
+<details><summary>What did that do?</summary>
 
+WanderWalkController is a controller to drive the WalkMovement component, similar to how the PlayerController does.  
+
+The PlayerController reads input from the keyboard (or controller) and feeds that to WalkMovement.  WanderWalkController uses RNG to effectively do the same, simulating holding the right or left button.
+
+WanderWalkController will always request movement either left or right.  You could extend this logic to have the fly guy randomly stand in the same place for a moment before continuing on.
+
+You can configure the walk speed by modifying the WalkMovement component's 'Walk Speed'.
+
+Note that at the moment fly guys will walk right off the screen.  This will be addressed soon.
+
+<hr></details>
+<details><summary>Why use timeBeforeFirstWander instead of going right into the while loop?</summary>
+
+When the fly guy first spawns in the bottom left of the world, we always want those enemies to walk to the right.  It would look strange for the enemies to go left and promptly hit the side of the screen before turning around.
+
+When the coroutine starts, we tell WalkMovement to go right and then wait a period of time.  The time we wait before entering the while loop should be configured to be long enough for fly guys to reach the first ladder -- maybe even longer.
+
+<hr></details>
 
 ## 3.6) Make the fly guy float above the ground
 
@@ -340,18 +389,49 @@ Add a second collider so that the body of this entity is above the ground but do
 
 <details><summary>How</summary>
 
- - Add an empty GameObject as a child under the FlyGuy.  Name it "Feet".
- - Create a Layer for "Feet" and assign it to the Feet GameObject.
- - Update the Physics 2D collision matrix to disable Feet / Player, Feet / Enemy, and Feet / Feet collisions.
- - Add a CircleCollider2D to the Feet and size and position it below the body.
+ - Create a Layer for "Feet".
+   - Update the Physics 2D collision matrix to:
+     - Disable Feet / Player.
+     - Disable Feet / Enemy.
+     - Disable Feet / Feet.
+ - Add an empty GameObject as a child under the FlyGuy.  
+   - Name it "Feet".
+   - Assign its Layer to Feet.
+   - Add a **CircleCollider2D** 
+     - Set the radius to .1
+     - Position it a little below the sprite.
 
-<img src="http://i.imgur.com/VMPqiFE.png" width=300px />
-
+<img src="http://i.imgur.com/BPohw5V.png" width=150px />
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
+The second collider we added is configured to collide with platforms but not with the character.  This allows it to prop up the fly guy making it hover above the ground.  
+
+We don't want the 'feet' to collide with the character because later in the tutorial we will be adding ladders.  While the fly guy is on a ladder, the character can walk underneath.  If the feet could hit the character he may die unexpectedly.
+
+<hr></details>
+<details><summary>How do you know what size to make the second collider?</summary>
+
+It does not matter much.  This second collider's only purpose is to ensure that the fly guy hovers above the ground.  So in a sense, we only need a single pixel to represent the correct Y position for Unity physics to use.
+
+Unity physics by default uses discrete collisions instead of continous. 
+
+ - Discrete means that each FixedUpdate, collisions are considered for the object's current position.
+ - Continues means that each FixedUpdate, collisions consider the entire path the object has taken since the last FixedUpdate.
+
+Discrete is is the default because it is more performant.  However Discrete is also less accurate. 
+
+When a collider is too small, collisions may be missed entirely as the object changes from a little above to a little below an obstacle. e.g. this is a common problem when shooting, bullets may start to travel through walls instead of hitting them.
+
+The collider may also be too large, causing our fly guy to continue standing on a platform when they should have fallen off the edge.
+
+<hr></details>
+<details><summary>Why use a child GameObject instead of two colliders on the parent?</summary>
+
+You could opt to do this using just one GameObject instead.
+
+We are using a child GameObject for the fly guy's feet in order to simplify future components.  Specifically we will be created a FloorDetector which will need to know which collider represents the bottom of the object. 
 
 <hr></details>
 
@@ -359,13 +439,13 @@ TODO
 
 Create a second spawner at the bottom for fly guys.
 
-
 <details><summary>How</summary>
 
- - Drag in **spritesheet_tiles_43** and then drag in **47**, add them to a parent named "Door".
- - Set Order in Layer to -2.
- - Scale up the size of the door to about (1.5, 1.5, 1.5).
- - Move the door to the bottom left of the level and position its Y so that the midpoint of the Door approximitally aligns with the midpoint of the FlyGuy (at the height we would want it to spawn).
+ - Drag in **spritesheet_tiles_43** and then drag in **47**.
+   - Set Order in Layer to -2.
+ - Add them to a parent named "Door":
+   - Scale up the size of the door to about (1.5, 1.5, 1.5).
+   - Move the door to the bottom left of the level and position its Y so that the midpoint of the Door approximitally aligns with the midpoint of the FlyGuy (at the height we would want it to spawn).
 
 <img src="http://i.imgur.com/EjVJkZ4.gif" width=300px />
 
@@ -374,13 +454,20 @@ Create a second spawner at the bottom for fly guys.
 <img src="http://i.imgur.com/SF57oFs.gif" width=150px />
 
  - Create a prefab for 'FlyGuy' and delete the GameObject.
- - Add Spawner to the door and assign FlyGuy as the thing to spawn.
- - Change the initial wait time to 10.
+ - Select the Door and add **Spawner**:
+   - Assign FlyGuy as the thing to spawn.
+   - Change the initial wait time to 10.
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
+We added a sprite representing the area where fly guys will spawn from.  
+
+For simplicity in the Spawner component, the position emenies appear at is the center of the Spawner's GameObject.  We attempt to position this for the fly guy, and then adjust the door sprites' positions to fit the visible space.
+
+The Spawner added should start to spawn fly guys periodically after about 10 seconds into the level.
+
+Note that if the character stands still at the level start, a fly guy will spawn and kill him.  This will be corrected later.
 
 <hr></details>
 
@@ -407,7 +494,6 @@ public class KeepOnScreen : MonoBehaviour
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-    Debug.Assert(myBody != null);
   }
 
   protected void Update()
@@ -426,39 +512,35 @@ public class KeepOnScreen : MonoBehaviour
 }
 ```
 
- - Add it to the character and fly guy prefabs.
+ - Add **KeepOnScreen** to both the character and fly guy prefabs.
 
 <hr></details><br>
+<details><summary>What did that do?</summary>
+
+When the GameObject attempts to move off screen, this script will teleport them back to the nearest on screen location.  Since this is checked every frame, the teleporting effect does not cause popping on the screen.  Typically this has the impact of undoing the move which would have occurred if not for this script.
+
+When a GameObject is teleported by this script, an event is fired.  This event allows other components to add additional logic to be executed when an entity attempts to leave the screen.  For example, in the next section we will be asking the fly guy to turn around and start walking the other way.
+
+<hr></details>
 <details><summary>Why use bounds for these checks?</summary>
 
 There are a few ways you could check for an entity walking off the edge of the screen.  I choose to use the Unity bounds struct because it has methods which make the rest of this component easy.  Specifically:
 
  - Contains: Check if the current position is on the screen.
- - ClosestPoint: Return the closest point on screen for the character, used when he is off-screen to teleport him back.
+ - ClosestPoint: Return the closest point on screen for the entity, used when it is off-screen to teleport it back.
 
-</details>
-
-<details><summary>What does flipping the walk direction do?</summary>
-
-Each frame the PlayerController sets the walk direction without consider the previous value.  So flipping the walk direction here is promptly overwritten by the PlayerController - resulting in little or no impact to movement in the game.
-
-We included this logic because not all controllers are going to work the same way.  Later in the tutorial we will be adding another entity that uses WalkMovement by only setting desiredWalkDirection periodically.  For that entity, flipping the direction will cause the entity to bounce off the side of the screen and walk the other way.
-
-This logic doesn't impact the character but it's not harmful either and it fits with the theme of this component, enabling reuse.
-
-</details>
-
+<hr></details>
 <details><summary>What's the different between setting transform.position and using myBody.MovePosition?</summary>
 
 Updates to the Transform directly will teleport your character immediatelly and bypass all physics logic.  
 
-Using the rigidbody.MovePosition method will smoothly transition the object to its new postion.  It's very fast, but if you try this and watch closely, MovePosition is animating a few frames on the way to the target position instead of going there immediatelly.
+Using the rigidbody.MovePosition method will interpellate (i.e. smoothly transition) the object to its new postion and give consideration to other forces on that object.  It's very fast, but if you try and watch closely, MovePosition may animate a few frames on the way to the target position instead of going there immediatelly.
 
 We are not suggesting one approach should always be used over the other - consider the use case and how you want your game to feel, sometimes teleporting is exactly the feature you're looking for.  
 
 Be careful when you change position using either of these methods as opposed to using forces on the rigidbody.  It's possible that you teleport right into the middle of another object.  The next frame, Unity will try to react to that collision state and this may result in objects popping out in strange ways.
 
-In this component we are setting transform.position for the teleport effect.  If rigidbody.MovePosition was used instead, occasionally issues would arrise as MovePosition competes with other forces on the object.
+In this component we are setting transform.position for the teleport effect.  If rigidbody.MovePosition was used instead, occasionally issues may arrise as MovePosition competes with other forces on the object.
 
 </details>
 
@@ -485,7 +567,6 @@ public class BounceOffScreenEdges : MonoBehaviour
   protected void Awake()
   {
     walkMovement = GetComponent<WalkMovement>();
-    Debug.Assert(walkMovement != null);
   }
 
   protected void Start()
@@ -511,6 +592,15 @@ public class BounceOffScreenEdges : MonoBehaviour
 TODO
 
 <hr></details>
+<details><summary>What does flipping the walk direction do?</summary>
+
+Each frame the PlayerController sets the walk direction without consider the previous value.  So flipping the walk direction here is promptly overwritten by the PlayerController - resulting in little or no impact to movement in the game.
+
+We included this logic because not all controllers are going to work the same way.  Later in the tutorial we will be adding another entity that uses WalkMovement by only setting desiredWalkDirection periodically.  For that entity, flipping the direction will cause the entity to bounce off the side of the screen and walk the other way.
+
+This logic doesn't impact the character but it's not harmful either and it fits with the theme of this component, enabling reuse.
+
+</details>
 
 ## 3.10) Fade in entities
 
@@ -667,8 +757,6 @@ public class GameController : MonoBehaviour
 
   protected void Awake()
   {
-    Debug.Assert(lifeCounter > 0);
-
     if(instance != null)
     {
       Destroy(gameObject);
@@ -690,9 +778,6 @@ public class GameController : MonoBehaviour
     DontDestroyOnLoad(gameObject);
 
     SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-
-    Debug.Assert(originalLifeCount > 0);
-    Debug.Assert(screenBounds.size.magnitude > 0);
   }
 
   void SceneManager_sceneLoaded(
@@ -709,8 +794,6 @@ public class GameController : MonoBehaviour
   {
     lifeCounter = originalLifeCount;
     points = 0;
-
-    Debug.Assert(lifeCounter > 0);
   }
 }
 ```
@@ -947,12 +1030,6 @@ public class Spawner : MonoBehaviour
 ```csharp
   IEnumerator SpawnEnemies()
   {
-    Debug.Assert(thingToSpawn != null);
-    Debug.Assert(initialWaitTime >= 0);
-    Debug.Assert(minTimeBetweenSpawns >= 0);
-    Debug.Assert(
-      maxTimeBetweenSpawns >= minTimeBetweenSpawns);
-
     yield return new WaitForSeconds(initialWaitTime);
 
     while(true)
@@ -1166,8 +1243,6 @@ public class AwardPointsOnJumpOver : MonoBehaviour
     };
 
     myLayerMask = Physics2D.GetLayerCollisionMask(gameObject.layer);
-
-    Debug.Assert(myCollider != null);
   }
 
   protected void OnTriggerStay2D(
