@@ -149,16 +149,33 @@ We create a weapon holder component to ensure we don't hold more than one weapon
 
 When the character picks up a hammer, the hammer becomes a child of the character GameObject.  The hammer is then given a position and rotation which represents where to grip the hammer relative to the character's feet (because the character has a bottom pivot point).
 
-When the hammer is equipt, a list of components are enabled.  We use use this to make the necessary changes to switch this from a pickup item to a limited time killing machine.
+When the hammer is equipt, a list of components are enabled.  We use use this to make the necessary changes to switch this from a pickup item to a limited time killing machine.  
 
-When you modify the hammer prefab, all the objects in the world automatically got updated as well.  If you prefer to work with GameObjects in the scene, you can modify any one hammer and then click 'Apply' to save the changes to the prefab.
+ - SuicideIn creates a timer till despawn.
+ - KillOnContactWith enables killing enemies, previously disabled because it would be usual for the hammer as a pickup item to kill passers by.
 
-<hr></details>
-<details><summary>TODO</summary>
-
-TODO
+When you modify the hammer prefab, all the objects in the world automatically get updated as well.  If you prefer to work with GameObjects in the scene, you can modify any one hammer and then click 'Apply' to save the changes to the prefab.
 
 <hr></details>
+<details><summary>Could we reset the timer instead of preventing a second pickup?</summary>
+
+Yes, in fact that would better match how most games would implement this feature.  There are various ways, as always, to achieve this. For example when the character touches a second hammer, you could:
+
+ - Destroy the first and then simply allow the second to play out.  However the animation of the hammer swing may visibly skip.
+ - Reset the SuicideIn countdown and Destroy the second hammer.
+
+Anything is possible.  Think through the game play experience you want to see first.
+
+<hr></details>
+<details><summary>Why serialize the rotation as Vector3 instead of Quaternion?</summary>
+
+Quaternions are confusing for people.  This is why the Transform rotation is modified in the Inspector as an Euler.  Unfortunately when you ask Unity to expose a Quaternion in the Inspector it appears as X, Y, Z, W and not the Euler X, Y, Z like they did for the Transform.
+
+You could switch to Quaternion, and it would be slightly more performant that way.  But I recommend using Euler, in case you ever want to modify the rotation used.
+
+<hr></details>
+
+
 
 
 ## 3.3) Hammer blinks red before despawning
