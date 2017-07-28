@@ -554,6 +554,7 @@ public class FadeInThenEnable : MonoBehaviour
 <details><summary>TODO</summary>
 
 TODO
+Debugging - make sure the GameObjects are disabled.
 
 <hr></details>
 

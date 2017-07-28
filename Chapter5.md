@@ -216,7 +216,9 @@ Add an animation to the character for jumping.
 <img src="http://i.imgur.com/WgOfzQY.png" width=150px />
 
  - Change the condition to read 'isTouchingFloor false'.
- - Under 'Settings' change the 'Transition Duration' to 0.
+ - Under 'Settings':
+   - Change the 'Transition Duration' to 0.
+   - Uncheck 'Can Transition to Self'.
  - Create a transition from CharacterJump to CharacterWalk.
  - Select the transition and set the condition to 'isTouchingFloor true'.
  - Uncheck 'Has Exit Time'.
@@ -239,6 +241,7 @@ Add an animation for when climbing ladders.
  - Create a transition from CharacterClimb to CharacterWalk.
    - Uncheck Has Exit Time.
    - Set Transition Duration to 0.
+   - Uncheck Can Transition to Self.
    - Add a condition 'isClimbing false'.
  - Select the transition from Any State to CharacterJump
    - Add a condition 'isClimbing false'.
@@ -442,13 +445,12 @@ Create a timeline which enables LevelManager and hammers after the intro is comp
 
 <img src="http://i.imgur.com/7HXZs7Z.gif" width=300px />
 
- - For each hammer in the scene:
-   - Drag it onto the timeline and select 'Activation Track'.
-   - Move the box for the script so that it starts after the cloud animation completes.  Leave the size at about the default length.
+ - Drag the parent 'Hammers' GameObject (which holds all the hammers) onto the timeline and select 'Activation Track'.
+ - Move the box for the script so that it starts after the cloud animation completes.  The size of the box itself does not matter, the start represents when it will be enabled and the end must align with the end of the time timeline to prevent it from being disabled.
 
 <img src="http://i.imgur.com/6XyJZlh.gif" width=300px />
 
- - Do the same for the LevelManager and each of the ladders.
+ - Do the same for the LevelManager and the ladders.
 
 <hr></details><br>
 <details><summary>TODO</summary>

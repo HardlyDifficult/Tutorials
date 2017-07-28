@@ -633,13 +633,22 @@ Reduce the PlatformerEffector2D Surface Arc to about 135.
 <img src="http://i.imgur.com/PH2XyEd.png" width=150px>
 
 </details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-Play, now the character should not be able to stick to the sides while falling:
+The surface arc for an effector changes the supported region, in this case the surfaces which are collidable.  By reducing this we are causing the sides to be treated as non-collidable like the bottoms are by default.
 
-<img src="http://i.imgur.com/GGzbkdp.gif" width=200px />
+Now the character should not be able to stick to the sides while falling:
+
+<img src="http://i.imgur.com/GGzbkdp.gif" width=300px />
 
 <hr></details>
+<details><summary>Why not use surface arc of 1?</summary>
+
+A very small surface arc still allows the primary use case to work correcly, i.e. you can still stand on platforms.  The sides, where a rounded edge appears, may not be collidable causing the character to fall off prematurely.  
+
+You can adjust the surface arc to find a value that feels good.
+
+</details>
 
 
 ## 2.11) Create a pattern for death effects

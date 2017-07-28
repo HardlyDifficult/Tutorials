@@ -10,7 +10,7 @@ This is very much a WIP.  I'm trying to make a tutorial helpful to a range of ex
 
 <br><br>
 
-**FYI**: The sequence and 'How' sections should be solid for chapter 1-4.  Questions as well as general 'what did that do' type content will be revisited.  If you try this, please take notes of any questions which come to mind and send those my way.  We'll be working on those after the process and how-to sections are complete.
+**FYI**: The sequence and 'How' sections should be solid for chapter 1-5.  Questions as well as general 'what did that do' type content will be revisited.  If you try this, please take notes of any questions which come to mind and send those my way.  We'll be working on those after the process and how-to sections are complete.
 
 <br><br>
 
@@ -1205,11 +1205,15 @@ public class SuicideOutOfBounds : MonoBehaviour
  - Add 'SuicideOutOfBounds' to the spike ball.
 
 </details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
+
+SuicideOutOfBounds will destroy the GameObject for anything that goes below -12, which is a bit lower than the lowest the camera can see. 
 
 Play and the ball should now destroy itself when it falls off screen:
 
-<img src="http://i.imgur.com/xcqUO8I.gif" />
+<img src="http://i.imgur.com/xcqUO8I.gif" width=300px />
+
+This script would work the same without a fixed aspect ratio (since different aspect ratios only impact how much of the world we see horizontally).  If we supported a moving camera, we may need to calculate the kill height differently.
 
 <hr></details>
 <details><summary>Why bother, the GameObject is already off screen?</summary>
