@@ -6,7 +6,7 @@ Flip the entity when they switch between walking left and walking right.
 
 <details><summary>How</summary>
 
- - Create a script **RotateFacingDirection** under Assets/Code/Compenents/Movement and paste the following:
+ - Create script Code/Compenents/Movement/**RotateFacingDirection**:
 
 ```csharp
 using UnityEngine;
@@ -56,7 +56,7 @@ public class RotateFacingDirection : MonoBehaviour
 }
 ```
 
- - Add RotateFacingDirection to the character and the fly guy prefab.
+ - Add **RotateFacingDirection** to the character and the fly guy prefab.
 
 <hr></details><br>
 <details><summary>TODO</summary>
