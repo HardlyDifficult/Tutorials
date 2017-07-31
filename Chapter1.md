@@ -260,7 +260,7 @@ Anti-aliasing may lead to unexpected gaps or distortions when sprites are side b
 
 <hr></details>
 
-
+TODO disable compression on sprite sheets?
 
 ## 1.7) Select an aspect ratio
 

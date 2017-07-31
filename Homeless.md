@@ -11,6 +11,9 @@ Image sizes: 150, 300, 500, 700.  Prefer: 300
 
 'Script'
 
+
+ - Update **PlayerController**.cs by adding the code below (or copy/paste the full version - TODO link):
+
 How:
 <details><summary>How</summary>
 
@@ -260,3 +263,21 @@ The following are additional special folder names only considered when in the ro
  - "[StreamingAssets](https://docs.unity3d.com/Manual/StreamingAssets.html)": Videos or other archives for your game to stream.
 
 Be sure you do not use folders with these names anywhere in your project unless specifically for that Unity use case. e.g. Assets/Code/Editor/InGameMapEditor.cs may be intended to be part of the game but would be flagged as an Editor only script instead.
+
+
+
+
+
+
+
+<details><summary>How might you play mulitple audio clips at the same time?</summary>
+
+Each AudioSource can be configured for one clip at a time.  To play multiple clips in parallel, you could use multiple AudioSources by placing multiple on a single GameObject or instantiating multiple GameObjects.  You can also use the following API to play a clip in parallel:
+
+```csharp
+GetComponent<AudioSource>().PlayOneShot(clip);
+```
+
+This will start playing another clip, re-using an existing AudioSource component (and its GameObject's position as well as the audio configuration options such as pitch).
+
+</details>
