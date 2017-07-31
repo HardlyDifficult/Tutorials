@@ -872,6 +872,8 @@ Add scripts to respawn the character when he dies.
 
 <details><summary>How</summary>
 
+TODO replace with an abstract parent patern instead.
+
  - Create script Code/Compenents/Death/**ICareWhenPlayerDies**:
 
 ```csharp
