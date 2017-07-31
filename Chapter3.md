@@ -1290,34 +1290,28 @@ public class AwardPointsOnJumpOver : MonoBehaviour
   int pointsToAward = 100;
 
   [SerializeField]
-  LayerMask playerAndAllPossibleObstacles;
+  float cooldownTime = 3;
 
   BoxCollider2D myCollider;
 
+  [SerializeField]
   ContactFilter2D contactFilter;
 
   RaycastHit2D[] tempHitList = new RaycastHit2D[1];
 
-  LayerMask myLayerMask;
+  float lastPickupTime;
 
   protected void Awake()
   {
     myCollider = GetComponent<BoxCollider2D>();
 
-    contactFilter = new ContactFilter2D()
-    {
-      layerMask = playerAndAllPossibleObstacles,
-      useLayerMask = true,
-      useTriggers = true
-    };
-
-    myLayerMask = Physics2D.GetLayerCollisionMask(gameObject.layer);
+    Debug.Assert(myCollider != null);
   }
 
   protected void OnTriggerStay2D(
     Collider2D collision)
   {
-    if(myLayerMask.Includes(collision.gameObject.layer) == false)
+    if(Time.timeSinceLevelLoad - lastPickupTime < cooldownTime)
     {
       return;
     }
@@ -1332,17 +1326,19 @@ public class AwardPointsOnJumpOver : MonoBehaviour
     {
       GameController.instance.points += pointsToAward;
 
-      Destroy(this);
+      lastPickupTime = Time.timeSinceLevelLoad;
     }
   }
 }
 ```
 
-TODO serialize the contact filter.
-
 - Add the FlyGuy and SpikeBall to scene and for each:
   - Add a new empty GameObject as a child:
     - Name it "Points".
+    - Add **AwardPointsOnJumpOver**:
+      - Check 'Use Triggers'.
+      - Check 'Use LayerMask'.
+      - Set the LayerMask to 'Player' and 'Floor'.
     - Assign it the Points layer.
     - Add a **Rigidbody2D**:
       - Change the Body Type to 'Kinematic'.
@@ -1352,22 +1348,40 @@ TODO serialize the contact filter.
 
 <img src="http://i.imgur.com/gmMDJlD.png" width=150px />
 
- - Add **AwardPointsOnJumpOver** to both Points GameObjects.
-   - Set layer mask to include both Player and Floor.
-     - check use layermask and use triggers 
  - Apply changes to the prefabs and delete the GameObjects.
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
+We added a large collider above the enemy to detect when the player is above us.  Then the script AwardPointsOnJumpOver awards points if the player is directly above vs having a platform between them.  A cooldown to prevents the player from doubling up on points with a single jump.
+
+<hr></details>
+<details><summary>Why Trigger AND Raycast?</summary>
+
+The trigger informs us when there is a player above the enemy.  However, this does not consider any platforms which are also above us.  The raycast is used to determine what is directly above the enemy, and we only award points if it's the player.
+
+Ultimitally the raycast here answers the question of when to award points.  We could raycast each frame in an update loop, but instead leverage the trigger to improve preformance by only checking when the player is near.
+
+<hr></details>
+<details><summary>Why add another Rigidbody2D?</summary>
+
+When you are using a child GameObject, adding another Rigidbody2D will ensure that physics events from the child do not reach the parent.  i.e. any scripts on the parent would not get an OnTriggerEnter or OnCollisionStay call for a collider on the child this way -- in this tutorial the KillOnContact script may trigger much too soon without the second Rigidbody2D.
+
+The second Rigidbody2D does not prevent events on the parent from reaching any scripts on the child GameObject.  In AwardPointsOnJumpOver, after a trigger we will raycast to confirm the player is directly above us - with this the additional events from the parent do not impact gameplay.
+
+<hr></details>
+<details><summary>Do we need a cooldown?</summary>
+
+Yes, as the code is currently written.  Removing the cooldown would result in huge payouts as the player jumped over.  
+
+This could be addressed other ways.  Consider exactly when you would want to award more points for jumping over an enemy. e.g. we allow you to move back and forth while in the air - if I did this over an enemy, should I get paid twice?
 
 <hr></details>
 
 
 ## 3.17) Hold rotation on the point collider
 
-Create a script to hold the child GameObjects rotation while the parent spins.
+Create a script for the spike ball to hold the child GameObject's rotation while the parent spins.
 
 <details><summary>How</summary>
 
@@ -1385,23 +1399,23 @@ public class HoldRotation : MonoBehaviour
     originalRotation = transform.rotation;
   }
 
-  protected void Update()
+  protected void FixedUpdate()
   {
     transform.rotation = originalRotation;
   }
 }
 ```
 
- - Add it to the Points GameObject under the spike ball prefab.
+ - Add **HoldRotation** to the Points GameObject under the spike ball prefab.
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
+Each FixedUpdate, we set the rotation back to the original.  We add this to the points child on the spike ball to ensure we are always checking for the player straight up.  
+
+Without this, the points collider would spin with the parent ball.
 
 <hr></details>
-
-
 
 
 ## 3.18) Test
