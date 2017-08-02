@@ -1,8 +1,10 @@
 # 4) Ground detection & Ladders
 
+TODO
+
 ## 4.1) Rotate entities when they walk the other way
 
-Flip the entity when they switch between walking left and walking right.
+Flip the entity when they switch between walking left and right.
 
 <details><summary>How</summary>
 
@@ -14,54 +16,53 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class RotateFacingDirection : MonoBehaviour
 {
-  static readonly Quaternion backwardsRotation 
-    = Quaternion.Euler(0, 180, 0);
-
   Rigidbody2D myBody;
 
-  bool _isGoingRight = true;
+  SpriteRenderer sprite;
+  
+  bool _isGoingLeft;
 
-  public bool isGoingRight
+  public bool isGoingLeft
   {
     get
     {
-      return _isGoingRight;
+      return _isGoingLeft;
     }
     private set
     {
-      if(isGoingRight == value)
-      { 
+      if(isGoingLeft == value)
+      {
         return;
       }
 
-      transform.rotation *= backwardsRotation;
-      _isGoingRight = value;
+      _isGoingLeft = value;
+      sprite.flipX = isGoingLeft;
     }
   }
 
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-    Debug.Assert(myBody != null);
+    sprite = GetComponentInChildren<SpriteRenderer>();
   }
 
-  protected void Update()
+  protected void FixedUpdate()
   {
     float xVelocity = myBody.velocity.x;
     if(Mathf.Abs(xVelocity) > 0.1)
-    { 
-      isGoingRight = xVelocity > 0;
+    {
+      isGoingLeft = xVelocity < 0;
     }
   }
 }
 ```
 
- - Add **RotateFacingDirection** to the character and the fly guy prefab.
+ - Add **RotateFacingDirection** to the character prefab.
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did this do?</summary>
 
-Why, the fly guy looks the same rotated.  Well may not be true for all art.  And simplifies the rotate to align with platforms coming up.
+Each FixedUpdate, we determine which direction the entity is walking by its x velocity.  When the direction changes, we flip the sprite so that the character appears to be facing the other way.
 
 <hr></details>
 <details><summary>What's a C# smart property?</summary>
@@ -73,15 +74,101 @@ In this example, when isGoingRight changes between true and false, the GameObjec
 There are pros and cons to smart properties.  For example, one may argue that including the transform change when isGoingRight is modified hides the mechanic and makes the code harder to follow.  There are always alternatives if you prefer to not use smart properties.  For example:
 
 ```csharp
-bool isGoingRightNow = xVelocity > 0;
-if(isGoingRight != isGoingRightNow) 
+bool isGoingLeftNow = xVelocity <> 0;
+if(isGoingLeft != isGoingLeftNow) 
 {
-  transform.rotation *= backwardsRotation;    
-  isGoingRight = isGoingRightNow;
+  sprite.flipX = isGoingLeft;
+  isGoingLeft = isGoingLeftNow;
 }
 ```
 
 </details>
+<details><summary>Why not compare to 0 when checking if there is no movement?</summary>
+
+In Unity, numbers are represented with the float data type.  Float is a way of representing decimal numbers but is a not precise representation like you may expect.  When you set a float to some value, internally it may be rounded ever so slightly.
+
+The rounding that happens with floats allows operations on floats to be executed very quickly.  However it means we should never look for exact values when comparing floats, as a tiny rounding issue may lead to the numbers not being equal.
+
+In the example above, as the velocity approaches zero, the significance of if the value is positive or negative, is lost.  It's possible that if we were to compare to 0 that at times the float may oscilate between a tiny negative value and a tiny positive value causing the sprite to flip back and forth.
+
+</details>
+
+
+## 4.2) Detect floors
+
+Create a script to calculate the distance to and rotation of the floor under an entity.
+
+<details open><summary>How</summary>
+
+ - Create a layer 'Floor'.
+ - Select all the Platform GameObjects and change to Layer Floor.
+   - When prompted, select 'No, this object only'.
+ - Create script Code/Components/Movement/**FloorDetector**:
+
+```csharp
+
+```
+
+ - Add **FloorDetector** to:
+   - The character prefab.
+   - The spike ball prefab.
+   - The fly guy's Feet child GameObject (and apply changes to the fly guy prefab).
+ - For each of those FloorDectector components, update the Floor Filter:
+     - Check Use Layer Mask
+     - Set the Layer Mask to Floor.
+
+<hr></details><br>
+<details><summary>What did that do?</summary>
+
+The FloorDetector collects information about the floor under the entity for other components to leverage:
+
+ - feetYPosition: The y position of the bottom of the entity's feet.
+ - isTouchingFloor: True if the entity is currently on the ground vs jumping or falling.
+ - floorUp: the normal of th efloor the entity is standing on, or the direction perpendicular to the floor.
+ - floorRotation: the rotation of the floor the entity is standing on.
+ - distanceToFloor: how far above the floor the entity's feet currently are.  0 if isTouchingFloor.
+
+Each FixedUpdate, we use OverlapCollider to find the floor we may be standing on.  We check multple results and filter out instances which are overlapping the bottom of a platform (necessary because of the one-way platforms), if any remain - the closest is the floor we are on.
+
+If we are standing on a floor we then get rotation information.  If the floor is upside down, we flip these stats as well.
+
+If we are not standing on a floor, we Raycast below the entity to get the distanceToFloor.
+
+
+TODO question - why not require floordetector component? / why GetComponentInChildren
+
+<hr></details>
+<details><summary>Nullable types</summary>
+
+TODO
+
+<hr></details>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+<details><summary>TODO</summary>
+
+TODO
+
+<hr></details>
+
 
 <details><summary>What's a Quaternion?</summary>
 
@@ -114,200 +201,6 @@ Quaternion rotationOfZ60Degrees
 ```
 
 </details>
-<details><summary>TODO</summary>
-
-TODO why Quaternion.Euler(0, 180, 0) when you said before 2D games only rotate around the z axis?
-
-<hr></details>
-
-
-
-<details><summary>Why not compare to 0 when checking if there is no movement?</summary>
-
-In Unity, numbers are represented with the float data type.  Float is a way of representing decimal numbers but is a not precise representation like you may expect.  When you set a float to some value, internally it may be rounded ever so slightly.
-
-The rounding that happens with floats allows operations on floats to be executed very quickly.  However it means we should never look for exact values when comparing floats, as a tiny rounding issue may lead to the numbers not being equal.
-
-In the example above, as the velocity approaches zero, the significance of if the value is positive or negative, is lost.  It's possible that if we were to compare to 0 that at times the float may oscilate between a tiny negative value and a tiny positive value causing the sprite to flip back and forth.
-
-</details>
-
-
-## 4.2) Detect floors
-
-Create a script to calculate the distance to and rotation of the floor under an entity.
-
-<details><summary>How</summary>
-
- - Create a layer 'Floor'.
- - Select all the Platform GameObjects and change to Layer Floor.
- - Create script Code/Components/Movement/**FloorDetector**:
-
-```csharp
-using UnityEngine;
-
-[RequireComponent(typeof(Collider2D))]
-public class FloorDetector : MonoBehaviour
-{
-  static readonly Quaternion backwardsRotation 
-    = Quaternion.Euler(0, 0, 180);
-
-  public Collider2D myCollider
-  {
-    get; private set;
-  }
-
-  ContactFilter2D floorFilter;
-
-  public bool isTouchingFloor
-  {
-    get; private set;
-  }
-
-  public Vector2? floorUp
-  {
-    get; private set;
-  }
-
-  public Quaternion? floorRotation
-  {
-    get; private set;
-  }
-
-  public float? distanceToFloor
-  {
-    get; private set;
-  }
-
-  protected void Awake()
-  {
-    myCollider = GetComponent<Collider2D>();
-
-    floorFilter = new ContactFilter2D()
-    {
-      layerMask = LayerMask.GetMask(new[] { "Floor" }),
-      useLayerMask = true
-    };
-
-    Debug.Assert(myCollider != null);
-  }
-
-  protected void FixedUpdate()
-  {
-    Collider2D floorWeAreStandingOn = DetectTheFloorWeAreStandingOn();
-    isTouchingFloor = floorWeAreStandingOn != null;
-
-    Collider2D floorUnderUs;
-    if(floorWeAreStandingOn != null)
-    {
-      Vector2 up;
-      Quaternion rotation;
-      CalculateFloorRotation(floorWeAreStandingOn, out up, out rotation);
-      floorUp = up;
-      floorRotation = rotation;
-      floorUnderUs = floorWeAreStandingOn;
-    }
-    else
-    {
-      floorUp = null;
-      floorRotation = null;
-      floorUnderUs = DetectFloorUnderUs();
-    }
-
-    distanceToFloor = CalculateDistanceToFloor(floorWeAreStandingOn, floorUnderUs);
-  }
-
-  Collider2D DetectTheFloorWeAreStandingOn()
-  {
-    Collider2D[] possibleResultList = new Collider2D[3];
-
-    int foundColliderCound
-      = Physics2D.OverlapCollider(myCollider, floorFilter, possibleResultList);
-
-    for(int i = 0; i < foundColliderCound; i++)
-    {
-      Collider2D collider = possibleResultList[i];
-      ColliderDistance2D distance = collider.Distance(myCollider);
-
-      if(distance.distance >= -.1f
-        && Vector2.Dot(Vector2.up, distance.normal) > 0)
-      {
-        return collider;
-      }
-    }
-
-    return null;
-  }
-
-  Collider2D DetectFloorUnderUs()
-  {
-    RaycastHit2D[] result = new RaycastHit2D[1];
-    if(Physics2D.Raycast(transform.position, Vector2.down, floorFilter, result) > 0)
-    {
-      return result[0].collider;
-    }
-
-    return null;
-  }
-
-  static void CalculateFloorRotation(
-    Collider2D floorWeAreStandingOn,
-    out Vector2 floorUp,
-    out Quaternion floorRotation)
-  {
-    Debug.Assert(floorWeAreStandingOn != null);
-
-    floorUp = floorWeAreStandingOn.transform.up;
-    floorRotation = floorWeAreStandingOn.transform.rotation;
-    if(Vector2.Dot(Vector2.up, floorUp) < 0)
-    {
-      floorUp = -floorUp;
-      floorRotation *= backwardsRotation;
-    }
-  }
-  
-  float? CalculateDistanceToFloor(
-    Collider2D floorWeAreStandingOn,
-    Collider2D floorUnderUs)
-  {
-    if(floorWeAreStandingOn != null)
-    {
-      return 0;
-    }
-    else if(floorUnderUs != null)
-    {
-      float yOfTopOfFloor = floorUnderUs.bounds.max.y;
-
-      if(floorUnderUs is BoxCollider2D)
-      {
-        BoxCollider2D boxCollider = (BoxCollider2D)floorUnderUs;
-        yOfTopOfFloor += boxCollider.edgeRadius;
-      }
-
-      return myCollider.bounds.min.y - yOfTopOfFloor;
-    }
-    else
-    {
-      return null;
-    }
-  }
-}
-```
-
- - Add it to:
-   - The character prefab.
-   - The spike ball prefab.
-   - The fly guy's **Feet** child GameObject (and apply changes to the fly guy prefab).
-
-<hr></details><br>
-<details><summary>TODO</summary>
-
-TODO question - when changing layers, yes change children..
-http://i.imgur.com/xFiD5Vc.png
-
-TODO question - why not require floordetector component? / why GetComponentInChildren
-
-<hr></details>
 
 
 
@@ -479,9 +372,6 @@ public class WanderWalkController : MonoBehaviour
 ```csharp
   protected void Awake()
   {
-    Debug.Assert(oddsOfGoingUpHill >= 0);
-    Debug.Assert(timeBeforeFirstWander >= 0);
-
     walkMovement = GetComponent<WalkMovement>();
 ```
 
@@ -590,53 +480,7 @@ Create a script to rotate an entity, aligning with the floor when touching one, 
  - Create script Code/Components/Movement/**RotateToAlignWithFloor**:
 
 ```csharp
-using UnityEngine;
-
-[RequireComponent(typeof(RotateFacingDirection))]
-public class RotateToAlignWithFloor : MonoBehaviour
-{
-  static readonly Quaternion backwardsRotation
-    = Quaternion.Euler(0, 180, 0);
-
-  [SerializeField]
-  float rotationLerpSpeed = .4f;
-
-  FloorDetector floorDetector;
-
-  RotateFacingDirection facingDirection;
-
-  protected void Awake()
-  {
-    floorDetector = GetComponentInChildren<FloorDetector>();
-    facingDirection = GetComponent<RotateFacingDirection>();
-
-    Debug.Assert(floorDetector != null);
-    Debug.Assert(facingDirection != null);
-  }
-
-  protected void Update()
-  {
-    Quaternion targetRotation;    
-    if(floorDetector.floorRotation != null)
-    {
-      targetRotation = floorDetector.floorRotation.Value;
-    }
-    else
-    {
-      targetRotation = Quaternion.identity;
-    }
-
-    if(facingDirection.isGoingRight == false)
-    {
-      targetRotation *= backwardsRotation;
-    }
-
-    transform.rotation = Quaternion.Lerp(
-      transform.rotation,
-      targetRotation,
-      rotationLerpSpeed * Time.deltaTime);
-  }
-}
+TODO
 ```
 
  - Add it to the character and fly guy prefabs.
@@ -1074,8 +918,6 @@ public class DisablePhysics : MonoBehaviour
         impactedColliderList.Add(collider);
       }
     }
-
-    Debug.Assert(myBody != null);
   }
 
   protected void OnEnable()
@@ -1540,9 +1382,6 @@ public class WanderWalkController : MonoBehaviour
 ```csharp
   protected void Awake()
   {
-    Debug.Assert(oddsOfGoingUpHill >= 0);
-    Debug.Assert(timeBeforeFirstWander >= 0);
-
     walkMovement = GetComponent<WalkMovement>();
     floorDetector = GetComponentInChildren<FloorDetector>();
 ```
@@ -1743,8 +1582,6 @@ public class MoveTowardsCenterWhileClimbing : MonoBehaviour
   protected void Awake()
   {
     ladderMovement = GetComponent<LadderMovement>();
-
-    Debug.Assert(ladderMovement != null);
   }
 
   protected void FixedUpdate()
