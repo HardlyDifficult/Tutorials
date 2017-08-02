@@ -1,6 +1,6 @@
 # 2D Platformer Tutorial for Unity 2017
 
-TODO intro. 
+TODO intro. Setting up 'pixel perfect'.
 [Demo of the game](https://hardlydifficult.com/Kong/index.html)
 
 Target audience: we try to assume little without boring those with experience.  You don't need to know how to code and it's okay if this is your first time with Unity.  You can follow step-by-step and copy/paste scripts, but we aim to teach the process along the way as well.  New concepts are introduced as they come to help beginners and intermediate developers understand.  
@@ -861,11 +861,11 @@ Adding a rigidbody to an object enables physics, including gravity.  Hit play an
 <hr></details>
 <details><summary>What's a Rigidbody2D?</summary>
 
-A rigidbody is a core component for the Unity physics engine, Rigidbody2D is the 2D version of this component (vs 3D).  It's added to GameObjects which may be manipulated by physics during the game.
+A rigidbody is a core component for the Unity physics engine, Rigidbody2D is the 2D version of this component (vs 3D).  It's added to GameObjects which may be manipulated by physics during the game, for example:
 
-TODO elaborate
-
-Physics refers to the logic in a game engine which moves objects based on forces such as gravity. We'll be using rigidbodys on all moving objects in this game. 
+ - Falling with gravity.
+ - Moving with forces such as velocity.
+ - Reacting to collisions with other objects.
 
 </details>
 
@@ -1078,7 +1078,8 @@ There are a lot of events available to MonoBehaviours.  In this example we are u
 
 Note that when implementing MonoBehaviour events, you do not use 'override' nor subscribe to the event.  Unity uses reflection based on the method signature instead to improve performance.  This creates an unintuative pattern for C# delevelopes but allows Unity to eliminate unncessary calls.  This optimization normally in development would be considered overkill but for a game engine this kind of thing adds up, particularly since there are typically hundreds of MonoBehaviours in the world.
 
-TODO flow of events https://docs.unity3d.com/uploads/Main/monobehaviour_flowchart.svg
+See also [Unity's Execution Order of Event Functions](
+https://docs.unity3d.com/Manual/ExecutionOrder.html).
 
 </details>
 <details><summary>Why use protected on the Unity event?</summary>
@@ -1304,7 +1305,7 @@ Add a script to the evil cloud which periodically spawns balls.
 
 <details><summary>How</summary>
 
- - Create a script **Spawner** under Assets/Code/Compenents/Life and paste the following:
+ - Create script Code/Compenents/Life/**Spawner**:
 
 ```csharp
 using System.Collections;
@@ -1349,16 +1350,16 @@ public class Spawner : MonoBehaviour
 }
 ```
 
- - Add 'Spawner' to the evil cloud.
- - Confirm the values for the component match the defaults in code.
- - Click/drag the Spike Ball prefab onto the 'Thing To Spawn' field.
+ - Add **Spawner** to the evil cloud.
+   - Confirm the values for the component match the defaults in code.
+   - Click/drag the Spike Ball prefab onto the 'Thing To Spawn' field.
  
 <img src="http://i.imgur.com/scu8YUR.gif" width=300px />
 
 </details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-Click play to see the spawner in action:
+The spawner component instantiates a prefab at its GameObject's position periodically.  Click play to see the spawner in action:
 
 <img src="http://i.imgur.com/ZJSulAj.gif" width=300px /> 
 
@@ -1477,11 +1478,14 @@ You can optionally include a message to be displayed when the assert fails.  e.g
 Debug.Assert(confirmThisIsTrue, "confirmThisIsTrue must be true");
 ```
 
-Debug.Assert is there to help identify problems sooner.  If the assert fails it does not prevent other code from being executed - however you can select 'Error Pause' in the 'Console' to better see what is happening at that moment.
+Debug.Assert is there to help identify problems sooner.  We use Debug.Assert in the linked code samples (they are not shown inline for this tutorial).  If the assert fails it does not prevent other code from being executed - however you can select 'Error Pause' in the 'Console' to better see what is happening at that moment.
 
 Debug.Assert does not execute in release / the built version of your game.  In other words there is no performance impact to your final game by including these checks.
 
-TODO pre conditions and post conditions
+A common use case for Debug.Assert is to validate pre-conditions and post-conditions.  
+
+ - Pre-conditions are assumptions which should be true when entering a method.
+ - Post-conditions should hold true when exiting.
 
 </details>
 
@@ -1503,30 +1507,11 @@ Create a layer for Enemy and assign it to the Spike Ball prefab.
 <img src="http://i.imgur.com/KPvq22a.png" width=300px />
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
-why this object only - best practice as sometimes children are different.
+Nothing yet.  
 
-<hr></details>
-
-
-## 1.30) Disable collisions between enemies
-
-Update the collision matrix, disabling enemy to enemy collisions.
-
-<details><summary>How</summary>
-
- - Edit -> Project Settings -> Physics 2D.
- - Under the 'Layer Collision Matrix', uncheck the box where 'Enemy' meets 'Enemy'.
-
-<img src="http://i.imgur.com/JkjXpZN.png" width=300px />
-
-</details><br>
-<details><summary>TODO</summary>
-
-TODO
- to allow enemies to travel through other enemies in the world.
+Layers are a way of categorizing GameObjects.  We will be using the Enemy layer to allow other enemies to pass through them, in the next section.
 
 <hr></details>
 <details><summary>What's a Layer and how's it different from a Tag?</summary>
@@ -1581,6 +1566,27 @@ public class MyComponent : MonoBehaviour
 Every GameObject has both one layer and one tag.
 
 </details>
+
+
+## 1.30) Disable collisions between enemies
+
+Update the collision matrix, disabling enemy to enemy collisions.
+
+<details><summary>How</summary>
+
+ - Edit -> Project Settings -> Physics 2D.
+ - Under the 'Layer Collision Matrix', uncheck the box where 'Enemy' meets 'Enemy'.
+
+<img src="http://i.imgur.com/JkjXpZN.png" width=300px />
+
+</details><br>
+<details><summary>What did that do?</summary>
+
+Enemies can no longer collide with other enemies, meaning they will walk through each other as if the other did not exist.
+
+We do this with a separate Enemy layer so that that collisions with the player are not impacted.
+
+<hr></details>
 <details><summary>What does the collision matrix impact?</summary>
 
 The collision matrix defines which GameObjects may collide with what other GameObjects, based off of the GameObjects' layers.
@@ -1600,6 +1606,7 @@ That's it for chapter 1!  Your game should now look a lot like the gif at the to
 <details><summary>To review...</summary>
 
 To review, you may want to:
+
  - Try adjusting the variables in Spawner to get a reasonable flow of enemies.
  - Try adjusting the initial velocity values for the spike ball.
    - Consider adding randomness to these values as well.
@@ -1610,9 +1617,9 @@ To review, you may want to:
 <hr></details><br>
 <details><summary>Testing / Debugging tips</summary>
 
-TODO add something about changing values in run mode vs save.
-
-TODO testing - increase the time scale while in play mode.
+ - While testing (in play mode):
+   - You can changing values in the Inpsector and they will not be saved.  This allows you to experiement with a different values easily.
+ - Use Project Settings -> Time 'Time Scale' to make everything move faster or slower.
 
 <hr></details>
 
