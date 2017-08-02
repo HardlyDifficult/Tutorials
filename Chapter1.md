@@ -1464,6 +1464,38 @@ public class ExampleClass : MonoBehaviour
 ```
 
 </details>
+
+<details><summary>What's a Quaternion?</summary>
+
+A Quaternion is how rotations are stored in a game engine.  They represent the rotation with (x, y, z, w) values, stored in this fashion because that it is an effecient way to do the necessary calculations when rendering on object on screen.
+
+You could argue that this is overkill for a 2D game as in 2D the only rotation that may be applied is around the Z axis, and I would agree.  However remember that Unity is a 3D game engine.  When creating a 2D game, you are still in a 3D environment.  Therefore under the hood, Unity still optimizes its data for 3D.
+
+Quaternions are not easy for people to understand.  When we think of rotations, we typically think in terms of 'Euler' (pronounced oil-er) rotations.  Euler rotations are degrees of rotation around each axis, e.g. (0, 0, 30) means rotate the object by 30 degrees around the Z axis.
+
+In the inspector, modifying a Transform's rotation is done in Euler.  In code, you can either work with Quatenions directly or use Euler and then convert it back to Quatenion for storage.
+
+Given a Quatenion, you can calculate the Euler value like so:
+
+```csharp
+Quaternion myRotationInQuaternion = transform.rotation;
+Vector3 myRotationInEuler = myRotationInQuaternion.eulerAngles;
+```
+
+Given an Euler value, you can calculate the Quatenion:
+
+```csharp
+Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
+```
+
+Quaternions may be combined using Quaternion multiplication:
+
+```csharp
+Quaternion rotationOfZ60Degrees 
+  = rotationOfZ30Degrees * rotationOfZ30Degrees;
+```
+
+</details>
 <details><summary>What does Debug.Assert do?</summary>
 
 Debug.Assert is a used to confirm an assumption your code is making.  If the assumption does not hold (i.e. if the contents of the Debug.Assert evaluate to false), then the assert fails and an error is presented in the Unity console for you to investigate.

@@ -701,6 +701,7 @@ You might also consider using nested classes.  For simplicity in the tutorial, w
 Unity offers the UnityEngine.Mathf class to try and make some things a little easier.  Basically it's the same APIs which are offered from the standard System.Math class (which is also still available to use if you prefer).  The main difference is all of the APIs in Mathf are focused on the float data type, where the System.Math class often prefers double.  Most of the data you interact with in Unity is float.  
 
 </details>
+TODO GetComponentsInChildren?
 
 
 

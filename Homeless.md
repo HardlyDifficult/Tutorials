@@ -7,6 +7,12 @@ TODO: Long sections with more than x bullets need subtitles to split things up
 TODO: End of script sections may be shortened a bit
 TODO: Remove all comments and Asserts inline, link to file with comments.
 
+
+Concepts to include on first mention
+ - Class vs struct
+ - Auto properties
+ - Smart properties
+
 Image sizes: 50, 150, 300, 500, 700.  Prefer: 300 
 
 'Script'

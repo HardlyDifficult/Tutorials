@@ -98,7 +98,7 @@ In the example above, as the velocity approaches zero, the significance of if th
 
 Create a script to calculate the distance to and rotation of the floor under an entity.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a layer 'Floor'.
  - Select all the Platform GameObjects and change to Layer Floor.
@@ -106,7 +106,137 @@ Create a script to calculate the distance to and rotation of the floor under an 
  - Create script Code/Components/Movement/**FloorDetector**:
 
 ```csharp
+using UnityEngine;
 
+[RequireComponent(typeof(Collider2D))]
+public class FloorDetector : MonoBehaviour
+{
+  static readonly Quaternion backwardsRotation
+    = Quaternion.Euler(0, 0, 180);
+
+  Collider2D myCollider;
+
+  [SerializeField]
+  ContactFilter2D floorFilter;
+
+  Collider2D[] possibleCollisionResultList = new Collider2D[3];
+  
+  public Bounds feetBounds
+  {
+    get
+    {
+      return myCollider.bounds;
+    }
+  }
+
+  public bool isTouchingFloor
+  {
+    get; private set;
+  }
+
+  public float? distanceToFloor
+  {
+    get; private set;
+  }
+
+  public Vector2? floorUp
+  {
+    get; private set;
+  }
+
+  public Quaternion? floorRotation
+  {
+    get; private set;
+  }
+
+  protected void Awake()
+  {
+    myCollider = GetComponent<Collider2D>();
+  }
+
+  protected void FixedUpdate()
+  {
+    Collider2D floorWeAreStandingOn = DetectTheFloorWeAreStandingOn();
+    isTouchingFloor = floorWeAreStandingOn != null;
+
+    if(floorWeAreStandingOn != null)
+    {
+      CalculateFloorRotation(floorWeAreStandingOn);
+      distanceToFloor = 0;
+    }
+    else
+    {
+      floorUp = null;
+      floorRotation = null;
+      Collider2D floorUnderUs = DetectFloorUnderUs();
+      if(floorUnderUs != null)
+      {
+        distanceToFloor = CalculateDistanceToFloor(floorUnderUs);
+      }
+      else
+      {
+        distanceToFloor = null;
+      }
+    }
+  }
+
+  float CalculateDistanceToFloor(
+    Collider2D floorUnderUs)
+  {
+    float yOfTopOfFloor = floorUnderUs.bounds.max.y;
+
+    if(floorUnderUs is BoxCollider2D)
+    {
+      BoxCollider2D boxCollider = (BoxCollider2D)floorUnderUs;
+      yOfTopOfFloor += boxCollider.edgeRadius;
+    }
+
+    return myCollider.bounds.min.y - yOfTopOfFloor;
+  }
+
+  static void CalculateFloorRotation(
+    Collider2D floorWeAreStandingOn)
+  {
+    floorUp = floorWeAreStandingOn.transform.up;
+    floorRotation = floorWeAreStandingOn.transform.rotation;
+    if(Vector2.Dot(Vector2.up, floorUp.Value) < 0)
+    {
+      floorUp = -floorUp;
+      floorRotation *= backwardsRotation;
+    }
+  }
+
+  Collider2D DetectFloorUnderUs()
+  {
+    RaycastHit2D[] result = new RaycastHit2D[1];
+    if(Physics2D.Raycast(transform.position, Vector2.down, floorFilter, result) > 0)
+    {
+      return result[0].collider;
+    }
+
+    return null;
+  }
+
+  Collider2D DetectTheFloorWeAreStandingOn()
+  {
+    int foundColliderCound
+      = Physics2D.OverlapCollider(myCollider, floorFilter, possibleCollisionResultList);
+
+    for(int i = 0; i < foundColliderCound; i++)
+    {
+      Collider2D collider = possibleCollisionResultList[i];
+      ColliderDistance2D distance = collider.Distance(myCollider);
+
+      if(distance.distance >= -.1f
+        && Vector2.Dot(Vector2.up, distance.normal) > 0)
+      {
+        return collider;
+      }
+    }
+
+    return null;
+  }
+}
 ```
 
  - Add **FloorDetector** to:
@@ -124,7 +254,7 @@ The FloorDetector collects information about the floor under the entity for othe
 
  - feetYPosition: The y position of the bottom of the entity's feet.
  - isTouchingFloor: True if the entity is currently on the ground vs jumping or falling.
- - floorUp: the normal of th efloor the entity is standing on, or the direction perpendicular to the floor.
+ - floorUp: the normal of the floor the entity is standing on, or the direction perpendicular to the floor.
  - floorRotation: the rotation of the floor the entity is standing on.
  - distanceToFloor: how far above the floor the entity's feet currently are.  0 if isTouchingFloor.
 
@@ -134,73 +264,91 @@ If we are standing on a floor we then get rotation information.  If the floor is
 
 If we are not standing on a floor, we Raycast below the entity to get the distanceToFloor.
 
-
-TODO question - why not require floordetector component? / why GetComponentInChildren
-
 <hr></details>
-<details><summary>Nullable types</summary>
+<details><summary>What's a C# Nullable type / what's the question mark after 'float'?</summary>
 
-TODO
+Structs in C# must have a value (as opposed to classes which may have a value or be null).  Sometimes this is limiting and another piece of information is required.  
 
-<hr></details>
-<details><summary>TODO</summary>
-
-TODO
-
-<hr></details>
-<details><summary>TODO</summary>
-
-TODO
-
-<hr></details>
-<details><summary>TODO</summary>
-
-TODO
-
-<hr></details>
-<details><summary>TODO</summary>
-
-TODO
-
-<hr></details>
-<details><summary>TODO</summary>
-
-TODO
-
-<hr></details>
-
-
-<details><summary>What's a Quaternion?</summary>
-
-A Quaternion is how rotations are stored in a game engine.  They represent the rotation with (x, y, z, w) values, stored in this fashion because that it is an effecient way to do the necessary calculations when rendering on object on screen.
-
-You could argue that this is overkill for a 2D game as in 2D the only rotation that may be applied is around the Z axis, and I would agree.  However remember that Unity is a 3D game engine.  When creating a 2D game, you are still in a 3D environment.  Therefore under the hood, Unity still optimizes its data for 3D.
-
-Quaternions are not easy for people to understand.  When we think of rotations, we typically think in terms of 'Euler' (pronounced oil-er) rotations.  Euler rotations are degrees of rotation around each axis, e.g. (0, 0, 30) means rotate the object by 30 degrees around the Z axis.
-
-In the inspector, modifying a Transform's rotation is done in Euler.  In code, you can either work with Quatenions directly or use Euler and then convert it back to Quatenion for storage.
-
-Given a Quatenion, you can calculate the Euler value like so:
+Nullable types in C# are a feature which allows you to add one more possible value to any struct, by adding a question mark after the type. For example:
 
 ```csharp
-Quaternion myRotationInQuaternion = transform.rotation;
-Vector3 myRotationInEuler = myRotationInQuaternion.eulerAngles;
+bool? trueFalseOrNull;
+trueFalseOrNull = null;
+trueFalseOrNull = true;
+trueFalseOrNull = false;
 ```
 
-Given an Euler value, you can calculate the Quatenion:
+Often nullable types are used to indicate an error state or that no valid information is available.  Without the nullable feature, you may have implemented the same using another variable to indicate the state - or by using a magic number.
+
+<hr></details>
+<details><summary>What's C# 'is' do and how's it differ from 'as'?</summary>
+
+In C#, 'is' may be used to check if an object is compatible with a given type - i.e. if a cast to that type would be successful.  For example:
 
 ```csharp
-Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
+Collider2D floorUnderUs;
+...
+if(floorUnderUs is BoxCollider2D) 
+{
+  BoxCollider2D boxCollider = (BoxCollider2D)floorUnderUs;
+  ...
+}
 ```
 
-Quaternions may be combined using Quaternion multiplication:
+'as' is a similiar feature where instead of returning true or false, it returns null or the casted value.  For example:
 
 ```csharp
-Quaternion rotationOfZ60Degrees 
-  = rotationOfZ30Degrees * rotationOfZ30Degrees;
+Collider2D floorUnderUs;
+...
+BoxCollider2D boxCollider = floorUnderUs as BoxCollider2D;
+if(boxCollider != null) 
+{
+  ...
+}
 ```
 
-</details>
+<hr></details>
+<details><summary>What's Dot product do?</summary>
+
+The Dot product is a fast operation which can be used to effeciently determine if two directions represented with Vectors are facing the same (or a similiar) way.
+
+In the visualization below, we are rotating two ugly arrows.  These arrows are pointing in a direction and we are using Vector2.Dot to compare those two directions.  The Dot product is shown as we rotate around.
+
+<img src="http://i.imgur.com/XrjcWQm.gif" width=200px />
+
+A few notables about Dot products:
+
+ - '1' means the two directions are facing the same way.
+ - '-1' means the two directions are facing opposite ways.
+ - '0' means the two directions are perpendicular.
+ - Numbers smoothly transition between these points, so .9 means that the two directions are nearly identical.
+ - When two directions are not the same, the Dot product will not tell you which direction an object should rotate in order to make them align - it only informs you about how similar they are at the moment.  
+
+For this visualization, we are calculating the Dot product like so:
+
+```csharp
+Vector2.Dot(gameObjectAToWatch.transform.up, gameObjectBToWatch.transform.up);
+```
+
+<hr></details>
+<details><summary>When do you use OverlapCollider vs Raycast vs Distance vs Trigger*?</summary>
+
+Unity offers a number of APIs for getting information about objects around you.  They are optimized for different use cases, and often you could have accomplished the same mechanic using a different API.
+
+Until now in this tutorial we have been using Trigger* events (e.g. OnTriggerEnter2D).  These events push information to your script to react to.  Sometimes, like here, it's easier to pull the information.
+
+We are using 3 different APIs to pull information in this script:
+
+ - OverlapCollider returns the colliders which are touching this entity's collider.
+ - Raycast projects a line and returns objects intersecting with it (in order, closests first).  There are other 'cast' calls to project different shapes when needed, e.g. BoxCast.
+ - collider.Distance returns percise information about the collision between two specific colliders, such as the contact point or if they are not touching the distance between them.
+
+<hr></details>
+<details><summary>Why add the edge radius to bounds max when calculating the floor's position?</summary>
+
+When edge radius is used on a BoxCollider, the collider bounds represents the inner square of the collider (the size before edge is consider).  So in order to get the correct position we must add the edge radius in as well.
+
+<hr></details>
 
 
 
@@ -212,8 +360,6 @@ Update JumpMovement to prevent double jump and flying (by spamming space), by le
 <details><summary>How</summary>
 
  - Update JumpMovement with the following changes (or copy paste the full version TODO link):
-
-
 
 <details><summary>Existing code</summary>
 
@@ -311,10 +457,11 @@ public class JumpMovement : MonoBehaviour
 
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
-TODO could add a jump cooldown by time as well - but that would not be a complete solution unless a long cooldown was used.
+We are leveraging the FloorDetector component in order to prevent jumps when the character is not touching the floor.
+
+You may consider using a cooldown by time instead.  This would create a different play experience, and if the cooldown is short the player may be able to double jump (but not fly by spamming space).
 
 <hr></details>
 
@@ -326,7 +473,6 @@ Update the WanderWalkController so that the fly guy is more likely to walk up hi
 <details><summary>How</summary>
 
  - Update the WanderWalkController as follows (or copy paste TODO link):
-
 
 <details><summary>Existing code</summary>
 
@@ -459,19 +605,15 @@ public class WanderWalkController : MonoBehaviour
 ```
 
 </details>
-
-
-
-
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
+Leveraging the FloorDetector, we give the fly guy better odds at walking up a platform vs walking down one.  Without this component the fly guy enemies may collect at the bottom of the level - this keeps them mostly moving forward/up while still using RNG to keep the player on their toes.
 
 <hr></details>
 
 
-## 4.5) Rotate to match the floor's angle
+## 4.5) Rotate so feet are flat on the floor
 
 Create a script to rotate an entity, aligning with the floor when touching one, otherwise rotating back to the default position.
 
@@ -480,23 +622,79 @@ Create a script to rotate an entity, aligning with the floor when touching one, 
  - Create script Code/Components/Movement/**RotateToAlignWithFloor**:
 
 ```csharp
-TODO
+using UnityEngine;
+
+[RequireComponent(typeof(RotateFacingDirection))]
+public class RotateToAlignWithFloor : MonoBehaviour
+{
+  [SerializeField]
+  float lerpSpeedToFloor = .4f;
+
+  [SerializeField]
+  float lerpSpeedWhileInAir = .05f;
+
+  FloorDetector floorDetector;
+
+  protected void Awake()
+  {
+    floorDetector = GetComponentInChildren<FloorDetector>();
+  }
+
+  protected void Update()
+  {
+    if(floorDetector.floorRotation != null)
+    {
+      transform.rotation = Quaternion.Lerp(
+        transform.rotation,
+        floorDetector.floorRotation.Value,
+        lerpSpeedToFloor * Time.deltaTime);
+    }
+    else
+    {
+      transform.rotation = Quaternion.Lerp(
+      transform.rotation,
+      Quaternion.identity,
+      lerpSpeedWhileInAir * Time.deltaTime);
+    }
+    
+  }
+}
 ```
 
- - Add it to the character and fly guy prefabs.
+ - Add **RotateToAlignWithFloor** to the character and fly guy prefabs.
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
-TODO what is lerp (and slerp?)
+When the entity is standing on a floor, we gradually rotate it so its feet are flat on the floor.  When jumping or falling, we slowly rotate back to facing straight up.
+
+<hr></details>
+<details><summary>What's 'Lerp' and how's it compare to 'Slerp'?</summary>
+
+Lerp, or **l**inear int**erp**olation, is a fancy term for a simple concept.  Draw a line between two points and travel a certain percent along that path, returning the position you end on.  For example:
+
+```csharp
+void Start()
+{
+  Vector2 a = new Vector2(1, 5);
+  Vector2 b = new Vector2(4, 11);
+  Vector2 c = Vector2.Lerp(a, b, 1/3f);
+  print(c); // == (2, 7)
+}
+```
+
+Slerp, or **s**pherical **l**inear int**erp**olation, is similar to lerp but the change in position accelerates at the beginning and deccelerates towards the end.  It's called spherical because it is following the path of a half circle instead of a straight line.
+
+Here you can see lerp vs slerp with only position X changing (the large balls), and change X and Y.  All are moving given the same % progress.  Notice how the movement for slerp at beginning and end are traveling at a different speed than the lerp - but the positions match exactly at the start, middle, and end.
+
+<img src="http://i.imgur.com/RiO7J0l.gif" width=300px />
 
 <hr></details>
 
 
 ## 4.6) Add ladders to the world
 
-Create GameObjects and layout ladders in the world and set their tag to Ladder.  
+Create GameObjects and layout ladders in the world.  Set their tag to Ladder.  
 
 <details><summary>How</summary>
 
@@ -506,17 +704,13 @@ Create GameObjects and layout ladders in the world and set their tag to Ladder.
    - The child sprite GameObjects should have a default Transform, with the execption of the Y position when multiple sprites are used.
    - It usually looks fine to overlap sprites a bit, as we do to get the space between ladder steps looking good.
 
-<img src="http://i.imgur.com/CDwdJ3c.gif" width=500px />
+<img src="http://i.imgur.com/u299hoi.gif" width=500px />
 
  - Create a new parent GameObject to hold all the ladders (optional).
- - Create a tag for "Ladder".
- - Select all the ladder GameObjects and change their tag to Ladder.
- - Add FadeInThenEnable to all the ladders.
-
-<hr></details><br>
-<details><summary>TODO</summary>
-
-TODO why tag and not layer here?
+ - Create a layer for "Ladder".
+ - Select all the ladder GameObjects:
+   - Change their layer to Ladder.
+   - Add **FadeInThenEnable** to all the ladders.
 
 <hr></details>
 
@@ -529,26 +723,24 @@ An entity will be able climb ladders when its bottom is above the bottom of the 
 
 <details><summary>How</summary>
 
- - Add a BoxCollider2D and size it such that:
-   - The width is thinner than the sprite (about .6).
-   - The bottom of the collider:
-     - Just below the platform for complete ladders.
-     - Aligned with the last step of broken ladders.
-   - The top of the collider is just above the upper platform.
+ - Select all the ladder GameObjects:
+   - Add **BoxCollider2D** and size it such that:
+     - The width is thinner than the sprite (about .6).
+     - The bottom of the collider:
+       - Just below the platform for complete ladders.
+       - Aligned with the last step of broken ladders.
+     - The top of the collider is just above the upper platform.
 
-<img src="http://i.imgur.com/r0k4eq3.png" width=300px />
+<img src="http://i.imgur.com/r0k4eq3.png" width=150px />
 
  - Check 'Is Trigger'.
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
-TODO how do you know what size to make the collider?
+We are using trigger colliders to define the area of a ladder that entities may climb.  For example, we made the collider thinner than the ladder itself so that entities cannot climb the edges (which may look strange.)  
 
 <hr></details>
-
-
 
 ## 4.8) Add a script to climb ladders
 
@@ -589,6 +781,8 @@ public class LadderMovement : MonoBehaviour
 
   Collider2D myCollider;
 
+  int ladderLayer;
+
   FloorDetector floorDetector;
 
   GameObject _ladderWeAreOn;
@@ -627,12 +821,13 @@ public class LadderMovement : MonoBehaviour
     myBody = GetComponent<Rigidbody2D>();
     myCollider = GetComponent<Collider2D>();
     floorDetector = GetComponentInChildren<FloorDetector>();
+    ladderLayer = LayerMask.NameToLayer("Ladder");
   }
 
   protected void OnTriggerEnter2D(
     Collider2D collision)
   {
-    if(collision.CompareTag("Ladder") == false)
+    if(collision.gameObject.layer != ladderLayer)
     {
       return;
     }
@@ -665,7 +860,7 @@ public class LadderMovement : MonoBehaviour
     }
 
     Bounds ladderBounds = ladder.GetComponent<Collider2D>().bounds;
-    Bounds entityBounds = floorDetector.myCollider.bounds;
+    Bounds entityBounds = floorDetector.feetBounds;
 
     if(isOnLadder == false
       && Mathf.Abs(desiredClimbDirection) > 0.01
@@ -711,27 +906,6 @@ public class LadderMovement : MonoBehaviour
     }
   }
 
-  bool IsInBounds(
-    Bounds ladderBounds,
-    Bounds entityBounds)
-  {
-    float entityCenterX = entityBounds.center.x;
-    if(ladderBounds.min.x > entityCenterX
-      || ladderBounds.max.x < entityCenterX)
-    {
-      return false;
-    }
-
-    float entityFeetY = entityBounds.min.y;
-    if(ladderBounds.min.y > entityFeetY
-      || ladderBounds.max.y < entityFeetY)
-    {
-      return false;
-    }
-
-    return true;
-  }
-
   public void GetOffLadder()
   {
     ladderWeAreOn = null;
@@ -753,6 +927,27 @@ public class LadderMovement : MonoBehaviour
     {
       onGettingOffLadder();
     }
+  }
+
+  bool IsInBounds(
+    Bounds ladderBounds,
+    Bounds entityBounds)
+  {
+    float entityCenterX = entityBounds.center.x;
+    if(ladderBounds.min.x > entityCenterX
+      || ladderBounds.max.x < entityCenterX)
+    {
+      return false;
+    }
+
+    float entityFeetY = entityBounds.min.y;
+    if(ladderBounds.min.y > entityFeetY
+      || ladderBounds.max.y < entityFeetY)
+    {
+      return false;
+    }
+
+    return true;
   }
 
   GameObject FindClosestLadder()
@@ -788,9 +983,8 @@ public class LadderMovement : MonoBehaviour
 }
 ```
 
- - Add it to the character, fly guy, and spike ball.
+ - Add **LadderMovement** to the character, fly guy, and spike ball.
  - Update PlayerController as follows (or copy/paste TODO link):
-
 
 <details><summary>Existing code</summary>
 
@@ -877,11 +1071,23 @@ public class PlayerController : MonoBehaviour
 
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
-Can't go down.
-Why does he pop a bit on the way up?
+LadderMovement will climb up or down a ladder, given input from a controller (via desiredClimbDirection).  The PlayerController was updated to read up/down movement and feed that to the LadderMovement component.
+
+LadderMovement offers the following APIs for other components:
+
+ - isOnLadder
+ - ladderWeAreOn
+ - An event for when the entity first gets on a ladder and when they get off.
+
+LadderMovement works by creating a list of ladders we are near OnTriggerEnter2D and OnTriggerExit2D.  We use list because we may be overlapping multiple ladders at the same time.  When considering getting on a ladder, we look just at the clostest one to us.
+
+Each FixedUpdate, we get on a ladder if we are in bounds and there is desired movement in the correct direction (i.e. we can't walk down starting at the bottom of a ladder).  
+
+Once on a ladder, LadderMovement will hold the entity's y position by controlling its y velocity.
+
+Note there are some issues at the moment - you can't go down a ladder and on the way up the entity may pop a bit.  Both fixed in the next section.
 
 <hr></details>
 
@@ -942,8 +1148,8 @@ public class DisablePhysics : MonoBehaviour
 }
 ```
 
- - Add it to the character, fly guy, and spike ball.
- - Disable the DisablePhysics component on each prefab.
+ - Add **DisablePhysics** to the character, fly guy, and spike ball.
+   - Disable the DisablePhysics component on each prefab.
  - Update LadderMovement as follows (or copy paste TODO link):
 
 <details><summary>Existing code</summary>
@@ -1050,12 +1256,13 @@ public class LadderMovement : MonoBehaviour
 <details><summary>Existing code</summary>
 
 ```csharp
+    ladderLayer = LayerMask.NameToLayer("Ladder");
   }
 
   protected void OnTriggerEnter2D(
     Collider2D collision)
   {
-    if(collision.CompareTag("Ladder") == false)
+    if(collision.gameObject.layer != ladderLayer)
     {
       return;
     }
@@ -1238,10 +1445,11 @@ public class LadderMovement : MonoBehaviour
 </details>
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO What do you mean by command pattern?
-TODO why?
+The DisablePhysics component will disable collisions (by switching to trigger) and gravity (by setting gravityScale to 0) when enabled, and then restores the original values when disabled.
+
+LadderMovement was updated to enable the DisablePhysics component when getting on ladders, and disable it when getting off.  The language here is confusing - but again enabling the DisablePhysics component turns off physics.
 
 <hr></details>
 
