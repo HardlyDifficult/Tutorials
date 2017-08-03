@@ -70,6 +70,7 @@ We check if the TouchMeToWin component is enabled before processing the trigger 
 
 <hr></details>
 
+
 ## Win animation
 
 When the character reaches the win area, play the animation which
@@ -225,6 +226,15 @@ public class LevelManager : MonoBehaviour
 <details><summary>What did that do?</summary>
 
 When the Character reaches the win area, the Evil Cloud plays its end of level animation.  
+
+<hr></details>
+<details><summary>Why switch the Playable when editing Timelines?</summary>
+
+Unity 2017 is the first release of Timeline, it's still a work in progress.  
+
+At the moment you cannot edit Timelines unless they are active in the scene.  You can only partially view the Timeline by selecting the file.  So anytime you want to modify the Level1Exit Timeline, you need to change the Playable Director and then when you are complete change it back.
+
+On a related note, you can't edit an animation if the Timeline window is open.  When working with Animations and Timelines, it seems to work best if you only have one open at a time.
 
 <hr></details>
 
@@ -435,27 +445,148 @@ GameObjects which are shared between levels can use a prefab so that they have a
 
 ## Scene transition
 
+After the level ends, load level 2.
+
 <details><summary>How</summary>
 
-TODO
+ - Create script Code/Components/Controllers/**ChangeScenePlayable**:
+
+```csharp
+using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
+using UnityEngine.Timeline;
+
+public class ChangeScenePlayable : BasicPlayableBehaviour
+{
+  [SerializeField]
+  string sceneNameToLoad;
+
+  public override void OnBehaviourPlay(
+    Playable playable, 
+    FrameData info)
+  {
+    base.OnBehaviourPlay(playable, info);
+
+    SceneManager.LoadScene(sceneNameToLoad);
+  }
+}
+```
+
+ - Change the Evil Cloud Director to Level1Exit and open the Timeline.
+   - Drag the **ChangeScenePlayable** script into the Timeline.
+   - Position it to start after the animation completes.  The size of the box does not matter.
+ - Change the Evil Cloud Director back to Level1Entrance.
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What's SceneManager.LoadScene do?</summary>
 
-TODO
+Calling LoadScene will Destroy every GameObject in the scene, except for any which are DontDestroyOnLoad like our GameController, and then load the requested scene.
+
+The scenes available to load are defined in Build Settings.  You must add scenes you want to load there.  Once in Build Settings you can load a scene by its filename, as we do here ('Level2'), or you can load by index (the order of the scene in build settings.)
+
 
 <hr></details>
 
 ## UI for points
 
-<details><summary>How</summary>
+Display the number of points in the top right.
 
-TODO
+<details open><summary>How</summary>
+
+ - In the Heirarchy, right click select UI -> Text.
+   - This creates a Canvas and a Text GameObject.
+ - Select the "Text" GameObject:
+   - Name it "Points".
+   - Change the anchor top right (you may need to zoom out a lot).
+
+<img src="http://i.imgur.com/xPFe8kV.png" width=300px />   
+
+ - Change the Paragraph Alignment to Right.
+ - Use the move tool to position the text in the top right.
+ 
+<img src="http://i.imgur.com/r7g1W7y.png" width=500px />
+
+ - Change the color to white.
+ - Change the font.  We are using kenpixel_future.
+ - Increase the font size to 32 (text may disapear).  
+ - Increase the height to 40 (text should be too large at this point).
+ - Increase the width to 500.
+ - Use the scale tool to scale down until its a good size.
+ - Use the move tool to reposition the text.
+ - Create script Components/UI/**TextPoints**:
+
+```csharp
+using UnityEngine;
+using UnityEngine.UI;
+
+public class TextPoints : MonoBehaviour
+{
+  [SerializeField]
+  float scrollSpeed = .1f;
+
+  Text text;
+
+  int lastPointsDisplayed;
+
+  protected void Awake()
+  {
+    text = GetComponent<Text>();
+  }
+
+  protected void Update()
+  {
+    int currentPoints = GameController.instance.points;
+    int deltaPoints = currentPoints - lastPointsDisplayed;
+    if(deltaPoints > 0)
+    {
+      float pointsTarget =
+        Mathf.Lerp(lastPointsDisplayed, currentPoints, scrollSpeed * Time.deltaTime);
+      int pointsToDisplay = Mathf.CeilToInt(pointsTarget);
+      text.text = pointsToDisplay.ToString("N0");
+      lastPointsDisplayed = pointsToDisplay;
+    }
+  }
+}
+```
+
+ - Add **TextPoints** to the Points GameObject.
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
+A canvas was created to hold the text for points, we'll add more to this canvas soon.  We anchor the text to the top right and position it in the corner.  We set the font size too large and then scale down to size to get a crisp display.
+
+<hr></details>
+<details><summary>What's a canvas do?</summary>
+
+The Canvas is a container holding UI.  It allows Unity to manage features such as automatically scaling UI to fit the current resolution.  Unity offers components such as the VerticalLayoutGroup which help in getting positioning and sizing correct.
+
+<hr></details>
+<details><summary>Why size the font too large and then scale it down?</summary>
+
+Fonts by default may look blurry.  We size the font too large and then scale it down via the RectTransform to fit in order to make the rendering more clear for users.
+
+Here is an example, the top is sized only using font size while the bottom is oversized and then scaled down:
+
+<img src="http://i.imgur.com/qLqSeRV.png" width=300px />
+
+<hr></details>
+<details><summary>What is a RectTransform, how does it differ from a Transform?</summary>
+
+A RectTransform is the UI version of the Transform used for GameObjects.  RectTransform inherhits from Transform, adding features specifically for UI positioning such as pivot points and an anchor.
+
+<hr></details>
+<details><summary>Why use ceiling here?</summary>
+
+We need to ensure that each iteration of Update increases the points displayed by at least one, if we are not already displaying the final value.  Without this, it's possible each Update would calculate less than 1 - if we simply cast that means that each update would progress by 0 and therfore never actually display the correct amount.
+
+<hr></details>
+<details><summary>What does setting the anchor point on UI do?</summary>
+
+Setting the anchor changes how the position for the Rect
+
+Pivot point - defined in %.
 
 <hr></details>
 

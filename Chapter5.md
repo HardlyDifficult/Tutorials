@@ -449,33 +449,35 @@ Create a script to enable components when the level intro completes.
 
 <details><summary>How</summary>
 
- - Create script Code/Components/Life/**EnableComponentsOnLevelLoad**:
+ - Create script Code/Components/Life/**EnableComponentsOnTimelineEvent**:
 
 ```csharp
 using UnityEngine;
 
-public class EnableComponentsOnLevelLoad : MonoBehaviour
+public class EnableComponentsOnTimelineEvent : MonoBehaviour
 {
   [SerializeField]
-  MonoBehaviour[] componentToEnableOnAlmostLoaded;
-  
+  MonoBehaviour[] componentsOnAlmostLoaded;
+
   [SerializeField]
-  MonoBehaviour[] componentToEnableOnComplete;
+  MonoBehaviour[] componentsOnLevelLoaded;
 
   public void OnLevelAlmostLoaded()
   {
-    for(int i = 0; i < componentToEnableOnAlmostLoaded.Length; i++)
-    {
-      MonoBehaviour component = componentToEnableOnAlmostLoaded[i];
-      component.enabled = true;
-    }
+    EnableComponents(componentsOnAlmostLoaded);
   }
 
   public void OnLevelLoaded()
   {
-    for(int i = 0; i < componentToEnableOnComplete.Length; i++)
+    EnableComponents(componentsOnLevelLoaded);
+  }
+
+  static void EnableComponents(
+    MonoBehaviour[] componentList)
+  {
+    for(int i = 0; i < componentList.Length; i++)
     {
-      MonoBehaviour component = componentToEnableOnComplete[i];
+      MonoBehaviour component = componentList[i];
       component.enabled = true;
     }
   }
@@ -484,8 +486,8 @@ public class EnableComponentsOnLevelLoad : MonoBehaviour
 
  - For both the cloud and door:
    - Disable the Spawner component.
-   - Add EnableComponentsOnLevelLoad.
-   - Set the Components To Enable On Complete to the Spawner component.
+   - Add **EnableComponentsOnTimelineEvent**.
+     - Set the 'On Level Loaded' list to include the Spawner component.
  - Create script Code/Components/Animations/**EndOfLevelPlayable**:
 
 ```csharp

@@ -15,6 +15,15 @@ This is very much a WIP.  I'm trying to make a tutorial helpful to a range of ex
 
 **FYI**: Chapter 1 - 4 is ready to try.  If you do give it a go, please take note of any questions or issues that come up along the way.
 
+
+Process plan (constantly changing...)
+
+ - Complete draft.  Incl what did that do and a first cut on FAQ.
+ - Then big edits - re-organize and add missing FAQs.
+ - Videos recording here, chapter by chapter
+   - Finalize draft including ss, code/asset links, and intro/outro.
+   - Start grammer reviews.
+
 <br><br>
 
 # 1) A game with enemies spawning

@@ -584,6 +584,8 @@ public class BounceOffScreenEdges : MonoBehaviour
 ```
 
  - Add **BounceOffScreenEdges** to the FlyGuy prefab.
+ - Open menu Edit -> Project Settings -> Script Execution Order
+   - Add **WalkMovement** and position it at the bottom of the list (positive number / below Default Time).
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
@@ -1260,55 +1262,7 @@ Add a collider and script to award points anytime the character jumps over an en
  - Create script Code/Components/Effects/**AwardPointsOnJumpOver**:
 
 ```csharp
-using UnityEngine;
-
-[RequireComponent(typeof(BoxCollider2D))]
-public class AwardPointsOnJumpOver : MonoBehaviour
-{
-  [SerializeField]
-  int pointsToAward = 100;
-
-  [SerializeField]
-  float cooldownTime = 3;
-
-  BoxCollider2D myCollider;
-
-  [SerializeField]
-  ContactFilter2D contactFilter;
-
-  RaycastHit2D[] tempHitList = new RaycastHit2D[1];
-
-  float lastPickupTime;
-
-  protected void Awake()
-  {
-    myCollider = GetComponent<BoxCollider2D>();
-
-    Debug.Assert(myCollider != null);
-  }
-
-  protected void OnTriggerStay2D(
-    Collider2D collision)
-  {
-    if(Time.timeSinceLevelLoad - lastPickupTime < cooldownTime)
-    {
-      return;
-    }
-
-    Physics2D.Raycast(
-      transform.parent.position, 
-      Vector2.up, 
-      contactFilter, 
-      tempHitList);
-
-    if(tempHitList[0].collider == collision)
-    {
-      GameController.instance.points += pointsToAward;
-
-      lastPickupTime = Time.timeSinceLevelLoad;
-    }
-  }
-}
+TODO
 ```
 
 - Add the FlyGuy and SpikeBall to scene and for each:

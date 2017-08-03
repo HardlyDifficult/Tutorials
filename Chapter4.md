@@ -1814,7 +1814,7 @@ using UnityEngine;
 public class MoveTowardsCenterWhileClimbing : MonoBehaviour
 {
   [SerializeField]
-  float speed = 100f;
+  float speed = 1f;
 
   LadderMovement ladderMovement;
 

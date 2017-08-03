@@ -6,7 +6,7 @@ Add it to an empty parent GameObject named "Character".
 TODO: Long sections with more than x bullets need subtitles to split things up
 TODO: End of script sections may be shortened a bit
 TODO: Remove all comments and Asserts inline, link to file with comments.
-
+ - ToString("N0")
 
 Concepts to include on first mention
  - Class vs struct
