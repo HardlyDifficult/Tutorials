@@ -1661,3 +1661,6 @@ To review, you may want to:
 # Next chapter
 
 [Chapter 2](https://github.com/hardlydifficult/Platformer/blob/master/Chapter2.md).
+
+
+TODO something about the glitch that remains.  Only fix we can find is fixed resolution....

@@ -74,7 +74,7 @@ We check if the TouchMeToWin component is enabled before processing the trigger 
 
 When the character reaches the win area, play the animation which
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create another animation for the evil cloud, Animations/**CloudLevel1Exit** to play when the player wins.
    - You may not be able to record if the Timeline window is open.
@@ -93,13 +93,136 @@ When the character reaches the win area, play the animation which
    - Hit play in the Timeline to preview the speed.  The value is going to depend on how you created the animation.
  - Select the mushroom GameObject and drag it into the timeline.
    - Adjust the timeframe so that it starts at the beginning of the timeline and ends when you want the mushroom to disappear.
+   - Select the track's row and in the Inspector change the 'Post-playback state' to 'Inactive'.
 
 <img src="http://i.imgur.com/W9lejAB.png" width=300px />
 
-- Select the evil cloud's sprite GameObject and in the Inspector change the Playable Director's 'Playable' back to Level1Entrance.
+ - Drag in the evil cloud's child GameObject and create another Activation track.
+   - Size this track to fit the entire timeline.
+   - Change the Post-playback state to Inactive.
+ - Select the evil cloud's sprite GameObject and in the Inspector change the Playable Director's Playable back to Level1Entrance.
+ - Update LevelManager:
+
+<details><summary>Existing code</summary>
+
+```csharp
+using UnityEngine;
+```
+
+</details>
+
+```csharp
+using UnityEngine.Playables; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+public class LevelManager : MonoBehaviour
+{
+  [SerializeField]
+  GameObject playerPrefab;
+
+  protected bool isGameOver;
+```
+
+</details>
+
+```csharp
+  [SerializeField]
+  PlayableDirector director; 
+
+  [SerializeField]
+  PlayableAsset endOfLevelPlayable; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  protected void Start()
+  {
+    GameController.instance.onLifeCounterChange
+      += Instance_onLifeCounterChange;
+    Instantiate(playerPrefab);
+  }
+
+  protected void OnDestroy()
+  {
+    GameController.instance.onLifeCounterChange
+      -= Instance_onLifeCounterChange;
+  }
+
+  void Instance_onLifeCounterChange()
+  {
+    if(isGameOver)
+    {
+      return;
+    }
+
+    if(GameController.instance.lifeCounter <= 0)
+    {
+      isGameOver = true;
+      YouLose();
+    }
+    else
+    {
+      RestartLevel();
+    }
+  }
+
+  public void YouWin()
+  {
+    if(isGameOver == true)
+    {
+      return;
+    }
+
+    isGameOver = true;
+```
+
+</details>
+
+```csharp
+    director.Play(endOfLevelPlayable); 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+    DisableComponentsOnEndOfLevel[] disableComponentList 
+      = GameObject.FindObjectsOfType<DisableComponentsOnEndOfLevel>();  
+    for(int i = 0; i < disableComponentList.Length; i++)
+    {
+      DisableComponentsOnEndOfLevel disableComponent = disableComponentList[i];
+      disableComponent.OnEndOfLevel();
+    }
+  }
+
+  void RestartLevel()
+  {
+    PlayerDeathMonoBehaviour[] gameObjectList 
+      = GameObject.FindObjectsOfType<PlayerDeathMonoBehaviour>();
+    for(int i = 0; i < gameObjectList.Length; i++)
+    {
+      PlayerDeathMonoBehaviour playerDeath = gameObjectList[i];
+      playerDeath.OnPlayerDeath();
+    }
+    Instantiate(playerPrefab);
+  }
+
+  void YouLose()
+  {
+    // TODO
+  }
+}
+```
+
+</details>
+
+ - Configure the director and set the end of level playable to Level1Exit.
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 When the Character reaches the win area, the Evil Cloud plays its end of level animation.  
 
@@ -169,8 +292,6 @@ public class DisableComponentsOnEndOfLevel : MonoBehaviour
  - For each the Evil cloud and Door:
    - Add **DisableComponentsOnEndOfLevel** and add the spawner.
  - Update LevelManager to call DisableComponentsOnEndOfLevel:
-
-
 
 
 <details><summary>Existing code</summary>
@@ -275,9 +396,40 @@ At the end of the level, the LevelManager calls each DisableComponentsOnEndOfLev
  - Spawners stop the spawn coroutine so no more enemies appear.
 
 <hr></details>
-<details><summary>TODO</summary>
+<details><summary>Why not just set timeScale to 0?</summary>
 
-TODO
+You could, but some things would need to change a bit.
+
+We don't want everything to pause.  The evil cloud animation needs to progress.  If you change the timeScale, you will need to modify the Animators to use Unscaled time -- otherwise the animations would not play until time resumed.
+
+<hr></details>
+
+## Create a new empty scene
+
+Create a new scene which will be used for level 2.  Add both levels to the build settings.
+
+<details><summary>How</summary>
+
+ - Add scene to build settings with menu File -> Build Settings:
+   - Click "Add Open Scenes" to add the current scene (level 1).
+ - Create a new scene with File -> New Scene.
+   - Save it as Assets/Scenes/**Level2**.
+   - Add level 2 to the Build Settings.
+ - Double click Assets/Scenes/Level1 to return to that scene.
+
+<hr></details><br>
+<details><summary>What did that do?</summary>
+
+We have a separate scene to manage each level.  By adding these to the build settings, we are informing Unity that these scenes should be made available -- allowing us to transition to one either by name or by index (their position in the build settings list).
+
+<hr></details>
+<details><summary>Why not use just one scene for the game?</summary>
+
+You could.  But I would not advise it.
+
+Using multiple scenes, one for each level, makes it easy to customize the layout and behaviour for the level.  Technically this could all be achieved in a single scene but that could make level design confusing.
+
+GameObjects which are shared between levels can use a prefab so that they have a common definition.  With a prefab, you can make a modification and have that change impact every instance.  You can also override a setting from a prefab for a specific use case, such as making enemies move faster in level 2.
 
 <hr></details>
 
