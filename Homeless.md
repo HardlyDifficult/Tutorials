@@ -287,3 +287,16 @@ GetComponent<AudioSource>().PlayOneShot(clip);
 This will start playing another clip, re-using an existing AudioSource component (and its GameObject's position as well as the audio configuration options such as pitch).
 
 </details>
+
+
+<details><summary>Why FindObjectsOfType<GameObject> followed by GetComponents instead of FindObjectsOfType<ICareWhenPlayerDies>?</summary>
+
+Unity does not support FindObjectsOfType by interface.  This is unexpected because they do support GetComponentsInChildren by interface (and similiar methods).  
+
+As a workaround, we are getting every GameObject and then checking for components on each that implement ICareWhenPlayerDies.
+
+This is not a performant solution.  However the use case is also one which does not occur often, so the performance hit should be fine.  
+
+If we needed to do something similiar frequently (e.g. every frame), we would want to add caching or take a completely different approach.
+
+<hr></details>

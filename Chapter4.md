@@ -60,7 +60,7 @@ public class RotateFacingDirection : MonoBehaviour
  - Add **RotateFacingDirection** to the character prefab.
 
 <hr></details><br>
-<details><summary>What did this do?</summary>
+<details><summary>What did that do?</summary>
 
 Each FixedUpdate, we determine which direction the entity is walking by its x velocity.  When the direction changes, we flip the sprite so that the character appears to be facing the other way.
 
@@ -1447,6 +1447,8 @@ public class LadderMovement : MonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
+We disable physics (collisions and gravity) when getting on a ladder, and enable physics again when we get off.
+
 The DisablePhysics component will disable collisions (by switching to trigger) and gravity (by setting gravityScale to 0) when enabled, and then restores the original values when disabled.
 
 LadderMovement was updated to enable the DisablePhysics component when getting on ladders, and disable it when getting off.  The language here is confusing - but again enabling the DisablePhysics component turns off physics.
@@ -1476,9 +1478,6 @@ public class RandomClimbController : MonoBehaviour
   float oddsOfClimbingLadderDown = .1f;
 
   [SerializeField]
-  float timeBeforeFirstPossibleClimb = 5;
-
-  [SerializeField]
   float minTimeBetweenReconsideringDirection = 1;
 
   [SerializeField]
@@ -1498,13 +1497,11 @@ public class RandomClimbController : MonoBehaviour
 
   IEnumerator Wander()
   {
-    yield return new WaitForSeconds(timeBeforeFirstPossibleClimb);
-
     while(true)
     {
       SelectARandomClimbDirection();
       float timeToSleep = UnityEngine.Random.Range(
-        minTimeBetweenReconsideringDirection, 
+        minTimeBetweenReconsideringDirection,
         maxTimeBetweenReconsideringDirection);
       yield return new WaitForSeconds(timeToSleep);
     }
@@ -1531,16 +1528,32 @@ public class RandomClimbController : MonoBehaviour
 }
 ```
 
- - Add it to the fly guy and spike ball.
+ - Add **RandomClimbController** to the fly guy and spike ball.
  - On the spike ball, change:
    - Odds of climbing up to 0
    - Odds of climbing down to about .5
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
-They won't actually climb, just go up or down a touch then pop back.
+Not much yet.
+
+This script will get the fly guy enemies to randomly climb up or down ladders, and the spike balls will randomly climb down.  The problem is they are still walking or rolling, so they quickly get off the ladder and then pop back on top of the platform.
+
+This works by periodically picking a random desired climb direction on the LadderMovement component.  LadderMovement will not do anything with this input until the enemy is positioned on a ladder to climb.
+
+<hr></details>
+<details><summary>If I set both odds to 50%, why does it go up more often then down?</summary>
+
+In order to keep the implementation simple, we are checking if we should go up before checking if we should go down.  This order results in effectively lowering the odds for going down.
+
+For example, if both odds were 50%:
+ - We have a 50% chance of going up.
+ - If not, then we have a 50% chance to go down.
+
+Since we only consider going down when we are not going up, the actual odds of going down in this example are 25%.
+
+You could update this algorithm to calculate the odds correctly.
 
 <hr></details>
 
@@ -1699,15 +1712,31 @@ public class WanderWalkController : MonoBehaviour
 
 </details>
 
-
-
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
+This change prevents the fly guy from walking while on a ladder.  Fly guys will never stop moving in this game, they will walk constantly and when reaching a ladder they may climb straight up or straight down - then resume walking.
 
 <hr></details>
+<details><summary>Why not stop the WalkMovement component instead?</summary>
 
+Stopping the fly guy via the WalkMovement component instead of the WanderWalkController would work fine for the fly guy.  However we share the WalkMovement component with the Character as well, and don't want to prevent the player from being able to walk off the side of a ladder.
+
+You could alternatively put this logic in WalkMovement with a flag to indicate if ladders should prevent walking or not.
+
+<hr></details>
+<details><summary>Why not deregister events here?</summary>
+
+We are assuming that this component will never be removed from the GameObject.  So both WanderWalkController and WalkMovement are expected to exist from Awake till OnDestroy.  When a GameObject is destroyed, the registered events are automatically garbage collected.
+
+If we wanted to optionally remove this component, we would want to deregister the events to prevent a memory leak or unexpected behaviour.
+
+<hr></details>
+<details><summary>Why not stop and restart the coroutine instead?</summary>
+
+You could stop the coroutine when getting on a ladder and then restart it when you get off.  The coroutine from WanderWalkController would need to be updated for this to work, ensuring that when we resume we don't sleep for that initial wait time again.
+
+<hr></details>
 
 
 ## 4.12) Stop rolling off ladders
@@ -1758,12 +1787,14 @@ public class StopMomentumOnLadder : MonoBehaviour
 }
 ```
 
- - Add it to the spike ball.
+ - Add **StopMomentumOnLadder** to the spike ball.
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
+When a spike ball gets on a ladder, we store its velocity (i.e. speed) and angular velocity (i.e. spin) and then set both to 0.  This stops momentum the ball had from rolling down platforms, allowing it to climb straight the ladder.  
+
+Once done climbing, we restore the momentum, but flip both values so that after getting off the ball is rolling in the opposite direction.
 
 <hr></details>
 
@@ -1783,7 +1814,7 @@ using UnityEngine;
 public class MoveTowardsCenterWhileClimbing : MonoBehaviour
 {
   [SerializeField]
-  float lerpSpeed = .1f;
+  float speed = 100f;
 
   LadderMovement ladderMovement;
 
@@ -1804,22 +1835,31 @@ public class MoveTowardsCenterWhileClimbing : MonoBehaviour
       {
         Vector2 target = transform.position;
         target.x += deltaX;
-        transform.position = Vector2.Lerp(
+        transform.position = Vector2.MoveTowards(
           transform.position, 
           target, 
-          lerpSpeed);
+          speed * Time.fixedDeltaTime);
       }
     }
   }
 }
 ```
 
- - Add it to fly guy and spike ball.
+ - Add **MoveTowardsCenterWhileClimbing** to fly guy and spike ball.
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
+Anytime an entity with this component is climbing a ladder, it will slowly move towards the center.  We use this on enemies because they will typically get on a ladder as soon as it is within range - but it looks better when they climb up/down the center instead of towards the edge.  
+
+<hr></details>
+<details><summary>Why not use velocity to move?</summary>
+
+You could.  
+
+MoveTowardsCenterWhileClimbing uses MoveTowards to update the transform.position directly instead of moving via the rigidbody as you normally would.  We do this as a simplification.  
+
+If you use velocity, be careful when you overshoot the target a bit so the entity does not appear to wiggle back and forth trying to settle on the exact center position.
 
 <hr></details>
 

@@ -872,24 +872,21 @@ Add scripts to respawn the character when he dies.
 
 <details><summary>How</summary>
 
-TODO replace with an abstract parent patern instead!!
-
-
-
- - Create script Code/Compenents/Death/**ICareWhenPlayerDies**:
+ - Create script Code/Compenents/Death/**PlayerDeathMonoBehaviour**:
 
 ```csharp
-public interface ICareWhenPlayerDies
+using UnityEngine;
+
+public abstract class PlayerDeathMonoBehaviour : MonoBehaviour
 {
-  void OnPlayerDeath();
+  public abstract void OnPlayerDeath();
 }
 ```
+
  - Create script Code/Compenents/Controllers/**LevelManager**:
 
 ```csharp
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -897,17 +894,17 @@ public class LevelManager : MonoBehaviour
   GameObject playerPrefab;
 
   protected bool isGameOver;
-  
+
   protected void Start()
   {
-    GameController.instance.onLifeCounterChange 
+    GameController.instance.onLifeCounterChange
       += Instance_onLifeCounterChange;
     Instantiate(playerPrefab);
   }
 
   protected void OnDestroy()
   {
-    GameController.instance.onLifeCounterChange 
+    GameController.instance.onLifeCounterChange
       -= Instance_onLifeCounterChange;
   }
 
@@ -938,24 +935,27 @@ public class LevelManager : MonoBehaviour
 
     isGameOver = true;
 
-    // TODO
+    Rigidbody2D[] bodyList 
+      = GameObject.FindObjectsOfType<Rigidbody2D>();
+    for(int i = 0; i < bodyList.Length; i++)
+    {
+      Rigidbody2D body = bodyList[i];
+      body.simulated = false;
+    }
   }
 
   void RestartLevel()
   {
-    GameObject[] gameObjectList = GameObject.FindObjectsOfType<GameObject>();
+    PlayerDeathMonoBehaviour[] gameObjectList 
+      = GameObject.FindObjectsOfType<PlayerDeathMonoBehaviour>();
     for(int i = 0; i < gameObjectList.Length; i++)
     {
-      ICareWhenPlayerDies[] careList = gameObjectList[i].GetComponents<ICareWhenPlayerDies>();
-      for(int j = 0; j < careList.Length; j++)
-      {
-        ICareWhenPlayerDies care = careList[j];
-        care.OnPlayerDeath();
-      }
+      PlayerDeathMonoBehaviour playerDeath = gameObjectList[i];
+      playerDeath.OnPlayerDeath();
     }
     Instantiate(playerPrefab);
   }
-  
+
   void YouLose()
   {
     // TODO
@@ -973,7 +973,7 @@ public class LevelManager : MonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-The LevelManager is going to be responsible for starting and restarting a level.  It does this by instantiating a player and then broadcasting to other interested components that the level is restarting, via ICareWhenPlayerDies.
+The LevelManager is going to be responsible for starting and restarting a level.  It does this by instantiating a player and then broadcasting to all components which inherit from PlayerDeathMonoBehaviour when the level restarts.
 
 The LevelManager knows when a player dies by subscribing the life count in the GameController.  When the lives go down, we push the event to all components which implement ICareWhenPlayerDies.
 
@@ -991,34 +991,20 @@ As a simplification, when the GameController spawns in the Character, we reuse t
 To be more flexible, we could have a default position for the Character defined somewhere for that level - allowing the spawn location to vary level to level.  
 
 <hr></details>
-<details><summary>Why FindObjectsOfType<GameObject> followed by GetComponents instead of FindObjectsOfType<ICareWhenPlayerDies>?</summary>
-
-Unity does not support FindObjectsOfType by interface.  This is unexpected because they do support GetComponentsInChildren by interface (and similiar methods).  
-
-As a workaround, we are getting every GameObject and then checking for components on each that implement ICareWhenPlayerDies.
-
-This is not a performant solution.  However the use case is also one which does not occur often, so the performance hit should be fine.  
-
-If we needed to do something similiar frequently (e.g. every frame), we would want to add caching or take a completely different approach.
-
-<hr></details>
-
 
 ## 3.14) Clear and restart the level on death
 
 Add scripts to kill all the enemies and restart spawners when the character dies.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Components/Death/**SuicideWhenPlayerDies**:
 
 ```csharp
-using UnityEngine;
-
-public class SuicideWhenPlayerDies : MonoBehaviour, ICareWhenPlayerDies
+public class SuicideWhenPlayerDies : PlayerDeathMonoBehaviour
 {
-  void ICareWhenPlayerDies.OnPlayerDeath()
-  { 
+  public override void OnPlayerDeath()
+  {
     Destroy(gameObject);
   }
 }
@@ -1034,17 +1020,12 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// Instantiates a prefab at this object's location 
-/// periodically.
-/// </summary>
-public class Spawner : MonoBehaviour
 ```
 
 </details>
 
 ```csharp
-  , ICareWhenPlayerDies 
+public class Spawner : PlayerDeathMonoBehaviour
 ```
 
 <details><summary>Existing code</summary>
@@ -1072,7 +1053,7 @@ public class Spawner : MonoBehaviour
 </details>
 
 ```csharp
-  void ICareWhenPlayerDies.OnPlayerDeath() 
+  public override void OnPlayerDeath()
   {
     StopAllCoroutines();
     StartCoroutine(SpawnEnemies());
@@ -1111,7 +1092,7 @@ The SuicideWhenPlayerDies component can be added to any GameObject to have it de
 
 SuicideWhenPlayerDies uses Destroy, bypassing any DeathEffects.  We do this instead of using the DeathEffect pattern because we don't want a bunch of explosions spawning.
 
-The spawner also implements ICareWhenPlayerDies, restarting the SpawnEnemies coroutine.  We restart the spawner so that any initial wait time is executed again as well.  Additionally we may want to extend the spawner logic to do something like spawn faster the longer the player has been alive, which can also easily be reset by restarting the coroutine.
+The spawner also inherits from PlayerDeathMonoBehaviour, restarting the SpawnEnemies coroutine.  We restart the spawner so that any initial wait time is executed again as well.  Additionally we may want to extend the spawner logic to do something like spawn faster the longer the player has been alive, which can also easily be reset by restarting the coroutine.
 
 <hr></details>
 
@@ -1138,7 +1119,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class Spawner : MonoBehaviour, ICareWhenPlayerDies
+public class Spawner : PlayerDeathMonoBehaviour
 {
   [SerializeField]
   GameObject thingToSpawn;
@@ -1177,7 +1158,7 @@ public class Spawner : MonoBehaviour, ICareWhenPlayerDies
     StartCoroutine(SpawnEnemies());
   }
 
-  void ICareWhenPlayerDies.OnPlayerDeath()
+  public override void OnPlayerDeath()
   {
     StopAllCoroutines();
     StartCoroutine(SpawnEnemies());

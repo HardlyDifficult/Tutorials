@@ -5,14 +5,13 @@ TODO intro. Setting up 'pixel perfect'.
 
 Target audience: we try to assume little without boring those with experience.  You don't need to know how to code and it's okay if this is your first time with Unity.  You can follow step-by-step and copy/paste scripts, but we aim to teach the process along the way as well.  New concepts are introduced as they come to help beginners and intermediate developers understand.  
 
-This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
-
-
 TODO encourage experimenting along the way.  At the start of each chapter we have a download with the project up to that point.  Hack away, then reset to the baseline and hack some more.
 
 <br><br>
 
-**FYI**: The sequence and 'How' sections should be solid for chapter 1-5.  Questions as well as general 'what did that do' type content will be revisited.  If you try this, please take notes of any questions which come to mind and send those my way.  We'll be working on those after the process and how-to sections are complete.
+This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
+
+**FYI**: Chapter 1 - 4 is ready to try.  If you do give it a go, please take note of any questions or issues that come up along the way.
 
 <br><br>
 
