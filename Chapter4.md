@@ -6,7 +6,7 @@ TODO
 
 Flip the entity when they switch between walking left and right.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create script Code/Compenents/Movement/**RotateFacingDirection**:
 
@@ -60,12 +60,12 @@ public class RotateFacingDirection : MonoBehaviour
  - Add **RotateFacingDirection** to the character prefab.
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 Each FixedUpdate, we determine which direction the entity is walking by its x velocity.  When the direction changes, we flip the sprite so that the character appears to be facing the other way.
 
 <hr></details>
-<details open><summary>What's a C# smart property?</summary>
+<details><summary>What's a C# smart property?</summary>
 
 In C#, data may be exposed as either a Field or a Property.  Fields are simply data as one would expect.  Properties are accessed in code like a field is, but they are capable of more.
 
@@ -83,7 +83,7 @@ if(isGoingLeft != isGoingLeftNow)
 ```
 
 </details>
-<details open><summary>Why not compare to 0 when checking if there is no movement?</summary>
+<details><summary>Why not compare to 0 when checking if there is no movement?</summary>
 
 In Unity, numbers are represented with the float data type.  Float is a way of representing decimal numbers but is a not precise representation like you may expect.  When you set a float to some value, internally it may be rounded ever so slightly.
 
@@ -98,7 +98,7 @@ In the example above, as the velocity approaches zero, the significance of if th
 
 Create a script to calculate the distance to and rotation of the floor under an entity.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a layer 'Floor'.
  - Select all the Platform GameObjects and change to Layer Floor.
@@ -248,7 +248,7 @@ public class FloorDetector : MonoBehaviour
      - Set the Layer Mask to Floor.
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 The FloorDetector collects information about the floor under the entity for other components to leverage:
 
@@ -265,7 +265,7 @@ If we are standing on a floor we then get rotation information.  If the floor is
 If we are not standing on a floor, we Raycast below the entity to get the distanceToFloor.
 
 <hr></details>
-<details open><summary>What's a C# Nullable type / what's the question mark after 'float'?</summary>
+<details><summary>What's a C# Nullable type / what's the question mark after 'float'?</summary>
 
 Structs in C# must have a value (as opposed to classes which may have a value or be null).  Sometimes this is limiting and another piece of information is required.  
 
@@ -281,7 +281,7 @@ trueFalseOrNull = false;
 Often nullable types are used to indicate an error state or that no valid information is available.  Without the nullable feature, you may have implemented the same using another variable to indicate the state - or by using a magic number.
 
 <hr></details>
-<details open><summary>What's C# 'is' do and how's it differ from 'as'?</summary>
+<details><summary>What's C# 'is' do and how's it differ from 'as'?</summary>
 
 In C#, 'is' may be used to check if an object is compatible with a given type - i.e. if a cast to that type would be successful.  For example:
 
@@ -308,7 +308,7 @@ if(boxCollider != null)
 ```
 
 <hr></details>
-<details open><summary>What's Dot product do?</summary>
+<details><summary>What's Dot product do?</summary>
 
 The Dot product is a fast operation which can be used to effeciently determine if two directions represented with Vectors are facing the same (or a similiar) way.
 
@@ -331,7 +331,7 @@ Vector2.Dot(gameObjectAToWatch.transform.up, gameObjectBToWatch.transform.up);
 ```
 
 <hr></details>
-<details open><summary>When do you use OverlapCollider vs Raycast vs Distance vs Trigger*?</summary>
+<details><summary>When do you use OverlapCollider vs Raycast vs Distance vs Trigger*?</summary>
 
 Unity offers a number of APIs for getting information about objects around you.  They are optimized for different use cases, and often you could have accomplished the same mechanic using a different API.
 
@@ -344,7 +344,7 @@ We are using 3 different APIs to pull information in this script:
  - collider.Distance returns percise information about the collision between two specific colliders, such as the contact point or if they are not touching the distance between them.
 
 <hr></details>
-<details open><summary>Why add the edge radius to bounds max when calculating the floor's position?</summary>
+<details><summary>Why add the edge radius to bounds max when calculating the floor's position?</summary>
 
 When edge radius is used on a BoxCollider, the collider bounds represents the inner square of the collider (the size before edge is consider).  So in order to get the correct position we must add the edge radius in as well.
 
@@ -357,11 +357,11 @@ When edge radius is used on a BoxCollider, the collider bounds represents the in
 
 Update JumpMovement to prevent double jump and flying (by spamming space), by leveraging the FloorDetector just created.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Update JumpMovement with the following changes (or copy paste the full version TODO link):
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
 using UnityEngine;
@@ -376,7 +376,7 @@ using UnityEngine;
 [RequireComponent(typeof(FloorDetector))] 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
 public class JumpMovement : MonoBehaviour
@@ -396,7 +396,7 @@ public class JumpMovement : MonoBehaviour
   FloorDetector floorDetector; 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
   AudioSource audioSource;
@@ -414,7 +414,7 @@ public class JumpMovement : MonoBehaviour
     floorDetector = GetComponent<FloorDetector>(); 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
     audioSource = GetComponent<AudioSource>();
@@ -436,7 +436,7 @@ public class JumpMovement : MonoBehaviour
       && floorDetector.isTouchingFloor
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
       ) 
@@ -457,7 +457,7 @@ public class JumpMovement : MonoBehaviour
 
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 We are leveraging the FloorDetector component in order to prevent jumps when the character is not touching the floor.
 
@@ -470,11 +470,11 @@ You may consider using a cooldown by time instead.  This would create a differen
 
 Update the WanderWalkController so that the fly guy is more likely to walk up hill than down.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Update the WanderWalkController as follows (or copy paste TODO link):
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
 using System.Collections;
@@ -492,7 +492,7 @@ public class WanderWalkController : MonoBehaviour
   float oddsOfGoingUpHill = .8f; 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
   [SerializeField]
@@ -513,7 +513,7 @@ public class WanderWalkController : MonoBehaviour
   FloorDetector floorDetector; 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
   protected void Awake()
@@ -527,7 +527,7 @@ public class WanderWalkController : MonoBehaviour
     floorDetector = GetComponentInChildren<FloorDetector>(); 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
   }
@@ -584,7 +584,7 @@ public class WanderWalkController : MonoBehaviour
     { 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
       walkMovement.desiredWalkDirection
@@ -597,7 +597,7 @@ public class WanderWalkController : MonoBehaviour
     }
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
   }
@@ -606,7 +606,7 @@ public class WanderWalkController : MonoBehaviour
 
 </details>
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 Leveraging the FloorDetector, we give the fly guy better odds at walking up a platform vs walking down one.  Without this component the fly guy enemies may collect at the bottom of the level - this keeps them mostly moving forward/up while still using RNG to keep the player on their toes.
 
@@ -617,7 +617,7 @@ Leveraging the FloorDetector, we give the fly guy better odds at walking up a pl
 
 Create a script to rotate an entity, aligning with the floor when touching one, otherwise rotating back to the default position.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create script Code/Components/Movement/**RotateToAlignWithFloor**:
 
@@ -664,12 +664,12 @@ public class RotateToAlignWithFloor : MonoBehaviour
  - Add **RotateToAlignWithFloor** to the character and fly guy prefabs.
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 When the entity is standing on a floor, we gradually rotate it so its feet are flat on the floor.  When jumping or falling, we slowly rotate back to facing straight up.
 
 <hr></details>
-<details open><summary>What's 'Lerp' and how's it compare to 'Slerp'?</summary>
+<details><summary>What's 'Lerp' and how's it compare to 'Slerp'?</summary>
 
 Lerp, or **l**inear int**erp**olation, is a fancy term for a simple concept.  Draw a line between two points and travel a certain percent along that path, returning the position you end on.  For example:
 
@@ -696,7 +696,7 @@ Here you can see lerp vs slerp with only position X changing (the large balls), 
 
 Create GameObjects and layout ladders in the world.  Set their tag to Ladder.  
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a parent Ladder GameObject, add the ladder sprite(s).  We are using **spritesheet_tiles_23** and **33**.
  - Order in Layer -2.
@@ -721,7 +721,7 @@ Add BoxCollider2D to the ladders, size to use for climbing and set as trigger co
 
 An entity will be able climb ladders when its bottom is above the bottom of the ladder's collider and its center is inside.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select all the ladder GameObjects:
    - Add **BoxCollider2D** and size it such that:
@@ -736,7 +736,7 @@ An entity will be able climb ladders when its bottom is above the bottom of the 
  - Check 'Is Trigger'.
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 We are using trigger colliders to define the area of a ladder that entities may climb.  For example, we made the collider thinner than the ladder itself so that entities cannot climb the edges (which may look strange.)  
 
@@ -746,7 +746,7 @@ We are using trigger colliders to define the area of a ladder that entities may 
 
 Create a script to climb ladders for all entities to use, and update the player controller to match.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create script Code/Components/Movement/**LadderMovement**:
 
@@ -986,7 +986,7 @@ public class LadderMovement : MonoBehaviour
  - Add **LadderMovement** to the character, fly guy, and spike ball.
  - Update PlayerController as follows (or copy/paste TODO link):
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
 using UnityEngine;
@@ -1001,7 +1001,7 @@ using UnityEngine;
 [RequireComponent(typeof(LadderMovement))] 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
 
@@ -1018,7 +1018,7 @@ public class PlayerController : MonoBehaviour
   LadderMovement ladderMovement; 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
   protected void Awake()
@@ -1033,7 +1033,7 @@ public class PlayerController : MonoBehaviour
     ladderMovement = GetComponent<LadderMovement>(); 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
   }
@@ -1051,7 +1051,7 @@ public class PlayerController : MonoBehaviour
       = Input.GetAxis("Vertical");
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
   }
@@ -1071,7 +1071,7 @@ public class PlayerController : MonoBehaviour
 
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 LadderMovement will climb up or down a ladder, given input from a controller (via desiredClimbDirection).  The PlayerController was updated to read up/down movement and feed that to the LadderMovement component.
 
@@ -1096,7 +1096,7 @@ Note there are some issues at the moment - you can't go down a ladder and on the
 
 While climbing a ladder, disable physics.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create script Code/Components/Movement/**DisablePhysics**:
 
@@ -1152,7 +1152,7 @@ public class DisablePhysics : MonoBehaviour
    - Disable the DisablePhysics component on each prefab.
  - Update LadderMovement as follows (or copy paste TODO link):
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
 using System;
@@ -1170,7 +1170,7 @@ using UnityEngine;
 [RequireComponent(typeof(DisablePhysics))]
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
 public class LadderMovement : MonoBehaviour
@@ -1234,7 +1234,7 @@ public class LadderMovement : MonoBehaviour
   DisablePhysics disablePhysics; 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
   List<GameObject> currentLadderList;
@@ -1253,7 +1253,7 @@ public class LadderMovement : MonoBehaviour
     disablePhysics = GetComponent<DisablePhysics>();
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
     ladderLayer = LayerMask.NameToLayer("Ladder");
@@ -1378,7 +1378,7 @@ public class LadderMovement : MonoBehaviour
     disablePhysics.enabled = true; 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
     if(onGettingOnLadder != null)
@@ -1397,7 +1397,7 @@ public class LadderMovement : MonoBehaviour
     disablePhysics.enabled = false;
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
 
@@ -1445,7 +1445,7 @@ public class LadderMovement : MonoBehaviour
 </details>
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 We disable physics (collisions and gravity) when getting on a ladder, and enable physics again when we get off.
 
@@ -1460,7 +1460,7 @@ LadderMovement was updated to enable the DisablePhysics component when getting o
 
 Create a script for the fly guy and spike ball to control when to climb a ladder.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create script Code/Components/Movement/**RandomClimbController**:
 
@@ -1534,7 +1534,7 @@ public class RandomClimbController : MonoBehaviour
    - Odds of climbing down to about .5
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 Not much yet.
 
@@ -1543,7 +1543,7 @@ This script will get the fly guy enemies to randomly climb up or down ladders, a
 This works by periodically picking a random desired climb direction on the LadderMovement component.  LadderMovement will not do anything with this input until the enemy is positioned on a ladder to climb.
 
 <hr></details>
-<details open><summary>If I set both odds to 50%, why does it go up more often then down?</summary>
+<details><summary>If I set both odds to 50%, why does it go up more often then down?</summary>
 
 In order to keep the implementation simple, we are checking if we should go up before checking if we should go down.  This order results in effectively lowering the odds for going down.
 
@@ -1562,11 +1562,11 @@ You could update this algorithm to calculate the odds correctly.
 
 Stop WanderWalkController when climbing up or down.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Update WanderWalkController as follows (or copy/paste todo link):
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
 using System.Collections;
@@ -1598,7 +1598,7 @@ public class WanderWalkController : MonoBehaviour
   LadderMovement ladderMovement; 
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
   protected void Awake()
@@ -1621,7 +1621,7 @@ public class WanderWalkController : MonoBehaviour
     }
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
   }
@@ -1646,7 +1646,7 @@ public class WanderWalkController : MonoBehaviour
   }
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
   IEnumerator Wander()
@@ -1678,7 +1678,7 @@ public class WanderWalkController : MonoBehaviour
     }
 ```
 
-<details open><summary>Existing code</summary>
+<details><summary>Existing code</summary>
 
 ```csharp
     float dot;
@@ -1713,26 +1713,26 @@ public class WanderWalkController : MonoBehaviour
 </details>
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 This change prevents the fly guy from walking while on a ladder.  Fly guys will never stop moving in this game, they will walk constantly and when reaching a ladder they may climb straight up or straight down - then resume walking.
 
 <hr></details>
-<details open><summary>Why not stop the WalkMovement component instead?</summary>
+<details><summary>Why not stop the WalkMovement component instead?</summary>
 
 Stopping the fly guy via the WalkMovement component instead of the WanderWalkController would work fine for the fly guy.  However we share the WalkMovement component with the Character as well, and don't want to prevent the player from being able to walk off the side of a ladder.
 
 You could alternatively put this logic in WalkMovement with a flag to indicate if ladders should prevent walking or not.
 
 <hr></details>
-<details open><summary>Why not deregister events here?</summary>
+<details><summary>Why not deregister events here?</summary>
 
 We are assuming that this component will never be removed from the GameObject.  So both WanderWalkController and WalkMovement are expected to exist from Awake till OnDestroy.  When a GameObject is destroyed, the registered events are automatically garbage collected.
 
 If we wanted to optionally remove this component, we would want to deregister the events to prevent a memory leak or unexpected behaviour.
 
 <hr></details>
-<details open><summary>Why not stop and restart the coroutine instead?</summary>
+<details><summary>Why not stop and restart the coroutine instead?</summary>
 
 You could stop the coroutine when getting on a ladder and then restart it when you get off.  The coroutine from WanderWalkController would need to be updated for this to work, ensuring that when we resume we don't sleep for that initial wait time again.
 
@@ -1743,7 +1743,7 @@ You could stop the coroutine when getting on a ladder and then restart it when y
 
 Create a script to stop the ball's momentum when getting on ladders, and restore it when getting off.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a script Code/Components/Movement/**StopMomentumOnLadder**:
 
@@ -1790,7 +1790,7 @@ public class StopMomentumOnLadder : MonoBehaviour
  - Add **StopMomentumOnLadder** to the spike ball.
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 When a spike ball gets on a ladder, we store its velocity (i.e. speed) and angular velocity (i.e. spin) and then set both to 0.  This stops momentum the ball had from rolling down platforms, allowing it to climb straight the ladder.  
 
@@ -1803,7 +1803,7 @@ Once done climbing, we restore the momentum, but flip both values so that after 
 
 Add a script to the fly guy and spike ball to direct them towards the center of a ladder while climbing.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create script Code/Components/Movement/**MoveTowardsCenterWhileClimbing**:
 
@@ -1848,12 +1848,12 @@ public class MoveTowardsCenterWhileClimbing : MonoBehaviour
  - Add **MoveTowardsCenterWhileClimbing** to fly guy and spike ball.
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 Anytime an entity with this component is climbing a ladder, it will slowly move towards the center.  We use this on enemies because they will typically get on a ladder as soon as it is within range - but it looks better when they climb up/down the center instead of towards the edge.  
 
 <hr></details>
-<details open><summary>Why not use velocity to move?</summary>
+<details><summary>Why not use velocity to move?</summary>
 
 You could.  
 

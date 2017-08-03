@@ -9,6 +9,8 @@ TODO encourage experimenting along the way.  At the start of each chapter we hav
 
 <br><br>
 
+TODO legal - MIT for source and cc attribution for the text itself.
+
 This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
 
 **FYI**: Chapter 1 - 4 is ready to try.  If you do give it a go, please take note of any questions or issues that come up along the way.
@@ -29,7 +31,7 @@ TODO demo of level 1
 
 Get Unity and start a 2D project. 
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - [Download Visual Studio Community edition](https://www.visualstudio.com/), if you don't already have it.
  - [Download Unity](https://unity3d.com/), the free Personal edition has everything you need. 
@@ -40,7 +42,7 @@ Get Unity and start a 2D project.
 <img src="http://i.imgur.com/q5NVa7p.png" width=300 />
 
 <hr></details><br>
-<details open><summary>Whats the difference between 2D and 3D?</summary>
+<details><summary>Whats the difference between 2D and 3D?</summary>
 
 Presenting the 2D vs 3D option when you create a new project suggests this is a significant choice.  It's not really... 2D just changes default settings on things like your camera.   Unity is a 3D engine, when creating 2D games your actually creating a 3D world where everything is very flat but the camera looks straight ahead and the only rotation in the world is around the z axis.  
 
@@ -52,7 +54,9 @@ Presenting the 2D vs 3D option when you create a new project suggests this is a 
 
 Create directories and import assets.  TODO link
 
-<details open><summary>How</summary>
+Zip of [all the art assets we are using](https://drive.google.com/open?id=0B2bFgoFxZ-alc0NUejM5cFF5N28).  (TODO this will need updating)
+
+<details><summary>How</summary>
 
  - Right click in the 'Project' window's Assets directory -> Create Folder named "Art".
    - You can rename folders by selecting and pressing F2.
@@ -77,19 +81,19 @@ We are using:
 TODO other assets 
 
 <hr></details><br>
-<details open><summary>Can I name folders differently?</summary>
+<details><summary>Can I name folders differently?</summary>
 
 Absolutely, with one exception.  "Editor" is a special folder name with Unity, anything under that directory is only run when testing in the Unity editor.
 
 <hr></details>
-<details open><summary>What's a sprite / sprite sheet?</summary>
+<details><summary>What's a sprite / sprite sheet?</summary>
 
 A sprite is an image, used in 2D games and for UI.  They may represent an object, part of an object, or a frame of an entity's animation, etc.  
 
 A sprite sheet is a single image file that contains multiple individual sprites.  The sheet may use these sprites to represent different frames for an animation or to hold a collection of various object types (as is the case here).
 
 <hr></details>
-<details open><summary>Can I use my own art?</summary>
+<details><summary>Can I use my own art?</summary>
 
 Of course, this tutorial only assumes that you are using sprites.  You can build your own sprite sheet or use individual sprites, but this tutorial is geared towards a 2D game and some things may not work out well if you try using 3D models instead.
 
@@ -104,7 +108,7 @@ For sounds, we don't have many - just enough to introduce how they may be added 
 Slice each of the sprite sheets in order to access the individual sprites within.
 
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
 - Select a sprite sheet in the 'Project' (such as Assets/Art/**spritesheet_ground**).
 - In the 'Inspector', set 'Sprite Mode' to 'Multiple'.
@@ -131,7 +135,7 @@ We are using:
  - **spritesheet_tiles**: Cell Count (8 x 16)
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 Slicing is the process of defining each individual sprite in a sprite sheet.  Once sliced, you can access each sprite as if it were a unique asset.
 
@@ -144,7 +148,7 @@ After closing the 'Sprite Editor' and applying changes you can expand the sprite
 <img src="http://i.imgur.com/Qq0nn2B.png" width=50% />
 
 <hr></details>
-<details open><summary>Why not always use Automatic?</summary>
+<details><summary>Why not always use Automatic?</summary>
 
 Automatic does not always provide the desired results.  
 
@@ -163,7 +167,7 @@ Use the white lines in the 'Sprite Editor' to confirm the results.  There is als
 
 Update each sprite's and sprite sheet's import settings to use filter mode point.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select all of the sprites and sprite sheets.
    - Use Ctrl click or shift click as you would while selecting in Windows Explorer.
@@ -172,7 +176,7 @@ Update each sprite's and sprite sheet's import settings to use filter mode point
 <img src="http://i.imgur.com/B0nqf75.png" width=300px />
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 Using point filter mode gets us closer to pixel perfect sprites and prevents some visual glitches.
 
@@ -194,7 +198,7 @@ For sprite sheets, often each object is touching the one next to it.  Filter Mod
 
 Update each sprite's and sprite sheet's import settings to use mesh type full rect.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select all the sprite sheets.
    - Unity won't allow this option to be changed for both sprites and sprite sheets at the same time.
@@ -205,7 +209,7 @@ Update each sprite's and sprite sheet's import settings to use mesh type full re
 
 <hr></details><br>
 
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 When a sprite is rendered to the screen, a combination of a mesh (like used for 3D objects) outlining the sprite and transparency is used to draw the picture on screen.  Tradeoffs here are beyond the scope of this tutorial.
 
@@ -223,7 +227,7 @@ When using tiling on a sprite, Unity recommends updating the sprite sheet to use
 
 Update the project settings, disabling Anti-Aliasing for each quality level.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Menu 'Edit' -> 'Project Settings' -> 'Quality'.
  - In the Inspector change 'Anti Aliasing' to 'Disabled'.
@@ -239,7 +243,7 @@ Update the project settings, disabling Anti-Aliasing for each quality level.
  - Click 'Ultra' to resume testing with the best settings.
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 Disabling Anti Aliasing gets us closer to pixel perfect sprites and prevents some visual glitches.
 
@@ -254,12 +258,12 @@ Anti-aliasing may lead to unexpected gaps or distortions when sprites are side b
 <img src="http://i.imgur.com/vY5YmVj.png" width=50% />
 
 <hr></details>
-<details open><summary>Why do we need to change this setting multiple times?</summary>
+<details><summary>Why do we need to change this setting multiple times?</summary>
 
 The highlighted Level is what you are testing with ATM.  It will default to Ultra.  The green checkboxes represent the default quality level for different build types.  In this example I'm testing with Ultra, using Ultra by default for PC builds, and High by default for WebGL builds.  To avoid artifacts, I disable Anti Aliasing in every level and then switch back to Ultra.
 
 <hr></details>
-<details open><summary>Why not update the camera instead?</summary>
+<details><summary>Why not update the camera instead?</summary>
 
 In the camera in your scene has an option to not 'Allow MSAA'.  Disabling this will turn off Anti-Aliasing as we had done above.  Since Anti-Aliasing is disabled in the project settings this checkbox has not effect.
 
@@ -271,7 +275,7 @@ You could opt to disable Anti-Aliasing in the camera and not in the project sett
 
 Change the aspect ratio to 5:4 in the Game window and build settings.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - In the 'Game' window, near the top, change 'Free Aspect' to '5:4'.
 
@@ -291,7 +295,7 @@ You'll also want to update the supported resolutions for the different platforms
 <img src="http://i.imgur.com/NhCWDTp.png" width=300px />
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 We are building a game with a fixed display.  The camera is not going to follow the character which will simplify the game and level design for this tutorial.  With a fixed aspect ratio we can design a scene without any camera movement and be sure everyone has the same experience.
 
@@ -310,7 +314,7 @@ Different resolutions will scale the display larger or smaller but everyone will
 
 Update the camera size to about 10 and change the background color to black.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - In the 'Hierarchy' window, select the 'Main Camera'.
  - In the Inspector, change 'Size' to '10'.
@@ -322,14 +326,14 @@ Update the camera size to about 10 and change the background color to black.
 <img src="http://i.imgur.com/QKGcl9o.png" width=300px />
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 We zoomed out a bit so that more of the world is visible on screen.
 
 In the Game window, the platform should look smaller now.  In the Scene, the white box representing the viewable area has grown.
 
 <hr></details>
-<details open><summary>Why change 'Size' and not camera position?</summary>
+<details><summary>Why change 'Size' and not camera position?</summary>
 
 2D games by default use 'Projection: Orthographic'.  This means that the camera does not consider perspective, the ability to see more of the world the further it is from your eye. The amount of the world visible with a perspective camera is driven by it's position.  
 
@@ -341,13 +345,13 @@ For an Orthographic camera, the amout of the world visible is driven by a specia
 
 Save the current scene as "Level1".
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - File -> 'Save Scenes'.
  - Save it as Assets/Scenes/**Level1**.
 
 <hr></details><br>
-<details open><summary>What's a scene?</summary>
+<details><summary>What's a scene?</summary>
 
 The Scene represents a collection of GameObjects and components (defined below) configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial. 
 
@@ -358,7 +362,7 @@ The Scene represents a collection of GameObjects and components (defined below) 
 
 Create an editor script which automatically saves everytime you hit play.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - In the Project Assets/Code/Editor directory:
    - Right click
@@ -394,19 +398,19 @@ public class AutoSave
 
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 AutoSave is a script which will only run while testing in the Unity Editor.  Everytime you hit play, the scene and project will save just before play begins.
 
 You can confirm the save is working by noting the * in Unity's title.  This * indicates unsaved changes and should now go away everytime you click play.
 
 <hr></details>
-<details open><summary>What about performance?</summary>
+<details><summary>What about performance?</summary>
 
 As an editor script, this logic is not included in the game you release.  Saving is incremental so there is very little time wasted when there is nothing new to save.  Unless you're one of the lucky ones who never sees Unity crash, this script is absolutely worth the time tradeoff.
 
 <hr></details>
-<details open><summary>Why is the folder name important?</summary>
+<details><summary>Why is the folder name important?</summary>
 
 Unity uses special folder names to drive certain capabilities.  Any script under a folder named "Editor" will only run while testing in the Unity editor (vs in your built game).
 
@@ -416,14 +420,14 @@ https://docs.unity3d.com/Manual/SpecialFolders.html) from Unity.
 <hr>
 
 </details>
-<details open><summary>What's InitializeOnLoad</summary>
+<details><summary>What's InitializeOnLoad</summary>
 
 InitializeOnLoad is an attribute which enables the script.  The static constructor of any class with this attribute is executed before anything else in the game.
 
 InitializeOnLoad is an editor only script and found under the UnityEditor namespace.
 
 </details>
-<details open><summary>What's a C# attribute?</summary>
+<details><summary>What's a C# attribute?</summary>
 
 Attributes in C# are metadata added to classes, fields, or methods that may be queried by other classes.  In the AutoSave script, InitializeOnLoad, a Unity specific attribute, is used to ensure the static constructor on our AutoSave class is called when the game begins.
 
@@ -455,7 +459,7 @@ public class MyClassName : MonoBehaviour
 
 
 <hr></details>
-<details open><summary>What's a C# static constructor?</summary>
+<details><summary>What's a C# static constructor?</summary>
 
 Every object in C# may include a static constructor, this applies to static and non-static classes.  A static constructor is guaranteed to be called once (and only once).  The constructor will run before the first object is instantiated, a field is accessed, or a method is called (i.e. it happens before you touch the class).  You never call the static constructor directly.
 
@@ -472,7 +476,7 @@ public class MyClassName
 }
 ```
 <hr></details>
-<details open><summary>What's a C# delegate?</summary>
+<details><summary>What's a C# delegate?</summary>
 
 A delegate in C# is an object representing method(s) to call at a later time. You may encounter delegates under the following names: Events, Action, Func, and delegate. Under the hood these are all implemented with a 'multicast delegate'.  
 
@@ -544,7 +548,7 @@ public class MyCustomComponent : MonoBehaviour
 
 Add a sprite to the scene representing the middle segment of a platform.  
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Click the arrow on the sprite sheet in your Assets/Art directory (this displays each individual sliced image).  We are using **spritesheet_ground**.
  - Click and drag the platform sprite you want to use into the 'Hierarchy' window.  We are using **spritesheet_ground_72**. 
@@ -553,12 +557,12 @@ Add a sprite to the scene representing the middle segment of a platform.
 
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 This adds a GameObject to the scene with a SpriteRenderer component to render the sprite.
 
 <hr></details>
-<details open><summary>What's a GameObject, Transform, and Component?</summary>
+<details><summary>What's a GameObject, Transform, and Component?</summary>
 
 Everything you see and interact with in a game is driven by GameObjects.  Typically a GameObject represents a single logical object in the world (e.g. a character).  It may be composed of child GameObjects, each responsible for part of the display and/or behaviour. It may also hold various components.  
 
@@ -569,7 +573,7 @@ Unity has a number of components available out of the box, we will be using seve
 A Transform component manages the GameObject's position, rotation and scale.  Every GameObject, including child GameObjects, have a Transform. Occasionally you will encounter a GameObject that has nothing rendered on screen.  In these cases the Transform is often completely ignored but may not be removed.
 
 <hr></details>
-<details open><summary>What's a SpriteRenderer?</summary>
+<details><summary>What's a SpriteRenderer?</summary>
 
 SpriteRenderer is a Unity component which renders a sprite on screen.  Select the GameObject in the 'Hierarchy' to view the SpriteRenderer component for this object in the 'Inspector'.  Here several options are available for modifying how the sprite is rendered.  For example:
 
@@ -586,7 +590,7 @@ SpriteRenderer is a Unity component which renders a sprite on screen.  Select th
 
 Change the SpriteRenderer draw mode to tiled and increase the width.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - In the Hierarchy, select the 'spritesheet_ground_72' GameObject.
  - In the Inspector, under the SpriteRenderer component:
@@ -597,12 +601,12 @@ Change the SpriteRenderer draw mode to tiled and increase the width.
 
 <hr></details><br>
 
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 You should see the platform sprite get wider, repeating it's pattern.
 
 <hr></details>
-<details open><summary>Why not use Transform scale?</summary>
+<details><summary>Why not use Transform scale?</summary>
 
 Using transform scale to change the width cause the sprite displayed to stretch.  We are using tiling so the sprite repeats instead:
 
@@ -614,7 +618,7 @@ Using transform scale to change the width cause the sprite displayed to stretch.
 
 Create a new parent GameObject for the platform sprite.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - In the Hierarchy, right click and 'Create Empty'.
  - Rename to "Platform".
@@ -629,14 +633,14 @@ It should appear indented under Platform in the Hierarchy:
 <img src="http://i.imgur.com/XOve0Ap.png" width=300px />
 
 <hr></details><br>
-<details open><summary>Why create a parent GameObject?</summary>
+<details><summary>Why create a parent GameObject?</summary>
 
 Most of the platforms we will be creating require multiple different sprites to display correctly.  We tackle this in the next section.  Even for platforms which are represented with a single sprite, it's nice to be consistent across all of our platforms.
 
 The implications of using a parent GameObject or not will be more clear when we start to add game mechanics later in the tutorial.
 
 <hr></details>
-<details open><summary>How is the sprite position calulated when it's a child?</summary>
+<details><summary>How is the sprite position calulated when it's a child?</summary>
 
 When a GameObject is a child of another GameObject, it's position, rotation, and scale are the combination of the child's Transform and the parent's Transform (via matrix multiplication).  
 
@@ -650,7 +654,7 @@ Typically all Transform updates during the game and in level design are done to 
 
 Add sprites with rounded edges to the left and right of the platform.  
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Click and drag one of the edge sprites onto the 'Platform' GameObject. We're using **spritesheet_ground_65** and **spritesheet_ground_79**.
    - The edge sprite should be a child GameObject, like the middle sprite.  If it does not appear indented, drag drop in the Hierarchy window to rearrange.
@@ -676,7 +680,7 @@ Add sprites with rounded edges to the left and right of the platform.
 
 Our level design calls for the bottom platform to rotate half way through.  Create two Platform GameObjects and position and rotate their parents' GameObjects so that they appear connected.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Use two copies of the Platform GameObject.
    - Select and copy / paste or right click and 'Duplicate'.
@@ -704,12 +708,12 @@ The scene should look something like this:
 <img src="http://i.imgur.com/iJ4fdYQ.gif" width=700px />
 
 <hr></details><br>
-<details open><summary>Why not use a single GameObject for this bottom platform?</summary>
+<details><summary>Why not use a single GameObject for this bottom platform?</summary>
 
 Up next we will be adding colliders to these platforms.  There are several ways this could be handled, as is always the case with GameDev. We will be placing BoxCollider2Ds on our Platforms' parent GameObjects.  This works great when the parent is a middle sprite segment along with a rounded corner sprite - but does not work as well when the platform changes it's rotation half way through.
 
 <hr></details>
-<details open><summary>Why extend the platform beyond the edge of the screen?</summary>
+<details><summary>Why extend the platform beyond the edge of the screen?</summary>
 
 The width of the world players are going to see is fixed so you could argue that extending over the edge is not necessary.  I recommend this to ensure there are no unexpected gaps at the edge and to leave some flexibility for future mechanics, including:
 
@@ -723,7 +727,7 @@ The width of the world players are going to see is fixed so you could argue that
 
 At this point we have covered everything you need to match the level 1 platform layout.  You can match the layout we used or come up with your own.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
 The basic steps are:
 
@@ -751,7 +755,7 @@ The project should looks something like this, but don't worry about trying to ma
 
 Add a BoxCollider2D to each of the Platforms.  Add an edge radius and edit colliders to match the sprites.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select a platform's parent GameObject.
  - Click the 'Add Component' button, type **BoxCollider2D** and select it from the list.
@@ -771,14 +775,14 @@ Add a BoxCollider2D to each of the Platforms.  Add an edge radius and edit colli
 
 </details><br>
 
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 Colliders define an objects shape for the purposes of physical collisions.  We use the edge radius on the box collider in order to smooth out the corners and better match the platform art.
 
 For the bottom platforms, we overlap the colliders for a smooth experience when entities are walking from one to the next.
 
 <hr></details>
-<details open><summary>What is a Collider?</summary>
+<details><summary>What is a Collider?</summary>
 
 [Colliders](https://docs.unity3d.com/Manual/CollidersOverview.html) are components placed on GameObjects to define their shape for the purposes of physical collisions.  The collider shape may or may not align with the visuals on screen.
 
@@ -787,7 +791,7 @@ Typically colliders match the shape of the art on screen.  For example, they are
 Colliders may also be used as 'triggers' to detect something happening near an object without causing a physical reaction.  For example, an entity could have a second collider twice as large as the entity itself and use that to know when danger is approaching - causing the entity to run the other way.
 
 </details>
-<details open><summary>Why not place colliders on the child GameObjects instead?</summary>
+<details><summary>Why not place colliders on the child GameObjects instead?</summary>
 
 Well, you could!  With GameDev, you'll find there are almost always various ways you could achieve a goal and pros/cons to each.  
 
@@ -803,7 +807,7 @@ Additionally, fewer colliders may improve your game's performance - however the 
 
 Add a GameObject for the spike ball. 
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Drag the sprite into the Hierarchy to create a GameObject for the sprite. We are using **spritesheet_jumper_59**.
  - Create a parent GameObject:
@@ -811,7 +815,7 @@ Add a GameObject for the spike ball.
    - Drag and drop the sprite into Spike Ball.
  
 <hr></details><br>
-<details open><summary>Why use a parent here?</summary>
+<details><summary>Why use a parent here?</summary>
 
 For consistency.  
 
@@ -823,7 +827,7 @@ In this tutorial we will encounter use cases which warrent using a parent GameOb
 
 Update the Spike Ball's Order in Layer to -1.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select the Spike Ball's sprite.
    - Change the Sprite Renderer's 'Order in Layer' to '-1'.
@@ -831,7 +835,7 @@ Update the Spike Ball's Order in Layer to -1.
 <img src="http://i.imgur.com/TSqk7hb.png" width=300px />
 
 </details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 When multiple sprites are overlapping, Order in Layer is used to determine which one is on top of the other.  So if the spike ball sprite has Order in Layer '-1' and everything else uses the default Order in Layer '0', the spike ball will always appear behind of other sprites in the world.
 
@@ -845,20 +849,20 @@ Order in Layer may be any int value, positive or negative. Here's an example sho
 
 Add a Rigidbody2D to the spike ball.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select the Spike Ball's parent GameObject.
    - Click Add Component and select **Rigidbody2D**.
 
 </details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 Adding a rigidbody to an object enables physics, including gravity.  Hit play and watch the spike ball fall through the platforms and out of view:
 
 <img src="http://i.imgur.com/PuWWL3z.gif" width=50px />
 
 <hr></details>
-<details open><summary>What's a Rigidbody2D?</summary>
+<details><summary>What's a Rigidbody2D?</summary>
 
 A rigidbody is a core component for the Unity physics engine, Rigidbody2D is the 2D version of this component (vs 3D).  It's added to GameObjects which may be manipulated by physics during the game, for example:
 
@@ -873,7 +877,7 @@ A rigidbody is a core component for the Unity physics engine, Rigidbody2D is the
 
 Add a CircleCollider2D to the spike ball.  Adjust the radius as needed.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select the Spike Ball's parent GameObject and add a **CircleCollider2D**.
    - Modify the radius so the collider is around the main body and not the spikes.
@@ -881,7 +885,7 @@ Add a CircleCollider2D to the spike ball.  Adjust the radius as needed.
 <img src="http://i.imgur.com/crXdz35.gif" width=300px />
 
 </details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 The circle collider allows the ball to roll.  Place the ball at the top of a slanted platform and gravity will get things moving.
 
@@ -892,7 +896,7 @@ Hit play to watch the spike ball fall onto a platform and roll:
 If the ball gets stuck while testing because some platforms are too close, update the platform position or rotation.
 
 <hr></details>
-<details open><summary>Why shrink the collider?</summary>
+<details><summary>Why shrink the collider?</summary>
 
 It's optional, use what you think creates the best experience.
 
@@ -915,7 +919,7 @@ On a related note, seting the 'Order in Layer' to '-1' ensures that the spikes a
 
 Add additional BoxCollider2Ds offscreen to redirect balls back on screen.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create an Empty GameObject named "Bumper".
  - Add a 'BoxCollider2D' component.
@@ -946,7 +950,7 @@ Add additional BoxCollider2Ds offscreen to redirect balls back on screen.
 
 </details><br>
 
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 With this level design, spike balls will roll right off the edge of the screen.  Instead of making them bounce of the screen's edge (as we will for other enities later), we wanted to allow the spike balls to go off screen but then return shortly after.  
 
@@ -962,7 +966,7 @@ Hit play, the spike ball should hit the bumper and quickly reverse and then acce
 
 Add a script to the spike ball which sets an initial velocity and angular velocity.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - In the Assets/Code/Compenents/Movement directory, create a C# Script and name it **InitializeRigidbody**.
  - Double click the script to open it and paste the following:
@@ -997,31 +1001,31 @@ public class InitializeRigidbody : MonoBehaviour
 <img src="http://i.imgur.com/34kpVEP.png" width=300px />
 
 </details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 When a ball is spawned, InitializeRigidbody will give it an initial velocity and angular velocity.  This causes the ball to move and spin even if we drop it on a flat platform.
 
 <hr></details>
-<details open><summary>What's GetComponent do?</summary>
+<details><summary>What's GetComponent do?</summary>
 
 GetComponent is used to find another script/component on a GameObject.  If you need to access a script mulitple times, generally it's better to call GetComponent just once (typcially in Awake) and cache the results.
 
 There are similar APIs available from Unity such as GetComponentsInChildren, which are used to discover multiple components and/or search more GameObjects.
 
 <hr></details>
-<details open><summary>Why confirm the values in the Inspector match the defaults in code?</summary>
+<details><summary>Why confirm the values in the Inspector match the defaults in code?</summary>
 
 When a script runs, it uses the values as defined in the Inspector (which may be different than the defaults in code).  Usually Unity will default all the fields in the Inspector to the defaults you have written in code.  However depending on the order you do things exactly, this may not always work out.  If you create a script and it does not function properly, double check the values in the Inspector.
 
 <hr></details>
-<details open><summary>Does the filename matter?</summary>
+<details><summary>Does the filename matter?</summary>
 
 Yes!  
 
 This is unusual for C# developers, but yes, the filename must match the class name for Unity to work correctly.  If the names don't match, everything will compile but the script will not be selectable as a component.
 
 <hr></details>
-<details open><summary>Why not use a "SpikeBall" component instead?</summary>
+<details><summary>Why not use a "SpikeBall" component instead?</summary>
 
 You could, but...  
 
@@ -1031,7 +1035,7 @@ Unity encourages component based solutions, where you aim to offer a single mech
  - Components may be reused between different object types.  If we had one master SpikeBall component and then created a similar enemy with a few different mechanics, reusing logic would be more challanging and we might copy paste parts to our new enemy compoment instead. 
 
 </details>
-<details open><summary>What's velocity and angularVelocity?</summary>
+<details><summary>What's velocity and angularVelocity?</summary>
 
 A GameObject with a rigidbody may be moved with forces.  The Unity Physics engine uses these forces as inputs in order to calculate the object's position and rotation, considering other things in the world such as a wall blocking your path.  
 
@@ -1043,7 +1047,7 @@ There are various APIs for manipulating forces on a rigidbody.  This script will
  - Angular velocity: degrees per second to rotate the object.  Abstent any additional forces, 'Angular drag' will decrease this until it reaches 0.
 
 </details>
-<details open><summary>What's SerializeField and why not use public instead?</summary>
+<details><summary>What's SerializeField and why not use public instead?</summary>
 
 [SerializeField] exposes the object's field (data) in the 'Inspector' window.  The default value seen in the C# script becomes the default in the Inspector - however when the script runs, the value is whatever you set for that object in the Inspector. This allows you to change values per-object or have different values for a component which is used on various different object types.  You can also change values in the Inspector at runtime, which can be helpful while debugging.
 
@@ -1057,7 +1061,7 @@ The fields in question are often only leveraged inside the component itself.  Ot
 
 </details>
 
-<details open><summary>What's RequireComponent do?</summary>
+<details><summary>What's RequireComponent do?</summary>
 
 [RequireComponent] is an Unity attribute used to let the editor know that this component requires another component on the same GameObject.
 
@@ -1069,7 +1073,7 @@ public class MyComponent ...
 When you add a component in the inspector which requires another, and the required component is not already on that GameObject, Unity will automatically add it for you.
 
 </details>
-<details open><summary>What is MonoBehaviour / how is Start() called?</summary>
+<details><summary>What is MonoBehaviour / how is Start() called?</summary>
 
 Most of the scripts that you create in Unity will derive from MonoBehaviour.  [MonoBehaviour](https://docs.unity3d.com/ScriptReference/MonoBehaviour.html) is the base class for a GameObject component (scripts on objects in your world).  It allows you to execute logic every Update (each frame) and respond collision events, etc.
 
@@ -1081,7 +1085,7 @@ See also [Unity's Execution Order of Event Functions](
 https://docs.unity3d.com/Manual/ExecutionOrder.html).
 
 </details>
-<details open><summary>Why use protected on the Unity event?</summary>
+<details><summary>Why use protected on the Unity event?</summary>
 
 Protected is an access modifier in C# which ensures that the only way to call that method, or field, is from the same class or from a class that derives from it.  Unity will find events such as Update() based on the signature, ignoring the access modifier - allowing you to use anything you'd like.
 
@@ -1154,7 +1158,7 @@ Encapsulation.  If we were to make these methods public, it suggests that other 
 
 Add a script to the spike ball which destroy's the GameObject after it rolls off the bottom platform.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create a script **SuicideOutOfBounds** under Assets/Code/Compenents/Death and paste the following:
 
@@ -1178,7 +1182,7 @@ public class SuicideOutOfBounds : MonoBehaviour
  - Add 'SuicideOutOfBounds' to the spike ball.
 
 </details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 SuicideOutOfBounds will destroy the GameObject for anything that goes below -12, which is a bit lower than the lowest the camera can see. 
 
@@ -1189,14 +1193,14 @@ Play and the ball should now destroy itself when it falls off screen:
 This script would work the same without a fixed aspect ratio (since different aspect ratios only impact how much of the world we see horizontally).  If we supported a moving camera, we may need to calculate the kill height differently.
 
 <hr></details>
-<details open><summary>Why bother, the GameObject is already off screen?</summary>
+<details><summary>Why bother, the GameObject is already off screen?</summary>
 
 When a GameObject is off screen, there is no attempt to render it so your GPU is not wasting time but Unity is still processing Physics and logic for any components on the GameObject.  In this case, once the GameObject has fallen off the bottom it will never return to the game.  
 
 We destroy it to save performance while the game is running.  Without this script, the endless stream of balls spawning and then falling off would be a 'memory leak'.  This means that you are wasting resources and over time the performance of your game will get worse.
 
 </details>
-<details open><summary>What is Destroy and why not Destroy(this)?</summary>
+<details><summary>What is Destroy and why not Destroy(this)?</summary>
 
 Destroy is a Unity method to remove something from the scene.  You can:
 
@@ -1230,7 +1234,7 @@ public class MyComponent : MonoBehaviour
 ```
 
 </details>
-<details open><summary>What about an object pool?</summary>
+<details><summary>What about an object pool?</summary>
 
 An object pool is an optimization technique which may be appropriate to use but we are not implementing it here for simplicity.  Additionally the performance gain for a game like this would be negligible.
 
@@ -1256,7 +1260,7 @@ For more, see [Catlike Coding's Object Pool tutorial](http://catlikecoding.com/u
 
 Create a prefab for the spike ball, and remove the GameObject from the scene.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Select the Spike Ball and click/drag it to the Assets/Prefabs folder.
  - Delete the GameObject from the Hierarchy, removing it from the scene but leaving our prefab in-tact.
@@ -1264,7 +1268,7 @@ Create a prefab for the spike ball, and remove the GameObject from the scene.
 <img src="http://i.imgur.com/roE0SWK.gif" width=300px />
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 We created a prefab for the spike ball for another component to instantiate.  i.e. this allows the spawner we will be adding to created an endless stream of balls.
 
@@ -1278,7 +1282,7 @@ This allows things like our spawner to instantiate a GameObject with the appropr
 
 Add a GameObject for the evil cloud.  Size and position it in the top left.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Drag in the sprite, we are using **spritesheet_jumper_57**.
  - Add it to an empty parent GameObject named "Evil Cloud".
@@ -1290,7 +1294,7 @@ Add a GameObject for the evil cloud.  Size and position it in the top left.
 <img src="http://i.imgur.com/kK9dKcD.gif" width=300px />
 
 </details><br>
-<details open><summary>What does changing scale Z do?</summary>
+<details><summary>What does changing scale Z do?</summary>
 
 Nothing (for 2D games).  When we are scaling, in order to not distort the art we only need to ensure X and Y scales match.  Z could be left at the default of 1, but I prefer to keep it in sync with X and Y as well as Unity's scale tool will do this by default.
 
@@ -1302,7 +1306,7 @@ Nothing (for 2D games).  When we are scaling, in order to not distort the art we
 
 Add a script to the evil cloud which periodically spawns balls.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create script Code/Compenents/Life/**Spawner**:
 
@@ -1356,14 +1360,14 @@ public class Spawner : MonoBehaviour
 <img src="http://i.imgur.com/scu8YUR.gif" width=300px />
 
 </details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 The spawner component instantiates a prefab at its GameObject's position periodically.  Click play to see the spawner in action:
 
 <img src="http://i.imgur.com/ZJSulAj.gif" width=300px /> 
 
 <hr></details>
-<details open><summary>What is a Coroutine / WaitForSeconds?</summary>
+<details><summary>What is a Coroutine / WaitForSeconds?</summary>
 
 A Coroutine allows you to define a sequence which takes more than a single frame to execute.  It's implemented with a C# enumerator which Unity will then execute over time.  For example:
 
@@ -1402,7 +1406,7 @@ WaitForSeconds is a Unity class used to define how long before the enumerator sh
 Coroutines may be canceled before it's complete by calling StopCoroutine or StopAllCoroutines.  When a GameObject is destroyed, any Coroutines it had started are stopped.
 
 </details>
-<details open><summary>What does Instantiate do?</summary>
+<details><summary>What does Instantiate do?</summary>
 
 Instantiate clones a GameObject or prefab, creating a new GameObject in the scene.  There are a few variations of the call you could use.
 
@@ -1423,7 +1427,7 @@ Instantiate(thingToSpawn, gameObject);
 ```
 
 </details>
-<details open><summary>How do you choose a random number?</summary>
+<details><summary>How do you choose a random number?</summary>
 
 Unity provides a convientent static class for getting random data.  For example:
 
@@ -1464,7 +1468,7 @@ public class ExampleClass : MonoBehaviour
 
 </details>
 
-<details open><summary>What's a Quaternion?</summary>
+<details><summary>What's a Quaternion?</summary>
 
 A Quaternion is how rotations are stored in a game engine.  They represent the rotation with (x, y, z, w) values, stored in this fashion because that it is an effecient way to do the necessary calculations when rendering on object on screen.
 
@@ -1495,7 +1499,7 @@ Quaternion rotationOfZ60Degrees
 ```
 
 </details>
-<details open><summary>What does Debug.Assert do?</summary>
+<details><summary>What does Debug.Assert do?</summary>
 
 Debug.Assert is a used to confirm an assumption your code is making.  If the assumption does not hold (i.e. if the contents of the Debug.Assert evaluate to false), then the assert fails and an error is presented in the Unity console for you to investigate.
 
@@ -1524,7 +1528,7 @@ A common use case for Debug.Assert is to validate pre-conditions and post-condit
 
 Create a layer for Enemy and assign it to the Spike Ball prefab.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Menu Edit -> Project Settings -> Tags and Layers.
  - Under 'Layers' add "Enemy" to one of the empty 'User Layer' slots.
@@ -1538,14 +1542,14 @@ Create a layer for Enemy and assign it to the Spike Ball prefab.
 <img src="http://i.imgur.com/KPvq22a.png" width=300px />
 
 <hr></details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 Nothing yet.  
 
 Layers are a way of categorizing GameObjects.  We will be using the Enemy layer to allow other enemies to pass through them, in the next section.
 
 <hr></details>
-<details open><summary>What's a Layer and how's it different from a Tag?</summary>
+<details><summary>What's a Layer and how's it different from a Tag?</summary>
 
 A layer is a number representing a category or type of object in your game which may be compared to a LayerMask.  The Unity editor allows you to associate a string with this value as well for convienence.  Layers can be used to effeciently include or exclude objects based off of their type.  For this reason, the physics matrix in Unity works with layers.
 
@@ -1603,7 +1607,7 @@ Every GameObject has both one layer and one tag.
 
 Update the collision matrix, disabling enemy to enemy collisions.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Edit -> Project Settings -> Physics 2D.
  - Under the 'Layer Collision Matrix', uncheck the box where 'Enemy' meets 'Enemy'.
@@ -1611,14 +1615,14 @@ Update the collision matrix, disabling enemy to enemy collisions.
 <img src="http://i.imgur.com/JkjXpZN.png" width=300px />
 
 </details><br>
-<details open><summary>What did that do?</summary>
+<details><summary>What did that do?</summary>
 
 Enemies can no longer collide with other enemies, meaning they will walk through each other as if the other did not exist.
 
 We do this with a separate Enemy layer so that that collisions with the player are not impacted.
 
 <hr></details>
-<details open><summary>What does the collision matrix impact?</summary>
+<details><summary>What does the collision matrix impact?</summary>
 
 The collision matrix defines which GameObjects may collide with what other GameObjects, based off of the GameObjects' layers.
 
@@ -1634,7 +1638,7 @@ Every possible combination of layers is exposed as a checkbox in settings, inclu
 That's it for chapter 1!  Your game should now look a lot like the gif at the top.  You can compare to our  [demo build](https://hardlydifficult.com/PlatformerTutorialPart1/index.html) and review the [Unity Project / Source Code for Chapter 1](https://github.com/hardlydifficult/Unity2DPlatformerTutorial/tree/Part1). 
 
 
-<details open><summary>To review...</summary>
+<details><summary>To review...</summary>
 
 To review, you may want to:
 
@@ -1646,7 +1650,7 @@ To review, you may want to:
  - Cut a test build and try it outside of the Unity editor environment.
 
 <hr></details><br>
-<details open><summary>Testing / Debugging tips</summary>
+<details><summary>Testing / Debugging tips</summary>
 
  - While testing (in play mode):
    - You can changing values in the Inpsector and they will not be saved.  This allows you to experiement with a different values easily.

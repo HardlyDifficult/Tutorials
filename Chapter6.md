@@ -4,12 +4,20 @@ TODO intro
 
 ## Add a win condition
 
+The goal of the game is to save the beautiful mushroom.  For level 1, that means getting close - but before you actually reach it the evil cloud is going to carry the shroom up to level 2.  
+
+Here we detect the end of the game, but the cloud animation will be added later in the tutorial.
+
 <details><summary>How</summary>
 
  - Create an empty GameObject named "WinArea".
- - Add a BoxCollider2D sized to cover the area that when entered will end the level.
- - Check Is Trigger.
- - Add a sprite to lure the character to the win area.  Make it a child of the WinArea.  We are using **spritesheet_jumper_26** with Order in Layer -3.
+   - Add a **BoxCollider2D** sized to cover the area that when entered will end the level.
+     - Check Is Trigger.
+   - Create a Layer "WinArea":
+     - Configure the collision matrix to only support WinArea <-> Player collisions.
+     - Assign the layer to the WinArea GameObject.
+   - Add a sprite to lure the character to the win area.  We are using **spritesheet_jumper_26** with Order in Layer -3.
+     - Make it a child of the WinArea. 
 
 <img src="http://i.imgur.com/WuW9hPk.png" width=300px />
 
@@ -22,9 +30,6 @@ public class TouchMeToWin : MonoBehaviour
 {
   static int totalNumberActive;
 
-  [SerializeField]
-  LayerMask layerToTriggerOn;
-
   protected void OnEnable()
   {
     totalNumberActive++;
@@ -34,73 +39,245 @@ public class TouchMeToWin : MonoBehaviour
   {
     totalNumberActive--;
   }
-  
+
   protected void OnTriggerEnter2D(
     Collider2D collision)
-  {
-    CheckForWin(collision.gameObject);
-  }
-
-  protected void OnCollisionEnter2D(
-    Collision2D collision)
-  {
-    CheckForWin(collision.gameObject);
-  }
-
-  void CheckForWin(
-    GameObject gameObject)
   {
     if(enabled == false)
     {
       return;
     }
 
-    if(layerToTriggerOn.Includes(gameObject.layer))
+    enabled = false;
+    if(totalNumberActive == 0)
     {
-      enabled = false;
-      if(totalNumberActive == 0)
+      GameObject.FindObjectOfType<LevelManager>().YouWin();
+    }
+  }
+}
+```
+
+ - Add **TouchMeToWin** to the WinArea.
+
+<hr></details><br>
+<details><summary>What did that do?</summary>
+
+We put a large trigger collider around the mushroom.  When the character enters this area, TouchMeToWin will end the level.  The collider is configured to use a layer which only interacts with the player so enemies cannot accidentally end the level.
+
+TouchMeToWin counts the total number of these special zones in the world.  For level 1 we are only using one but for level 2 there will be more.  When the last one is disabled (by the character entering that area), we call YouWin on the LevelManager which will own starting the end sequence / switching to level 2.
+
+We check if the TouchMeToWin component is enabled before processing the trigger enter so that an area does not call YouWin multiple times.
+
+<hr></details>
+
+## Win animation
+
+When the character reaches the win area, play the animation which
+
+<details open><summary>How</summary>
+
+ - Create another animation for the evil cloud, Animations/**CloudLevel1Exit** to play when the player wins.
+   - You may not be able to record if the Timeline window is open.
+   - Select Animations/CloudLevel1Exit and disable Loop Time.
+ - Right click in Assets/Animations -> Create -> Timeline named **Level2Exit**.
+   - Select the evil cloud's sprite GameObject and in the Inspector change the Playable Director's 'Playable' to Level2Exit.
+
+<img src="http://i.imgur.com/Jsah6Ll.png" width=300px />
+
+ - In the Timeline window, click 'Add' then 'Animation Track' and select the evil cloud's child GameObject with the animator.
+ - Right click in the timeline and 'Add Animation From Clip' and select the CloudLevel1Exit animation.
+
+<img src="http://i.imgur.com/xcR7HWr.gif" width=300px />
+
+ - Select the box which appeared for the animation, and in the Inspector modify the speed.
+   - Hit play in the Timeline to preview the speed.  The value is going to depend on how you created the animation.
+ - Select the mushroom GameObject and drag it into the timeline.
+   - Adjust the timeframe so that it starts at the beginning of the timeline and ends when you want the mushroom to disappear.
+
+<img src="http://i.imgur.com/W9lejAB.png" width=300px />
+
+- Select the evil cloud's sprite GameObject and in the Inspector change the Playable Director's 'Playable' back to Level1Entrance.
+
+<hr></details><br>
+<details open><summary>What did that do?</summary>
+
+When the Character reaches the win area, the Evil Cloud plays its end of level animation.  
+
+<hr></details>
+
+## Stop everything when the level is over
+
+When the level is over, stop the spawners and freeze the character and enemies while the evil cloud animation plays.
+
+<details><summary>How</summary>
+
+ - Create script Components/Controllers/**DisableComponentsOnEndOfLevel**:
+
+```csharp
+using UnityEngine;
+
+public class DisableComponentsOnEndOfLevel : MonoBehaviour
+{
+  [SerializeField]
+  Component[] componentsToDisable;
+
+  public void OnEndOfLevel()
+  {
+    for(int i = 0; i < componentsToDisable.Length; i++)
+    {
+      Component component = componentsToDisable[i];
+      if(component is Rigidbody2D)
       {
-        GameObject.FindObjectOfType<LevelManager>().YouWin();
+        Rigidbody2D myBody = (Rigidbody2D)component;
+        myBody.simulated = false;
+      }
+      else if(component is Behaviour)
+      {
+        Behaviour behaviour = (Behaviour)component;
+        behaviour.enabled = false;
+        if(behaviour is MonoBehaviour)
+        {
+          MonoBehaviour monoBehaviour = (MonoBehaviour)behaviour;
+          monoBehaviour.StopAllCoroutines();
+        }
+      }
+      else
+      {
+        Destroy(component);
       }
     }
   }
 }
 ```
 
- - Add to the WinArea and configure for the Player layer.
+ - Select the Character prefab.
+   - Add **DisableComponentsOnEndOfLevel** and to the components list, add:
+     - Rigidbody2D.
+     - PlayerController.
+     - The character's animator.  You can do this by:
+       - Open a second Inspector by right click on the Inspector tab and select Add Tab -> Inspector.
+       - With the Character's parent GameObject selected, hit the lock symbol in one of the Inspectors.
+       - Select the character's child sprite, then drag the Animator from one Inspector into the other.
+
+<img src="http://i.imgur.com/UOEJNyx.gif" width=500px />
+
+ - Unlock the Inspector.
+ - Select the Fly Guy prefab.
+   - Add **DisableComponentsOnEndOfLevel** and add the rigidbody and animator.
+ - Select the Spike Ball prefab.
+   - Add **DisableComponentsOnEndOfLevel** and add the rigidbody.
+ - For each the Evil cloud and Door:
+   - Add **DisableComponentsOnEndOfLevel** and add the spawner.
+ - Update LevelManager to call DisableComponentsOnEndOfLevel:
+
+
+
+
+<details><summary>Existing code</summary>
+
+```csharp
+using UnityEngine;
+
+public class LevelManager : MonoBehaviour
+{
+  [SerializeField]
+  GameObject playerPrefab;
+
+  protected bool isGameOver;
+
+  protected void Start()
+  {
+    GameController.instance.onLifeCounterChange
+      += Instance_onLifeCounterChange;
+    Instantiate(playerPrefab);
+  }
+
+  protected void OnDestroy()
+  {
+    GameController.instance.onLifeCounterChange
+      -= Instance_onLifeCounterChange;
+  }
+
+  void Instance_onLifeCounterChange()
+  {
+    if(isGameOver)
+    {
+      return;
+    }
+
+    if(GameController.instance.lifeCounter <= 0)
+    {
+      isGameOver = true;
+      YouLose();
+    }
+    else
+    {
+      RestartLevel();
+    }
+  }
+
+  public void YouWin()
+  {
+    if(isGameOver == true)
+    { 
+      return;
+    }
+
+    isGameOver = true;
+```
+
+</details>
+
+```csharp
+    DisableComponentsOnEndOfLevel[] disableComponentList 
+      = GameObject.FindObjectsOfType<DisableComponentsOnEndOfLevel>();  
+    for(int i = 0; i < disableComponentList.Length; i++)
+    {
+      DisableComponentsOnEndOfLevel disableComponent = disableComponentList[i];
+      disableComponent.OnEndOfLevel();
+    }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  }
+
+  void RestartLevel()
+  {
+    PlayerDeathMonoBehaviour[] gameObjectList 
+      = GameObject.FindObjectsOfType<PlayerDeathMonoBehaviour>();
+    for(int i = 0; i < gameObjectList.Length; i++)
+    {
+      PlayerDeathMonoBehaviour playerDeath = gameObjectList[i];
+      playerDeath.OnPlayerDeath();
+    }
+    Instantiate(playerPrefab);
+  }
+
+  void YouLose()
+  {
+    // TODO
+  }
+}
+```
+
+</details>
+
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details><summary>What did that do?</summary>
 
-TODO
+At the end of the level, the LevelManager calls each DisableComponentsOnEndOfLevel component. This component then disables other components to make the game freeze during our end of level animation.
+
+ - Entities disable their rigidbody to stop gravity and the animator to stop playback.
+ - The Character also disables the PlayerController so that input does not cause the sprite to flip facing direction.
+ - Spawners stop the spawn coroutine so no more enemies appear.
 
 <hr></details>
-
-## Win animation
-
-When the character reaches the win area, 
-
-<details><summary>How</summary>
-
- - Create another animation for the evil cloud, Animations/**CloudLevel1Exit** to play when the player wins.
-   - You may not be able to record if the Timeline window is open.
- - Select CloudLevel1Exit and disable Loop Time.
- - Right click in Assets/Animations -> Create -> Timeline named "Level2Exit".
- - Select the evil cloud's sprite GameObject and in the Inspector change the Playable Director's 'Playable' to Level2Exit.
-
-<img src="http://i.imgur.com/Jsah6Ll.png" width=150px />
-
- - In the Timeline window, click 'Add' then 'Animation Track' and select youself.
- - Right click in the timeline and 'Add Animation From Clip'.
-
-<img src="http://i.imgur.com/xcR7HWr.gif" width=300px />
-
-TODO
-
-<hr></details><br>
 <details><summary>TODO</summary>
 
-Character stops moving, everyone else dies
+TODO
 
 <hr></details>
 
