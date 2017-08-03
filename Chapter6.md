@@ -8,7 +8,7 @@ The goal of the game is to save the beautiful mushroom.  For level 1, that means
 
 Here we detect the end of the game, but the cloud animation will be added later in the tutorial.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create an empty GameObject named "WinArea".
    - Add a **BoxCollider2D** sized to cover the area that when entered will end the level.
@@ -60,7 +60,7 @@ public class TouchMeToWin : MonoBehaviour
  - Add **TouchMeToWin** to the WinArea.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 We put a large trigger collider around the mushroom.  When the character enters this area, TouchMeToWin will end the level.  The collider is configured to use a layer which only interacts with the player so enemies cannot accidentally end the level.
 
@@ -75,7 +75,7 @@ We check if the TouchMeToWin component is enabled before processing the trigger 
 
 When the character reaches the win area, play the animation which
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create another animation for the evil cloud, Animations/**CloudLevel1Exit** to play when the player wins.
    - You may not be able to record if the Timeline window is open.
@@ -104,7 +104,7 @@ When the character reaches the win area, play the animation which
  - Select the evil cloud's sprite GameObject and in the Inspector change the Playable Director's Playable back to Level1Entrance.
  - Update LevelManager:
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
 using UnityEngine;
@@ -116,7 +116,7 @@ using UnityEngine;
 using UnityEngine.Playables; 
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
 public class LevelManager : MonoBehaviour
@@ -137,7 +137,7 @@ public class LevelManager : MonoBehaviour
   PlayableAsset endOfLevelPlayable; 
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
   protected void Start()
@@ -187,7 +187,7 @@ public class LevelManager : MonoBehaviour
     director.Play(endOfLevelPlayable); 
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
     DisableComponentsOnEndOfLevel[] disableComponentList 
@@ -223,12 +223,12 @@ public class LevelManager : MonoBehaviour
  - Configure the director and set the end of level playable to Level1Exit.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 When the Character reaches the win area, the Evil Cloud plays its end of level animation.  
 
 <hr></details>
-<details><summary>Why switch the Playable when editing Timelines?</summary>
+<details open><summary>Why switch the Playable when editing Timelines?</summary>
 
 Unity 2017 is the first release of Timeline, it's still a work in progress.  
 
@@ -242,7 +242,7 @@ On a related note, you can't edit an animation if the Timeline window is open.  
 
 When the level is over, stop the spawners and freeze the character and enemies while the evil cloud animation plays.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Components/Controllers/**DisableComponentsOnEndOfLevel**:
 
@@ -304,7 +304,7 @@ public class DisableComponentsOnEndOfLevel : MonoBehaviour
  - Update LevelManager to call DisableComponentsOnEndOfLevel:
 
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
 using UnityEngine;
@@ -369,7 +369,7 @@ public class LevelManager : MonoBehaviour
     }
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
   }
@@ -397,7 +397,7 @@ public class LevelManager : MonoBehaviour
 
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 At the end of the level, the LevelManager calls each DisableComponentsOnEndOfLevel component. This component then disables other components to make the game freeze during our end of level animation.
 
@@ -406,7 +406,7 @@ At the end of the level, the LevelManager calls each DisableComponentsOnEndOfLev
  - Spawners stop the spawn coroutine so no more enemies appear.
 
 <hr></details>
-<details><summary>Why not just set timeScale to 0?</summary>
+<details open><summary>Why not just set timeScale to 0?</summary>
 
 You could, but some things would need to change a bit.
 
@@ -418,7 +418,7 @@ We don't want everything to pause.  The evil cloud animation needs to progress. 
 
 Create a new scene which will be used for level 2.  Add both levels to the build settings.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Add scene to build settings with menu File -> Build Settings:
    - Click "Add Open Scenes" to add the current scene (level 1).
@@ -428,12 +428,12 @@ Create a new scene which will be used for level 2.  Add both levels to the build
  - Double click Assets/Scenes/Level1 to return to that scene.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 We have a separate scene to manage each level.  By adding these to the build settings, we are informing Unity that these scenes should be made available -- allowing us to transition to one either by name or by index (their position in the build settings list).
 
 <hr></details>
-<details><summary>Why not use just one scene for the game?</summary>
+<details open><summary>Why not use just one scene for the game?</summary>
 
 You could.  But I would not advise it.
 
@@ -447,7 +447,7 @@ GameObjects which are shared between levels can use a prefab so that they have a
 
 After the level ends, load level 2.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Components/Controllers/**ChangeScenePlayable**:
 
@@ -479,7 +479,7 @@ public class ChangeScenePlayable : BasicPlayableBehaviour
  - Change the Evil Cloud Director back to Level1Entrance.
 
 <hr></details><br>
-<details><summary>What's SceneManager.LoadScene do?</summary>
+<details open><summary>What's SceneManager.LoadScene do?</summary>
 
 Calling LoadScene will Destroy every GameObject in the scene, except for any which are DontDestroyOnLoad like our GameController, and then load the requested scene.
 
@@ -553,17 +553,17 @@ public class TextPoints : MonoBehaviour
  - Add **TextPoints** to the Points GameObject.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 A canvas was created to hold the text for points, we'll add more to this canvas soon.  We anchor the text to the top right and position it in the corner.  We set the font size too large and then scale down to size to get a crisp display.
 
 <hr></details>
-<details><summary>What's a canvas do?</summary>
+<details open><summary>What's a canvas do?</summary>
 
 The Canvas is a container holding UI.  It allows Unity to manage features such as automatically scaling UI to fit the current resolution.  Unity offers components such as the VerticalLayoutGroup which help in getting positioning and sizing correct.
 
 <hr></details>
-<details><summary>Why size the font too large and then scale it down?</summary>
+<details open><summary>Why size the font too large and then scale it down?</summary>
 
 Fonts by default may look blurry.  We size the font too large and then scale it down via the RectTransform to fit in order to make the rendering more clear for users.
 
@@ -572,17 +572,17 @@ Here is an example, the top is sized only using font size while the bottom is ov
 <img src="http://i.imgur.com/qLqSeRV.png" width=300px />
 
 <hr></details>
-<details><summary>What is a RectTransform, how does it differ from a Transform?</summary>
+<details open><summary>What is a RectTransform, how does it differ from a Transform?</summary>
 
 A RectTransform is the UI version of the Transform used for GameObjects.  RectTransform inherhits from Transform, adding features specifically for UI positioning such as pivot points and an anchor.
 
 <hr></details>
-<details><summary>Why use ceiling here?</summary>
+<details open><summary>Why use ceiling here?</summary>
 
 We need to ensure that each iteration of Update increases the points displayed by at least one, if we are not already displaying the final value.  Without this, it's possible each Update would calculate less than 1 - if we simply cast that means that each update would progress by 0 and therfore never actually display the correct amount.
 
 <hr></details>
-<details><summary>What does setting the anchor point on UI do?</summary>
+<details open><summary>What does setting the anchor point on UI do?</summary>
 
 Setting the anchor changes how the position for the Rect
 
@@ -592,12 +592,12 @@ Pivot point - defined in %.
 
 ## UI for lives
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
 TODO
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details open><summary>TODO</summary>
 
 TODO
 
@@ -605,12 +605,12 @@ TODO
 
 ## Main menu
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
 TODO
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details open><summary>TODO</summary>
 
 TODO
 
@@ -618,13 +618,13 @@ TODO
 
 ## Settings panel
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
 TODO
 Volume slider and keyboard remapping?
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details open><summary>TODO</summary>
 
 TODO
 
@@ -633,12 +633,12 @@ TODO
 
 ## Volume
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
 TODO
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details open><summary>TODO</summary>
 
 TODO
 
@@ -646,12 +646,12 @@ TODO
 
 ## Scene between level
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
 TODO
 
 <hr></details><br>
-<details><summary>TODO</summary>
+<details open><summary>TODO</summary>
 
 TODO
 

@@ -17,7 +17,7 @@ demo build of level 3
 
 Create a Hammer prefab and then layout several in the world.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Change the sprite's pivot to Bottom. We are using **Hammer**.
  - Add to the world and scale (to about .2).
@@ -27,7 +27,7 @@ Create a Hammer prefab and then layout several in the world.
  - Add several Hammers and lay them out for the level.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 We sized the hammer to be about as large as the character.  You could go larger or smaller if you think that looks better.  
 
@@ -40,7 +40,7 @@ However we are using a polygon collider, which outlines the sprite art. In order
 Picking up the hammer and killing enemies with it is covered in the next sections.
 
 <hr></details>
-<details><summary>Why use pivot bottom?</summary>
+<details open><summary>Why use pivot bottom?</summary>
 
 We will be equipting the hammer on the character and have him swing.  Moving the pivot point to bottom sets it to approximitally where the character will grip the hammer.  
 
@@ -49,7 +49,7 @@ When rotating the hammer for a swing, the bottom pivot causes the bottom of the 
 <img src="http://i.imgur.com/UUoyqJ3.gif" width=300px />
 
 <hr></details>
-<details><summary>Why use a polygon collider and not a box or capsule?</summary>
+<details open><summary>Why use a polygon collider and not a box or capsule?</summary>
 
 You could.  
 
@@ -58,7 +58,7 @@ The hammer's shape does not match either a Box or Capsule collider.  If you were
 The hammer's shape could be approximated well by using 2 box colliders.  A polygon collider does require more processing time, although not a significant difference, so this may be a potential optimization worth the tradeoff sacraficing some percision on collisions.  
 
 <hr></details>
-<details><summary>Why use Is Trigger?</summary>
+<details open><summary>Why use Is Trigger?</summary>
 
 When the character jumps for the hammer to pick it up, we do not want the character to bounce off of it.  The collider used on the hammer when the hammer is a pick up item shouldn't respond to anything expect equipting when the character touches it.  This is best achieved with 'Is Trigger'.
 
@@ -69,7 +69,7 @@ When the character jumps for the hammer to pick it up, we do not want the charac
 
 Add a script to the hammer and character, allowing the character to pickup the hammer and then kill enemies until it despawns.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Components/Weapons/**WeaponHolder**:
 
@@ -144,7 +144,7 @@ public class Hammer : MonoBehaviour
    - Add **DeathEffectSpawn** configured to use the explosion prefab.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 We create a weapon holder component to ensure we don't hold more than one weapon at a time.  When the weapon despawns (i.e. OnDestroy), we free up the character's weapon holder so it can pick up another.
 
@@ -158,7 +158,7 @@ When the hammer is equip, a list of components are enabled.  We use use this to 
 When you modify the hammer prefab, all the objects in the world automatically get updated as well.  If you prefer to work with GameObjects in the scene, you can modify any one hammer and then click 'Apply' to save the changes to the prefab.
 
 <hr></details>
-<details><summary>Could we reset the timer instead of preventing a second pickup?</summary>
+<details open><summary>Could we reset the timer instead of preventing a second pickup?</summary>
 
 Yes, in fact that would better match how most games would implement this feature.  There are various ways, as always, to achieve this. For example when the character touches a second hammer, you could:
 
@@ -166,7 +166,7 @@ Yes, in fact that would better match how most games would implement this feature
  - Reset the SuicideIn countdown and Destroy the second hammer.
 
 <hr></details>
-<details><summary>Why serialize the rotation as Vector3 instead of Quaternion?</summary>
+<details open><summary>Why serialize the rotation as Vector3 instead of Quaternion?</summary>
 
 Quaternions are confusing for people.  This is why the Transform rotation is modified in the Inspector as an Euler.  Unfortunately when you ask Unity to expose a Quaternion in the Inspector it appears as X, Y, Z, W and not the Euler X, Y, Z like they did for the Transform.
 
@@ -180,7 +180,7 @@ You could switch to Quaternion, and it would be slightly more performant that wa
 
 Add a script to the hammer to flash red before it's gone.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Components/Death/**DeathEffectFlash**:
 
@@ -234,7 +234,7 @@ public class DeathEffectFlash : DeathEffect
  - Add **DeathEffectFlash** to the hammer prefab, (it should automatically add DeathEffectManager as well).
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 DeathEffectFlash will start when another component triggers death on the GameObject (using DeathEffectManager).  Over a period of time the sprite will flash red faster and faster until the object dies.  
 
@@ -243,7 +243,7 @@ This is added to the hammer and the effect begins when SuicideIn's time complete
 The other fields in DeathEffectFlash may be used to control how quickly flash occurs as well as how it accelerates over time.  You could play with these values or modify the formula use in FlashToDeath to create your own effect.
 
 <hr></details>
-<details><summary>Why not simply sum the time used in WaitForSeconds instead of max with deltaTime?</summary>
+<details open><summary>Why not simply sum the time used in WaitForSeconds instead of max with deltaTime?</summary>
 
 In the following example, we are requesting the coroutine sleep for a period of time:
 
@@ -266,7 +266,7 @@ Alternatively this method could be rewritten to use Time.timeSinceLevelLoaded.  
 
 Create a GameObject for the fly guy, reusing components from the spike ball and character.  
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Select **spritesheet_jumper_30**, **84**, and **90** and drag them into the Hierarchy, creating Assets/Animations/**FlyGuyWalk**.
    - Set Order in Layer to 1.
@@ -286,7 +286,7 @@ Create a GameObject for the fly guy, reusing components from the spike ball and 
      - Set the layermask to Player.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 The fly guy animation we created simply kicks its feet around.  We are not going to do anything more with this animation in this tutorial.  But you could use some of the same techniques we did for the character if you want to improve the experience.
 
@@ -303,7 +303,7 @@ DeathEffectSpawn creates an explosion when the fly guy is hit by a hammer.
 
 Add a script to the fly guy to drive random walk movement.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Compenents/Movement/**WanderWalkController**:
 
@@ -361,7 +361,7 @@ public class WanderWalkController : MonoBehaviour
  - Add **WanderWalkController** to the FlyGuy (it should automatically add WalkMovement as well).
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 WanderWalkController is a controller to drive the WalkMovement component, similar to how the PlayerController does.  
 
@@ -374,7 +374,7 @@ You can configure the walk speed by modifying the WalkMovement component's 'Walk
 Note that at the moment fly guys will walk right off the screen.  This will be addressed soon.
 
 <hr></details>
-<details><summary>Why use timeBeforeFirstWander instead of going right into the while loop?</summary>
+<details open><summary>Why use timeBeforeFirstWander instead of going right into the while loop?</summary>
 
 When the fly guy first spawns in the bottom left of the world, we always want those enemies to walk to the right.  It would look strange for the enemies to go left and promptly hit the side of the screen before turning around.
 
@@ -386,7 +386,7 @@ When the coroutine starts, we tell WalkMovement to go right and then wait a peri
 
 Add a second collider so that the body of this entity is above the ground but does not kill a character walking underneath.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create a Layer for "Feet".
    - Update the Physics 2D collision matrix to:
@@ -403,14 +403,14 @@ Add a second collider so that the body of this entity is above the ground but do
 <img src="http://i.imgur.com/BPohw5V.png" width=150px />
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 The second collider we added is configured to collide with platforms but not with the character or other entities.  This allows it to prop up the fly guy, making it hover above the ground.  
 
 We don't want the 'feet' to collide with the character because later in the tutorial we will be adding ladders.  While the fly guy is on a ladder, the character can walk underneath.  If the feet could hit the character he may die unexpectedly.
 
 <hr></details>
-<details><summary>How do you know what size to make the second collider?</summary>
+<details open><summary>How do you know what size to make the second collider?</summary>
 
 It does not matter much.  This second collider's only purpose is to ensure that the fly guy hovers above the ground.  So in a sense, we only need a single pixel to represent the correct Y position for Unity physics to use -- represented by the bottom of this circle collider.
 
@@ -426,7 +426,7 @@ When a collider is too small, collisions may be missed entirely as the object ch
 The collider may also be too large, causing our fly guy to continue standing on a platform when they should have fallen off the edge.
 
 <hr></details>
-<details><summary>Why use a child GameObject instead of two colliders on the parent?</summary>
+<details open><summary>Why use a child GameObject instead of two colliders on the parent?</summary>
 
 You could opt to do this using just one GameObject instead.
 
@@ -438,7 +438,7 @@ We are using a child GameObject for the fly guy's feet in order to simplify futu
 
 Create a second spawner at the bottom for fly guys.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Drag in **spritesheet_tiles_43** and then drag in **47**.
    - Set Order in Layer to -2.
@@ -458,7 +458,7 @@ Create a second spawner at the bottom for fly guys.
    - Change the initial wait time to 10.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 We added a sprite representing the area where fly guys will spawn from.  
 
@@ -475,7 +475,7 @@ Note that if the character stands still at the level start, a fly guy will spawn
 
 Create a script which ensures entities can not walk off screen.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Components/Movement/**KeepOnScreen**:
 
@@ -514,14 +514,14 @@ public class KeepOnScreen : MonoBehaviour
  - Add **KeepOnScreen** to both the character and fly guy prefabs.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 When the GameObject attempts to move off screen, this script will teleport them back to the nearest on screen location.  Since this is checked every FixedUpdate, the teleporting effect does not cause popping on the screen.  Typically this has the impact of undoing the move which would have occurred if not for this script.
 
 When a GameObject is teleported by this script, an event is fired.  This event allows other components to add additional logic to be executed when an entity attempts to leave the screen.  For example, in the next section we will be asking the fly guy to turn around and start walking the other way.
 
 <hr></details>
-<details><summary>Why use bounds for these checks?</summary>
+<details open><summary>Why use bounds for these checks?</summary>
 
 There are a few ways you could check for an entity walking off the edge of the screen.  I choose to use the Unity bounds struct because it has methods which make the rest of this component easy.  Specifically:
 
@@ -529,7 +529,7 @@ There are a few ways you could check for an entity walking off the edge of the s
  - ClosestPoint: Return the closest point on screen for the entity, used when it is off-screen to teleport it back.
 
 <hr></details>
-<details><summary>What's the different between setting transform.position and using myBody.MovePosition?</summary>
+<details open><summary>What's the different between setting transform.position and using myBody.MovePosition?</summary>
 
 Updates to the Transform directly will teleport your character immediatelly and bypass all physics logic.  
 
@@ -547,7 +547,7 @@ In this component we are setting transform.position for the teleport effect.  If
 
 Create a script to have the fly guy bounce off the edge of the screen and never stop walking.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Components/Movement/**BounceOffScreenEdges**:
 
@@ -588,12 +588,12 @@ public class BounceOffScreenEdges : MonoBehaviour
    - Add **WalkMovement** and position it at the bottom of the list (positive number / below Default Time).
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 This component leverages the KeepOnScreen component to know when the entity attempts to walk off screen.  When hitting the edge, this will flip the entities desired walk direction causing it to start walking the opposite way.
 
 <hr></details>
-<details><summary>Why not use screen bounds again instead of the event?</summary>
+<details open><summary>Why not use screen bounds again instead of the event?</summary>
 
 2 reasons.
 
@@ -607,7 +607,7 @@ It may not work reliably.  If both components checked screen bounds independentl
 
 Add a script to entities so they fade in before moving.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Utils/**SpriteExtensions**:
 
@@ -705,7 +705,7 @@ public class FadeInThenEnable : MonoBehaviour
    - Add FadeInThenEnable (nothing needed in the to enable list).
 
 <hr></details><br>
-<details><summary>What does this do?</summary>
+<details open><summary>What does this do?</summary>
 
 SpriteExtensions is a class containing extension methods for modifying the color and alpha of sprites.  This is not necessary, but used to simplify any components updating sprite colors.
 
@@ -718,7 +718,7 @@ On the FlyGuy we disable wander movemenent until complete.
 For the Hammer, we could disable the Hammer component (preventing pickup) but it is unnecessary since the character can't move.
 
 <hr></details>
-<details><summary>Why use GetComponentsInChildren instead of a single sprite?</summary>
+<details open><summary>Why use GetComponentsInChildren instead of a single sprite?</summary>
 
 Flexibility.  Some use cases would work with GetComponent or GetComponentInChildren.  We get all the sprites in this GameObject and its children, and then updatem all so if something is composed of multiple sprites this script just works. 
 
@@ -730,7 +730,7 @@ Flexibility.  Some use cases would work with GetComponent or GetComponentInChild
 
 Create a singleton GameController to track points, lives, and hold global data such as the world size.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Compenents/Controllers/**GameController**:
 
@@ -801,7 +801,7 @@ public class GameController : MonoBehaviour
     - Add the **GameController** component.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 GameController holds the player's life count and points.  It uses DontDestroyOnLoad to maintain data between scenes (e.g. level 1 to level 2). And it's a singleton for easy access by other components.
 
@@ -812,7 +812,7 @@ An event, onLifeCounterChange, allows other components to react to the number of
 ScreenBounds was included in this class for other components to leverage without having to calculate the value multiple times.
 
 <hr></details>
-<details><summary>What does DontDestroyOnLoad do?</summary>
+<details open><summary>What does DontDestroyOnLoad do?</summary>
 
 DontDestroyOnLoad is a Unity method which marks a GameObject as independent from the scene you are in.  This means when we change scenes, the GameObject is not destroyed like everything else in the scene.
 
@@ -823,7 +823,7 @@ In order to simplify development, we will be putting a GameController GameObject
 To ensure only one GameController at a time, in Awake we destroy the extra GameController if one is already available.
 
 <hr></details>
-<details><summary>What's a singleton and why use it?</summary>
+<details open><summary>What's a singleton and why use it?</summary>
 
 Singleton is a common design pattern.  When there is only going to be one of something, the singleton pattern provides an easy way of accessing that object from other scripts -- a public static 'instance'.
 
@@ -836,7 +836,7 @@ You could have used GameObject.Find (or one of its variations) instead.  Since s
 
 Add a script to the character to decrement lives in the GameController on death.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Compenents/Death/**DeathEffectDecrementLives**:
 
@@ -861,7 +861,7 @@ public class DeathEffectDecrementLives : DeathEffect
  - Add **DeathEffectDecrementLives** to the Character.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 When the character dies, the life count goes down by one.  You can test this by looking at the life count go down in the GameController component (the value in the Inspector will update in real-time).
 
@@ -872,7 +872,7 @@ When the character dies, the life count goes down by one.  You can test this by 
 
 Add scripts to respawn the character when he dies.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Compenents/Death/**PlayerDeathMonoBehaviour**:
 
@@ -967,7 +967,7 @@ public class LevelManager : MonoBehaviour
    - Assign the character prefab.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 The LevelManager is going to be responsible for starting and restarting a level.  It does this by instantiating a player and then broadcasting to all components which inherit from PlayerDeathMonoBehaviour when the level restarts.
 
@@ -980,7 +980,7 @@ The LevelManager also has placeholders for completing the level as well as for w
 At the moment we do not a sequence which ends the game, so if the life count goes negative you stop spawning but the game never ends.
 
 <hr></details>
-<details><summary>Why does position before saving the prefab matter?</summary>
+<details open><summary>Why does position before saving the prefab matter?</summary>
 
 As a simplification, when the GameController spawns in the Character, we reuse the prefabs Transform position (and rotation/scale).  This is the default behaviour when you Instantiate from a prefab.
 
@@ -992,7 +992,7 @@ To be more flexible, we could have a default position for the Character defined 
 
 Add scripts to kill all the enemies and restart spawners when the character dies.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Components/Death/**SuicideWhenPlayerDies**:
 
@@ -1009,7 +1009,7 @@ public class SuicideWhenPlayerDies : PlayerDeathMonoBehaviour
  - Add **SuicideWhenPlayerDies** to the FlyGuy and the SpikeBall prefabs.
  - Update the 'Spawner' script as follows (or copy/paste TODO link):
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
 using System;
@@ -1024,7 +1024,7 @@ using UnityEngine;
 public class Spawner : PlayerDeathMonoBehaviour
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
 {
@@ -1056,7 +1056,7 @@ public class Spawner : PlayerDeathMonoBehaviour
   }
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
   IEnumerator SpawnEnemies()
@@ -1082,7 +1082,7 @@ public class Spawner : PlayerDeathMonoBehaviour
 </details>
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 The SuicideWhenPlayerDies component can be added to any GameObject to have it destroy itself when the player dies.  We use this on the FlyGuy and SpikeBall to clear enemies from the screen before respawning the Character.
 
@@ -1097,7 +1097,7 @@ The spawner also inherits from PlayerDeathMonoBehaviour, restarting the SpawnEne
 
 Update the door so that it does not spawn if the character is too close.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Select the Door:
    - Add a **BoxCollider2D**:
@@ -1108,7 +1108,7 @@ Update the door so that it does not spawn if the character is too close.
 
  - Update the 'Spawner' script with the following (or copy/paste TODO link):
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
 using System;
@@ -1146,7 +1146,7 @@ public class Spawner : PlayerDeathMonoBehaviour
   }
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
   protected void Start()
@@ -1176,7 +1176,7 @@ public class Spawner : PlayerDeathMonoBehaviour
       {
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
         Instantiate(
@@ -1191,7 +1191,7 @@ public class Spawner : PlayerDeathMonoBehaviour
       }
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
       float sleepTime = UnityEngine.Random.Range(
@@ -1212,14 +1212,14 @@ public class Spawner : PlayerDeathMonoBehaviour
 <img src="http://i.imgur.com/9oHr63R.png" width=150px />
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 The collider we added defines the area to check for the character before allowing a spawn to happen.  We make this large enough to cover the entire entrance area so that there is never a fly guy which spawns in and instantly kills the character - leaving the player feeling cheated.
 
 In script, we check for the character by using OverlapCollider.  This is an on-demand way to check for objects in the area.  We could have choosen to use OnTriggerEnter and OnTriggerExit instead - this approach was choosen both because it's simple and works well for this use case, and because it exposes us to multiple different techniques during this tutorial.
 
 <hr></details>
-<details><summary>Why use a temp collider list?</summary>
+<details open><summary>Why use a temp collider list?</summary>
 
 For performance reasons, the OverlapCollider method from Unity takes an array and then adds data to it -- as opposed to returning an array with the data requested (as they do for calls such as GetComponents).  They do this because calls like this may occur frequently and the overhead of creating a new array each time may become a bottleneck.
 
@@ -1230,14 +1230,14 @@ For this component, we don't actually need the data itself.  We only want to kno
 Unity also uses the array we pass in to define the max number of results it should discover.  That is why our temp array has a length of 1 and not 0.
 
 <hr></details>
-<details><summary>Why use a contact filter instead of a tag or a layermask?</summary>
+<details open><summary>Why use a contact filter instead of a tag or a layermask?</summary>
 
 You could but it may change how we interact with Unity here.  OverlapCollider answers our question of if the character is in the area, and it accepts a ContactFilter2D.
 
 ContactFilter2D may be used to filter results on various dimensions when making calls such as OverlapCollider.  LayerMask is the only one we are interested in here.
 
 <hr></details>
-<details><summary>Does the Collision Matrix impact anything when using OverlapCollider?</summary>
+<details open><summary>Does the Collision Matrix impact anything when using OverlapCollider?</summary>
 
 No.  The collision matrix as defined under the Physics 2D settings only impacts the real-time collisions from Unity.  Calls such as OverlapCollider do not assume the same restrictions that may have been applied in the collision matrix.  This provides a lot of flexibility for different mechanics.
 
@@ -1253,7 +1253,7 @@ LayerMask myLayerMask = Physics2D.GetLayerCollisionMask(gameObject.layer);
 
 Add a collider and script to award points anytime the character jumps over an enemy.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create a new Layer for "Points" and disable everything except for Points / Player collisions.
 
@@ -1284,26 +1284,26 @@ TODO
  - Apply changes to the prefabs and delete the GameObjects.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 We added a large collider above the enemy to detect when the player is above us.  Then the script AwardPointsOnJumpOver awards points if the player is directly above vs having a platform between them.  A cooldown to prevents the player from doubling up on points with a single jump.
 
 <hr></details>
-<details><summary>Why Trigger AND Raycast?</summary>
+<details open><summary>Why Trigger AND Raycast?</summary>
 
 The trigger informs us when there is a player above the enemy.  However, this does not consider any platforms which are also above us.  The raycast is used to determine what is directly above the enemy, and we only award points if it's the player.
 
 Ultimitally the raycast here answers the question of when to award points.  We could raycast each frame in an update loop, but instead leverage the trigger to improve preformance by only checking when the player is near.
 
 <hr></details>
-<details><summary>Why add another Rigidbody2D?</summary>
+<details open><summary>Why add another Rigidbody2D?</summary>
 
 When you are using a child GameObject, adding another Rigidbody2D will ensure that physics events from the child do not reach the parent.  i.e. any scripts on the parent would not get an OnTriggerEnter or OnCollisionStay call for a collider on the child this way -- in this tutorial the KillOnContact script may trigger much too soon without the second Rigidbody2D.
 
 The second Rigidbody2D does not prevent events on the parent from reaching any scripts on the child GameObject.  In AwardPointsOnJumpOver, after a trigger we will raycast to confirm the player is directly above us - with this the additional events from the parent do not impact gameplay.
 
 <hr></details>
-<details><summary>Do we need a cooldown?</summary>
+<details open><summary>Do we need a cooldown?</summary>
 
 Yes, as the code is currently written.  Removing the cooldown would result in huge payouts as the player jumped over.  
 
@@ -1316,7 +1316,7 @@ This could be addressed other ways.  Consider exactly when you would want to awa
 
 Create a script for the spike ball to hold the child GameObject's rotation while the parent spins.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Components/Movement/**HoldRotation**:
 
@@ -1342,7 +1342,7 @@ public class HoldRotation : MonoBehaviour
  - Add **HoldRotation** to the Points GameObject under the spike ball prefab.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 Each FixedUpdate, we set the rotation back to the original.  We add this to the points child on the spike ball to ensure we are always checking for the player straight up.  
 

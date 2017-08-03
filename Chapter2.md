@@ -15,7 +15,7 @@ demo build of level 2
 
 Change the character's sprite sheet to use a bottom pivot point.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Select the **adventurer_tilesheet** sprite sheet.
  - Click Sprite Editor and Slice again, changing the 'Pivot' to 'Bottom'.
@@ -23,12 +23,12 @@ Change the character's sprite sheet to use a bottom pivot point.
 <img src="http://i.imgur.com/BuIsVWD.png" width=300px />
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 For the character, we are moving the pivot point to the 'Bottom'.  This allows us to position and rotate the character starting at the feet instead of the center of his body.  
 
 <hr></details>
-<details><summary>What's Pivot do?</summary>
+<details open><summary>What's Pivot do?</summary>
 
 A pivot point is the main anchor point for the sprite.  By default, pivot points are at the center of the sprite.  
 
@@ -46,7 +46,7 @@ The pivot point you select is going to impact how we create animations and imple
 
 Add a GameObject for the character with a walk animation. Change the order in layer to 2.  
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Hold Ctrl to select both **adventurer_tilesheet_9** and **10**.
  - Drag them into the Hierarchy.  When prompted, save the animation as Assets/Animations/**CharacterWalk**.anim
@@ -59,7 +59,7 @@ Add a GameObject for the character with a walk animation. Change the order in la
    - Add the sprite GameObject as a child.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 Dragging multiple sprites into the Hierarchy created:
  - The character's GameObject.
@@ -78,7 +78,7 @@ Click Play to test - your character should be walking (in place)!
 
 <hr></details>
 
-<details><summary>What's the difference between Animation and Animator?</summary>
+<details open><summary>What's the difference between Animation and Animator?</summary>
 
 An animat**ion** is a collection of sprites on a timeline, creating an animated effect similiar to a flip book.  Animations can also include transform changes, fire events for scripts to react to, etc to create any number of effects.
 
@@ -95,7 +95,7 @@ We will be diving into more detail about animations and animators later in the t
 
 Add a Rigidbody2D and a CapsuleCollider2D to the character.  Adjust the size as needed.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Select the Character parent GameObject:
    - Add a **Rigidbody2D**.
@@ -105,7 +105,7 @@ Add a Rigidbody2D and a CapsuleCollider2D to the character.  Adjust the size as 
 <img src="http://i.imgur.com/KFwBZeo.gif" width=150px />
 
 </details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 The rigidbody and collider enable physics for the character.  We size the collider to be used for standing on platforms, colliding with enemies, and picking up items.
 
@@ -115,7 +115,7 @@ Hit play and the character should now land on a platform... but might fall over:
 
 <hr></details>
 
-<details><summary>How do I know what size to make the collider?</summary>
+<details open><summary>How do I know what size to make the collider?</summary>
 
 The collider does not fit the character perfectly, and that's okay.  In order for the game to feel fair for the player we should lean in their favor.  When designing colliders for the character and enemies, we may prefer to make the colliders a little smaller than the sprite so that there are no collisions in game which may leave the player feeling cheated.
 
@@ -124,7 +124,7 @@ As the character animates, its limbs may be in different positions.  The collide
 In addition to killing the character when he comes in contact with an enemy, the collider is used to keep the character on top of platforms.  For this reason it's important that the bottom of the collider aligns with the sprite's feet.
 
 </details>
-<details><summary>Why not use a collider that outlines the character?</summary>
+<details open><summary>Why not use a collider that outlines the character?</summary>
 
 Bottom line, it's not worth the trouble.  Unity does not provide good tools for more accurate collisions on animating sprites.  Implementing this requires a lot of considerations and may be difficult to debug.
 
@@ -137,7 +137,7 @@ Most of the time the collisions in the game would not have been any different if
 
 Add a constraint to the character's rigidbody to freeze its rotation.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Select the Character:
    - Expand the rigidbody's 'Constraints'.
@@ -146,12 +146,12 @@ Add a constraint to the character's rigidbody to freeze its rotation.
 <img src="http://i.imgur.com/uXxDSwD.png" width=300px />
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 The character shouldn't fall over anymore.  In fact he will stand straight up even on slanted platforms.  This will be addressed later in the tutorial.
 
 <hr></details>
-<details><summary>Does freezing rotation mean the rotation can never change?</summary>
+<details open><summary>Does freezing rotation mean the rotation can never change?</summary>
 
 No.  Adding constraints to the rigidbody only limits the Unity physics engine. Freezing the rigidbody position or rotation means that even if you got hit by a bus, you would not move or rotate.  However you could have a custom component set the position or rotation at any time.
 
@@ -165,7 +165,7 @@ We use constraints to remove capabilities from Unity, allowing us more control w
 
 Add a script to the character to be able to move left and right once a controller is added.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Compenents/Movement/**WalkMovement**:
 
@@ -206,19 +206,19 @@ public class WalkMovement : MonoBehaviour
  - Add **WalkMovement** to the Character.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 Nothing yet.  This script enables movement, but requires a separate controller to function.
 
 A controller will set the desiredWalkDirection, then every FixedUpdate WalkMovement turn that into horizontal velocity on the rigidbody while preseving any vertical velocity (so not to interfere with gravity).
 
 <hr></details>
-<details><summary>What's a controller?  Why not read input here?</summary>
+<details open><summary>What's a controller?  Why not read input here?</summary>
 
 As discussed in chapter 1, Unity encourages a component based solution.  This means that we attempt to make each component focused on a single mechanic or feature.  Doing so simplifies debugging and enables reuse.  For example, we will be creating another enemy type which will use the same WalkMovement component created for the character above.
 
 <hr></details>
-<details><summary>Why set velocity instead of using AddForce?</summary>
+<details open><summary>Why set velocity instead of using AddForce?</summary>
 
 AddForce is a way of impacting a rigidbody's velocity indirectly.  Anytime you interact with either AddForce or velocity, a similar mechanic could be made using the other.
 
@@ -227,14 +227,14 @@ Generally the game feel when using AddForce has more gradual changes and for man
 So that's to say you could use AddForce here instead.  Maybe give it a try and see how it feels.  We select velocity because we want the controls for moving left and right to feel crisp.  Later in the tutorial we will use AddForce, for the jump effect.
 
 </details>
-<details><summary>Why FixedUpdate instead of Update?</summary>
+<details open><summary>Why FixedUpdate instead of Update?</summary>
 
 Update occurs once per rendered frame.  FixedUpdate occurs at a regular interval, every x ms of game time.  FixedUpdate may run 0 or more times each frame.
 
 FixedUpdate is preferred for mechanics which require some level of consistency or apply changes incrementally.  Physics in Unity are processed in FixedUpdated.  So when manipulating physics for the game such as we are here by changing velocity on the rigidbody, we do this on FixedUpdate to match Unity's expectatations. 
 
 </details>
-<details><summary>Why multiple by Time.fixedDeltaTime?</summary>
+<details open><summary>Why multiple by Time.fixedDeltaTime?</summary>
 
 It's optional. Anytime you make a change which includes some speed, such as walking, we multiply by the time elapsed so motion is smooth even when the frame rate may not be.  While using FixedUpdate, the time passed between calls is always the same - so Time.fixedDeltaTime is essentially a constant.  
 
@@ -250,7 +250,7 @@ Additionaly you may choose to adjust the time interval between FixedUpdate calls
 
 Add a script to the character to read user input and drive movement.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Compenents/Movement/**PlayerController**:
 
@@ -278,7 +278,7 @@ public class PlayerController : MonoBehaviour
  - Add **PlayerController** to the Character.
 
 </details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 The character should walk around (use arrow keys or WASD), but there is clearly work to be done:
 
@@ -287,7 +287,7 @@ The character should walk around (use arrow keys or WASD), but there is clearly 
 Note the character will always be looking right, even while walking left.  He can also walk off the screen and push the balls around.  This will all be addressed later in the tutorial.
 
 <hr></details>
-<details><summary>What is an Input 'Axis' and how are they configured?</summary>
+<details open><summary>What is an Input 'Axis' and how are they configured?</summary>
 
 Unity offers several ways of detecting keyboard/mouse/controller input.  'Axis' is the recommended approach.  Each input Axis may be configured in the inspector:
 
@@ -307,7 +307,7 @@ To read / detect Input, Unity offers a few APIs including:
 There are a ton of options, check out the [complete list of Input APIs](https://docs.unity3d.com/ScriptReference/Input.html).
 
 </details>
-<details><summary>Why not use a bool or Enum for Left/Right instead of a float?</summary>
+<details open><summary>Why not use a bool or Enum for Left/Right instead of a float?</summary>
 
 You could for the game we are making at the moment.  When playing with a keyboard, a button is down or it isn't.  
 
@@ -322,7 +322,7 @@ The WalkMovement desiredWalkDirection should be set to something in the range of
 
 Add a script to the character to be able to jump and update the player controller to match.  Play a sound effect when an entity jumps.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Compenents/Movement/**JumpMovement**:
 
@@ -379,7 +379,7 @@ public class JumpMovement : MonoBehaviour
 
  - Update **PlayerController**.cs by adding the code below (or copy/paste the full version - TODO link):
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
 using UnityEngine;
@@ -393,7 +393,7 @@ using UnityEngine;
 [RequireComponent(typeof(JumpMovement))]
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
 public class PlayerController : MonoBehaviour
@@ -407,7 +407,7 @@ public class PlayerController : MonoBehaviour
   JumpMovement jumpMovement;
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
   protected void Awake()
@@ -421,7 +421,7 @@ public class PlayerController : MonoBehaviour
     jumpMovement = GetComponent<JumpMovement>();
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
   }
@@ -445,7 +445,7 @@ public class PlayerController : MonoBehaviour
   }
 ```
 
-<details><summary>Existing code</summary>
+<details open><summary>Existing code</summary>
 
 ```csharp
 }
@@ -455,7 +455,7 @@ public class PlayerController : MonoBehaviour
 
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 When you press space, JumpMovement adds force to the entity causing it to jump up.  But you can spam the space bar to fly away.
 
@@ -464,7 +464,7 @@ A sound should play everytime you jump, you can adjust the volume in the AudioSo
 Like with walking, we use two separate components for this mechanic. JumpMovement enables the actual jump itself, allowing it to be used on another entity if we choose, and the PlayerController reads input in order to initiate jumps.
 
 <hr></details>
-<details><summary>Why AddForce here instead and what's 'Impulse'?</summary>
+<details open><summary>Why AddForce here instead and what's 'Impulse'?</summary>
 
 As discussed above when creating the WalkMovement component, you could always create mechanics using either AddForce or by modifying the velocity.
 
@@ -477,7 +477,7 @@ What is ForceMode2D.Impulse and how is it different from ForceMode2D.Force?
 These options have very similar effects on objects, the biggest difference is the scale (i.e. how much motion X creates when Impulse vs Force).   The unit for Impulse is defined as force per FixedUpdate.  The unit for Force is defined as force per second.  
 
 </details>
-<details><summary>How do you know when to use Update vs FixedUpdate for Input and rigidbodies?</summary>
+<details open><summary>How do you know when to use Update vs FixedUpdate for Input and rigidbodies?</summary>
 
 Unity recommends always using FixedUpdate when interacting with a rigidbody as physics is processed in FixedUpdate. 
 
@@ -491,7 +491,7 @@ For Input:
    - Always read events in Update.  Unity will not block or warn you when checking for an event in FixedUpdate, and most of the time it will work - but occasional bugs will arrise.
 
 <hr></details>
-<details><summary>Why is AudioSource on a GameObject vs just playing clips?</summary>
+<details open><summary>Why is AudioSource on a GameObject vs just playing clips?</summary>
 
 Audio playback in Unity is built to support 3D audio.  3D audio refers to the feature where the closer an object making noise is to your ear, the louder it is.  Additionally 3D sound is directional, so sounds to the players left would be loudest in the left speaker.
 
@@ -514,7 +514,7 @@ protected void Start()
 ```
 
 </details>
-<details><summary>Would two separate player controllers be a better component based solution?</summary>
+<details open><summary>Would two separate player controllers be a better component based solution?</summary>
 
 Maybe, but it feels like overkill.  The value of separating components is to allow us to mix and match to create new experiences.  In this tutorial, we have no use case for using one or the other player controller mechanic (i.e. just support walking or just support jumping).
 
@@ -525,7 +525,7 @@ Maybe, but it feels like overkill.  The value of separating components is to all
 
 Add a PlatformerEffector2D to each platform.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Select all of the Platform GameObjects.
    - Add **PlatformEffector2D**.
@@ -534,7 +534,7 @@ Add a PlatformerEffector2D to each platform.
 <img src="http://i.imgur.com/55YiY3N.gif" width=300px />
 
 </details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 The PlatformerEffector2D creates one-way collisions for our platforms.  This allows entities to jump through a platform and land on top -- a common mechanic for platformer games.
 
@@ -545,7 +545,7 @@ Click play to test it out.  You may need to increase the character's Jump Speed 
 Note that you may stick to the sides of a platform, we'll fix that next.
 
 <hr></details>
-<details><summary>Wow that was easy, what else like this can Unity do for 'free'?</summary>
+<details open><summary>Wow that was easy, what else like this can Unity do for 'free'?</summary>
 
 Effectors in Unity are easy ways to add various mechanics to the game.  The one-way collision effect we are using here happens to be a very common mechanic for 2D games, so Unity has this component ready to drop in.  
 
@@ -560,7 +560,7 @@ Read more about the [various 2d effectors in Unity](https://docs.unity3d.com/Man
 
 Reduce the PlatformerEffector2D Surface Arc to about 135.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Select all of the Platform GameObjects.
    - Change the 'Surface Arc' to '135'.
@@ -568,7 +568,7 @@ Reduce the PlatformerEffector2D Surface Arc to about 135.
 <img src="http://i.imgur.com/PH2XyEd.png" width=150px>
 
 </details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 This disables collisions on the sides of the platforms, preventing the character from sticking to the side in a strange way.
 
@@ -577,7 +577,7 @@ This disables collisions on the sides of the platforms, preventing the character
 The surface arc for an effector changes the supported region, in this case the surfaces which are collidable.  By reducing this we are causing the sides to be treated as non-collidable like the bottoms are by default. 
 
 <hr></details>
-<details><summary>Why not use surface arc of 1?</summary>
+<details open><summary>Why not use surface arc of 1?</summary>
 
 A very small surface arc still allows the primary use case to work correcly, i.e. you can still stand on platforms.  The sides, where a rounded edge appears, may not be collidable causing the character to fall off prematurely.  
 
@@ -590,7 +590,7 @@ You can adjust the surface arc to find a value that feels good.
 
 Create a pattern to use instead of destroying GameObjects directly, allowing an opportunity for objects to animate on death.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Compenents/Death/**DeathEffect**:
 
@@ -661,7 +661,7 @@ public class DeathEffectManager : MonoBehaviour
 ```
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 Nothing yet.  
 
@@ -670,7 +670,7 @@ This is a pattern we will leverage a few times in this tutorial, starting with t
 When an entity dies in the game, we call DeathEffectManager.PlayDeathEffectsThenDestroy instead of the usual Unity Destroy method.  This allows us to defer the actual Destroy call, and to spawn an explosion or play an animation on the sprite as it dies.
 
 <hr></details>
-<details><summary>Why not just play effects OnDestroy()?</summary>
+<details open><summary>Why not just play effects OnDestroy()?</summary>
 
 OnDestroy is called anytime the object is destroyed, but we only want the death effects to trigger in certain circumstances.  For example, when we quit back to the main menu, we do not want explosions spawning for character being destroyed while closing level 1.
 
@@ -683,7 +683,7 @@ This pattern was selected because:
 As always, there are probably a thousand different ways you could achieve similar results.
 
 </details>
-<details><summary>Why is there a public method that 'should not be called directly'?</summary>
+<details open><summary>Why is there a public method that 'should not be called directly'?</summary>
 
 PlayDeathEffects() in the DeathEffect class has a public method with a comment saying it 'should not be called directly'.  So why is it public?
 
@@ -696,7 +696,7 @@ Since DeathEffectManager is a class of its own, we would not be able to call a p
 You might also consider using nested classes.  For simplicity in the tutorial, we're not using nested classes as they can be a bit confusing.  If you are familiar with this topic, briefly you could make DeathEffectsManager a class nested inside DeathEffect and then make PlayDeathEffects() private, and the rest pretty much works the same.
 
 </details>
-<details><summary>Why are you using Mathf and not System.Math?</summary>
+<details open><summary>Why are you using Mathf and not System.Math?</summary>
 
 Unity offers the UnityEngine.Mathf class to try and make some things a little easier.  Basically it's the same APIs which are offered from the standard System.Math class (which is also still available to use if you prefer).  The main difference is all of the APIs in Mathf are focused on the float data type, where the System.Math class often prefers double.  Most of the data you interact with in Unity is float.  
 
@@ -709,7 +709,7 @@ TODO GetComponentsInChildren?
 
 When the player comes in contact with a spiked ball, kill him!
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Utils/**LayerMaskExtensions**:
 
@@ -779,7 +779,7 @@ public class KillOnContactWith : MonoBehaviour
 <img src="http://i.imgur.com/wrkb3eJ.png" width=300px />
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 We created a component to use on enemies which will initiate the death sequence for the Character anytime he touches one of the enemies colliders (both collisions and triggers).
 
@@ -790,7 +790,7 @@ Hit play to watch the player die:
 For now, to test again stop and hit play again.  We'll respawn the player later in the tutorial.
 
 <hr></details>
-<details><summary>What is a C# extension method and why use it?</summary>
+<details open><summary>What is a C# extension method and why use it?</summary>
 
 Extension methods are a way of adding additional methods to a class or struct you don't own.  In this example, Unity has a struct 'LayerMask'.  That struct does not offer an easy way to determine if a layer is part of that LayerMask.  Using extensions, we are able to create an 'Includes' method that then can be used as if Unity had written it for us.
 
@@ -809,12 +809,12 @@ if(layersToKill.Includes(gameObjectWeJustHit.layer))
 ```
 
 </details>
-<details><summary>What is this '& 1 <<' black magic?</summary>
+<details open><summary>What is this '& 1 <<' black magic?</summary>
 
 Bitwise operations... which are beyond the scope of this tutorial.  More specifically, this is 'bitwise and' and 'bit shifting' if you would like to read more about this.  Here is a [Stackoverflow post on the topic](http://answers.unity3d.com/questions/8715/how-do-i-use-layermasks.html).
 
 <hr></details>
-<details><summary>Why is there an empty Start method and why check if enabled?</summary>
+<details open><summary>Why is there an empty Start method and why check if enabled?</summary>
 
 We will need the ability to disable this component later in the tutorial.  
 
@@ -823,7 +823,7 @@ A disabled component will not get called for events such as Update.  However it 
 Unity only allows you to use the enable / disable feature if it detects that there is a method in the script which would be impacted.  We added an empty Start method to get the enable / disable feature since Unity does not enable enable by checking 'if(enabled)' in code.
 
 <hr></details>
-<details><summary>Why kill on trigger enter vs just on collision?</summary>
+<details open><summary>Why kill on trigger enter vs just on collision?</summary>
 
 Later in the tutorial we will be adding ladders for entities to climb.  In order to allow entities to walk down ladders (and therefore through a floor), we temporarily disable collisions.  While in on a ladder, we still want enemies to be able to kill the character.
 
@@ -837,7 +837,7 @@ As always, there are other ways this could have been handled.
 
 Create an explosion particle system and save it as a prefab.  
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create an empty GameObject:
    - Name it "Explosion".
@@ -878,7 +878,7 @@ Create an explosion particle system and save it as a prefab.
  - Drag the 'Explosion' into Assets/Prefabs and delete the GameObject.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 We created a particle system to represent a simple explosion and added a sound effect to match.  The 'system' is just 3 particles which look a bit like clouds.  They scale and color overtime to create the effect.  
 
@@ -894,21 +894,21 @@ Briefly, the rational for each change recommended above:
  - Emission: Defines when and how many particles to create.  We are using exactly 3 particles for each explosion.
 
 <hr></details>
-<details><summary>What's a particle / particle system?</summary>
+<details open><summary>What's a particle / particle system?</summary>
 
 A particle is a small 2D image managed by a particle system.  It's optimized to display a large number of similar particles at the same time, possible with different colors, sizes, etc.
 
 A Particle System component animates a large numbers of particles to create effects such as fluid, smoke, and fire. Read more about [Particle Systems from Unity](https://docs.unity3d.com/Manual/class-ParticleSystem.html).
 
 </details>
-<details><summary>Why not use the entire MobileExplosion prefab?</summary>
+<details open><summary>Why not use the entire MobileExplosion prefab?</summary>
 
 You could, but for this tutorial we are creating WebGL builds of the game.  WebGL does not perform as well in general, and the performance tanks if you use the entire ExplosionMobile prefab.  Effects that would be perfectly fine in the Unity editor and as a desktop build may not work well in the browser. 
 
 If you are not going to build for WebGL, go ahead and try using the ExplosionMobile prefab or other particle system you think looks good.
 
 </details>
-<details><summary>Could you RNG select the clip to play?</summary>
+<details open><summary>Could you RNG select the clip to play?</summary>
 
 Anything is possible.  Here's a little code sample that may help you get started.  
 
@@ -942,7 +942,7 @@ protected void OnEnable()
 
 Add a script which spawns the explosion prefab when the character dies.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Compenents/Death/**DeathEffectSpawn**:
 
@@ -979,14 +979,14 @@ public class DeathEffectSpawn : DeathEffect
    - Assign the Explosion prefab to 'Game Object To Spawn'.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 DeathEffectSpawn will spawn in another GameObject when this entity it's on dies.  In this case, we spawn the explosion when the character dies:
 
 <img src="http://i.imgur.com/XhhkRpC.gif" width=150px />
 
 <hr></details>
-<details><summary>Why not spawn the explosion at transform.position instead of bounds.center?</summary>
+<details open><summary>Why not spawn the explosion at transform.position instead of bounds.center?</summary>
 
 The character sprite was configured with Pivot 'Bottom'.  The transform.position refers to the location of this pivot point.  If we were to target tranform.position instead, the explosion would center around the character's feet.
 
@@ -1003,7 +1003,7 @@ We use the collider's bounds to determine where to spawn the explosion.  The [bo
 
 Create a script to destroy the explosion GameObject after the effect completes.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Compenents/Death/**SuicideIn**:
 
@@ -1032,12 +1032,12 @@ public class SuicideIn : MonoBehaviour
  - Add **SuicideIn** to the explosion prefab.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 This component starts DeathEffects for a GameObject (which in turn will destroy the GameObject) after a period of time.  We use it on the explosion to prevent a memory leak by deleting it's GameObject after the explosion itself is no longer visible.
 
 <hr></details>
-<details><summary>Why bother, the explosion is not visible after a few seconds?</summary>
+<details open><summary>Why bother, the explosion is not visible after a few seconds?</summary>
 
 Similar to how we destroyed balls which rolled off the bottom of the screen in chapter 1, we need to ensure the explosion GameObjects are destroyed at some point.
 
@@ -1052,7 +1052,7 @@ In other words, this script ensures that our explosions do not result in a memor
 
 Add a scaling effect for the character dieing, in addition to the explosion.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Create script Code/Compenents/Death/**DeathEffectThrob**:
 
@@ -1110,14 +1110,14 @@ public class DeathEffectThrob : DeathEffect
  - Add **DeathEffectThrob** to the Character.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details open><summary>What did that do?</summary>
 
 When the DeathEffects for an entity are initiated, this component will scale the sprite up and down while shrinking it overall until it's gone.
 
 TODO gif
 
 <hr></details>
-<details><summary>Why not use an animation instead?</summary>
+<details open><summary>Why not use an animation instead?</summary>
 
 You could.  There are numerious ways to create animations and effects - in this tutorial we cover a few different approaches just for the experience.
 
@@ -1137,7 +1137,7 @@ Additionally to review, you may want to:
  - Maybe try different particle systems for the explosion death effect.
  - Cut a test build and try it outside of the Unity editor environment.
 
-<details><summary>How do you sort components on a GameObject?</summary>
+<details open><summary>How do you sort components on a GameObject?</summary>
 
 The order does not impact anything.  So why bother?  Just tidyness really.   As the number of components grows it may be nice to have them presented in an order you find more intuative.
 
