@@ -6,9 +6,11 @@ TODO intro
 
 The goal of the game is to save the beautiful mushroom.  For level 1, that means getting close - but before you actually reach it the evil cloud is going to carry the shroom up to level 2.  
 
-Here we detect the end of the game, but the cloud animation will be added later in the tutorial.
+Here we detect the end of the game, the cloud animation will be added later in the tutorial.
 
 <details><summary>How</summary>
+
+Design the win area:
 
  - Create an empty GameObject named "WinArea".
    - Add a **BoxCollider2D** sized to cover the area that when entered will end the level.
@@ -21,7 +23,9 @@ Here we detect the end of the game, but the cloud animation will be added later 
 
 <img src="http://i.imgur.com/WuW9hPk.png" width=300px />
 
- - Create script Code/Components/Effects/**TouchMeToWin**:
+<br>Inform the LevelManager when the player won:
+
+ - Create script Components/Effects/**TouchMeToWin**:
 
 ```csharp
 using UnityEngine;
@@ -64,47 +68,59 @@ public class TouchMeToWin : MonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-We put a large trigger collider around the mushroom.  When the character enters this area, TouchMeToWin will end the level.  The collider is configured to use a layer which only interacts with the player so enemies cannot accidentally end the level.
+Design the win area:
+
+We put a large trigger collider around the mushroom.  When the character enters this area, it will trigger the end the level.  The collider is configured to use a layer which only interacts with the player so enemies cannot accidentally end the level.
+
+<br>Inform the LevelManager when the player won:
 
 TouchMeToWin counts the total number of these special zones in the world.  For level 1 we are only using one but for level 2 there will be more.  When the last one is disabled (by the character entering that area), we call YouWin on the LevelManager which will own starting the end sequence / switching to level 2.
 
-We check if the TouchMeToWin component is enabled before processing the trigger enter so that an area does not call YouWin multiple times.
+An enabled check is included to ensure we an area does not call YouWin multiple times.
 
 <hr></details>
 
 
 ## Win animation
 
-When the character reaches the win area, play the animation which
+When the character reaches the win area, play a Timeline to animate the end of the level.
 
 <details><summary>How</summary>
 
+Create a win animation:
+
  - Create another animation for the evil cloud, Animations/**CloudLevel1Exit** to play when the player wins.
-   - You may not be able to record if the Timeline window is open.
+   - You may not be able to record if the Timeline Editor window is open.
    - Select Animations/CloudLevel1Exit and disable Loop Time.
+
+<br>Create a win Timeline:
+
  - Right click in Assets/Animations -> Create -> Timeline named **Level2Exit**.
    - Select the evil cloud's sprite GameObject and in the Inspector change the Playable Director's 'Playable' to Level2Exit.
 
 <img src="http://i.imgur.com/Jsah6Ll.png" width=300px />
 
- - In the Timeline window, click 'Add' then 'Animation Track' and select the evil cloud's child GameObject with the animator.
+ - In the Timeline Editor window, click 'Add' then 'Animation Track' and select the evil cloud's child GameObject with the animator.
  - Right click in the timeline and 'Add Animation From Clip' and select the CloudLevel1Exit animation.
 
 <img src="http://i.imgur.com/xcR7HWr.gif" width=300px />
 
  - Select the box which appeared for the animation, and in the Inspector modify the speed.
-   - Hit play in the Timeline to preview the speed.  The value is going to depend on how you created the animation.
+   - Hit play in the Timeline Editor to preview the speed.  The value is going to depend on how you created the animation.
+
+<br>Hide the mushroom during the animation:
+
  - Select the mushroom GameObject and drag it into the timeline.
    - Adjust the timeframe so that it starts at the beginning of the timeline and ends when you want the mushroom to disappear.
    - Select the track's row and in the Inspector change the 'Post-playback state' to 'Inactive'.
 
 <img src="http://i.imgur.com/W9lejAB.png" width=300px />
 
- - Drag in the evil cloud's child GameObject and create another Activation track.
-   - Size this track to fit the entire timeline.
-   - Change the Post-playback state to Inactive.
  - Select the evil cloud's sprite GameObject and in the Inspector change the Playable Director's Playable back to Level1Entrance.
- - Update LevelManager:
+
+<br>Start the Timeline at the end of the level:
+
+ - Update **LevelManager**:
 
 <details><summary>Existing code</summary>
 
@@ -235,7 +251,21 @@ public class LevelManager : MonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-When the Character reaches the win area, the Evil Cloud plays its end of level animation.  
+Create a win animation:
+
+Another animation was created to play when the player wins.  We leave it up to you what this looks like and how long the animation plays for.  
+
+<br>Create a win Timeline:
+
+A new Timeline is created for the win sequence.  We add the animation just created and adjust the speed as needed.
+
+<br>Hide the mushroom during the animation:
+
+An Activation Track is used to hide the mushroom when the animation is nearly complete.  Setting the post-playback state to inactive ensures that the mushroom does not return when the Timeline completes.
+
+<br>Start the Timeline at the end of the level:
+
+When the win condition is triggered, the LevelManager changes the Evil Cloud's Playable Director to play the end of level Timeline just created.
 
 <hr></details>
 <details><summary>Why switch the Playable when editing Timelines?</summary>
@@ -253,6 +283,8 @@ On a related note, you can't edit an animation if the Timeline window is open.  
 When the level is over, stop the spawners and freeze the character and enemies while the evil cloud animation plays.
 
 <details><summary>How</summary>
+
+Create a script to disable certain mechanics:
 
  - Create script Components/Controllers/**DisableComponentsOnEndOfLevel**:
 
@@ -293,11 +325,13 @@ public class DisableComponentsOnEndOfLevel : MonoBehaviour
 }
 ```
 
+<br>Configure disabling for GameObjects:
+
  - Select the Character prefab.
-   - Add **DisableComponentsOnEndOfLevel** and to the components list, add:
-     - Rigidbody2D.
-     - PlayerController.
-     - The character's animator.  You can do this by:
+   - Add **DisableComponentsOnEndOfLevel** and to the components list, add 3 items:
+     - Its Rigidbody2D.
+     - Its PlayerController.
+     - The character's animator (which is on the child GameObject).  You can do this by:
        - Open a second Inspector by right click on the Inspector tab and select Add Tab -> Inspector.
        - With the Character's parent GameObject selected, hit the lock symbol in one of the Inspectors.
        - Select the character's child sprite, then drag the Animator from one Inspector into the other.
@@ -306,13 +340,15 @@ public class DisableComponentsOnEndOfLevel : MonoBehaviour
 
  - Unlock the Inspector.
  - Select the Fly Guy prefab.
-   - Add **DisableComponentsOnEndOfLevel** and add the rigidbody and animator.
+   - Add **DisableComponentsOnEndOfLevel**, and add its Rigidbody2D and Animator.
  - Select the Spike Ball prefab.
-   - Add **DisableComponentsOnEndOfLevel** and add the rigidbody.
- - For each the Evil cloud and Door:
-   - Add **DisableComponentsOnEndOfLevel** and add the spawner.
- - Update LevelManager to call DisableComponentsOnEndOfLevel:
+   - Add **DisableComponentsOnEndOfLevel** and add its Rigidbody2D.
+ - For the Evil Cloud and the Door:
+   - Add **DisableComponentsOnEndOfLevel** and add its Spawner.
 
+<br>Call scripts at the end of the level:
+
+ - Update **LevelManager** to call DisableComponentsOnEndOfLevel:
 
 <details><summary>Existing code</summary>
 
@@ -413,15 +449,26 @@ public class LevelManager : MonoBehaviour
 
 </details>
 
-
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-At the end of the level, the LevelManager calls each DisableComponentsOnEndOfLevel component. This component then disables other components to make the game freeze during our end of level animation.
+Create a script to disable certain mechanics:
+
+This script exposes a public method to be called when the level ends.  It will disable a list of components, typically on the same GameObject or a child GameObject.
+
+Depending on the type of component, our approach to 'disabling' differs.
+
+<br>Configure disabling for GameObjects:
+
+At the end of the level, the LevelManager will call each DisableComponentsOnEndOfLevel component. This component then disables other components on the GameObject to make the game freeze during our end of level animation.
 
  - Entities disable their rigidbody to stop gravity and the animator to stop playback.
  - The Character also disables the PlayerController so that input does not cause the sprite to flip facing direction.
  - Spawners stop the spawn coroutine so no more enemies appear.
+
+<br>Call scripts at the end of the level:
+
+When the LevelManager detects the win condition, it's updated to call each of the DisableComponentsOnEndOfLevel components in the scene.
 
 <hr></details>
 <details><summary>Why not just set timeScale to 0?</summary>
@@ -431,6 +478,25 @@ You could, but some things would need to change a bit.
 We don't want everything to pause.  The evil cloud animation needs to progress.  If you change the timeScale, you will need to modify the Animators to use Unscaled time -- otherwise the animations would not play until time resumed.
 
 <hr></details>
+<details><summary>Why not just destroy all the components instead?</summary>
+
+Destroying a component is an option.  Once destroyed, that component stops but the rest of the GameObject is still in-tact.
+
+Errors occur if we attempt to destroy the components mentioned above due to other components requiring the ones we removed.  If we wanted to switch to destroying components instead, we would need to be more selective in which components are included to avoid dependancy issues.  Because of this, it's simplier to disable than destroy.
+
+<hr></details>
+<details><summary>What's rigidbody simulated=false do?</summary>
+
+Setting simulated to false on the rigidbody effectively disables the component.  The rigidbody does not support an 'enabled' flag like scripts do - 'simulated' is their equivalent.
+
+<hr></details>
+<details><summary>What's the lock symbol do?</summary>
+
+Many of the windows in Unity have a lock symbol in the top right.  Clicking this will freeze the selection for that window.  So if you select a GameObject you can freeze the Inspector, allowing you to continue navigating other files while still having that same GameObject's properties displayed in the Inpsector.
+
+This is handy for various things such as above where we want one GameObject to reference another GameObject's component.  Open two Inspectors, select the first GameObject and lock one of the Inspector windows... now you can select the other GameObject and you have one Inspector for each.
+
+<hr></details>
 
 ## Create a new empty scene
 
@@ -438,7 +504,7 @@ Create a new scene which will be used for level 2.  Add both levels to the build
 
 <details><summary>How</summary>
 
- - Add scene to build settings with menu File -> Build Settings:
+ - Add scene to build settings with menu File -> Build Settings.
    - Click "Add Open Scenes" to add the current scene (level 1).
  - Create a new scene with File -> New Scene.
    - Save it as Assets/Scenes/**Level2**.
@@ -448,7 +514,7 @@ Create a new scene which will be used for level 2.  Add both levels to the build
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-We have a separate scene to manage each level.  By adding these to the build settings, we are informing Unity that these scenes should be made available -- allowing us to transition to one either by name or by index (their position in the build settings list).
+We have a separate scene to manage each level.  By adding these to the build settings, we are informing Unity that these scenes should be included in the build -- allowing us to transition to one either by name or by index (their position in the build settings list).
 
 <hr></details>
 <details><summary>Why not use just one scene for the game?</summary>
@@ -467,7 +533,7 @@ After the level ends, load level 2.
 
 <details><summary>How</summary>
 
- - Create script Code/Components/Animations/**ChangeScenePlayable**:
+ - Create script Playables/**ChangeScenePlayable**:
 
 ```csharp
 using UnityEngine;
@@ -497,12 +563,16 @@ public class ChangeScenePlayable : BasicPlayableBehaviour
  - Change the Evil Cloud Director back to Level1Entrance.
 
 <hr></details><br>
+<details><summary>What did that do?</summary>
+
+ChangeScenePlayable allows us to define when to load the next scene in the Timeline directly.  This is handy as we are designing the end sequence so that we don't need to manage a countdown that aligns with our animations.
+
+</details>
 <details><summary>What's SceneManager.LoadScene do?</summary>
 
-Calling LoadScene will Destroy every GameObject in the scene, except for any which are DontDestroyOnLoad like our GameController, and then load the requested scene.
+Calling LoadScene will Destroy every GameObject in the scene, except for any which are DontDestroyOnLoad like our GameController, and then loads the requested scene.
 
 The scenes available to load are defined in Build Settings.  You must add scenes you want to load there.  Once in Build Settings you can load a scene by its filename, as we do here ('Level2'), or you can load by index (the order of the scene in build settings.)
-
 
 <hr></details>
 
@@ -512,27 +582,34 @@ Display the number of points in the top right.
 
 <details><summary>How</summary>
 
- - In the Heirarchy, right click select UI -> Text.
+Create and position the points text:
+
+ - In the Heirarchy, right click create UI -> **Text**.
    - This creates a Canvas and a Text GameObject.
  - Select the "Text" GameObject:
    - Name it "Points".
-   - Change the anchor top right (you may need to zoom out a lot).
+   - Pivot: (1, 1)
+   - Paragraph Alignment: Right
+   - Anchor: Top right
 
 <img src="http://i.imgur.com/xPFe8kV.png" width=300px />   
 
- - Change the Paragraph Alignment to Right.
- - Use the move tool to position the text in the top right.
+ - Use the move tool to position the text in the top right (you may need to zoom out a lot).
  
 <img src="http://i.imgur.com/r7g1W7y.png" width=500px />
 
- - Change the color to white.
- - Change the font.  We are using kenpixel_future.
- - Increase the font size to 32 (text may disapear).  
- - Increase the height to 40 (text should be too large at this point).
- - Increase the width to 500.
- - Use the scale tool to scale down until its a good size.
- - Change the Pivot to (1, 1).
- - Use the move tool to reposition the text.
+<br>Style the text:
+
+ - Select the Text GameObject:
+   - Color: white
+   - Font: kenpixel_future
+   - Font size: 32 (text may disapear)
+   - Height: 40 (text should be too large)
+   - Width: 500
+   - Use the scale tool to scale down until its a good size.
+
+<br>Update the text when the player earns points:
+
  - Create script Components/UI/**TextPoints**:
 
 ```csharp
@@ -574,12 +651,28 @@ public class TextPoints : MonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-A canvas was created to hold the text for points, we'll add more to this canvas soon.  We anchor the text to the top right and position it in the corner.  We set the font size too large and then scale down to size to get a crisp display.
+Create and position the points text:
+
+A canvas was created to hold the text for points, we'll add more to this canvas soon.  We set the anchor and pivot to the top right and position the text in the corner of the canvas.
+
+<br>Style the text:
+
+Kenpixel_future is a fixed width font, which makes the points look a little better as the values are changing.  We set the font size too large and then scale down to size to get a crisp display.
+
+<br>Update the text when the player earns points:
+
+TextPoints uses Lerp to scroll the number of points displayed up until reaching the current value.  This means if the player earns 100 points, we may see 10 the first frame and 17 the second frame, 20 the third, etc where the number of points increasing each frame slows down as it approaches the actual value.
 
 <hr></details>
-<details><summary>What's a canvas do?</summary>
+<details><summary>What's a canvas do and why is our level so small in comparision?</summary>
 
 The Canvas is a container holding UI.  It allows Unity to manage features such as automatically scaling UI to fit the current resolution.  Unity offers components such as the VerticalLayoutGroup which help in getting positioning and sizing correct.
+
+Canvas appears in the Scene window along side other objects in the game.  It's huge, and overlaps the world center a little.  This is an arbitrary decision from Unity - the Canvas is actually completely separate from the rest of the game.  I believe they choose to display this way as a simplification so you don't need another window for editing.
+
+You can use the Layers button in the editor to hide UI if you prefer, allowing you to just look at the game or level design.
+
+<img src="http://i.imgur.com/ewCoCiB.png" width=300px />
 
 <hr></details>
 <details><summary>Why size the font too large and then scale it down?</summary>
@@ -593,7 +686,7 @@ Here is an example, the top is sized only using font size while the bottom is ov
 <hr></details>
 <details><summary>What is a RectTransform, how does it differ from a Transform?</summary>
 
-A RectTransform is the UI version of the Transform used for GameObjects.  RectTransform inherhits from Transform, adding features specifically for UI positioning such as pivot points and an anchor.
+A RectTransform is the UI version of the Transform used for GameObjects.  RectTransform inherhits from Transform, adding features specifically for UI positioning such as pivot points and an anchor.  Anything displayed in a Canvas must use a RectTransform... as that is how Canvas does layout and positioning.
 
 <hr></details>
 <details><summary>Why use ceiling here?</summary>
@@ -612,6 +705,16 @@ Pivot point is the spot in the GameObject which is used for positioning against 
 Unity also offers the Canvas Scaler component on the Canvas GameObject which can be used to automatically update position and sizing when the resolution changes.
 
 <hr></details>
+<details><summary>What's C# ToString("N0") do?</summary>
+
+ToString is available on all types in C#.  When using ToString to convert a number, you may optionally include format codes like this.  "N0" is a common one.
+
+ - "N" states it should formatted as a number, with commas in the states and periods in Europe, etc (e.g. 12,000,000).
+ - "0" means any decimal places should not be included (e.g. 1000.234 would display as 1,000).
+
+There are a lot of options when it comes to generating strings.  Read [more from Microsoft here](https://docs.microsoft.com/en-us/dotnet/standard/base-types/formatting-types).
+
+<hr></details>
 
 ## UI for lives
 
@@ -619,19 +722,23 @@ Add sprites to display how many lives remain.
 
 <details><summary>How</summary>
 
- - Add an Empty GameObject as a child to the Canvas.
+Add sprites for lives:
+
+ - Add an Empty GameObject as a child to the Canvas, named "Lives".
    - Add **HorizontalLayoutGroup**:
-     - Set the Spacing to 30.
-     - Child Alignment: Upper Right.
-     - Uncheck Child Force Expand Width.
- - Add an Image to the Canvas as well, named "Life".
+     - Spacing: 30
+     - Child Alignment: Upper Right
+     - Uncheck Child Force Expand Width
+ - Add an **Image** to the Canvas as well, named "Life".
    - Change the Source Image.  We are using **spritesheet_jumper_62**.
- - Copy / paste Life so that there are 3.
- - Position the Lives GameObject under points.
+   - Copy / paste Life so that there are 3.
+ - Position the Lives GameObject under the Points.
 
 <img src="http://i.imgur.com/yZXrKUG.png" width=150px />
 
- - Create script Code/Components/UI/**LifeLine**:
+<br>Animate hiding the life sprite on death:
+
+ - Create script Components/UI/**LifeLine**:
 
 ```csharp
 using System;
@@ -653,13 +760,20 @@ public class LifeLine : PlayerDeathMonoBehaviour
 ```
 
  - Select each of the Life GameObjects (all 3).
-   - Add **LifeLine**.  Change the lifeCount for each so that the first one is 3, the second 2, and the last 1.
+   - Add **LifeLine**:
+     - Change the lifeCount for each so that the first is 3, the second 2, and the last 1.
    - Add **DeathEffectThrob**.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-We added an Image to the canvas for each life point that the player has remaining.  When the player dies, DeathEffectThrob causes the life sprite to animate its death.
+Add sprites for lives:
+
+3 sprites were added to represent the number of lives remaining.  The  HorizontalLayoutGroup is used to position the sprites -- this approach is optional, there are other ways you could have achieved the same layout.
+
+Animate hiding the life sprite on death:
+
+When the player dies, LifeLine triggers DeathEffects on itself if the player just lost the life point that sprite represents.  DeathEffectThrob causes the sprite to animate its death by scaling up and down and getting smaller until its gone.
 
 <hr></details>
 <details><summary>How does the HorizontalLayoutGroup work?</summary>
@@ -676,6 +790,12 @@ The Horizontal Layout Group places its child GameObjects next to each other, sid
 Image is essentially a special kind of sprite with a RectTransform, to be used with a Canvas.  The Canvas and its associated components, such as the HorizontalLayoutGroup, only work with GameObjects that have a RectTransform.
 
 <hr></details>
+<details><summary>What does Child Force Expand Width?</summary>
+
+Force Expand Width will automatically increase the Spacing so that the Images fill the entire container.  If we were to use this, and get things positioned correctly by modifying the RectTransform width - it may look correct at the start but once one of the lives is destroyed, the others would re-layout to fill that gap... and that would look wrong.
+
+<hr></details>
+
 
 ## Main menu
 
@@ -683,28 +803,47 @@ Create a main menu to show at the start of the game.  Allow the player to start 
 
 <details><summary>How</summary>
 
+Create the Mene scene:
+
  - Create a new Scene, save it as Scenes/**Menu**.
    - Add the Scene to Build Settings.
+     - Drag and drop it so that it is the first scene in the list.
  - Add the GameController prefab.
- - Add a Platform to the bottom with a **BoxCollider2D** and the **Floor** layer.
- - Add the Character prefab and remove the **PlayerController** component.
+
+<br>Design the scene:
+
+ - Add a Platform sprite to the bottom.
+   - Add **BoxCollider2D**.
+   - Layer: **Floor**
+ - Add the Character prefab.
+   - Add **WanderWalkController**.
+   - Add **BounceOffScreenEdges**.
+   - Remove the **PlayerController**.
 
 <img src="http://i.imgur.com/QCrcf66.png" width=150px />
 
- - Add **WanderWalkController** and **BounceOffScreenEdges**.
- - Add the Evil Cloud sprite and create an animation to loop, named Animations/**MenuCloud**.
+ - Add the Evil Cloud sprite
+   - Create an animation to loop, named Animations/**MenuCloud**.
    - Adjust the playback speed in the Animation Controller.
- - Create UI -> Button, name it "Play".
+
+<img src="http://i.imgur.com/dM4LFPk.png" width=300px />
+
+<br>Add a play button:
+
+ - Create UI -> Button, named "Play".
  - Select the Canvas GameObject:
-   - Change the Canvas Scaler UI Scale Mode to 'Scale with Screen Size'.
+   - Canvas Scaler UI Scale Mode: **Scale with Screen Size**
  - Select the Play GameObject:
    - Change the Source Image.  We are using **spritesheet_tiles_22**.
    - Position the button on the menu screen.
  - Select the Text GameObject under Play.
-   - Change the Text to "Play".
-   - Change the Color to black.
-   - Change the Font Size to 50.
-   - Adjust the RectTransform Top to about -22 so the text is positioned well on the sign.
+   - Text: "Play"
+   - Color: black
+   - Font Size: 50
+   - RectTransform Top: about -22 so the text is positioned well on the sign.
+    
+<img src="http://i.imgur.com/bDZ5dr5.png" width=150px />
+
  - Create script Code/Components/UI/**ButtonChangeScene**:
 
 ```csharp
@@ -733,7 +872,9 @@ public class ButtonChangeScene : MonoBehaviour
 
 <img src="http://i.imgur.com/8EHUfAd.gif" width=300px />
 
- - Update LevelManager to change scenes when you lose.
+<br>Return to the menu after losing:
+
+ - Update Components/Controllers/**LevelManager**:
 
 <details><summary>Existing code</summary>
 
@@ -859,9 +1000,39 @@ public class LevelManager : MonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-Game starts at the menu scene, a button starts level 1 and when you lose you return to the menu.
+Create the Mene scene:
 
-The screen uses the character with a couple modifications so that it moves automatically like the Fly Guy in level 1 does.  An evil cloud sprite was added and it circles the screen on a loop.
+A scene for the Menu was added as the first scene in build settings so that it's what you see first when starting the game.  
+
+<br>Design the scene:
+
+A simple platform was added the bottom for the character to walk on.  The character prefab is reused but we modify the configuration, swapping the PlayerController for the random movement components we used on FlyGuy.
+
+<br>Add a play button:
+
+When the button was added, a Canvas was automatically created.  Canvas was configured to Scale with Screen Size so that the button looks the same at all resolutions.
+
+ButtonChangeScene exposes a public method that we wire up to be called by Unity's Button component when the button is clicked.
+
+<br>Return to the menu after losing:
+
+The LevelManager was updated, leveraging the YouLose placeholder created earlier to return to the menu once the player is out of lives.
+
+<hr></details>
+<details><summary>Does order matter for scenes in the Build Settings?</summary>
+
+The first enabled scene in Build Settings list is what appears first when playing the game.  Drag and drop scenes to change their order in that list.
+
+You can disable scenes in Build Settings by unchecking the box, this excludes that scene from the build.  You can also select and hit Delete.
+
+The order beyond the first does not matter for anything except for the index ID they are assigned.  When loading a scene you can either load by name or by index.  
+
+I prefer using the name, as code is easier to follow.  You might also consider using an enum to define each scene in the correct order.  This way it's easier to maintain code if scene names or the order changes.
+
+<hr></details>
+<details><summary>Why Remove Component instead of disable it?</summary>
+
+Either way should work.  I find it more clear to remove the component instead of just leaving it disabled as it's easier to understand what's happening with that GameObject.  Several times in this tutorial we have GameObjects with components which are disabled by default - all of them may be enabled if the right use case triggers it.  So removing the component clearly indicates there is no PlayerController in the menu, vs maybe there is a hidden way of enabling it.
 
 <hr></details>
 <details><summary>How does the Canvas Scaler / Scale with Screen Size work?</summary>
@@ -878,7 +1049,6 @@ To call an event, you first select the GameObject you want to operate on.  Once 
 Often you will be calling an event on the same object like we did here.
 
 <hr></details>
-
 
 ## Level 2
 

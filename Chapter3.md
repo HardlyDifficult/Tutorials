@@ -1017,6 +1017,8 @@ To be more flexible, we could have a default position for the Character defined 
 
 <hr></details>
 
+TODO about FindObject here?
+
 ## 3.14) Clear and restart the level on death
 
 Add scripts to kill all the enemies and restart spawners when the character dies.

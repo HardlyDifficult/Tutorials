@@ -94,7 +94,11 @@ TODO create directory struture
 We are using:
  - [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) **spritesheets/spritesheet_ground.png**.
 
+TODO check if the sprites present a compression warning.
+
 TODO other assets 
+
+TODO talk about how using sprites instead of sprite sheets helps to avoid some visual issues.  The sprite packer can be used to dynamically create sheets for optimization later - but not in this tutorial.
 
 <hr></details><br>
 <details><summary>Can I name folders differently?</summary>
@@ -196,7 +200,7 @@ Update each sprite's and sprite sheet's import settings to use filter mode point
 
 Using point filter mode gets us closer to pixel perfect sprites and prevents some visual glitches.
 
-Filter mode of Bilinear or Trilinear blurs the image a bit in attempt to make smooth lines.  Often for a 2D game, we want control down to the pixel and this effect is not desirerable.  Here's an example with the character sprite we will be using:
+Filter mode of Bilinear or Trilinear blurs the image a bit in attempt to make smooth lines.  Often for a 2D game, we want control down to the pixel and this effect is not desirable.  Here's an example with the character sprite we will be using:
 
 <img src="http://i.imgur.com/AYyx3Ma.png" width=150px />
 
