@@ -1,3 +1,13 @@
+Code changes
+ - Delete SpriteExtensions
+ - RotateOvertimeToOriginal renamed rotationFactor
+   - Add FAQ about yield break;
+   - Add FAQ on Quaternion lerp
+ - Rename LevelManager to LevelController
+ - Rename Suicide to Destroy WhenPlayerDies and OutOfBounds
+  - FAQ on why a sub class TimelineEventPlayable.EventType
+  - Configure ladderFilter on LadderMovement
+
  Add a 'Rigidbody2D' component to the spike ball.
  - Create a script **Spawner** under Assets/Code/Compenents/Life and paste the following:
 
@@ -12,6 +22,8 @@ Concepts to include on first mention
  - Class vs struct
  - Auto properties
  - Smart properties
+
+TODO: No sprite sheets!  just sprites.
 
 Image sizes: 50, 150, 300, 500, 700.  Prefer: 300 
 

@@ -540,7 +540,10 @@ public class WanderWalkController : MonoBehaviour
   IEnumerator Wander()
   {
     walkMovement.desiredWalkDirection = 1;
-    yield return new WaitForSeconds(timeBeforeFirstWander);
+    if(timeBeforeFirstWander > 0) 
+    {
+      yield return new WaitForSeconds(timeBeforeFirstWander);
+    }
 
     while(true)
     {
@@ -1652,7 +1655,10 @@ public class WanderWalkController : MonoBehaviour
   IEnumerator Wander()
   {
     walkMovement.desiredWalkDirection = 1;
-    yield return new WaitForSeconds(timeBeforeFirstWander);
+    if(timeBeforeFirstWander > 0) 
+    {
+      yield return new WaitForSeconds(timeBeforeFirstWander);
+    }
 
     while(true)
     {

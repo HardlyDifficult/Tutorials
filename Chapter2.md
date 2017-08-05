@@ -563,9 +563,11 @@ Reduce the PlatformerEffector2D Surface Arc to about 135.
 <details><summary>How</summary>
 
  - Select all of the Platform GameObjects.
-   - Change the 'Surface Arc' to '135'.
+   - Change the 'Surface Arc' to '35'.
 
 <img src="http://i.imgur.com/PH2XyEd.png" width=150px>
+
+TODO new screenshot
 
 </details><br>
 <details><summary>What did that do?</summary>

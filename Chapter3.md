@@ -338,7 +338,10 @@ public class WanderWalkController : MonoBehaviour
   IEnumerator Wander()
   {
     walkMovement.desiredWalkDirection = 1;
-    yield return new WaitForSeconds(timeBeforeFirstWander);
+    if(timeBeforeFirstWander > 0) 
+    {
+      yield return new WaitForSeconds(timeBeforeFirstWander);
+    } 
 
     while(true)
     {
@@ -471,7 +474,7 @@ Note that if the character stands still at the level start, a fly guy will spawn
 <hr></details>
 
 
-## 3.8) Restrict movement to stay on screen
+## 3.8) Restrict movement to stay on screen (TODO must be after GameController)
 
 Create a script which ensures entities can not walk off screen.
 
@@ -655,9 +658,14 @@ public class FadeInThenEnable : MonoBehaviour
   [SerializeField]
   MonoBehaviour[] componentsToEnable;
 
-  protected void Start()
+  protected void OnEnable()
   {
     StartCoroutine(FadeIn());
+  }
+
+  protected void OnDisable()
+  {
+    StopAllCoroutines();
   }
 
   IEnumerator FadeIn()
@@ -774,6 +782,8 @@ public class GameController : MonoBehaviour
 
   protected void Awake()
   {
+    Debug.Assert(lifeCounter > 0);
+
     if(instance != null)
     {
       Destroy(gameObject);
@@ -783,22 +793,32 @@ public class GameController : MonoBehaviour
     instance = this;
     originalLifeCount = lifeCounter;
 
-    Camera camera = Camera.main;
-    Vector2 screenSize = new Vector2(
-      (float)Screen.width / Screen.height,
-      1);
-    screenSize *= camera.orthographicSize * 2;
-    screenBounds = new Bounds(
-      (Vector2)camera.transform.position,
-      screenSize);
-
     DontDestroyOnLoad(gameObject);
+
+    CalcScreenSize();
+  }
+
+  protected void Update()
+  {
+    CalcScreenSize();
+  }
+
+  void CalcScreenSize()
+  {
+    Vector2 screenSize = new Vector2(
+          (float)Screen.width / Screen.height,
+          1);
+    screenSize *= Camera.main.orthographicSize * 2;
+    screenBounds = new Bounds(
+      (Vector2)Camera.main.transform.position,
+      screenSize);
   }
 }
 ```
 
   - Create a new GameObject named "GameController":
     - Add the **GameController** component.
+    - Create a prefab for the GameController at Assets/Prefabs/**GameController**.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
@@ -897,14 +917,15 @@ public class LevelManager : MonoBehaviour
 
   protected bool isGameOver;
 
-  protected void Start()
+  protected void OnEnable()
   {
     GameController.instance.onLifeCounterChange
       += Instance_onLifeCounterChange;
-    Instantiate(playerPrefab);
+
+    StartLevel();
   }
 
-  protected void OnDestroy()
+  protected void OnDisable()
   {
     GameController.instance.onLifeCounterChange
       -= Instance_onLifeCounterChange;
@@ -917,6 +938,8 @@ public class LevelManager : MonoBehaviour
       return;
     }
 
+    BroadcastEndOfLevel();
+ 
     if(GameController.instance.lifeCounter <= 0)
     {
       isGameOver = true;
@@ -924,7 +947,7 @@ public class LevelManager : MonoBehaviour
     }
     else
     {
-      RestartLevel();
+      StartLevel();
     }
   }
 
@@ -940,8 +963,14 @@ public class LevelManager : MonoBehaviour
     // TODO
   }
 
-  void RestartLevel()
+  void StartLevel()
   {
+    Instantiate(playerPrefab);
+  }
+
+  void BroadcastEndOfLevel()
+  {
+    // Report the death to other interested objects
     PlayerDeathMonoBehaviour[] gameObjectList 
       = GameObject.FindObjectsOfType<PlayerDeathMonoBehaviour>();
     for(int i = 0; i < gameObjectList.Length; i++)
@@ -949,7 +978,7 @@ public class LevelManager : MonoBehaviour
       PlayerDeathMonoBehaviour playerDeath = gameObjectList[i];
       playerDeath.OnPlayerDeath();
     }
-    Instantiate(playerPrefab);
+
   }
 
   void YouLose()

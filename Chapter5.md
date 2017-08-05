@@ -488,47 +488,12 @@ public class EnableComponentsOnTimelineEvent : MonoBehaviour
    - Disable the Spawner component.
    - Add **EnableComponentsOnTimelineEvent**.
      - Set the 'On Level Loaded' list to include the Spawner component.
- - Create script Code/Components/Animations/**EndOfLevelPlayable**:
+ - Create script Code/Components/Animations/**TimelineEventPlayable**:
 
 ```csharp
-using UnityEngine;
-using UnityEngine.Playables;
-using UnityEngine.Timeline;
-
-public class EndOfLevelPlayable : BasicPlayableBehaviour
-{
-  public enum EndOfLevelEventType
-  {
-    AlmostComplete, Complete
-  }
-
-  [SerializeField]
-  EndOfLevelEventType eventType;
-
-  public override void OnBehaviourPlay(
-    Playable playable,
-    FrameData info)
-  {
-    base.OnBehaviourPlay(playable, info);
-
-    EnableComponentsOnLevelLoad[] endOfLevelList
-      = GameObject.FindObjectsOfType<EnableComponentsOnLevelLoad>();
-
-    for(int i = 0; i < endOfLevelList.Length; i++)
-    {
-      EnableComponentsOnLevelLoad endOfLevel = endOfLevelList[i];
-      switch(eventType)
-      {
-        case EndOfLevelEventType.AlmostComplete:
-          endOfLevel.OnLevelAlmostLoaded();
-          break;
-        case EndOfLevelEventType.Complete:
-          endOfLevel.OnLevelLoaded();
-          break;
-      }
-    }
-  }
-}
+TODO EndOfLevel / TimelineEventPlayable
+TODO find all 'endoflevel'
+TODO EnableComponentsOnTimelineEvent
 ```
 
  - Drag drop the script into the timeline.  Set the time like we did for the Hammers.

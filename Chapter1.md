@@ -18,10 +18,17 @@ This is very much a WIP.  I'm trying to make a tutorial helpful to a range of ex
 
 Process plan (constantly changing...)
 
- - Complete draft.  Incl what did that do and a first cut on FAQ.
+ - ~~Complete draft of step-by-step~~
+ - ~~Refactor code~~
+ - Clean steps and draft What did that do and a first cut on FAQ.
  - Then big edits - re-organize and add missing FAQs.
- - Videos recording here, chapter by chapter
-   - Finalize draft including ss, code/asset links, and intro/outro.
+ - Chapter by chapter:
+   - Record video.
+   - Finalize draft including
+      - Code snippets and links with comments (double check folders)
+      - Screenshots / gifs
+      - Asset links
+      - Intro/outro
    - Start grammer reviews.
 
 <br><br>
