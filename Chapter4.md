@@ -8,7 +8,7 @@ Flip the entity when they switch between walking left and right.
 
 <details><summary>How</summary>
 
- - Create script Code/Compenents/Movement/**RotateFacingDirection**:
+ - Create script Compenents/Movement/**RotateFacingDirection**:
 
 ```csharp
 using UnityEngine;
@@ -62,7 +62,7 @@ public class RotateFacingDirection : MonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-Each FixedUpdate, we determine which direction the entity is walking by its x velocity.  When the direction changes, we flip the sprite so that the character appears to be facing the other way.
+Each FixedUpdate, we determine which direction the entity is walking by its X velocity.  When the direction changes, we flip the sprite so that the character appears to be facing the other way.
 
 <hr></details>
 <details><summary>What's a C# smart property?</summary>
@@ -103,7 +103,7 @@ Create a script to calculate the distance to and rotation of the floor under an 
  - Create a layer 'Floor'.
  - Select all the Platform GameObjects and change to Layer Floor.
    - When prompted, select 'No, this object only'.
- - Create script Code/Components/Movement/**FloorDetector**:
+ - Create script Components/Movement/**FloorDetector**:
 
 ```csharp
 using UnityEngine;
@@ -209,7 +209,11 @@ public class FloorDetector : MonoBehaviour
   Collider2D DetectFloorUnderUs()
   {
     RaycastHit2D[] result = new RaycastHit2D[1];
-    if(Physics2D.Raycast(transform.position, Vector2.down, floorFilter, result) > 0)
+    if(Physics2D.Raycast(
+      transform.position, 
+      Vector2.down,
+      floorFilter, 
+      result) > 0)
     {
       return result[0].collider;
     }
@@ -240,12 +244,12 @@ public class FloorDetector : MonoBehaviour
 ```
 
  - Add **FloorDetector** to:
-   - The character prefab.
-   - The spike ball prefab.
-   - The fly guy's Feet child GameObject (and apply changes to the fly guy prefab).
+   - The Character prefab.
+   - The Spike Ball prefab.
+   - The Fly Guy's Feet child GameObject.
  - For each of those FloorDectector components, update the Floor Filter:
      - Check Use Layer Mask
-     - Set the Layer Mask to Floor.
+     - Layer Mask: Floor
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
@@ -351,15 +355,13 @@ When edge radius is used on a BoxCollider, the collider bounds represents the in
 <hr></details>
 
 
-
-
 ## 4.3) Prevent double jump
 
 Update JumpMovement to prevent double jump and flying (by spamming space), by leveraging the FloorDetector just created.
 
 <details><summary>How</summary>
 
- - Update JumpMovement with the following changes (or copy paste the full version TODO link):
+ - Update Components/Movement/**JumpMovement**:
 
 <details><summary>Existing code</summary>
 
@@ -461,7 +463,12 @@ public class JumpMovement : MonoBehaviour
 
 We are leveraging the FloorDetector component in order to prevent jumps when the character is not touching the floor.
 
+<hr></details>
+<details><summary>Why not use a cooldown instead?</summary>
+
 You may consider using a cooldown by time instead.  This would create a different play experience, and if the cooldown is short the player may be able to double jump (but not fly by spamming space).
+
+You might also want both a cooldown and the floor detection.  Small changes to mechanics like this can change how the game feels while playing.
 
 <hr></details>
 
@@ -472,7 +479,7 @@ Update the WanderWalkController so that the fly guy is more likely to walk up hi
 
 <details><summary>How</summary>
 
- - Update the WanderWalkController as follows (or copy paste TODO link):
+ - Update Components/Movement/**WanderWalkController**:
 
 <details><summary>Existing code</summary>
 
@@ -614,6 +621,11 @@ public class WanderWalkController : MonoBehaviour
 Leveraging the FloorDetector, we give the fly guy better odds at walking up a platform vs walking down one.  Without this component the fly guy enemies may collect at the bottom of the level - this keeps them mostly moving forward/up while still using RNG to keep the player on their toes.
 
 <hr></details>
+<details><summary>Why take the Dot product with Vector2.right?</summary>
+
+Dot product is used to determine if two directions are pointing the same way.  We compare the floor's up direction (or its normal) to the world right.  If the dot product is positive then we know that the platform is traveling down and to the right; if negative the platform is down and to the left; and it would be 0 if the platform were flat.
+
+<hr></details>
 
 
 ## 4.5) Rotate so feet are flat on the floor
@@ -622,12 +634,11 @@ Create a script to rotate an entity, aligning with the floor when touching one, 
 
 <details><summary>How</summary>
 
- - Create script Code/Components/Movement/**RotateToAlignWithFloor**:
+ - Create script Components/Movement/**RotateToAlignWithFloor**:
 
 ```csharp
 using UnityEngine;
 
-[RequireComponent(typeof(RotateFacingDirection))]
 public class RotateToAlignWithFloor : MonoBehaviour
 {
   [SerializeField]
@@ -640,31 +651,34 @@ public class RotateToAlignWithFloor : MonoBehaviour
 
   protected void Awake()
   {
-    floorDetector = GetComponentInChildren<FloorDetector>();
+    floorDetector
+      = GetComponentInChildren<FloorDetector>();
   }
 
   protected void Update()
   {
+    Quaternion rotation;
+    float speed;
     if(floorDetector.floorRotation != null)
     {
-      transform.rotation = Quaternion.Lerp(
-        transform.rotation,
-        floorDetector.floorRotation.Value,
-        lerpSpeedToFloor * Time.deltaTime);
+      rotation = floorDetector.floorRotation.Value;
+      speed = lerpSpeedToFloor;
     }
     else
     {
-      transform.rotation = Quaternion.Lerp(
-      transform.rotation,
-      Quaternion.identity,
-      lerpSpeedWhileInAir * Time.deltaTime);
+      rotation = Quaternion.identity;
+      speed = lerpSpeedWhileInAir;
     }
-    
+
+    transform.rotation = Quaternion.Lerp(
+      transform.rotation,
+      rotation,
+      speed * Time.deltaTime);
   }
 }
 ```
 
- - Add **RotateToAlignWithFloor** to the character and fly guy prefabs.
+ - Add **RotateToAlignWithFloor** to the Character and Fly Guy prefabs.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
@@ -699,51 +713,54 @@ Here you can see lerp vs slerp with only position X changing (the large balls), 
 
 Create GameObjects and layout ladders in the world.  Set their tag to Ladder.  
 
+Add a BoxCollider2D to each of the ladders and size it to use for climbing and set it as a trigger collider. An entity will be able climb ladders when its bottom is above the bottom of the ladder's collider and its center is inside.
+
 <details><summary>How</summary>
 
+Layout ladders:
+
  - Create a parent Ladder GameObject, add the ladder sprite(s).  We are using **spritesheet_tiles_23** and **33**.
- - Order in Layer -2.
- - Position the ladder and repeat, creating several ladders - some which look broken.
+   - Order in Layer: -2.
+ - Position the ladder and repeat, creating several ladders - some which look broken:
    - The child sprite GameObjects should have a default Transform, with the execption of the Y position when multiple sprites are used.
    - It usually looks fine to overlap sprites a bit, as we do to get the space between ladder steps looking good.
 
 <img src="http://i.imgur.com/u299hoi.gif" width=500px />
 
- - Create a new parent GameObject to hold all the ladders (optional).
  - Create a layer for "Ladder".
  - Select all the ladder GameObjects:
    - Change their layer to Ladder.
    - Add **FadeInThenEnable** to all the ladders.
+ - Create a new parent GameObject to hold all the ladders.
 
-<hr></details>
+<br>Add trigger colliders to the ladders:
 
-
-## 4.7) Add trigger colliders to the ladders
-
-Add BoxCollider2D to the ladders, size to use for climbing and set as trigger colliders.  
-
-An entity will be able climb ladders when its bottom is above the bottom of the ladder's collider and its center is inside.
-
-<details><summary>How</summary>
-
- - Select all the ladder GameObjects:
-   - Add **BoxCollider2D** and size it such that:
-     - The width is thinner than the sprite (about .6).
-     - The bottom of the collider:
-       - Just below the platform for complete ladders.
-       - Aligned with the last step of broken ladders.
-     - The top of the collider is just above the upper platform.
+ - Select all the Ladder GameObjects:
+   - Add **BoxCollider2D**:
+     - Check 'Is Trigger'.
+     - Size it such that: 
+       - The width to be thinner than the sprite (about .6).
+       - The bottom of the collider is:
+         - Just below the platform for complete ladders.
+         - Aligned with the last step of broken ladders.
+       - The top of the collider is just above the upper platform.
 
 <img src="http://i.imgur.com/r0k4eq3.png" width=150px />
 
- - Check 'Is Trigger'.
 
-<hr></details><br>
+<hr></details>
 <details><summary>What did that do?</summary>
+
+Layout ladders:
+
+Sprites are added for the ladders with a negative Order in Layer so it appears behind the platforms and entities.  A layer is created allowing us to identify the collisions with ladders later on.  Like the Hammers, ladders fade in at the start of the level.
+
+<br>Add trigger colliders to the ladders:
 
 We are using trigger colliders to define the area of a ladder that entities may climb.  For example, we made the collider thinner than the ladder itself so that entities cannot climb the edges (which may look strange.)  
 
 <hr></details>
+
 
 ## 4.8) Add a script to climb ladders
 
@@ -755,7 +772,6 @@ Create a script to climb ladders for all entities to use, and update the player 
 
 ```csharp
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -784,11 +800,14 @@ public class LadderMovement : MonoBehaviour
 
   Collider2D myCollider;
 
-  int ladderLayer;
+  [SerializeField]
+  ContactFilter2D ladderFilter;
 
   FloorDetector floorDetector;
 
   GameObject _ladderWeAreOn;
+
+  Collider2D[] tempColliderList = new Collider2D[3];
 
   public GameObject ladderWeAreOn
   {
@@ -816,39 +835,13 @@ public class LadderMovement : MonoBehaviour
     }
   }
 
-  List<GameObject> currentLadderList;
-
   protected void Awake()
   {
-    currentLadderList = new List<GameObject>();
     myBody = GetComponent<Rigidbody2D>();
     myCollider = GetComponent<Collider2D>();
     floorDetector = GetComponentInChildren<FloorDetector>();
-    ladderLayer = LayerMask.NameToLayer("Ladder");
   }
-
-  protected void OnTriggerEnter2D(
-    Collider2D collision)
-  {
-    if(collision.gameObject.layer != ladderLayer)
-    {
-      return;
-    }
-
-    currentLadderList.Add(collision.gameObject);
-  }
-
-  protected void OnTriggerExit2D(
-    Collider2D collision)
-  {
-    if(collision.gameObject == ladderWeAreOn)
-    {
-      GetOffLadder();
-    }
-
-    currentLadderList.Remove(collision.gameObject);
-  }
-
+  
   protected void FixedUpdate()
   {
     GameObject ladder = ladderWeAreOn;
@@ -955,17 +948,15 @@ public class LadderMovement : MonoBehaviour
 
   GameObject FindClosestLadder()
   {
-    if(currentLadderList.Count == 0)
-    {
-      return null;
-    }
+    int resultCount = myCollider.OverlapCollider(ladderFilter, tempColliderList);
 
     GameObject closestLadder = null;
     float distanceToClosestLadder = 0;
-    for(int i = 0; i < currentLadderList.Count; i++)
+    for(int i = 0; i < resultCount; i++)
     {
-      GameObject ladder = currentLadderList[i];
-      float distanceToLadder = (ladder.transform.position - transform.position).sqrMagnitude;
+      GameObject ladder = tempColliderList[i].gameObject;
+      Vector2 delta = ladder.transform.position - transform.position;
+      float distanceToLadder = delta.sqrMagnitude;
       if(closestLadder == null)
       {
         closestLadder = ladder;
@@ -986,8 +977,8 @@ public class LadderMovement : MonoBehaviour
 }
 ```
 
- - Add **LadderMovement** to the character, fly guy, and spike ball.
- - Update PlayerController as follows (or copy/paste TODO link):
+ - Add **LadderMovement** to the Character, Fly Guy, and Spike Ball.
+ - Update Components/Controllers/**PlayerController**:
 
 <details><summary>Existing code</summary>
 
@@ -1084,24 +1075,28 @@ LadderMovement offers the following APIs for other components:
  - ladderWeAreOn
  - An event for when the entity first gets on a ladder and when they get off.
 
-LadderMovement works by creating a list of ladders we are near OnTriggerEnter2D and OnTriggerExit2D.  We use list because we may be overlapping multiple ladders at the same time.  When considering getting on a ladder, we look just at the clostest one to us.
-
-Each FixedUpdate, we get on a ladder if we are in bounds and there is desired movement in the correct direction (i.e. we can't walk down starting at the bottom of a ladder).  
+Each FixedUpdate, we get on a ladder nearby if we are in bounds and there is desired movement in the correct direction (i.e. we can't walk down starting at the bottom of a ladder).  
 
 Once on a ladder, LadderMovement will hold the entity's y position by controlling its y velocity.
 
 Note there are some issues at the moment - you can't go down a ladder and on the way up the entity may pop a bit.  Both fixed in the next section.
 
 <hr></details>
+<details><summary>Why use sqrMagnitude instead of magnitude?</summary>
 
+In this example both magnitude and sqrMagnitude would give us the same result, as is the case anytime we are comparing if one distance is greater or less than another.  sqrMagnitude executes much faster, so its preferred anytime you do not require the precision that magnitude gives you.
+
+To calculate magnitude, you first calculate the squared magnitude and then take the square root.  Taking the square root is a difficult opperation.
+
+</details>
 
 ## 4.9) Disable physics when climbing
 
-While climbing a ladder, disable physics.
+While climbing a ladder disable physics, allowing entities to climb down.
 
 <details><summary>How</summary>
 
- - Create script Code/Components/Movement/**DisablePhysics**:
+ - Create script Components/Movement/**DisablePhysics**:
 
 ```csharp
 using System.Collections.Generic;
@@ -1151,15 +1146,14 @@ public class DisablePhysics : MonoBehaviour
 }
 ```
 
- - Add **DisablePhysics** to the character, fly guy, and spike ball.
+ - Add **DisablePhysics** to the Character, Fly Guy, and Spike Ball.
    - Disable the DisablePhysics component on each prefab.
- - Update LadderMovement as follows (or copy paste TODO link):
+ - Update Components/Movement/**LadderMovement**:
 
 <details><summary>Existing code</summary>
 
 ```csharp
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -1200,9 +1194,14 @@ public class LadderMovement : MonoBehaviour
 
   Collider2D myCollider;
 
+  [SerializeField]
+  ContactFilter2D ladderFilter;
+
   FloorDetector floorDetector;
 
   GameObject _ladderWeAreOn;
+
+  Collider2D[] tempColliderList = new Collider2D[3];
 
   public GameObject ladderWeAreOn
   {
@@ -1244,7 +1243,6 @@ public class LadderMovement : MonoBehaviour
 
   protected void Awake()
   {
-    currentLadderList = new List<GameObject>();
     myBody = GetComponent<Rigidbody2D>();
     myCollider = GetComponent<Collider2D>();
     floorDetector = GetComponentInChildren<FloorDetector>();
@@ -1259,31 +1257,8 @@ public class LadderMovement : MonoBehaviour
 <details><summary>Existing code</summary>
 
 ```csharp
-    ladderLayer = LayerMask.NameToLayer("Ladder");
   }
-
-  protected void OnTriggerEnter2D(
-    Collider2D collision)
-  {
-    if(collision.gameObject.layer != ladderLayer)
-    {
-      return;
-    }
-
-    currentLadderList.Add(collision.gameObject);
-  }
-
-  protected void OnTriggerExit2D(
-    Collider2D collision)
-  {
-    if(collision.gameObject == ladderWeAreOn)
-    {
-      GetOffLadder();
-    }
-
-    currentLadderList.Remove(collision.gameObject);
-  }
-
+  
   protected void FixedUpdate()
   {
     GameObject ladder = ladderWeAreOn;
@@ -1298,7 +1273,7 @@ public class LadderMovement : MonoBehaviour
     }
 
     Bounds ladderBounds = ladder.GetComponent<Collider2D>().bounds;
-    Bounds entityBounds = myCollider.bounds;
+    Bounds entityBounds = floorDetector.feetBounds;
 
     if(isOnLadder == false
       && Mathf.Abs(desiredClimbDirection) > 0.01
@@ -1344,28 +1319,6 @@ public class LadderMovement : MonoBehaviour
     }
   }
 
-  bool IsInBounds(
-    Bounds ladderBounds,
-    Bounds entityBounds)
-  {
-    float entityCenterX = entityBounds.center.x;
-    if(ladderBounds.min.x > entityCenterX
-      || ladderBounds.max.x < entityCenterX)
-    {
-      return false;
-    }
-
-    float entityFeetY = entityBounds.min.y;
-    if(ladderBounds.min.y > entityFeetY
-      || ladderBounds.max.y < entityFeetY)
-    {
-      return false;
-    }
-
-    return true;
-  }
-
-
   public void GetOffLadder()
   {
     ladderWeAreOn = null;
@@ -1403,7 +1356,6 @@ public class LadderMovement : MonoBehaviour
 <details><summary>Existing code</summary>
 
 ```csharp
-
     desiredClimbDirection = 0;
 
     if(onGettingOffLadder != null)
@@ -1412,19 +1364,38 @@ public class LadderMovement : MonoBehaviour
     }
   }
 
-  GameObject FindClosestLadder()
+  bool IsInBounds(
+    Bounds ladderBounds,
+    Bounds entityBounds)
   {
-    if(currentLadderList.Count == 0)
+    float entityCenterX = entityBounds.center.x;
+    if(ladderBounds.min.x > entityCenterX
+      || ladderBounds.max.x < entityCenterX)
     {
-      return null;
+      return false;
     }
 
+    float entityFeetY = entityBounds.min.y;
+    if(ladderBounds.min.y > entityFeetY
+      || ladderBounds.max.y < entityFeetY)
+    {
+      return false;
+    }
+
+    return true;
+  }
+
+  GameObject FindClosestLadder()
+  {
+    int resultCount = myCollider.OverlapCollider(ladderFilter, tempColliderList);
+    
     GameObject closestLadder = null;
     float distanceToClosestLadder = 0;
-    for(int i = 0; i < currentLadderList.Count; i++)
+    for(int i = 0; i < resultCount; i++)
     {
-      GameObject ladder = currentLadderList[i];
-      float distanceToLadder = (ladder.transform.position - transform.position).sqrMagnitude;
+      GameObject ladder = tempColliderList[i].gameObject;
+      Vector2 delta = ladder.transform.position - transform.position;
+      float distanceToLadder = delta.sqrMagnitude;
       if(closestLadder == null)
       {
         closestLadder = ladder;
@@ -1457,6 +1428,25 @@ The DisablePhysics component will disable collisions (by switching to trigger) a
 LadderMovement was updated to enable the DisablePhysics component when getting on ladders, and disable it when getting off.  The language here is confusing - but again enabling the DisablePhysics component turns off physics.
 
 <hr></details>
+<details><summary>What's a C# List?</summary>
+
+In C#, a List is a an array which can easily and automatically be resized as needed.  As you add and remove elements, C# will manage the size of the array which holds the information.  It does not resize the array everytime something is added or removed, it's optimized to try and limit those potentially expensive calls.  
+
+When you create a List you give it the type of data it will contain.  We make the List for a specific type, as opposed to using objects, to communicate intent and for type saftey - e.g. if we had a List<Dog> it's clear that Cats don't belong there, and if we attempted to add a Cat to the Dog list, C# would throw an error.
+
+<hr></details>
+<details><summary>What's rigidbody gravityScale do?</summary>
+
+You can modify how much gravity impacts a specific object using its rigidbody's gravityScale.  Gravity scale is defined in percent, where 1 is the normal amount of gravity and 0 means gravity is disabled.
+
+You can modify the gravity for all objects in the world using Project Settings -> Physics 2D -> Gravity, it defaults to (0, -9.81).
+
+<hr></details>
+<details><summary>Why store the impacted collider list?</summary>
+
+This component is disabling all colliders on the GameObject which were not already triggers.  When we undo this change, we don't have a way to detect the colliders original state.  We store list so we can change those colliders to not triggers anymore, without unintentially changing a collider which is always supposed to be a trigger.
+
+<hr></details>
 
 
 ## 4.10) Random climb controller
@@ -1465,7 +1455,7 @@ Create a script for the fly guy and spike ball to control when to climb a ladder
 
 <details><summary>How</summary>
 
- - Create script Code/Components/Movement/**RandomClimbController**:
+ - Create script Components/Movement/**RandomClimbController**:
 
 ```csharp
 using System.Collections;
@@ -1531,10 +1521,10 @@ public class RandomClimbController : MonoBehaviour
 }
 ```
 
- - Add **RandomClimbController** to the fly guy and spike ball.
- - On the spike ball, change:
-   - Odds of climbing up to 0
-   - Odds of climbing down to about .5
+ - Add **RandomClimbController** to the Fly Guy and Spike Ball.
+ - On the Spike Ball, change:
+   - Odds of climbing up: 0
+   - Odds of climbing down: .5
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
@@ -1567,7 +1557,7 @@ Stop WanderWalkController when climbing up or down.
 
 <details><summary>How</summary>
 
- - Update WanderWalkController as follows (or copy/paste todo link):
+ - Update Components/Movement/**WanderWalkController**:
 
 <details><summary>Existing code</summary>
 
@@ -1721,7 +1711,7 @@ public class WanderWalkController : MonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-This change prevents the fly guy from walking while on a ladder.  Fly guys will never stop moving in this game, they will walk constantly and when reaching a ladder they may climb straight up or straight down - then resume walking.
+This change prevents the fly guy from walking while on a ladder.  Fly guys will never stop moving in this game, they will walk constantly and when reaching a ladder they may climb straight up or straight down - and then resume walking.
 
 <hr></details>
 <details><summary>Why not stop the WalkMovement component instead?</summary>
@@ -1751,11 +1741,10 @@ Create a script to stop the ball's momentum when getting on ladders, and restore
 
 <details><summary>How</summary>
 
- - Create a script Code/Components/Movement/**StopMomentumOnLadder**:
+ - Create a script Components/Movement/**StopMomentumOnLadder**:
 
 ```csharp
 using UnityEngine;
-using System;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(LadderMovement))]
@@ -1793,12 +1782,12 @@ public class StopMomentumOnLadder : MonoBehaviour
 }
 ```
 
- - Add **StopMomentumOnLadder** to the spike ball.
+ - Add **StopMomentumOnLadder** to the Spike Ball.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-When a spike ball gets on a ladder, we store its velocity (i.e. speed) and angular velocity (i.e. spin) and then set both to 0.  This stops momentum the ball had from rolling down platforms, allowing it to climb straight the ladder.  
+When a spike ball gets on a ladder, we store its velocity (i.e. speed) and angular velocity (i.e. spin) and then set both to 0.  This stops momentum the ball had from rolling down platforms, allowing it to climb straight up or down the ladder.  
 
 Once done climbing, we restore the momentum, but flip both values so that after getting off the ball is rolling in the opposite direction.
 
@@ -1811,7 +1800,7 @@ Add a script to the fly guy and spike ball to direct them towards the center of 
 
 <details><summary>How</summary>
 
- - Create script Code/Components/Movement/**MoveTowardsCenterWhileClimbing**:
+ - Create script Components/Movement/**MoveTowardsCenterWhileClimbing**:
 
 ```csharp
 using UnityEngine;
@@ -1851,7 +1840,7 @@ public class MoveTowardsCenterWhileClimbing : MonoBehaviour
 }
 ```
 
- - Add **MoveTowardsCenterWhileClimbing** to fly guy and spike ball.
+ - Add **MoveTowardsCenterWhileClimbing** to the Fly Guy and Spike Ball.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>

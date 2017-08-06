@@ -1033,6 +1033,7 @@ GetComponent is used to find another script/component on a GameObject.  If you n
 There are similar APIs available from Unity such as GetComponentsInChildren, which are used to discover multiple components and/or search more GameObjects.
 
 <hr></details>
+TODO what's C# generics?
 <details><summary>Why confirm the values in the Inspector match the defaults in code?</summary>
 
 When a script runs, it uses the values as defined in the Inspector (which may be different than the defaults in code).  Usually Unity will default all the fields in the Inspector to the defaults you have written in code.  However depending on the order you do things exactly, this may not always work out.  If you create a script and it does not function properly, double check the values in the Inspector.
