@@ -1361,7 +1361,31 @@ Configure scene:
  - Create script Components/Effects/**RandomGG**:
 
 ```csharp
-TODO
+using UnityEngine;
+
+public class RandomGG : MonoBehaviour
+{
+  [SerializeField]
+  float minScale = .1f;
+
+  [SerializeField]
+  float maxScale = .7f;
+
+  protected void OnEnable()
+  {
+    transform.localScale 
+      = Vector3.one * UnityEngine.Random.Range(minScale, maxScale);
+
+    TextMesh text = GetComponent<TextMesh>();
+    text.color = UnityEngine.Random.ColorHSV();
+
+    Bounds screenBounds = GameController.instance.screenBounds;
+    transform.position = new Vector3(
+      UnityEngine.Random.Range(screenBounds.min.x, screenBounds.max.x),
+      screenBounds.max.y + 10,
+      0);
+  }
+}
 ```
 
  - Add **RandomGG** to the GG GameObject.
@@ -1388,7 +1412,22 @@ TODO
  - Create script Components/UI/**AnyKeyToLoadScene**:
 
 ```csharp
-TODO
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public class AnyKeyToLoadScene : MonoBehaviour
+{
+  [SerializeField]
+  string sceneName = "Menu";
+
+  protected void Update()
+  {
+    if(Input.anyKeyDown)
+    {
+      SceneManager.LoadScene(sceneName);
+    }
+  }
+}
 ```
 
  - Add **AnyKeyToLoadScene** to the Spawner.

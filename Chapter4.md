@@ -1862,6 +1862,10 @@ If you use velocity, be careful when you overshoot the target a bit so the entit
 
 TODO
 
+Debugging
+
+ - If you can jump and start climbing a ladder you barely reach, check the contact filter configuration.
+
 # Next chapter
 
 [Chapter 5](https://github.com/hardlydifficult/Platformer/blob/master/Chapter5.md).

@@ -17,10 +17,8 @@ Change the character's sprite sheet to use a bottom pivot point.
 
 <details><summary>How</summary>
 
- - Select the **adventurer_tilesheet** sprite sheet.
- - Click Sprite Editor and Slice again, changing the 'Pivot' to 'Bottom'.
-
-<img src="http://i.imgur.com/BuIsVWD.png" width=300px />
+ - Select all the character sprites, we are using **adventurer_tilesheet_TODO**.
+ - In the Inspector, change 'Pivot' to 'Bottom'.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
@@ -49,12 +47,13 @@ Add a GameObject for the character with a walk animation. Change the order in la
 <details><summary>How</summary>
 
  - Hold Ctrl to select both **adventurer_tilesheet_9** and **10**.
- - Drag them into the Hierarchy.  When prompted, save the animation as Assets/Animations/**CharacterWalk**.anim
+   - Drag them into the Hierarchy.  
+   - When prompted, save the animation as Assets/Animations/**CharacterWalk**.anim
 
 <img src="http://i.imgur.com/jPvFvnq.gif" width=300px />
  
  - Select the GameObject just created:
-   - Set 'Order in Layer: 2'.
+   - Order in Layer: 2
  - Create an empty parent GameObject named "Character":
    - Add the sprite GameObject as a child.
 
@@ -99,19 +98,27 @@ Add a Rigidbody2D and a CapsuleCollider2D to the character.  Adjust the size as 
 
  - Select the Character parent GameObject:
    - Add a **Rigidbody2D**.
-   - Add a **CapsuleCollider2D**:
+     - Expand the 'Constraints' and Check 'Freeze Rotation: Z'.
+
+<img src="http://i.imgur.com/uXxDSwD.png" width=300px />
+
+   - Add a **CapsuleCollider2D** to the Character:
      - Click 'Edit Collider' and adjust to fit the character. You can click and then hold Alt while adjusting the sides to pull both sides in evenly.
 
 <img src="http://i.imgur.com/KFwBZeo.gif" width=150px />
+
 
 </details><br>
 <details><summary>What did that do?</summary>
 
 The rigidbody and collider enable physics for the character.  We size the collider to be used for standing on platforms, colliding with enemies, and picking up items.
 
-Hit play and the character should now land on a platform... but might fall over:
 
-<img src="http://i.imgur.com/T0fdwa1.gif" width=150px />
+
+
+Add a constraint to the character's rigidbody to freeze its rotation.
+The character shouldn't fall over anymore.  In fact he will stand straight up even on slanted platforms.  This will be addressed later in the tutorial.
+
 
 <hr></details>
 
@@ -131,35 +138,20 @@ Bottom line, it's not worth the trouble.  Unity does not provide good tools for 
 Most of the time the collisions in the game would not have been any different if more detailed colliders were used.  Typically 2D games use an approach similiar to what this tutorial recommends. It creates a good game feel and the simplifications taken have become industry standard.
 
 </details>
+<details><summary>Why freeze rotation and Does freezing mean it can never change?</summary>
 
+We freeze the character so he does not fall over on the slanted platforms like this:
 
-## 2.4) Freeze the character's rotation
+<img src="http://i.imgur.com/T0fdwa1.gif" width=150px />
 
-Add a constraint to the character's rigidbody to freeze its rotation.
-
-<details><summary>How</summary>
-
- - Select the Character:
-   - Expand the rigidbody's 'Constraints'.
-   - Check 'Freeze Rotation: Z'.
-
-<img src="http://i.imgur.com/uXxDSwD.png" width=300px />
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-The character shouldn't fall over anymore.  In fact he will stand straight up even on slanted platforms.  This will be addressed later in the tutorial.
-
-<hr></details>
-<details><summary>Does freezing rotation mean the rotation can never change?</summary>
-
-No.  Adding constraints to the rigidbody only limits the Unity physics engine. Freezing the rigidbody position or rotation means that even if you got hit by a bus, you would not move or rotate.  However you could have a custom component set the position or rotation at any time.
+Adding constraints to the rigidbody only limits the Unity physics engine. Freezing the rigidbody position or rotation means that even if you got hit by a bus, you would not move or rotate.  However you could have a custom component set the position or rotation at any time.
 
 Later in the tutorial we will be writing a script to rotate entities so that they align with platforms (i.e. their feet sit flat on the floor).
 
 We use constraints to remove capabilities from Unity, allowing us more control where we need it.  Specifically here that means our character is not going to ever fall flat on his face.
 
 </details>
+
 
 ## 2.5) Add a script to move left & right
 
@@ -210,7 +202,7 @@ public class WalkMovement : MonoBehaviour
 
 Nothing yet.  This script enables movement, but requires a separate controller to function.
 
-A controller will set the desiredWalkDirection, then every FixedUpdate WalkMovement turn that into horizontal velocity on the rigidbody while preseving any vertical velocity (so not to interfere with gravity).
+A controller (created in the next section) will set the desiredWalkDirection, then every FixedUpdate WalkMovement turn that into horizontal velocity on the rigidbody while preseving any vertical velocity (so not to interfere with gravity).
 
 <hr></details>
 <details><summary>What's a controller?  Why not read input here?</summary>
@@ -234,7 +226,7 @@ Update occurs once per rendered frame.  FixedUpdate occurs at a regular interval
 FixedUpdate is preferred for mechanics which require some level of consistency or apply changes incrementally.  Physics in Unity are processed in FixedUpdated.  So when manipulating physics for the game such as we are here by changing velocity on the rigidbody, we do this on FixedUpdate to match Unity's expectatations. 
 
 </details>
-<details><summary>Why multiple by Time.fixedDeltaTime?</summary>
+<details><summary>Why multiply by Time.fixedDeltaTime?</summary>
 
 It's optional. Anytime you make a change which includes some speed, such as walking, we multiply by the time elapsed so motion is smooth even when the frame rate may not be.  While using FixedUpdate, the time passed between calls is always the same - so Time.fixedDeltaTime is essentially a constant.  
 
@@ -377,7 +369,7 @@ public class JumpMovement : MonoBehaviour
 
 <img src="http://i.imgur.com/I5JWg9s.gif" width=300px />
 
- - Update **PlayerController**.cs by adding the code below (or copy/paste the full version - TODO link):
+ - Update Code/Components/Controllers/**PlayerController**. by adding the code below:
 
 <details><summary>Existing code</summary>
 
@@ -529,20 +521,15 @@ Add a PlatformerEffector2D to each platform.
 
  - Select all of the Platform GameObjects.
    - Add **PlatformEffector2D**.
+     - Change the 'Surface Arc' to '35'.
    - Under the BoxCollider2D, select 'Use by Effector'.
-
-<img src="http://i.imgur.com/55YiY3N.gif" width=300px />
 
 </details><br>
 <details><summary>What did that do?</summary>
 
 The PlatformerEffector2D creates one-way collisions for our platforms.  This allows entities to jump through a platform and land on top -- a common mechanic for platformer games.
 
-Click play to test it out.  You may need to increase the character's Jump Speed if you can't reach the next platform:
-
-<img src="http://i.imgur.com/hRe7CEJ.gif" width=200px />
-
-Note that you may stick to the sides of a platform, we'll fix that next.
+Reduce the PlatformerEffector2D Surface Arc disables collisions on the sides of the platforms, preventing the character from sticking to the side in a strange way.
 
 <hr></details>
 <details><summary>Wow that was easy, what else like this can Unity do for 'free'?</summary>
@@ -554,39 +541,17 @@ Unity is not doing anything with these components that you technically could not
 Read more about the [various 2d effectors in Unity](https://docs.unity3d.com/Manual/Effectors2D.html) including a conveyor belt, repulsion, and floating effects.
 
 </details>
-
-
-## 2.10) Update the platforms' surface arc
-
-Reduce the PlatformerEffector2D Surface Arc to about 135.
-
-<details><summary>How</summary>
-
- - Select all of the Platform GameObjects.
-   - Change the 'Surface Arc' to '35'.
-
-<img src="http://i.imgur.com/PH2XyEd.png" width=150px>
-
-TODO new screenshot
-
-</details><br>
-<details><summary>What did that do?</summary>
-
-This disables collisions on the sides of the platforms, preventing the character from sticking to the side in a strange way.
-
-<img src="http://i.imgur.com/GGzbkdp.gif" width=300px />
+<details><summary>What does Surface Arc do and why not use a value of 1?</summary>
 
 The surface arc for an effector changes the supported region, in this case the surfaces which are collidable.  By reducing this we are causing the sides to be treated as non-collidable like the bottoms are by default. 
 
-<hr></details>
-<details><summary>Why not use surface arc of 1?</summary>
+The surface arc is defined in degrees around the Transform's up direction, and compared against the normal of the surface of the collider at the point of collision to determine if effects apply (in this case, if collisions apply).
 
 A very small surface arc still allows the primary use case to work correcly, i.e. you can still stand on platforms.  The sides, where a rounded edge appears, may not be collidable causing the character to fall off prematurely.  
 
 You can adjust the surface arc to find a value that feels good.
 
 </details>
-
 
 ## 2.11) Create a pattern for death effects
 
@@ -669,7 +634,9 @@ Nothing yet.
 
 This is a pattern we will leverage a few times in this tutorial, starting with the next section.
 
-When an entity dies in the game, we call DeathEffectManager.PlayDeathEffectsThenDestroy instead of the usual Unity Destroy method.  This allows us to defer the actual Destroy call, and to spawn an explosion or play an animation on the sprite as it dies.
+When an entity dies in the game, we call DeathEffectManager.PlayDeathEffectsThenDestroy instead of the usual Unity Destroy method.  
+
+This allows us to defer the actual Destroy call, and to spawn an explosion or play an animation on the sprite as it dies.  Also it allows us to differentiate between a request to immediatelly destroy a GameObject (e.g. for a scene change) vs a death that should maybe animate and spawn an explosion.
 
 <hr></details>
 <details><summary>Why not just play effects OnDestroy()?</summary>
@@ -703,7 +670,18 @@ You might also consider using nested classes.  For simplicity in the tutorial, w
 Unity offers the UnityEngine.Mathf class to try and make some things a little easier.  Basically it's the same APIs which are offered from the standard System.Math class (which is also still available to use if you prefer).  The main difference is all of the APIs in Mathf are focused on the float data type, where the System.Math class often prefers double.  Most of the data you interact with in Unity is float.  
 
 </details>
-TODO GetComponentsInChildren?
+
+<details><summary>What does GetComponentsInChildren do?</summary>
+
+GetComponent returns a reference to the component (or script) which is the type specified or inherits from the type specified.
+
+GetComponents returns an array with every matching component.
+
+GetComponentInChildren returns one match, from this GameObject or one of its child GameObjects.
+
+GetComponentsInChildren returns an array with every matching component from this GameObject and all of its children (and their children).
+
+</details>
 
 <details><summary>What's C# abstract do and how's it different from an interface?</summary>
 
@@ -806,8 +784,6 @@ public void Print(IMyInterface a)
 }
 ```
 
-TODO this use case
-
 <hr></details>
 
 
@@ -828,7 +804,7 @@ public static class LayerMaskExtensions
     this LayerMask mask,
     int layer)
   {
-    return (mask.value & 1 << layer) > 0;
+    return (mask.value & (1 << layer)) > 0;
   }
 }
 ```
@@ -876,24 +852,39 @@ public class KillOnContactWith : MonoBehaviour
 }
 ```
 
- - Under Project Settings -> Tags and Layers, add a layer for 'Player'.
- - Select the Character GameObject and change its Layer to Player.
-   - When prompted, 'No, this object only'.
+ - Under Project Settings -> Tags and Layers:
+   - Add a layer for 'Player'.
+ - Select the Character GameObject:
+   - Change its Layer to Player.
+     - When prompted, 'No, this object only'.
  - Select the Spike Ball prefab in Assets/Prefabs:
-    - Add **KillOnContactWith** and update 'Layers To Kill' to Player.
+    - Add **KillOnContactWith**:
+      - Update 'Layers To Kill' to Player.
 
 <img src="http://i.imgur.com/wrkb3eJ.png" width=300px />
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-We created a component to use on enemies which will initiate the death sequence for the Character anytime he touches one of the enemies colliders (both collisions and triggers).
+We created a component to use on enemies which will initiate the death sequence for the Character anytime he touches one of the enemy colliders (both collisions and triggers).
 
 Hit play to watch the player die:
 
 <img src="http://i.imgur.com/gKEl8wE.gif" width=300px />
 
 For now, to test again stop and hit play again.  We'll respawn the player later in the tutorial.
+
+<hr></details>
+<details><summary>Why check the layer instead of using the Collision Matrix?</summary>
+
+Layers are defined per GameObject.  The GameObject we will be adding this script to, already have a layer defined to support other use cases.  This means that the KillOnContactWith component will get event calls for collisions with other objects such as the platforms.
+
+In order to do this with a Collision Matrix, a child GameObject with its own Layer could be added to hold this component.
+
+<hr></details>
+<details><summary>What is this '& 1 <<' black magic?</summary>
+
+Bitwise operations... which are beyond the scope of this tutorial.  More specifically, this is 'bitwise and' and 'bit shifting' if you would like to read more about this.  Here is a [Stackoverflow post on the topic](http://answers.unity3d.com/questions/8715/how-do-i-use-layermasks.html).
 
 <hr></details>
 <details><summary>What is a C# extension method and why use it?</summary>
@@ -915,11 +906,6 @@ if(layersToKill.Includes(gameObjectWeJustHit.layer))
 ```
 
 </details>
-<details><summary>What is this '& 1 <<' black magic?</summary>
-
-Bitwise operations... which are beyond the scope of this tutorial.  More specifically, this is 'bitwise and' and 'bit shifting' if you would like to read more about this.  Here is a [Stackoverflow post on the topic](http://answers.unity3d.com/questions/8715/how-do-i-use-layermasks.html).
-
-<hr></details>
 <details><summary>Why is there an empty Start method and why check if enabled?</summary>
 
 We will need the ability to disable this component later in the tutorial.  
@@ -929,7 +915,13 @@ A disabled component will not get called for events such as Update.  However it 
 Unity only allows you to use the enable / disable feature if it detects that there is a method in the script which would be impacted.  We added an empty Start method to get the enable / disable feature since Unity does not enable enable by checking 'if(enabled)' in code.
 
 <hr></details>
-TODO what's the difference between Trigger and a non trigger Collider?
+<details><summary>What's the difference between Trigger and a non trigger Collider?</summary>
+
+Any collider with 'Is Trigger' checked will not respond to physical collisions.  Trigger colliders will fire and event when another collider overlaps it, just like a non-trigger collider.  
+
+We use Triggers to fire an event without interacting with the rigidbody. Non-triggers may be used for both scripts and physics; Triggers are for scripts to respond to only.
+
+</details>
 <details><summary>Why kill on trigger enter vs just on collision?</summary>
 
 Later in the tutorial we will be adding ladders for entities to climb.  In order to allow entities to walk down ladders (and therefore through a floor), we temporarily disable collisions.  While in on a ladder, we still want enemies to be able to kill the character.
@@ -937,7 +929,6 @@ Later in the tutorial we will be adding ladders for entities to climb.  In order
 As always, there are other ways this could have been handled.
 
 <hr></details>
-
 
 
 ## 2.13) Create an explosion prefab
@@ -948,7 +939,7 @@ Create an explosion particle system and save it as a prefab.
 
  - Create an empty GameObject:
    - Name it "Explosion".
-   - Add a **ParticleSystem**. Under the  section, set:
+   - Add a **ParticleSystem**:
      - Set 'Renderer' Material: Default-Particle
      - Set 'Renderer' Max Particle Size: 1000
 
@@ -960,7 +951,7 @@ Create an explosion particle system and save it as a prefab.
    - Start Size: 30
    - Scaling Mode: Local
 
-<img src="http://i.imgur.com/qlmzCMy.png" width=150px />
+<img src="http://i.imgur.com/qlmzCMy.png" width=300px />
 
  - Update the Transform scale to about (.05, .05, .05)
  - Enable Color over Lifetime, and then:
@@ -981,8 +972,9 @@ Create an explosion particle system and save it as a prefab.
 
 
  - Add **AudioSource** to the GameObject:
-   - Change the AudioClip to 'Death'.
- - Drag the 'Explosion' into Assets/Prefabs and delete the GameObject.
+   - Change the AudioClip.  We are using **Death**.
+ - Drag the Explosion GameObject into Assets/Prefabs.
+ - Delete the Explosion GameObject.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
@@ -1005,14 +997,7 @@ Briefly, the rational for each change recommended above:
 
 A particle is a small 2D image managed by a particle system.  It's optimized to display a large number of similar particles at the same time, possible with different colors, sizes, etc.
 
-A Particle System component animates a large numbers of particles to create effects such as fluid, smoke, and fire. Read more about [Particle Systems from Unity](https://docs.unity3d.com/Manual/class-ParticleSystem.html).
-
-</details>
-<details><summary>Why not use the entire MobileExplosion prefab?</summary>
-
-You could, but for this tutorial we are creating WebGL builds of the game.  WebGL does not perform as well in general, and the performance tanks if you use the entire ExplosionMobile prefab.  Effects that would be perfectly fine in the Unity editor and as a desktop build may not work well in the browser. 
-
-If you are not going to build for WebGL, go ahead and try using the ExplosionMobile prefab or other particle system you think looks good.
+A Particle System component animates a number of particles to create effects such as fluid, smoke, and fire. Read more about [Particle Systems from Unity](https://docs.unity3d.com/Manual/class-ParticleSystem.html).
 
 </details>
 <details><summary>Could you RNG select the clip to play?</summary>
@@ -1051,7 +1036,7 @@ Add a script which spawns the explosion prefab when the character dies.
 
 <details><summary>How</summary>
 
- - Create script Code/Compenents/Death/**DeathEffectSpawn**:
+ - Create script Compenents/Death/**DeathEffectSpawn**:
 
 ```csharp
 using UnityEngine;
@@ -1088,11 +1073,20 @@ public class DeathEffectSpawn : DeathEffect
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-DeathEffectSpawn will spawn in another GameObject when this entity it's on dies.  In this case, we spawn the explosion when the character dies:
+DeathEffectSpawn will spawn in another GameObject when the entity it's on dies.  In this case, we spawn the explosion when the character dies:
 
 <img src="http://i.imgur.com/XhhkRpC.gif" width=150px />
 
 <hr></details>
+<details><summary>What's bounds represent?</summary>
+
+The Unity Bounds struct represents the axis aligned bounding box for the collider.  This means if you were to contain the collider in a cube which cannot be rotated - what is the position and size of the smallest possible surrounding cube.
+
+For 2D, the Bounds struct still has a z but it will be 0 and everything else will work as expected.
+
+Unity has a number of APIs available for bounds.  Here we are using .center, which represents the center of the collider which may differ from the transform position - particularly for the character since the pivot point is Bottom.
+
+</details>
 <details><summary>Why not spawn the explosion at transform.position instead of bounds.center?</summary>
 
 The character sprite was configured with Pivot 'Bottom'.  The transform.position refers to the location of this pivot point.  If we were to target tranform.position instead, the explosion would center around the character's feet.
@@ -1104,15 +1098,13 @@ We use the collider's bounds to determine where to spawn the explosion.  The [bo
 </details>
 
 
-
-
 ## 2.16) Explosion self destruct
 
 Create a script to destroy the explosion GameObject after the effect completes.
 
 <details><summary>How</summary>
 
- - Create script Code/Compenents/Death/**SuicideIn**:
+ - Create script Compenents/Death/**SuicideIn**:
 
 ```csharp
 using UnityEngine;
@@ -1136,12 +1128,12 @@ public class SuicideIn : MonoBehaviour
 }
 ```
 
- - Add **SuicideIn** to the explosion prefab.
+ - Add **SuicideIn** to the Explosion prefab.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-This component starts DeathEffects for a GameObject (which in turn will destroy the GameObject) after a period of time.  We use it on the explosion to prevent a memory leak by deleting it's GameObject after the explosion itself is no longer visible.
+This component starts DeathEffects for a GameObject, which in turn will destroy the GameObject, after a period of time.  We use it on the explosion to prevent a memory leak by deleting it's GameObject after the explosion itself is no longer visible.
 
 <hr></details>
 <details><summary>Why bother, the explosion is not visible after a few seconds?</summary>
@@ -1161,12 +1153,11 @@ Add a scaling effect for the character dieing, in addition to the explosion.
 
 <details><summary>How</summary>
 
- - Create script Code/Compenents/Death/**DeathEffectThrob**:
+ - Create script Compenents/Death/**DeathEffectThrob**:
 
 ```csharp
 using UnityEngine;
 using System.Collections;
-using System;
 
 public class DeathEffectThrob : DeathEffect
 {
@@ -1205,7 +1196,7 @@ public class DeathEffectThrob : DeathEffect
       gameObject.transform.localScale 
         = Vector3.one * scale;
 
-      yield return 0;
+      yield return null;
       timeRun += Time.deltaTime;
     }
 
@@ -1221,7 +1212,23 @@ public class DeathEffectThrob : DeathEffect
 
 When the DeathEffects for an entity are initiated, this component will scale the sprite up and down while shrinking it overall until it's gone.
 
-TODO gif
+<img src="http://i.imgur.com/gSJtJRd.gif" width=300px />
+
+<hr></details>
+
+<details><summary>What does yield return null do?</summary>
+
+Enumerators are methods which can 'yield return' and then later be resumed from where they left off.  Coroutines in Unity are enumerators.  
+
+With Coroutines, "yield return null" is shorthand for wait for one frame.
+
+Each of these accomplishes the same, the coroutine resumes on the next Update:
+
+```csharp
+yield return null; // Preferred
+yield return new WaitForSeconds(0); // Same, but longer
+yield return 0; // Less efficient
+```
 
 <hr></details>
 <details><summary>Why not use an animation instead?</summary>
@@ -1229,6 +1236,19 @@ TODO gif
 You could.  There are numerious ways to create animations and effects - in this tutorial we cover a few different approaches just for the experience.
 
 We will be introducing Unity 'animations' later in this tutorial.
+
+<hr></details>
+<details><summary>Why use Mathf.Sin?</summary>
+
+Sin is used frequently in game dev because of the nice curve it creates:
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Sine_one_period.svg" width=300px />
+
+We will be taking the absolute value, so the curve from 0 to Pi repeats over and over.  The result oscillates smoothly between 0 and 1.
+
+We add .5 to the result, giving us .5 -> 1.5.  That's used as a multiple when scaling, creating the throb effect.
+
+More about how you can use [Sin and Cos to create nice curves from OSU.edu](https://accad.osu.edu/~aprice/courses/694/Sin_fun.htm).
 
 <hr></details>
 

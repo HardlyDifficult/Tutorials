@@ -1,3 +1,7 @@
+Change all mentions of Fly Guy and Spike Ball. - pick spacing
+
+Change all spritesheet references to the new filename.
+
 Code changes
  - Delete SpriteExtensions
  - RotateOvertimeToOriginal renamed rotationFactor
@@ -310,5 +314,67 @@ As a workaround, we are getting every GameObject and then checking for component
 This is not a performant solution.  However the use case is also one which does not occur often, so the performance hit should be fine.  
 
 If we needed to do something similiar frequently (e.g. every frame), we would want to add caching or take a completely different approach.
+
+<hr></details>
+
+
+
+
+## 1.3) Slice sprite sheets
+
+Slice each of the sprite sheets in order to access the individual sprites within.
+
+
+<details><summary>How</summary>
+
+- Select a sprite sheet in the 'Project' (such as Assets/Art/**spritesheet_ground**).
+- In the 'Inspector', set 'Sprite Mode' to 'Multiple'.
+
+<img src="http://i.imgur.com/duYuVMy.png" width=300px />
+
+- Click 'Sprite Editor' and apply changes when prompted.
+- Click the 'Slice' menu item (see below for the type to use per sprite).
+  - If all the sprites in the sheet are the same size, use Grid By Cell Count and enter the number of sprites in the sheet horizontally (columns) and vertically (rows).
+  - If the sprites in the sheet are various sizes, use Automatic.
+
+<img src="http://i.imgur.com/3wLWBZG.png" width=300px />
+
+<img src="http://i.imgur.com/d3XzhRU.png" width=300px />
+
+- Click 'Slice' button.
+- Close the Sprite Editor and apply changes when prompted.
+- Repeat for each sprite sheet.
+
+We are using:
+ - **spritesheet_ground**: Cell Count (8 x 16)
+ - **adventurer_tilesheet**: Cell Count (9 x 3)
+ - **spritesheet_jumper**: Automatic
+ - **spritesheet_tiles**: Cell Count (8 x 16)
+
+<hr></details><br>
+<details><summary>What did that do?</summary>
+
+Slicing is the process of defining each individual sprite in a sprite sheet.  Once sliced, you can access each sprite as if it were a unique asset.
+
+After you have sliced, white lines appear in the 'Sprite Editor'.  These lines show you how the sprite sheet is cut, boxing in each individual sprite.  Any whitespace as shown in this example is ignored (i.e. it does not generate blank sprites as well).
+
+<img src="http://i.imgur.com/NawupLS.png" width=50% />
+
+After closing the 'Sprite Editor' and applying changes you can expand the sprite sheet in Assets to see each sprite it created.
+
+<img src="http://i.imgur.com/Qq0nn2B.png" width=50% />
+
+<hr></details>
+<details><summary>Why not always use Automatic?</summary>
+
+Automatic does not always provide the desired results.  
+
+One issue may be consistency between sprites in a sprite sheet.  Often we want each sprite to be treated the same. For example with the character, using automatic will create different sized sprites for each pose.  This can make animating a challenge.
+
+<img src="http://i.imgur.com/lKfaiMj.png" width=300px />
+
+Other issues may arise as well, such as different objects in a sprite sheet being combined into a single sprite.
+
+Use the white lines in the 'Sprite Editor' to confirm the results.  There is also an option to manually slice if you need more control.
 
 <hr></details>

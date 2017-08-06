@@ -20,10 +20,12 @@ Process plan (constantly changing...)
 
  - ~~Complete draft of step-by-step~~
  - ~~Refactor code~~
- - Clean steps and draft What did that do and a first cut on FAQ.
+ - ~~Clean steps and draft What did that do and a first cut on FAQ.~~
  - Then big edits - re-organize and add missing FAQs.
  - Chapter by chapter:
+   - Review the chapter one more time.
    - Record video.
+   - Throw the videos out for editing, how are we cutting/presenting things?
    - Finalize draft including
       - Code snippets and links with comments (double check folders)
       - Screenshots / gifs
@@ -99,12 +101,12 @@ TODO check if the sprites present a compression warning.
 
 TODO other assets 
 
-TODO talk about how using sprites instead of sprite sheets helps to avoid some visual issues.  The sprite packer can be used to dynamically create sheets for optimization later - but not in this tutorial.
-
 <hr></details><br>
 <details><summary>Can I name folders differently?</summary>
 
 Absolutely, with one exception.  "Editor" is a special folder name with Unity, anything under that directory is only run when testing in the Unity editor.
+
+More about [special folder names from Unity](https://docs.unity3d.com/Manual/SpecialFolders.html).
 
 <hr></details>
 <details><summary>What's a sprite / sprite sheet?</summary>
@@ -112,6 +114,10 @@ Absolutely, with one exception.  "Editor" is a special folder name with Unity, a
 A sprite is an image, used in 2D games and for UI.  They may represent an object, part of an object, or a frame of an entity's animation, etc.  
 
 A sprite sheet is a single image file that contains multiple individual sprites.  The sheet may use these sprites to represent different frames for an animation or to hold a collection of various object types (as is the case here).
+
+We will be using sprites only, and not sprite sheets, in this tutorial.  Unity occasionally has render issues which display while using sprite sheets.  
+
+Sprite sheets are an optimization technique games use. Unity has a sprite packer feature that can be used to automatically create sprite sheets.  Once you are in the optimization phase of your project, you could look into the sprite packer to try and gain anything that might have been lost from using individual sprites instead.
 
 <hr></details>
 <details><summary>Can I use my own art?</summary>
@@ -122,66 +128,6 @@ For sounds, we don't have many - just enough to introduce how they may be added 
 
 <hr></details>
 </details>
-
-
-## 1.3) Slice sprite sheets
-
-Slice each of the sprite sheets in order to access the individual sprites within.
-
-
-<details><summary>How</summary>
-
-- Select a sprite sheet in the 'Project' (such as Assets/Art/**spritesheet_ground**).
-- In the 'Inspector', set 'Sprite Mode' to 'Multiple'.
-
-<img src="http://i.imgur.com/duYuVMy.png" width=300px />
-
-- Click 'Sprite Editor' and apply changes when prompted.
-- Click the 'Slice' menu item (see below for the type to use per sprite).
-  - If all the sprites in the sheet are the same size, use Grid By Cell Count and enter the number of sprites in the sheet horizontally (columns) and vertically (rows).
-  - If the sprites in the sheet are various sizes, use Automatic.
-
-<img src="http://i.imgur.com/3wLWBZG.png" width=300px />
-
-<img src="http://i.imgur.com/d3XzhRU.png" width=300px />
-
-- Click 'Slice' button.
-- Close the Sprite Editor and apply changes when prompted.
-- Repeat for each sprite sheet.
-
-We are using:
- - **spritesheet_ground**: Cell Count (8 x 16)
- - **adventurer_tilesheet**: Cell Count (9 x 3)
- - **spritesheet_jumper**: Automatic
- - **spritesheet_tiles**: Cell Count (8 x 16)
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-Slicing is the process of defining each individual sprite in a sprite sheet.  Once sliced, you can access each sprite as if it were a unique asset.
-
-After you have sliced, white lines appear in the 'Sprite Editor'.  These lines show you how the sprite sheet is cut, boxing in each individual sprite.  Any whitespace as shown in this example is ignored (i.e. it does not generate blank sprites as well).
-
-<img src="http://i.imgur.com/NawupLS.png" width=50% />
-
-After closing the 'Sprite Editor' and applying changes you can expand the sprite sheet in Assets to see each sprite it created.
-
-<img src="http://i.imgur.com/Qq0nn2B.png" width=50% />
-
-<hr></details>
-<details><summary>Why not always use Automatic?</summary>
-
-Automatic does not always provide the desired results.  
-
-One issue may be consistency between sprites in a sprite sheet.  Often we want each sprite to be treated the same. For example with the character, using automatic will create different sized sprites for each pose.  This can make animating a challenge.
-
-<img src="http://i.imgur.com/lKfaiMj.png" width=300px />
-
-Other issues may arise as well, such as different objects in a sprite sheet being combined into a single sprite.
-
-Use the white lines in the 'Sprite Editor' to confirm the results.  There is also an option to manually slice if you need more control.
-
-<hr></details>
 
 
 ## 1.4) Set the filter mode
@@ -197,7 +143,7 @@ Update each sprite's and sprite sheet's import settings to use filter mode point
 <img src="http://i.imgur.com/B0nqf75.png" width=300px />
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details><summary>What is filter mode?</summary>
 
 Using point filter mode gets us closer to pixel perfect sprites and prevents some visual glitches.
 
@@ -221,16 +167,14 @@ Update each sprite's and sprite sheet's import settings to use mesh type full re
 
 <details><summary>How</summary>
 
- - Select all the sprite sheets.
-   - Unity won't allow this option to be changed for both sprites and sprite sheets at the same time.
+ - Select all the sprites.
  - In the Inspector, set 'Mesh Type: Full Rect'.
- - Then select each sprite and do the same.
 
 <img src="http://i.imgur.com/Dhe3Nzt.png" width=300px />
 
 <hr></details><br>
 
-<details><summary>What did that do?</summary>
+<details><summary>What is mesh type?</summary>
 
 When a sprite is rendered to the screen, a combination of a mesh (like used for 3D objects) outlining the sprite and transparency is used to draw the picture on screen.  Tradeoffs here are beyond the scope of this tutorial.
 
@@ -264,15 +208,13 @@ Update the project settings, disabling Anti-Aliasing for each quality level.
  - Click 'Ultra' to resume testing with the best settings.
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
-
-Disabling Anti Aliasing gets us closer to pixel perfect sprites and prevents some visual glitches.
+<details><summary>What is Anti-Aliasing and why disable it?</summary>
 
 Anti Aliasing is a technique used to smooth jagged edges as shown here:
 
 <img src="https://qph.ec.quoracdn.net/main-qimg-10856ecbea4f439fb9fb751d41ff704a" width=50% />
 
-Like changing the filter mode to Point, we do this when working with sprites because we often want control over images down to the pixel.
+Disabling Anti Aliasing gets us closer to pixel perfect sprites and prevents some visual glitches. Like changing the filter mode to Point, we do this when working with sprites because we often want control over images down to the pixel.
 
 Anti-aliasing may lead to unexpected gaps or distortions when sprites are side by side.  Here is an example that appears when using tiling and Anti Aliasing is enabled:
 
@@ -316,7 +258,7 @@ You'll also want to update the supported resolutions for the different platforms
 <img src="http://i.imgur.com/NhCWDTp.png" width=300px />
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details><summary>Why use a fixed aspect ratio</summary>
 
 We are building a game with a fixed display.  The camera is not going to follow the character which will simplify the game and level design for this tutorial.  With a fixed aspect ratio we can design a scene without any camera movement and be sure everyone has the same experience.
 
@@ -641,8 +583,8 @@ Create a new parent GameObject for the platform sprite.
 <details><summary>How</summary>
 
  - In the Hierarchy, right click and 'Create Empty'.
- - Rename to "Platform".
- - Ensure the Transform is at defaults (position 0, rotation 0, scale 1) for both the 'Platform' and the sprite's GameObject 'spritesheet_ground_72'.
+   - Rename to "Platform".
+   - Ensure the Transform is at defaults (position 0, rotation 0, scale 1) for both the 'Platform' and the sprite's GameObject 'spritesheet_ground_72'.
 
 <img src="http://i.imgur.com/FAkZf1H.png" width=300px />
 
@@ -717,7 +659,6 @@ The scene should look something like this:
 
 <img src="http://i.imgur.com/kL3NvA7.png" width=500px>
 
-
  - Select the middle sprite's GameObject for the platform on the right.
  - Drag and drop that child GameObject out of the Platform so it stands alone. (it will still appear at the same position/rotation). 
  - With Vertex Snap, use the box in the bottom left corner to drag the platform and connect perfectly with the other.
@@ -779,7 +720,7 @@ Add a BoxCollider2D to each of the Platforms.  Add an edge radius and edit colli
 
  - Select a platform's parent GameObject.
  - Click the 'Add Component' button, type **BoxCollider2D** and select it from the list.
- - Under Box Collider 2D in the Inspector, set 'Edge Radius' to '.1'
+   - Under Box Collider 2D in the Inspector, set 'Edge Radius' to '.1'
 
 <img src="http://i.imgur.com/yM4DRr6.png" width=300px>
 
@@ -804,11 +745,13 @@ For the bottom platforms, we overlap the colliders for a smooth experience when 
 <hr></details>
 <details><summary>What is a Collider?</summary>
 
-[Colliders](https://docs.unity3d.com/Manual/CollidersOverview.html) are components placed on GameObjects to define their shape for the purposes of physical collisions.  The collider shape may or may not align with the visuals on screen.
+Colliders are components placed on GameObjects to define their shape for the purposes of physical collisions.  The collider shape may or may not align with the visuals on screen.
 
 Typically colliders match the shape of the art on screen.  For example, they are used to keep the character from falling through the floor or walking through walls, and to cause the character to die when they hit an enemy.
 
 Colliders may also be used as 'triggers' to detect something happening near an object without causing a physical reaction.  For example, an entity could have a second collider twice as large as the entity itself and use that to know when danger is approaching - causing the entity to run the other way.
+
+More on [colliders from Unity](https://docs.unity3d.com/Manual/CollidersOverview.html).
 
 </details>
 <details><summary>Why not place colliders on the child GameObjects instead?</summary>
@@ -957,8 +900,6 @@ Add additional BoxCollider2Ds offscreen to redirect balls back on screen.
 
 <img src="http://i.imgur.com/5mUaPov.png" width=300px />
 
-
-
  - Copy paste the bumper and modify it's position and rotation so that each platform that may send a spike ball offscreen has a bumper.
    - We do not want a bumper for the bottom left as balls should not return after that point.
 
@@ -1026,19 +967,6 @@ public class InitializeRigidbody : MonoBehaviour
 When a ball is spawned, InitializeRigidbody will give it an initial velocity and angular velocity.  This causes the ball to move and spin even if we drop it on a flat platform.
 
 <hr></details>
-<details><summary>What's GetComponent do?</summary>
-
-GetComponent is used to find another script/component on a GameObject.  If you need to access a script multiple times, generally it's better to call GetComponent just once (typically in Awake) and cache the results.
-
-There are similar APIs available from Unity such as GetComponentsInChildren, which are used to discover multiple components and/or search more GameObjects.
-
-<hr></details>
-TODO what's C# generics?
-<details><summary>Why confirm the values in the Inspector match the defaults in code?</summary>
-
-When a script runs, it uses the values as defined in the Inspector (which may be different than the defaults in code).  Usually Unity will default all the fields in the Inspector to the defaults you have written in code.  However depending on the order you do things exactly, this may not always work out.  If you create a script and it does not function properly, double check the values in the Inspector.
-
-<hr></details>
 <details><summary>Does the filename matter?</summary>
 
 Yes!  
@@ -1046,16 +974,43 @@ Yes!
 This is unusual for C# developers, but yes, the filename must match the class name for Unity to work correctly.  If the names don't match, everything will compile but the script will not be selectable as a component.
 
 <hr></details>
-<details><summary>Why not use a "SpikeBall" component instead?</summary>
+<details><summary>What is MonoBehaviour / how is Start() called?</summary>
 
-You could, but...  
+Most of the scripts that you create in Unity will derive from MonoBehaviour.  [MonoBehaviour](https://docs.unity3d.com/ScriptReference/MonoBehaviour.html) is the base class for a GameObject component (scripts on objects in your world).  It allows you to execute logic every Update (each frame) and respond collision events, etc.
 
-Unity encourages component based solutions, where you aim to offer a single mechanic per component.  Here's a good [wikipedia article on component based](https://en.wikipedia.org/wiki/Component-based_software_engineering) design.  Briefly, the advantages to this approach are:
+There are a lot of events available to MonoBehaviours.  In this example we are using Start which is called once per-object, when that object is first spawned in the world.
 
- - Each script or component focuses on a single feature or mechanic, simplifying and making it easier to debug.
- - Components may be reused between different object types.  If we had one master SpikeBall component and then created a similar enemy with a few different mechanics, reusing logic would be more challenging and we might copy paste parts to our new enemy component instead. 
+Note that when implementing MonoBehaviour events, you do not use 'override' nor subscribe to the event.  Unity uses reflection based on the method signature instead to improve performance.  This creates an unintuituve  pattern for C# developers but allows Unity to eliminate unncessary calls.  This optimization normally in development would be considered overkill but for a game engine this kind of thing adds up, particularly since there are typically hundreds of MonoBehaviours in the world.
+
+See also [Unity's Execution Order of Event Functions](
+https://docs.unity3d.com/Manual/ExecutionOrder.html).
 
 </details>
+<details><summary>What's a Vector2 and how's it differ from Vector3?</summary>
+
+A Vector2 is a struct which holds 2 floats: X, Y.  A Vector3 holds 3 floats: X, Y, Z.  It has an API helpful for managing positions and directions, including:
+
+ - .magnitude: Returns the length of a line drawn from the origin to this position.
+ - .normalized: Returns a new Vector2 representing the same direction but with a magnitude of 1.
+
+For 2D games, we often refer to position and direction as a Vector2.  Unity still stores everything as Vector3, and allows you to easilly convert from one to another.
+
+</details>
+<details><summary>What's GetComponent do / what's C# generics?</summary>
+
+GetComponent is used to find another script/component on a GameObject by its type.  If you need to access a script multiple times, generally it's better to call GetComponent just once (typically in Awake) and cache the results.
+
+There are similar APIs available from Unity such as GetComponentsInChildren, which are used to discover multiple components and/or search more GameObjects.
+
+In C#, generics are a way of passing a Type to another method or class.  In this example we pass the type of component we are looking for to GetComponent.  The benefit / difference from passing the type using a Type object (e.g. typeof(MyClass)) is that the type can be used statically.  For example these two lines return the same result, but using generics is a nicer syntax:
+
+```csharp
+Rigidbody2D myBody = (Rigidbody2D)GetComponent(typeof(Rigidbody2D));
+Rigidbody2D myBody = GetComponent<Rigidbody2D>();
+```
+
+<hr></details>
+
 <details><summary>What's velocity and angularVelocity?</summary>
 
 A GameObject with a rigidbody may be moved with forces.  The Unity Physics engine uses these forces as inputs in order to calculate the object's position and rotation, considering other things in the world such as a wall blocking your path.  
@@ -1092,18 +1047,6 @@ public class MyComponent ...
 ```
 
 When you add a component in the inspector which requires another, and the required component is not already on that GameObject, Unity will automatically add it for you.
-
-</details>
-<details><summary>What is MonoBehaviour / how is Start() called?</summary>
-
-Most of the scripts that you create in Unity will derive from MonoBehaviour.  [MonoBehaviour](https://docs.unity3d.com/ScriptReference/MonoBehaviour.html) is the base class for a GameObject component (scripts on objects in your world).  It allows you to execute logic every Update (each frame) and respond collision events, etc.
-
-There are a lot of events available to MonoBehaviours.  In this example we are using Start which is called once per-object, when that object is first spawned in the world.
-
-Note that when implementing MonoBehaviour events, you do not use 'override' nor subscribe to the event.  Unity uses reflection based on the method signature instead to improve performance.  This creates an unintuituve  pattern for C# developers but allows Unity to eliminate unncessary calls.  This optimization normally in development would be considered overkill but for a game engine this kind of thing adds up, particularly since there are typically hundreds of MonoBehaviours in the world.
-
-See also [Unity's Execution Order of Event Functions](
-https://docs.unity3d.com/Manual/ExecutionOrder.html).
 
 </details>
 <details><summary>Why use protected on the Unity event?</summary>
@@ -1174,6 +1117,45 @@ Why not public instead?
 Encapsulation.  If we were to make these methods public, it suggests that other components may call the events directly.  I've yet to encounter a use case where it's appropriate to do that - you should rely only on Unity to call these events to keep your code clean.
 
 </details>
+<details><summary>Why confirm the values in the Inspector match the defaults in code?</summary>
+
+When a script runs, it uses the values as defined in the Inspector (which may be different than the defaults in code).  Usually Unity will default all the fields in the Inspector to the defaults you have written in code.  However depending on the order you do things exactly, this may not always work out.  If you create a script and it does not function properly, double check the values in the Inspector.
+
+<hr></details>
+<details><summary>Why not use a "SpikeBall" component instead?</summary>
+
+You could, but...  
+
+Unity encourages component based solutions, where you aim to offer a single mechanic per component.  Here's a good [wikipedia article on component based](https://en.wikipedia.org/wiki/Component-based_software_engineering) design.  Briefly, the advantages to this approach are:
+
+ - Each script or component focuses on a single feature or mechanic, simplifying and making it easier to debug.
+ - Components may be reused between different object types.  If we had one master SpikeBall component and then created a similar enemy with a few different mechanics, reusing logic would be more challenging and we might copy paste parts to our new enemy component instead. 
+
+</details>
+<details><summary>What does Debug.Assert do?</summary>
+
+Debug.Assert is used to confirm an assumption your code is making.  If the assumption does not hold (i.e. if the contents of the Debug.Assert evaluate to false), then the assert fails and an error is presented in the Unity console for you to investigate.
+
+```csharp
+Debug.Assert(confirmThisIsTrue);
+```
+
+You can optionally include a message to be displayed when the assert fails.  e.g.:
+
+```csharp
+Debug.Assert(confirmThisIsTrue, "confirmThisIsTrue must be true");
+```
+
+Debug.Assert is there to help identify problems sooner.  We use Debug.Assert in the linked code samples (they are not shown inline for this tutorial).  If the assert fails it does not prevent other code from being executed - however you can select 'Error Pause' in the 'Console' to better see what is happening at that moment.
+
+Debug.Assert does not execute in release / the built version of your game.  In other words there is no performance impact to your final game by including these checks.
+
+A common use case for Debug.Assert is to validate pre-conditions and post-conditions.  
+
+ - Pre-conditions are assumptions which should be true when entering a method.
+ - Post-conditions should hold true when exiting.
+
+</details>
 
 ## 1.25) Add a script to destroy balls that roll off
 
@@ -1214,6 +1196,13 @@ Play and the ball should now destroy itself when it falls off screen:
 This script would work the same without a fixed aspect ratio (since different aspect ratios only impact how much of the world we see horizontally).  If we supported a moving camera, we may need to calculate the kill height differently.
 
 <hr></details>
+<details><summary>Why hardcode the outOfBoundsYPosition?</summary>
+
+Just to keep things simple at the beginning of this tutorial.  Since the camera is fixed in this game, it will work fine this way.
+
+Later we create a GameController which includes screenBounds, defining the area of the world that the camera can see.  SuicideOutOfBounds could switch to leverage that and then work correctly with different camera sizes.
+
+</details>
 <details><summary>Why bother, the GameObject is already off screen?</summary>
 
 When a GameObject is off screen, there is no attempt to render it so your GPU is not wasting time but Unity is still processing Physics and logic for any components on the GameObject.  In this case, once the GameObject has fallen off the bottom it will never return to the game.  
@@ -1293,11 +1282,19 @@ Create a prefab for the spike ball, and remove the GameObject from the scene.
 
 We created a prefab for the spike ball for another component to instantiate.  i.e. this allows the spawner we will be adding to created an endless stream of balls.
 
+</details>
+<details><summary>What's a prefab?</summary>
+
 A prefab is a file representing a configured GameObject.  This includes any child GameObjects as well as Components and their settings from the Inspector. 
 
 This allows things like our spawner to instantiate a GameObject with the appropriate components and configurations, without knowing any details about the specific object type it is spawning.  More [on prefabs from Unity](https://docs.unity3d.com/Manual/Prefabs.html).
 
+When you modify a prefab, all the objects in the world automatically get updated as well.  If you prefer to work with GameObjects in the scene, you can modify any one GameObject and then click 'Apply' to save the changes to the prefab.
+
+You can also override values from the prefab, to create a unique object in the scene.
+
 </details>
+
 
 ## 1.27) Create an evil cloud
 
@@ -1306,9 +1303,9 @@ Add a GameObject for the evil cloud.  Size and position it in the top left.
 <details><summary>How</summary>
 
  - Drag in the sprite, we are using **spritesheet_jumper_57**.
- - Add it to an empty parent GameObject named "Evil Cloud".
- - Move it to the top left of the screen.
- - Use the Scale tool evenly on all dimensions till it fits nicely.
+   - Add it to an empty parent GameObject named "Evil Cloud".
+   - Move it to the top left of the screen.
+   - Use the Scale tool evenly on all dimensions till it fits nicely.
 
 <img src="http://i.imgur.com/MZWguje.png" width=150px />
 <br>
@@ -1448,7 +1445,7 @@ Instantiate(thingToSpawn, gameObject);
 ```
 
 </details>
-<details><summary>How do you choose a random number?</summary>
+<details><summary>What's Random.Range do / what other options do we have for RNG?</summary>
 
 Unity provides a convenient static class for getting random data.  For example:
 
@@ -1520,30 +1517,6 @@ Quaternion rotationOfZ60Degrees
 ```
 
 </details>
-<details><summary>What does Debug.Assert do?</summary>
-
-Debug.Assert is used to confirm an assumption your code is making.  If the assumption does not hold (i.e. if the contents of the Debug.Assert evaluate to false), then the assert fails and an error is presented in the Unity console for you to investigate.
-
-```csharp
-Debug.Assert(confirmThisIsTrue);
-```
-
-You can optionally include a message to be displayed when the assert fails.  e.g.:
-
-```csharp
-Debug.Assert(confirmThisIsTrue, "confirmThisIsTrue must be true");
-```
-
-Debug.Assert is there to help identify problems sooner.  We use Debug.Assert in the linked code samples (they are not shown inline for this tutorial).  If the assert fails it does not prevent other code from being executed - however you can select 'Error Pause' in the 'Console' to better see what is happening at that moment.
-
-Debug.Assert does not execute in release / the built version of your game.  In other words there is no performance impact to your final game by including these checks.
-
-A common use case for Debug.Assert is to validate pre-conditions and post-conditions.  
-
- - Pre-conditions are assumptions which should be true when entering a method.
- - Post-conditions should hold true when exiting.
-
-</details>
 
 ## 1.29) Assign an enemy layer
 
@@ -1552,7 +1525,7 @@ Create a layer for Enemy and assign it to the Spike Ball prefab.
 <details><summary>How</summary>
 
  - Menu Edit -> Project Settings -> Tags and Layers.
- - Under 'Layers' add "Enemy" to one of the empty 'User Layer' slots.
+   - Under 'Layers' add "Enemy" to one of the empty 'User Layer' slots.
 
 <img src="http://i.imgur.com/spZG3NZ.png" width=300px />
 
@@ -1631,7 +1604,7 @@ Update the collision matrix, disabling enemy to enemy collisions.
 <details><summary>How</summary>
 
  - Edit -> Project Settings -> Physics 2D.
- - Under the 'Layer Collision Matrix', uncheck the box where 'Enemy' meets 'Enemy'.
+   - Under the 'Layer Collision Matrix', uncheck the box where 'Enemy' meets 'Enemy'.
 
 <img src="http://i.imgur.com/JkjXpZN.png" width=300px />
 
@@ -1676,6 +1649,7 @@ To review, you may want to:
  - While testing (in play mode):
    - You can changing values in the Inpsector and they will not be saved.  This allows you to experiment with a different values easily.
  - Use Project Settings -> Time 'Time Scale' to make everything move faster or slower.
+ - You may occasionally see a line between platform tiles or other small glitch even after the settings above have been applied.  The only fix we can find for this is to control for resolution by modifying the camera size so sprites appear with an even multiple of their original size. (out of scope for this tutorial)
 
 <hr></details>
 
@@ -1684,4 +1658,3 @@ To review, you may want to:
 [Chapter 2](https://github.com/hardlydifficult/Platformer/blob/master/Chapter2.md).
 
 
-TODO something about the glitch that remains.  Only fix we can find is fixed resolution....

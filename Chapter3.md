@@ -17,7 +17,7 @@ demo build of level 3
 
 Create a Hammer prefab and then layout several in the world.
 
-<details><summary>How</summary>
+<details open><summary>How</summary>
 
  - Change the sprite's pivot to Bottom. We are using **Hammer**.
  - Add to the world and scale (to about .2).
@@ -71,7 +71,7 @@ Add a script to the hammer and character, allowing the character to pickup the h
 
 <details><summary>How</summary>
 
- - Create script Code/Components/Weapons/**WeaponHolder**:
+ - Create script Components/Weapons/**WeaponHolder**:
 
 ```csharp
 using UnityEngine;
@@ -82,8 +82,8 @@ public class WeaponHolder : MonoBehaviour
 }
 ```
 
- - Add **WeaponHolder** to the character.
- - Create script Code/Components/Weapon/**Hammer**:
+ - Add **WeaponHolder** to the Character.
+ - Create script Components/Weapons/**Hammer**:
 
 ```csharp
 using UnityEngine;
@@ -131,31 +131,31 @@ public class Hammer : MonoBehaviour
   }
 }
 ```
+
  - Select the Hammer prefab:
    - Add **SuicideIn**:
-     - Set the Time Till Death to 10.
+     - Time Till Death: 10
      - Disable the component.
    - Add **KillOnContactWith**:
-     - Configured for layer 'Enemy'.
+     - Layers to kill: Enemy
      - Disable the component.
    - Add **Hammer**:
      - Add SuicideIn and KillOnContactWith to the list 'To Enable On Equip'.
  - Select the SpikeBall prefab:
-   - Add **DeathEffectSpawn** configured to use the explosion prefab.
+   - Add **DeathEffectSpawn**:
+     - GameObject to spawn: the Explosion prefab
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-We create a weapon holder component to ensure we don't hold more than one weapon at a time.  When the weapon despawns (i.e. OnDestroy), we free up the character's weapon holder so it can pick up another.
+We create a weapon holder component to ensure we don't hold more than one weapon at a time.  When the weapon despawns (i.e. OnDestroy), we free up the Character's weapon holder so it can pick up another.
 
-When the character picks up a hammer, the hammer becomes a child of the character GameObject.  The hammer is then given a local position and rotation which represents where to grip the hammer relative to the character's feet (because the character has a bottom pivot point).  
+When the character picks up a hammer, the hammer becomes a child of the Character GameObject.  The hammer is then given a local position and rotation which represents where to grip the hammer relative to the character's feet (because the character has a bottom pivot point).  
 
 When the hammer is equip, a list of components are enabled.  We use use this to make the necessary changes to switch this from a pickup item to a limited time killing machine.  
 
  - SuicideIn creates a timer till despawn.
  - KillOnContactWith enables killing enemies, previously disabled because it would be usual for the hammer as a pickup item to kill passers by.
-
-When you modify the hammer prefab, all the objects in the world automatically get updated as well.  If you prefer to work with GameObjects in the scene, you can modify any one hammer and then click 'Apply' to save the changes to the prefab.
 
 <hr></details>
 <details><summary>Could we reset the timer instead of preventing a second pickup?</summary>
@@ -173,6 +173,14 @@ Quaternions are confusing for people.  This is why the Transform rotation is mod
 You could switch to Quaternion, and it would be slightly more performant that way.  But I recommend using Euler, in case you ever want to modify the rotation used.
 
 <hr></details>
+<details><summary>What's localPosition / localRotation and how do they differ from position / rotation?</summary>
+
+When modifying the Transform position - you can do so with either .position or .localPosition.  When the GameObject is a child of another GameObject these methods differ; they do the same thing when the GameObject has no parent.
+
+ - .position: Sets the Transform position so that the GameObject appears at that location after considering the parent's Transform (position, rotation, and scale).
+ - .localPosition: Sets the Transform position to the value specified.  If the GameObject has a parent, the parent's Transform will impact the final position you see in the scene.
+
+<hr></details>
 
 
 
@@ -182,7 +190,7 @@ Add a script to the hammer to flash red before it's gone.
 
 <details><summary>How</summary>
 
- - Create script Code/Components/Death/**DeathEffectFlash**:
+ - Create script Components/Death/**DeathEffectFlash**:
 
 ```csharp
 using System.Collections;
@@ -214,18 +222,30 @@ public class DeathEffectFlash : DeathEffect
 
   IEnumerator FlashToDeath()
   {
-    SpriteRenderer[] spriteList = GetComponentsInChildren<SpriteRenderer>();
+    SpriteRenderer[] spriteList 
+      = GetComponentsInChildren<SpriteRenderer>();
     float timePassed = 0;
     bool isRed = false;
     while(timePassed < lengthToFlashFor)
     {
-      spriteList.SetColor(isRed ? Color.red : Color.white);
+      SetColor(spriteList, isRed ? Color.red : Color.white);
       isRed = !isRed;
 
       yield return new WaitForSeconds(timePerColorChange);
       timePerColorChange = Mathf.Max(Time.deltaTime, timePerColorChange);
       timePassed += timePerColorChange;
       timePerColorChange *= colorChangeTimeFactorPerFlash;
+    }
+  }
+
+  void SetColor(
+    SpriteRenderer[] spriteList,
+    Color color)
+  {
+    for(int i = 0; i < spriteList.Length; i++)
+    {
+      SpriteRenderer sprite = spriteList[i];
+      sprite.color = color;
     }
   }
 }
@@ -259,19 +279,26 @@ Additionally, this simplistic algorithm may drive the variable timePerColorChang
 Alternatively this method could be rewritten to use Time.timeSinceLevelLoaded.  With that we do not need to sum each itteration but instead can make decisions based off of the current time vs the time the effect began.
 
 <hr></details>
+<details><summary>Why use GetComponentsInChildren instead of a single sprite?</summary>
+
+Flexibility.  Some use cases would work with GetComponent or GetComponentInChildren.  We get all the sprites in this GameObject and its children, and then updatem all so if something is composed of multiple sprites this script just works. 
+
+<hr></details>
 
 
 
-## 3.4) Create a flying enemy
+## 3.4) Spawn in a flying enemy
 
 Create a GameObject for the fly guy, reusing components from the spike ball and character.  
 
 <details><summary>How</summary>
 
+Create the fly guy:
+
  - Select **spritesheet_jumper_30**, **84**, and **90** and drag them into the Hierarchy, creating Assets/Animations/**FlyGuyWalk**.
-   - Set Order in Layer to 1.
+   - Order in Layer: 1
  - Add the sprite to a parent GameObject named "FlyGuy":
-   - Set the Layer for FlyGuy to 'Enemy'.
+   - Layer: Enemy
    - Add a **Rigidbody2D**:
      - Freeze the Z rotation.
    - Add a **CapsuleCollider2D**:
@@ -279,22 +306,54 @@ Create a GameObject for the fly guy, reusing components from the spike ball and 
 
 <img src="http://i.imgur.com/d1lxoEj.png" width=150px />
 
+<br>Add a spawner for fly guys:
+
  - Select FlyGuy:
    - Add **DeathEffectSpawn**:
-     - Configure it to use the explosion prefab.
+     - GameObject to Spawn: the Explosion prefab
    - Add **KillOnContactWith**:
-     - Set the layermask to Player.
+     - Layers to kill: Player
+- Drag in **spritesheet_tiles_43** and then drag in **47**.
+   - Order in Layer: -2
+ - Add them to a parent named "Door":
+   - Scale up the size of the Door to (1.5, 1.5, 1.5).
+   - Move the door to the bottom left of the level.
+     - Position its Y so that the midpoint of the Door approximitally aligns with the midpoint of the FlyGuy (at the height we would want it to spawn).
+
+<img src="http://i.imgur.com/EjVJkZ4.gif" width=300px />
+
+ - Move the sprite for the top into position, then vertex snap the bottom.
+
+<img src="http://i.imgur.com/SF57oFs.gif" width=150px />
+
+ - Create a prefab for 'FlyGuy' and delete the GameObject.
+ - Select the Door and add **Spawner**:
+   - Thing to spawn: FlyGuy
+   - Initial wait time: 10
+
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
+
+Create the fly guy:
 
 The fly guy animation we created simply kicks its feet around.  We are not going to do anything more with this animation in this tutorial.  But you could use some of the same techniques we did for the character if you want to improve the experience.
 
 The rigidbody and collider enables physics and allows them to stay on platforms.  We freeze the z rotation so the fly guy does not fall over.
 
-The collider, layer, and KillOnContactWith replicates the configuration we used for the spike ball to kill the character on contact.
+The collider, layer, and KillOnContactWith replicates the configuration we used for the spike ball to kill the character.
 
 DeathEffectSpawn creates an explosion when the fly guy is hit by a hammer.
+
+<br>Add a spawner for fly guys:
+
+We added a sprite representing the area where fly guys will spawn from.
+
+For simplicity in the Spawner component, the position emenies appear at is the center of the Spawner's GameObject. We attempt to position this for the fly guy, and then adjust the door sprites' positions to fit the visible space.
+
+The Spawner added should start to spawn fly guys periodically after about 10 seconds into the level.
+
+Note that if the character stands still at the level start, a fly guy will spawn and kill him. This will be corrected later.
 
 <hr></details>
 
@@ -305,7 +364,7 @@ Add a script to the fly guy to drive random walk movement.
 
 <details><summary>How</summary>
 
- - Create script Code/Compenents/Movement/**WanderWalkController**:
+ - Create script Compenents/Movement/**WanderWalkController**:
 
 ```csharp
 using System.Collections;
@@ -377,17 +436,29 @@ You can configure the walk speed by modifying the WalkMovement component's 'Walk
 Note that at the moment fly guys will walk right off the screen.  This will be addressed soon.
 
 <hr></details>
-<details><summary>Why use timeBeforeFirstWander instead of going right into the while loop?</summary>
+<details><summary>Why use timeBeforeFirstWander instead of RNG from the start?</summary>
 
 When the fly guy first spawns in the bottom left of the world, we always want those enemies to walk to the right.  It would look strange for the enemies to go left and promptly hit the side of the screen before turning around.
 
 When the coroutine starts, we tell WalkMovement to go right and then wait a period of time.  The time we wait before entering the while loop should be configured to be long enough for fly guys to reach the first ladder -- maybe even longer.
 
 <hr></details>
+<details><summary>Why not set desiredWalkDirection to a random value instead of 1 or -1?</summary>
+
+You could, if it creates the experience you want in the game.  For example:
+
+```csharp
+walkMovement.desiredWalkDirection 
+  = UnityEngine.Random.Range(-1, 1);
+```
+
+This call would achieve the goal of getting the Fly Guy to walk randomly in one direction or the other. desiredWalkDirection is a percent - so 1 means walk at full speed to the right and -1 is full speed to the left.  Using Random.Range will often give you a much smaller value (e.g. .1) and therefore the walk speed in game may appear too slow.
+
+</details>
 
 ## 3.6) Make the fly guy float above the ground
 
-Add a second collider so that the body of this entity is above the ground but does not kill a character walking underneath.
+Add a second collider so that the body of the fly guy is above the ground but does not kill a character walking underneath.
 
 <details><summary>How</summary>
 
@@ -437,48 +508,12 @@ We are using a child GameObject for the fly guy's feet in order to simplify futu
 
 <hr></details>
 
-## 3.7) Add a spawner for fly guys
-
-Create a second spawner at the bottom for fly guys.
-
-<details><summary>How</summary>
-
- - Drag in **spritesheet_tiles_43** and then drag in **47**.
-   - Set Order in Layer to -2.
- - Add them to a parent named "Door":
-   - Scale up the size of the door to about (1.5, 1.5, 1.5).
-   - Move the door to the bottom left of the level and position its Y so that the midpoint of the Door approximitally aligns with the midpoint of the FlyGuy (at the height we would want it to spawn).
-
-<img src="http://i.imgur.com/EjVJkZ4.gif" width=300px />
-
- - Move the sprite for the top into position, then vertex snap the bottom.
-
-<img src="http://i.imgur.com/SF57oFs.gif" width=150px />
-
- - Create a prefab for 'FlyGuy' and delete the GameObject.
- - Select the Door and add **Spawner**:
-   - Assign FlyGuy as the thing to spawn.
-   - Change the initial wait time to 10.
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-We added a sprite representing the area where fly guys will spawn from.  
-
-For simplicity in the Spawner component, the position emenies appear at is the center of the Spawner's GameObject.  We attempt to position this for the fly guy, and then adjust the door sprites' positions to fit the visible space.
-
-The Spawner added should start to spawn fly guys periodically after about 10 seconds into the level.
-
-Note that if the character stands still at the level start, a fly guy will spawn and kill him.  This will be corrected later.
-
-<hr></details>
-
 
 ## 3.10) Fade in entities
 
 Add a script to entities so they fade in before moving.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Create script Compenents/Life/**FadeInThenEnable**:
 
@@ -515,7 +550,7 @@ public class FadeInThenEnable : MonoBehaviour
       float percentComplete = timePassed / timeTillEnabled;
       SetAlpha(spriteList, percentComplete);
 
-      yield return 0;
+      yield return null;
 
       timePassed += Time.deltaTime;
     }
@@ -560,17 +595,15 @@ public class FadeInThenEnable : MonoBehaviour
 
  - Select the FlyGuy prefab:
    - Disable the WanderWalkController.
-   - Add FadeInThenEnable:
+   - Add **FadeInThenEnable**:
      - Assign WanderWalkController to the Components to Enable list.
  - Select the Hammer prefab:
-   - Add FadeInThenEnable (nothing needed in the to enable list).
+   - Add **FadeInThenEnable** (nothing needed in the to enable list).
 
 <hr></details><br>
 <details><summary>What does this do?</summary>
 
-TODO
-
-The FadeInThenEnable script smoothly transitions the alpha from 0 (hidden) to 1 (visible) and then enables a list of components configured for that GameObject.
+The FadeInThenEnable script smoothly transitions the alpha for all the sprites in that GameObject from 0 (hidden) to 1 (visible) and then enables the list of components configured.
 
 FadeInThenEnable is added to the Character and we disable the PlayerController to prevent any input such as walk or jump until complete.
 
@@ -579,13 +612,13 @@ On the FlyGuy we disable wander movemenent until complete.
 For the Hammer, we could disable the Hammer component (preventing pickup) but it is unnecessary since the character can't move.
 
 <hr></details>
-What does StopAllCoroutines do?
-<details><summary>Why use GetComponentsInChildren instead of a single sprite?</summary>
+<details><summary>What does StopAllCoroutines do?</summary>
 
-Flexibility.  Some use cases would work with GetComponent or GetComponentInChildren.  We get all the sprites in this GameObject and its children, and then updatem all so if something is composed of multiple sprites this script just works. 
+StopAllCoroutines will stop any coroutines which were started by this script.  Coroutines in Unity are not running on a different thread, so nothing will be interrupted in that sense - however any coroutine which has yield returned and is expecting to be resumed will not be.
 
-<hr></details>
+Coroutines are automatically stopped when a GameObject is Destroyed or SetActive(false) is called.  However disabling a component (and not the entire GameObject) does not automatically stop coroutines - which is why we do it explicitly OnDisable here.
 
+</details>
 
 
 ## 3.11) Create a GameController 
@@ -707,15 +740,6 @@ Here's a [good article about singleton from dotnetperls](https://www.dotnetperls
 
 <hr></details>
 
-<details><summary>What's bounds represent?</summary>
-
-The Unity Bounds struct represents the axis aligned bounding box for the collider.  This means if you were to contain the collider in a cube which cannot be rotated - what is the position and size of the smallest possible surrounding cube.
-
-Unity has a number of APIs available for bounds, a couple of which we will use in the next section.
-
-In this example, screenBounds represents the area of the world which is visible.  The Z size for these bounds should be 0, effectively giving us a 2D box instead.
-
-</details>
 
 
 ## 3.8) Restrict movement to stay on screen
