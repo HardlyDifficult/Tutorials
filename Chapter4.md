@@ -314,7 +314,7 @@ if(boxCollider != null)
 <hr></details>
 <details><summary>What's Dot product do?</summary>
 
-The Dot product is a fast operation which can be used to effeciently determine if two directions represented with Vectors are facing the same (or a similiar) way.
+The Dot product is a fast operation which can be used to efficiently determine if two directions represented with Vectors are facing the same (or a similiar) way.
 
 In the visualization below, we are rotating two ugly arrows.  These arrows are pointing in a direction and we are using Vector2.Dot to compare those two directions.  The Dot product is shown as we rotate around.
 
@@ -344,7 +344,7 @@ Until now in this tutorial we have been using Trigger* events (e.g. OnTriggerEnt
 We are using 3 different APIs to pull information in this script:
 
  - OverlapCollider returns the colliders which are touching this entity's collider.
- - Raycast projects a line and returns objects intersecting with it (in order, closests first).  There are other 'cast' calls to project different shapes when needed, e.g. BoxCast.
+ - Raycast projects a line and returns colliders intersecting with it (in order, closests first).  There are other 'cast' calls to project different shapes when needed, e.g. BoxCast.
  - collider.Distance returns percise information about the collision between two specific colliders, such as the contact point or if they are not touching the distance between them.
 
 <hr></details>

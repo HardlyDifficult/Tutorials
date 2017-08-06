@@ -1265,7 +1265,7 @@ The prefab itself is still in-tact and may be used for other objects or scenes.
 <hr></details>
 <details><summary>When freezing the rigidbody a warning appears, why do it this way?</summary>
 
-When you freeze all constraints on the rigidbody, Unity presents a warning that this may not be an effecient way to achieve your goal of preventing the object from moving.  We have a bit of a unique use case for this case -- we will be removing these constraints once the end of the level is reached, allowing them to fall to the ground.
+When you freeze all constraints on the rigidbody, Unity presents a warning that this may not be an efficient way to achieve your goal of preventing the object from moving.  We have a bit of a unique use case for this case -- we will be removing these constraints once the end of the level is reached, allowing them to fall to the ground.
 
 Alternatively you could have not included the rigidbody at all until the end of the level.  This is style preference, as well as a bit of a performance consideration as there is overhead to having a frozen rigidbody and there is overhead with adding a new component to a GameObject.
 

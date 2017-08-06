@@ -29,7 +29,7 @@ Process plan (constantly changing...)
       - Screenshots / gifs
       - Asset links
       - Intro/outro
-   - Start grammer reviews.
+   - Start grammar reviews.
 
 <br><br>
 
@@ -50,7 +50,7 @@ Get Unity and start a 2D project.
 <details><summary>How</summary>
 
  - [Download Visual Studio Community edition](https://www.visualstudio.com/), if you don't already have it.
- - [Download Unity](https://unity3d.com/), the free Personal edition has everything you need. 
+ - [Download Unity](https://unity3d.com/) 2017, the free Personal edition has everything you need. 
    - You may be prompted to register / sign in.
  - Select '2D' when creating a new project.
  - Enter a name/directory - the other options can be left at defaults.
@@ -88,6 +88,7 @@ Zip of [all the art assets we are using](https://drive.google.com/open?id=0B2bFg
      - Assets/Code/**Editor**
      - Assets/Code/**Utils**
    - Assets/**Prefabs**
+   - Assets/**Scenes**
 
 TODO create directory struture
 
@@ -176,7 +177,7 @@ One issue may be consistency between sprites in a sprite sheet.  Often we want e
 
 <img src="http://i.imgur.com/lKfaiMj.png" width=300px />
 
-Other issues may arrise as well, such as different objects in a sprite sheet being combined into a single sprite.
+Other issues may arise as well, such as different objects in a sprite sheet being combined into a single sprite.
 
 Use the white lines in the 'Sprite Editor' to confirm the results.  There is also an option to manually slice if you need more control.
 
@@ -357,7 +358,7 @@ In the Scene, the white box representing the viewable area has grown.
 
 2D games by default use 'Projection: Orthographic'.  This means that the camera does not consider perspective, the ability to see more of the world the further it is from your eye. The amount of the world visible with a perspective camera is driven by it's position.  
 
-For an Orthographic camera, the amout of the world visible is driven by a special 'Size' property. 'Size' defines how much of the world is visible vertically.  Then the aspect ratio is used to determine how much to display horizontally.  
+For an Orthographic camera, the amount of the world visible is driven by a special 'Size' property. 'Size' defines how much of the world is visible vertically.  Then the aspect ratio is used to determine how much to display horizontally.  
 
 <hr></details>
 
@@ -451,7 +452,7 @@ InitializeOnLoad is an editor only script and found under the UnityEditor namesp
 
 Attributes in C# are metadata added to classes, fields, or methods that may be queried by other classes.  In the AutoSave script, InitializeOnLoad, a Unity specific attribute, is used to ensure the static constructor on our AutoSave class is called when the game begins.
 
-There are many [standard C# attributes](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/attributes/index) and [Unity specific attributes](http://www.tallior.com/unity-attributes/) that may be used.  Here are a few random examples:
+There are many [standard C# attributes](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/attributes/index) and [Unity specific attributes](http://www.tallior.com/unity-attributes/) that may be used.  Here are examples of several attributes you might use:
 
 ```csharp
 using UnityEngine;
@@ -476,7 +477,6 @@ public class MyClassName : MonoBehaviour
   void MyMethod() { }
 }
 ```
-
 
 <hr></details>
 <details><summary>What's a C# static constructor?</summary>
@@ -506,7 +506,7 @@ When a method is added to a delegate to be called later, this is referred to as 
 EditorApplication.playmodeStateChanged += OnPlaymodeStateChanged;
 ```
 
-If the owner of the delegate (in the example above that's EditorApplication) may outlive the subscriber, the subscriber should unsubcribe when it's destroyed.  Also, any time you are no longer interested in future updates, unsubscribe.  We do this with -= to remove our method and leave any remaining methods subscribed.
+If the owner of the delegate (in the example above that's EditorApplication) may outlive the subscriber, the subscriber should unsubscribe when it's destroyed.  Also, any time you are no longer interested in future updates, unsubscribe.  We do this with -= to remove our method and leave any remaining methods subscribed.
 
 ```csharp
 EditorApplication.playmodeStateChanged -= OnPlaymodeStateChanged;
@@ -660,7 +660,7 @@ Most of the platforms we will be creating require multiple different sprites to 
 The implications of using a parent GameObject or not will be more clear when we start to add game mechanics later in the tutorial.
 
 <hr></details>
-<details><summary>How is the sprite position calulated when it's a child?</summary>
+<details><summary>How is the sprite position calculated when it's a child?</summary>
 
 When a GameObject is a child of another GameObject, it's position, rotation, and scale are the combination of the child's Transform and the parent's Transform (via matrix multiplication).  
 
@@ -926,7 +926,7 @@ When we added the CircleCollider2D, it defaulted to surround the entire sprite. 
 
 <img src="http://i.imgur.com/WRLQITb.gif" width=200px />
 
-On a related note, seting the 'Order in Layer' to '-1' ensures that the spikes are behind the platform.  Without this the spikes would be ontop:
+On a related note, setting the 'Order in Layer' to '-1' ensures that the spikes are behind the platform.  Without this the spikes would be ontop:
 
 <img src="http://i.imgur.com/8cgB7jZ.gif" width=200px />
 
@@ -972,7 +972,7 @@ Add additional BoxCollider2Ds offscreen to redirect balls back on screen.
 
 <details><summary>What did that do?</summary>
 
-With this level design, spike balls will roll right off the edge of the screen.  Instead of making them bounce of the screen's edge (as we will for other enities later), we wanted to allow the spike balls to go off screen but then return shortly after.  
+With this level design, spike balls will roll right off the edge of the screen.  Instead of making them bounce of the screen's edge (as we will for other entities later), we wanted to allow the spike balls to go off screen but then return shortly after.  
 
 The bumpers we added extend the platforms you can see so that the balls don't fall off completely, but also accelerate the balls return to the world.
 
@@ -988,7 +988,7 @@ Add a script to the spike ball which sets an initial velocity and angular veloci
 
 <details><summary>How</summary>
 
- - In the Assets/Code/Compenents/Movement directory, create a C# Script and name it **InitializeRigidbody**.
+ - In the Assets/Code/Components/Movement directory, create a C# Script and name it **InitializeRigidbody**.
  - Double click the script to open it and paste the following:
 
  ```csharp
@@ -1053,7 +1053,7 @@ You could, but...
 Unity encourages component based solutions, where you aim to offer a single mechanic per component.  Here's a good [wikipedia article on component based](https://en.wikipedia.org/wiki/Component-based_software_engineering) design.  Briefly, the advantages to this approach are:
 
  - Each script or component focuses on a single feature or mechanic, simplifying and making it easier to debug.
- - Components may be reused between different object types.  If we had one master SpikeBall component and then created a similar enemy with a few different mechanics, reusing logic would be more challanging and we might copy paste parts to our new enemy compoment instead. 
+ - Components may be reused between different object types.  If we had one master SpikeBall component and then created a similar enemy with a few different mechanics, reusing logic would be more challenging and we might copy paste parts to our new enemy component instead. 
 
 </details>
 <details><summary>What's velocity and angularVelocity?</summary>
@@ -1100,7 +1100,7 @@ Most of the scripts that you create in Unity will derive from MonoBehaviour.  [M
 
 There are a lot of events available to MonoBehaviours.  In this example we are using Start which is called once per-object, when that object is first spawned in the world.
 
-Note that when implementing MonoBehaviour events, you do not use 'override' nor subscribe to the event.  Unity uses reflection based on the method signature instead to improve performance.  This creates an unintuative pattern for C# delevelopes but allows Unity to eliminate unncessary calls.  This optimization normally in development would be considered overkill but for a game engine this kind of thing adds up, particularly since there are typically hundreds of MonoBehaviours in the world.
+Note that when implementing MonoBehaviour events, you do not use 'override' nor subscribe to the event.  Unity uses reflection based on the method signature instead to improve performance.  This creates an unintuituve  pattern for C# developers but allows Unity to eliminate unncessary calls.  This optimization normally in development would be considered overkill but for a game engine this kind of thing adds up, particularly since there are typically hundreds of MonoBehaviours in the world.
 
 See also [Unity's Execution Order of Event Functions](
 https://docs.unity3d.com/Manual/ExecutionOrder.html).
@@ -1112,7 +1112,7 @@ Protected is an access modifier in C# which ensures that the only way to call th
 
 Why protected and not private?
 
-When you are using inheritence and both the child and parent classes need to include an event such as Update(), Unity will only call the child's implementation.  This can make it easy to miss that some events in the parent class have been overwritten (vs complemented by) the child.
+When you are using inheritance and both the child and parent classes need to include an event such as Update(), Unity will only call the child's implementation.  This can make it easy to miss that some events in the parent class have been overwritten (vs complemented by) the child.
 
 I recommend using protected on every Unity event so that the compiler can help avoid this mistake.  In the event the parent and child classes both have protected Update(), you will get a compile warning about the conflict.  
 
@@ -1163,7 +1163,7 @@ public class AChildOfTest : Test
 
 What if it's not a parent class?
 
-I recommend always using protected on Unity events.  A class may not be a parent at the moment but code constantly changes and matures.  This is a best practice to help avoid potential issues in the future.  If the class never becomes a parent, the method is effectively treated as private.  There is no performence or other runtime impact from using protected.
+I recommend always using protected on Unity events.  A class may not be a parent at the moment but code constantly changes and matures.  This is a best practice to help avoid potential issues in the future.  If the class never becomes a parent, the method is effectively treated as private.  There is no performance or other runtime impact from using protected.
 
 Why not always make the methods virtual?
 
@@ -1181,7 +1181,7 @@ Add a script to the spike ball which destroy's the GameObject after it rolls off
 
 <details><summary>How</summary>
 
- - Create a script **SuicideOutOfBounds** under Assets/Code/Compenents/Death and paste the following:
+ - Create a script **SuicideOutOfBounds** under Assets/Code/Components/Death and paste the following:
 
 ```csharp
 using UnityEngine;
@@ -1329,7 +1329,7 @@ Add a script to the evil cloud which periodically spawns balls.
 
 <details><summary>How</summary>
 
- - Create script Code/Compenents/Life/**Spawner**:
+ - Create script Code/Components/Life/**Spawner**:
 
 ```csharp
 using System.Collections;
@@ -1388,7 +1388,7 @@ The spawner component instantiates a prefab at its GameObject's position periodi
 <img src="http://i.imgur.com/ZJSulAj.gif" width=300px /> 
 
 <hr></details>
-<details><summary>What is a Coroutine / WaitForSeconds?</summary>
+<details><summary>What is StartCoroutine / WaitForSeconds?</summary>
 
 A Coroutine allows you to define a sequence which takes more than a single frame to execute.  It's implemented with a C# enumerator which Unity will then execute over time.  For example:
 
@@ -1418,7 +1418,7 @@ public class MyComponent : MonoBehaviour
 }
 ```
 
-When Start is called, the first line is printed ("Launch in T minus 3 seconds") immediatally.  Then we 'yield return' how long until the next line should be excuted.
+When StartCoroutine is called, the first line is printed ("Launch in T minus 3 seconds") immediately.  Then we 'yield return' how long until the next line should be executed.
 
 'yield' before the return is a special C# keyword used with enumerators.  It is marking your location in the method, allowing another class (in this example, Unity's internal logic), to resume the method from where it left off.
 
@@ -1450,7 +1450,7 @@ Instantiate(thingToSpawn, gameObject);
 </details>
 <details><summary>How do you choose a random number?</summary>
 
-Unity provides a convientent static class for getting random data.  For example:
+Unity provides a convenient static class for getting random data.  For example:
 
 ```csharp
 float randomNumber0To1 = UnityEngine.Random.value;
@@ -1491,22 +1491,22 @@ public class ExampleClass : MonoBehaviour
 
 <details><summary>What's a Quaternion?</summary>
 
-A Quaternion is how rotations are stored in a game engine.  They represent the rotation with (x, y, z, w) values, stored in this fashion because that it is an effecient way to do the necessary calculations when rendering on object on screen.
+A Quaternion is how rotations are stored in a game engine.  They represent the rotation with (x, y, z, w) values, stored in this fashion because that it is an efficient way to do the necessary calculations when rendering on object on screen.
 
 You could argue that this is overkill for a 2D game as in 2D the only rotation that may be applied is around the Z axis, and I would agree.  However remember that Unity is a 3D game engine.  When creating a 2D game, you are still in a 3D environment.  Therefore under the hood, Unity still optimizes its data for 3D.
 
 Quaternions are not easy for people to understand.  When we think of rotations, we typically think in terms of 'Euler' (pronounced oil-er) rotations.  Euler rotations are degrees of rotation around each axis, e.g. (0, 0, 30) means rotate the object by 30 degrees around the Z axis.
 
-In the inspector, modifying a Transform's rotation is done in Euler.  In code, you can either work with Quatenions directly or use Euler and then convert it back to Quatenion for storage.
+In the inspector, modifying a Transform's rotation is done in Euler.  In code, you can either work with Quaternions directly or use Euler and then convert it back to Quaternion for storage.
 
-Given a Quatenion, you can calculate the Euler value like so:
+Given a Quaternion, you can calculate the Euler value like so:
 
 ```csharp
 Quaternion myRotationInQuaternion = transform.rotation;
 Vector3 myRotationInEuler = myRotationInQuaternion.eulerAngles;
 ```
 
-Given an Euler value, you can calculate the Quatenion:
+Given an Euler value, you can calculate the Quaternion:
 
 ```csharp
 Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
@@ -1522,7 +1522,7 @@ Quaternion rotationOfZ60Degrees
 </details>
 <details><summary>What does Debug.Assert do?</summary>
 
-Debug.Assert is a used to confirm an assumption your code is making.  If the assumption does not hold (i.e. if the contents of the Debug.Assert evaluate to false), then the assert fails and an error is presented in the Unity console for you to investigate.
+Debug.Assert is used to confirm an assumption your code is making.  If the assumption does not hold (i.e. if the contents of the Debug.Assert evaluate to false), then the assert fails and an error is presented in the Unity console for you to investigate.
 
 ```csharp
 Debug.Assert(confirmThisIsTrue);
@@ -1572,7 +1572,7 @@ Layers are a way of categorizing GameObjects.  We will be using the Enemy layer 
 <hr></details>
 <details><summary>What's a Layer and how's it different from a Tag?</summary>
 
-A layer is a number representing a category or type of object in your game which may be compared to a LayerMask.  The Unity editor allows you to associate a string with this value as well for convienence.  Layers can be used to effeciently include or exclude objects based off of their type.  For this reason, the physics matrix in Unity works with layers.
+A layer is a number representing a category or type of object in your game which may be compared to a LayerMask.  The Unity editor allows you to associate a string with this value as well for convenience.  Layers can be used to efficiently include or exclude objects based off of their type.  For this reason, the physics matrix in Unity works with layers.
 
 To determine if a layer is included with in a LayerMask, you can do it like the following example.  Comparing to a LayerMask uses 'bit shifting' and a 'bitwise and' which are not intuitive.  Later in the tutorial we'll create an extension method so we don't have to look at this ever again.
 
@@ -1674,7 +1674,7 @@ To review, you may want to:
 <details><summary>Testing / Debugging tips</summary>
 
  - While testing (in play mode):
-   - You can changing values in the Inpsector and they will not be saved.  This allows you to experiement with a different values easily.
+   - You can changing values in the Inpsector and they will not be saved.  This allows you to experiment with a different values easily.
  - Use Project Settings -> Time 'Time Scale' to make everything move faster or slower.
 
 <hr></details>

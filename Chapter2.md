@@ -705,6 +705,110 @@ Unity offers the UnityEngine.Mathf class to try and make some things a little ea
 </details>
 TODO GetComponentsInChildren?
 
+<details><summary>What's C# abstract do and how's it different from an interface?</summary>
+
+In C#, abstract refers to a class which is incomplete and may not be instantiated directly.  In order to create an object, a sub class inherits from the abstract class and you can then instatiate the sub class. 
+
+The sub class has access to everything created in the parent class, similar to if you had copy pasted everything from the parent into the child.
+
+```csharp
+public abstract class MyParentClass
+{
+  public int points;
+}
+
+public class MySubClass : MyParentClass
+{
+  public void PrintPoints() 
+  {
+    print(points);
+  }
+}
+```
+
+An abstract class may include an abstract method when the parent knows a method should exist, but not how it should be implemented.
+
+```csharp
+public abstract class MyParentClass
+{
+  public int points;
+
+  public abstract void PrintPoints();
+}
+
+public class MySubClass : MyParentClass
+{
+  public override void PrintPoints() 
+  {
+    print(points);
+  }
+}
+```
+
+This allows you to create an API that works with all sub classes of the parent.
+
+```csharp
+public void Print(MyParentClass a) 
+{
+  a.PrintPoints();
+}
+```
+
+Methods may also be virtual, meaning the parent has an implementation but the child my optionally extend or replace it.
+
+
+```csharp
+public abstract class MyParentClass
+{
+  public int points;
+
+  public virtual void PrintPoints() 
+  {
+    print(points);
+  }
+}
+
+public class MySubClass : MyParentClass
+{
+  public override void PrintPoints() 
+  {
+    print("You have... ");
+    base.PrintPoints();
+  }
+}
+```
+
+In C#, an interface is similiar to an abstract class that has no data or non-abstract methods (including virtual).  Interfaces are a way of defining a common API for classes to leverage.  The name of an interface always starts with "I", by convention.
+
+```csharp
+public interface IMyInterface 
+{
+  void PrintPoints();
+}
+
+public class MyClass : IMyInterface
+{
+  public int points;
+
+  public void PrintPoints() 
+  {
+    print(points);
+  }
+}
+```
+
+Other methods can leverage an interface without knowing the class that implemented the method like we did with the abstract class.
+
+```csharp
+public void Print(IMyInterface a) 
+{
+  a.PrintPoints();
+}
+```
+
+TODO this use case
+
+<hr></details>
 
 
 ## 2.12) Kill the player when he hits a ball
@@ -825,6 +929,7 @@ A disabled component will not get called for events such as Update.  However it 
 Unity only allows you to use the enable / disable feature if it detects that there is a method in the script which would be impacted.  We added an empty Start method to get the enable / disable feature since Unity does not enable enable by checking 'if(enabled)' in code.
 
 <hr></details>
+TODO what's the difference between Trigger and a non trigger Collider?
 <details><summary>Why kill on trigger enter vs just on collision?</summary>
 
 Later in the tutorial we will be adding ladders for entities to climb.  In order to allow entities to walk down ladders (and therefore through a floor), we temporarily disable collisions.  While in on a ladder, we still want enemies to be able to kill the character.
