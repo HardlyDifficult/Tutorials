@@ -905,12 +905,12 @@ public abstract class PlayerDeathMonoBehaviour : MonoBehaviour
 }
 ```
 
- - Create script Code/Compenents/Controllers/**LevelManager**:
+ - Create script Code/Compenents/Controllers/**LevelController**:
 
 ```csharp
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+public class LevelController : MonoBehaviour
 {
   [SerializeField]
   GameObject playerPrefab;
@@ -992,19 +992,19 @@ public class LevelManager : MonoBehaviour
    - Position it over the door.
    - Create a prefab for the Character.
    - Delete the GameObject.
- - Add a GameObject named "LevelManager":
+ - Add a GameObject named "LevelController":
    - Assign the character prefab.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-The LevelManager is going to be responsible for starting and restarting a level.  It does this by instantiating a player and then broadcasting to all components which inherit from PlayerDeathMonoBehaviour when the level restarts.
+The LevelController is going to be responsible for starting and restarting a level.  It does this by instantiating a player and then broadcasting to all components which inherit from PlayerDeathMonoBehaviour when the level restarts.
 
-The LevelManager knows when a player dies by subscribing the life count in the GameController.  When the lives go down, we push the event to all components which implement ICareWhenPlayerDies.
+The LevelController knows when a player dies by subscribing the life count in the GameController.  When the lives go down, we push the event to all components which implement ICareWhenPlayerDies.
 
 Any component may implement ICareWhenPlayerDies to receive this event and perform whatever action is appropriate.  For example, enemies should die so we can have a clear level when the player respawns.
 
-The LevelManager also has placeholders for completing the level as well as for when the player is out of lives.
+The LevelController also has placeholders for completing the level as well as for when the player is out of lives.
 
 At the moment we do not a sequence which ends the game, so if the life count goes negative you stop spawning but the game never ends.
 
@@ -1017,7 +1017,7 @@ To be more flexible, we could have a default position for the Character defined 
 
 <hr></details>
 
-TODO about FindObject here?
+TODO about FindObject here (first use)
 
 ## 3.14) Clear and restart the level on death
 

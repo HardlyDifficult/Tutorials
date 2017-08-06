@@ -23,18 +23,27 @@ Design the win area:
 
 <img src="http://i.imgur.com/WuW9hPk.png" width=300px />
 
-<br>Inform the LevelManager when the player won:
+<br>Inform the LevelController when the player won:
 
  - Create script Components/Effects/**TouchMeToWin**:
 
 ```csharp
+using System;
 using UnityEngine;
-
-TODO
 
 public class TouchMeToWin : MonoBehaviour
 {
   static int totalNumberActive;
+
+  [SerializeField]
+  MonoBehaviour componentToEnableOnTouch;
+
+  int playerLayer;
+
+  protected void Awake()
+  {
+    playerLayer = LayerMask.NameToLayer("Player");
+  }
 
   protected void OnEnable()
   {
@@ -49,15 +58,21 @@ public class TouchMeToWin : MonoBehaviour
   protected void OnTriggerEnter2D(
     Collider2D collision)
   {
-    if(enabled == false)
+    if(enabled == false 
+      || collision.gameObject.layer != playerLayer)
     {
       return;
+    }
+
+    if(componentToEnableOnTouch != null)
+    {
+      componentToEnableOnTouch.enabled = true;
     }
 
     enabled = false;
     if(totalNumberActive == 0)
     {
-      GameObject.FindObjectOfType<LevelManager>().YouWin();
+      GameObject.FindObjectOfType<LevelController>().YouWin();
     }
   }
 }
@@ -72,9 +87,9 @@ Design the win area:
 
 We put a large trigger collider around the mushroom.  When the character enters this area, it will trigger the end the level.  The collider is configured to use a layer which only interacts with the player so enemies cannot accidentally end the level.
 
-<br>Inform the LevelManager when the player won:
+<br>Inform the LevelController when the player won:
 
-TouchMeToWin counts the total number of these special zones in the world.  For level 1 we are only using one but for level 2 there will be more.  When the last one is disabled (by the character entering that area), we call YouWin on the LevelManager which will own starting the end sequence / switching to level 2.
+TouchMeToWin counts the total number of these special zones in the world.  For level 1 we are only using one but for level 2 there will be more.  When the last one is disabled (by the character entering that area), we call YouWin on the LevelController which will own starting the end sequence / switching to level 2.
 
 An enabled check is included to ensure we an area does not call YouWin multiple times.
 
@@ -120,7 +135,7 @@ Create a win animation:
 
 <br>Start the Timeline at the end of the level:
 
- - Update **LevelManager**:
+ - Update **LevelController**:
 
 <details><summary>Existing code</summary>
 
@@ -137,7 +152,7 @@ using UnityEngine.Playables;
 <details><summary>Existing code</summary>
 
 ```csharp
-public class LevelManager : MonoBehaviour
+public class LevelController : MonoBehaviour
 {
   [SerializeField]
   GameObject playerPrefab;
@@ -152,12 +167,15 @@ public class LevelManager : MonoBehaviour
   PlayableDirector director; 
 
   [SerializeField]
-  PlayableAsset endOfLevelPlayable; 
+  PlayableAsset TimelineEventPlayable; 
 ```
 
 <details><summary>Existing code</summary>
 
 ```csharp
+  [SerializeField]
+  int levelNumber = 1; 
+
   protected void OnEnable()
   {
     GameController.instance.onLifeCounterChange
@@ -205,7 +223,7 @@ public class LevelManager : MonoBehaviour
 </details>
 
 ```csharp
-    director.Play(endOfLevelPlayable); 
+    director.Play(TimelineEventPlayable); 
 ```
 
 <details><summary>Existing code</summary>
@@ -265,7 +283,7 @@ An Activation Track is used to hide the mushroom when the animation is nearly co
 
 <br>Start the Timeline at the end of the level:
 
-When the win condition is triggered, the LevelManager changes the Evil Cloud's Playable Director to play the end of level Timeline just created.
+When the win condition is triggered, the LevelController changes the Evil Cloud's Playable Director to play the end of level Timeline just created.
 
 <hr></details>
 <details><summary>Why switch the Playable when editing Timelines?</summary>
@@ -348,19 +366,22 @@ public class DisableComponentsOnEndOfLevel : MonoBehaviour
 
 <br>Call scripts at the end of the level:
 
- - Update **LevelManager** to call DisableComponentsOnEndOfLevel:
+ - Update Components/Controllers/**LevelController**:
 
 <details><summary>Existing code</summary>
 
 ```csharp
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+public class LevelController : MonoBehaviour
 {
   [SerializeField]
   GameObject playerPrefab;
 
   protected bool isGameOver;
+
+  [SerializeField]
+  int levelNumber = 1; 
 
   protected void OnEnable()
   {
@@ -380,7 +401,6 @@ public class LevelManager : MonoBehaviour
   {
     if(isGameOver)
     {
-      // Game is already over
       return;
     }
 
@@ -405,6 +425,8 @@ public class LevelManager : MonoBehaviour
     }
 
     isGameOver = true;
+
+    director.Play(TimelineEventPlayable);
 ```
 
 </details>
@@ -460,7 +482,7 @@ Depending on the type of component, our approach to 'disabling' differs.
 
 <br>Configure disabling for GameObjects:
 
-At the end of the level, the LevelManager will call each DisableComponentsOnEndOfLevel component. This component then disables other components on the GameObject to make the game freeze during our end of level animation.
+At the end of the level, the LevelController will call each DisableComponentsOnEndOfLevel component. This component then disables other components on the GameObject to make the game freeze during our end of level animation.
 
  - Entities disable their rigidbody to stop gravity and the animator to stop playback.
  - The Character also disables the PlayerController so that input does not cause the sprite to flip facing direction.
@@ -468,7 +490,7 @@ At the end of the level, the LevelManager will call each DisableComponentsOnEndO
 
 <br>Call scripts at the end of the level:
 
-When the LevelManager detects the win condition, it's updated to call each of the DisableComponentsOnEndOfLevel components in the scene.
+When the LevelController detects the win condition, it's updated to call each of the DisableComponentsOnEndOfLevel components in the scene.
 
 <hr></details>
 <details><summary>Why not just set timeScale to 0?</summary>
@@ -628,6 +650,8 @@ public class TextPoints : MonoBehaviour
   protected void Awake()
   {
     text = GetComponent<Text>();
+
+    Debug.Assert(text != null);
   }
 
   protected void Update()
@@ -636,8 +660,9 @@ public class TextPoints : MonoBehaviour
     int deltaPoints = currentPoints - lastPointsDisplayed;
     if(deltaPoints > 0)
     {
+      float speed = scrollSpeed * Time.deltaTime;
       float pointsTarget =
-        Mathf.Lerp(lastPointsDisplayed, currentPoints, scrollSpeed * Time.deltaTime);
+        Mathf.Lerp(lastPointsDisplayed, currentPoints, speed);
       int pointsToDisplay = Mathf.CeilToInt(pointsTarget);
       text.text = pointsToDisplay.ToString("N0");
       lastPointsDisplayed = pointsToDisplay;
@@ -824,7 +849,7 @@ Create the Mene scene:
 
  - Add the Evil Cloud sprite
    - Create an animation to loop, named Animations/**MenuCloud**.
-   - Adjust the playback speed in the Animation Controller.
+   - Adjust the playback speed in the Animator Controller.
 
 <img src="http://i.imgur.com/dM4LFPk.png" width=300px />
 
@@ -844,7 +869,7 @@ Create the Mene scene:
     
 <img src="http://i.imgur.com/bDZ5dr5.png" width=150px />
 
- - Create script Code/Components/UI/**ButtonChangeScene**:
+ - Create script Components/UI/**ButtonChangeScene**:
 
 ```csharp
 using UnityEngine;
@@ -874,7 +899,7 @@ public class ButtonChangeScene : MonoBehaviour
 
 <br>Return to the menu after losing:
 
- - Update Components/Controllers/**LevelManager**:
+ - Update Components/Controllers/**LevelController**:
 
 <details><summary>Existing code</summary>
 
@@ -892,7 +917,21 @@ using UnityEngine.SceneManagement;
 <details><summary>Existing code</summary>
 
 ```csharp
-public class LevelManager : MonoBehaviour
+using UnityEngine;
+using UnityEngine.Playables;
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+using UnityEngine.SceneManagement;
+```
+
+</details>
+
+```csharp
+
+public class LevelController : MonoBehaviour
 {
   [SerializeField]
   GameObject playerPrefab;
@@ -903,7 +942,7 @@ public class LevelManager : MonoBehaviour
   PlayableDirector director; 
 
   [SerializeField]
-  PlayableAsset endOfLevelPlayable;
+  PlayableAsset TimelineEventPlayable;
 
   [SerializeField]
   int levelNumber = 1; 
@@ -951,7 +990,7 @@ public class LevelManager : MonoBehaviour
 
     isGameOver = true;
 
-    director.Play(endOfLevelPlayable);
+    director.Play(TimelineEventPlayable);
 
     DisableComponentsOnEndOfLevel[] disableComponentList 
       = GameObject.FindObjectsOfType<DisableComponentsOnEndOfLevel>();  
@@ -1016,7 +1055,7 @@ ButtonChangeScene exposes a public method that we wire up to be called by Unity'
 
 <br>Return to the menu after losing:
 
-The LevelManager was updated, leveraging the YouLose placeholder created earlier to return to the menu once the player is out of lives.
+The LevelController was updated, leveraging the YouLose placeholder created earlier to return to the menu once the player is out of lives.
 
 <hr></details>
 <details><summary>Does order matter for scenes in the Build Settings?</summary>
@@ -1067,7 +1106,7 @@ Create prefabs from Level 1 to reuse:
    - 1 Platform (any is fine, we will use this as a starting point in Level2).
    - 1 Ladder
    - Evil Cloud
-   - LevelManager
+   - LevelController
 
 <br>Start to design level 2 with prefabs from level 1:
 
@@ -1078,7 +1117,7 @@ Create prefabs from Level 1 to reuse:
    - Canvas
    - EventSystem
    - Evil Cloud
-   - LevelManager
+   - LevelController
      - Level Number: 2
      - Select the Director
  - Add the Platform, Ladder, Hammer prefabs and any new art you would like to include.  
@@ -1140,10 +1179,10 @@ Create prefabs from Level 1 to reuse:
    - Add an Animation Track for the Evil Cloud 
      - Add an Animation Clip for CloudLevel2Entrance.
      - Update the speed if needed.
-   - Add Activation Tracks for the Hammers, Ladders, and LevelManager.  
+   - Add Activation Tracks for the Hammers, Ladders, and LevelController.  
      - Time them to start near the end of the animation.
      - And end at the end of the timeline.
-   - Then disable the Hammers, Ladders, and LevelManager.
+   - Then disable the Hammers, Ladders, and LevelController.
 
 <br>Create the outro Timeline:
 
@@ -1161,7 +1200,7 @@ Create prefabs from Level 1 to reuse:
    - Add **ChangeScenePlayable**:
       - Position it to start a few seconds after the TimelineEventPlayable began.
       - Change the Scene Name to "YouWin".
- - Select the LevelManager and change the End of Level Playable to Level2Exit.
+ - Select the LevelController and change the End of Level Playable to Level2Exit.
  - Switch the Playable Director back to Level2Entrance.
 
 <hr></details><br>
@@ -1206,7 +1245,7 @@ A new prefab was created specifically for level 2.  It's a slight modification t
 A new Timeline was created for the start of the level.  It's modeled after the Timeline used with level 1. 
 
  - The cloud is given a new animation to start with for this level.
- - We disable the Hammers, Ladders, and LevelManager until the animation is near complete, like we had done with level 1.
+ - We disable the Hammers, Ladders, and LevelController until the animation is near complete, like we had done with level 1.
 
 <br>Create the outro Timeline:
 
@@ -1241,7 +1280,7 @@ Once the character has touched each of the Breakaway platforms, make the level c
 
 Enable physics, causing the level to collapse:
 
- - Create script Components/Movement/**UnfreezeAndDisablePlatformers**:
+ - Create script Components/Effects/**UnfreezeAndDisablePlatformers**:
 
 ```csharp
 using UnityEngine;
@@ -1253,7 +1292,8 @@ public class UnfreezeAndDisablePlatformers : MonoBehaviour
     Rigidbody2D myBody = GetComponent<Rigidbody2D>();
     myBody.constraints = RigidbodyConstraints2D.None;
 
-    PlatformEffector2D effector = GetComponent<PlatformEffector2D>();
+    PlatformEffector2D effector 
+      = GetComponent<PlatformEffector2D>();
     if(effector != null)
     {
       effector.enabled = false;

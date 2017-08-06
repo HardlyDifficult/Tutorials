@@ -145,7 +145,7 @@ Slice each of the sprite sheets in order to access the individual sprites within
 <img src="http://i.imgur.com/d3XzhRU.png" width=300px />
 
 - Click 'Slice' button.
-- Click 'Apply' and close the Sprite Editor.
+- Close the Sprite Editor and apply changes when prompted.
 - Repeat for each sprite sheet.
 
 We are using:
@@ -191,7 +191,7 @@ Update each sprite's and sprite sheet's import settings to use filter mode point
 
  - Select all of the sprites and sprite sheets.
    - Use Ctrl click or shift click as you would while selecting in Windows Explorer.
- - In the 'Inspector', set 'Filter Mode' to 'Point (no filter)' and apply.
+ - In the 'Inspector', set 'Filter Mode' to 'Point (no filter)' and apply changes.
 
 <img src="http://i.imgur.com/B0nqf75.png" width=300px />
 
@@ -350,7 +350,7 @@ Update the camera size to about 10 and change the background color to black.
 
 We zoomed out a bit so that more of the world is visible on screen.
 
-In the Game window, the platform should look smaller now.  In the Scene, the white box representing the viewable area has grown.
+In the Scene, the white box representing the viewable area has grown.
 
 <hr></details>
 <details><summary>Why change 'Size' and not camera position?</summary>
@@ -1028,7 +1028,7 @@ When a ball is spawned, InitializeRigidbody will give it an initial velocity and
 <hr></details>
 <details><summary>What's GetComponent do?</summary>
 
-GetComponent is used to find another script/component on a GameObject.  If you need to access a script mulitple times, generally it's better to call GetComponent just once (typcially in Awake) and cache the results.
+GetComponent is used to find another script/component on a GameObject.  If you need to access a script multiple times, generally it's better to call GetComponent just once (typically in Awake) and cache the results.
 
 There are similar APIs available from Unity such as GetComponentsInChildren, which are used to discover multiple components and/or search more GameObjects.
 

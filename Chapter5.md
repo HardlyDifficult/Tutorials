@@ -2,7 +2,6 @@
 
 TODO intro
 
-
 ## 5.1) Hammer animation 
 
 Create an animation for the hammer swinging.
@@ -10,15 +9,14 @@ Create an animation for the hammer swinging.
 <details><summary>How</summary>
 
  - Open menu Window -> Animation.
- - Select a hammer.
- - Click create, save as Assets/Animations/**HammerSwing**.
+ - Select a Hammer.
+ - Click create, save as Animations/**HammerSwing**.anim
 
 <img src="http://i.imgur.com/Kokz29S.png" width=300px />
 
  - Click the red record button.
 
 <img src="http://i.imgur.com/bha8EJC.png" width=150px />
-
 
  - Modify the rotation, then set it back to 0, creating a keyframe for the default rotation.
  - Double click under 1:00 to create another keyframe.
@@ -32,7 +30,7 @@ Create an animation for the hammer swinging.
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-We created an animation for the Hammer, which automatically created the Animation Controller and a default state to play that animation.
+We created an animation for the Hammer, which automatically created the Animator Controller and a default state to play that animation.
 
 If you hit play now, the hammer will be swinging in place.  In the next couple sections we will change this to trigger the animation at the right time.
 
@@ -41,7 +39,12 @@ If you hit play now, the hammer will be swinging in place.  In the next couple s
 
 Unity offers a few different ways you could speed up an animation.  They are all valid, use what you are comfortable with. 
 
-I prefer to get the sequence and relative timing for animation correct using the Animation timeline, and then using the Animation controller state to modify the playback speed for that animation.  As animations get more complex, making updates to the animation timeline is more tedious which is why I prefer using the 'speed' field.
+I prefer to get the sequence and relative timing for animation correct using the Animation timeline, and then using the Animator Controller state to modify the playback speed for that animation.  As animations get more complex, making updates to the animation timeline is more tedious which is why I prefer using the 'speed' field.
+
+<hr></details>
+<details><summary>How do keyframes work / what happens between keyframes?</summary>
+
+A keyframe is a datapoint on the timeline.  Between each keyframe, Unity will smoothly transition from the previous keyframe to the next.  If you open the "Curves" tab you can see a graph showing how this transition occurs, and you make make modifications there directly.
 
 <hr></details>
 
@@ -60,7 +63,7 @@ Update the hammer animator to not play any animation by default.
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-An Animation controller always requires at least one state be active. We created a state which does nothing and made that the default so the hammer does not move until another component starts the animation.
+An Animator Controller always requires at least one state be active. We created a state which does nothing and made that the default so the hammer does not move until another component switches the state to HammerSwing, starting the animation.
 
 <hr></details>
 
@@ -71,7 +74,7 @@ Add a script to the hammer to start the swing animation when it's equip.
 
 <details><summary>How</summary>
 
- - Create script Code/Components/Effects/**PlayAnimationOnEnable**:
+ - Create script Components/Effects/**PlayAnimationOnEnable**:
 
 ```csharp
 using UnityEngine;
@@ -98,8 +101,8 @@ public class PlayAnimationOnEnable : MonoBehaviour
 
  - Select the Hammer prefab:
    - Add **PlayAnimationOnEnable**.
-     - Set the animation to play to "HammerSwing".
-     - Disable the PlayAnimationOnEnable component
+     - Animation to play: "HammerSwing"
+     - Disable the PlayAnimationOnEnable component.
    - Add the PlayAnimationOnEnable component to the Hammer component's 'To Enable' list.
 
 <hr></details><br>
@@ -108,26 +111,36 @@ public class PlayAnimationOnEnable : MonoBehaviour
 When the Hammer component is touched by the Character, it will enable the PlayAnimationOnEnable component which starts the swing animation.  
 
 <hr></details>
+<details><summary>How does animator.Play work?</summary>
+
+Calling Play on the animator will interrupt the current animation, if there is one, and start playing the one requested.  You pass the name of the Animator State from its Animator Controller, which in turn has a reference to the animation clip to play.  Any parameters defined in the animator state apply, including Speed.
+
+<hr></details>
 
 ## 5.4) Character animation parameters
 
-Create parameters to use in the character's animation controller and a script to feed the data.
+Create parameters to use in the character's Animator Controller and a script to feed the data.
 
 <details><summary>How</summary>
+
+Create animation parameters:
 
  - Open menu Window -> Animator.
    - Select the character's child sprite GameObject.
    - Switch to the 'Parameters' tab on the left.
    - Click the '+' button and select 'Float'.
 
-<img src="http://i.imgur.com/p6F4gHG.png" width=150px />
+<img src="http://i.imgur.com/p6F4gHG.png" width=300px />
 
  - Name the parameter "Speed".
  - Repeat to create:
    - A bool named 'isTouchingFloor'.
    - A bool named 'isClimbing'.
    - A bool named 'hasWeapon'.
- - Create script Code/Components/Animations/**PlayerAnimator**:
+
+<br>Have the Character sync animation parameters:
+
+ - Create script Components/Animations/**PlayerAnimatorController**:
 
 ```csharp
 using UnityEngine;
@@ -173,18 +186,24 @@ public class PlayerAnimatorController : MonoBehaviour
 
 Nothing yet.
 
-The parameters we are creating will be used to cause the Animation controller to transtition from one state to another.  This approach is an alternative to playing the animation state directly like we had done for the Hammer above.  
+<br>Create animation parameters:
+
+The parameters we are creating will be used to cause the Animator controller to transtition from one state to another.  This approach is an alternative to playing the animation state directly like we had done for the Hammer above.  
 
 The speed parameter will also be used to scale the animation playback speed based off how quickly the entity is moving at the time.
 
-The PlayerAnimatorController is simply forwarding information from various components to the Animation controller.
+<br>Have the Character sync animation parameters:
+
+The PlayerAnimatorController is simply forwarding information from various components to the Animator controller.
 
 <hr></details>
-<details><summary>When do you use animation parameters vs Play(state)?</summary>
+<details><summary>When do you use Animator Controller parameters vs Play(state) to change animations?</summary>
 
-It's up to you.  Both approaches have the same capabilities, but by using animation parameters you can let the Animation controller own much of the logic - simplifying your code and debugging.
+It's up to you.  Both approaches have the same capabilities, but by using animation parameters you can let the Animator Controller own much of the logic - simplifying your code and debugging.
 
 I prefer to use Play for simple objects like the Hammer, and use animation parameters for more complex ones like entities.
+
+You can also use a combination of the two approaches.  Calling Play will change the current Animator State, and from there any transitions from that state will be considered.
 
 <hr></details>
 
@@ -195,9 +214,10 @@ Update the walk speed to leverage the speed parameter created.
 <details><summary>How</summary>
 
  - In the Animator for the character, select the 'CharacterWalk' state (the orange box).
-   - In the Inspector, under speed check the box near 'Multiplier' to enable a 'Parameter'.
-   - Confirm Speed is selected (should be the default).
-   - Adjust the 'Speed' to about '.4'
+   - In the Inspector:
+     - Adjust the 'Speed' to about '.4'
+     - Check the box near 'Multiplier' to enable a 'Parameter'.
+       - Confirm Speed is selected (should be the default).
 
 <img src="http://i.imgur.com/9A6mp98.png" width=300px />
 
@@ -208,12 +228,17 @@ This slows the character's walk animation and gradually turns it on and off as t
 
 Now the character's walk animation should align with the moment a little better.  Adjust the value to something you think looks good. However the walk animation also plays while jumping, we'll address this next.
 
-<img src="http://i.imgur.com/2dfN2RE.gif" width=150px />
+<img src="http://i.imgur.com/2dfN2RE.gif" width=300px />
 
 <hr></details>
 <details><summary>What unit/scale is speed defined in?</summary>
 
 Percent.  1 represents the speed as it was defined in the animation itself.  Going to 2 would double the playback speed, going to .5 would cut the playback speed in half.
+
+<hr></details>
+<details><summary>How does the Multiplier Parameter work?</summary>
+
+Various settings for the animator state may be modified with one of the parameters we define in the Animator Controller.  Here we are using speed with a default value of .4.  When the animation is playing, the animation playback speed is multiplied by the Speed parameter (which is the velocity magnitude) - so if we are not moving the animation actually pauses, and it slows down / speeds up with our movement.
 
 <hr></details>
 
@@ -223,14 +248,21 @@ Add an animation to the character for jumping.
 
 <details><summary>How</summary>
 
- - Select the character's sprite and in the Animation window, create a new clip Assets/Animations/**CharacterJump**.
- - Select the sprites for the jump animation. We are using **adverturer_spritesheet_7** and **8**.
- - Drag and drop the sprites onto the Animation timeline.
+Jump animation:
+
+ - Select the character's sprite and in the Animation window, create a new clip Animations/**CharacterJump**:
+   - Select the sprites for the jump animation. We are using **adverturer_spritesheet_7** and **8**.
+   - Drag and drop the sprites onto the Animation timeline.
 
 <img src="http://i.imgur.com/0rHCGDm.gif" width=300px />
 
  - In the Animator window:
-   - Select the CharacterJump state and use the Speed paramater times about .05
+   - Select the CharacterJump state:
+     - Speed: .05
+     - Check to use the Speed Multiplier Parameter: 'Speed'
+
+<br>Transition to jump:
+
    - Right click on the 'Any State' box and select 'Make Transition'.
      - An arrow will follow your mouse, click on the CharacterJump state to create the transition.
 
@@ -242,23 +274,29 @@ Add an animation to the character for jumping.
 
  - Change the condition to read 'isTouchingFloor false'.
  - Under 'Settings':
-   - Change the 'Transition Duration' to 0.
-   - Uncheck 'Can Transition to Self'.
+   - Transition Duration: 0
+   - Uncheck 'Can Transition to Self'
  - Create a transition from CharacterJump to CharacterWalk.
- - Select the transition:
-   - Set the condition to 'isTouchingFloor true'.
-   - Uncheck 'Has Exit Time'.
-   - Change the 'Transition Duration' to 0.
+ - Select the transition just created:
+   - Add a condition: isTouchingFloor true
+   - Uncheck 'Has Exit Time'
+   - Transition Duration: 0
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-A jump animation for the character was added.  As you jump, the character should kick his feet a bit and then resume walking when he lands.
+Jump animation:
+
+A jump animation for the character was added which simply kicks his feet.  By default this is way to fast, we slow it down and multiply by the entity's current speed.
+
+<br>Transition to jump:
+
+As you jump, the character should kick his feet a bit and then resume walking when he lands.  We do this with Transitions in the Animator Controller.  These transitions are driven by conditions, checking the parameters we have populated with the PlayerAnimatorController.
 
 <hr></details>
 <details><summary>Why transition from Any State instead of from CharacterWalk?</summary>
 
-Any State is a special 'state' in the Animation Controller, allowing you to define transitions which could happen at any time.
+Any State is a special 'state' in the Animator Controller, allowing you to define transitions which could happen at any time.
 
 You could create this transiton from the CharacterWalk state instead.  However I am using Any State because as we add more animations for the character, we won't need to define as many total transitions.
 
@@ -268,129 +306,152 @@ You could create this transiton from the CharacterWalk state instead.  However I
 For transitions with one or more conditions, we change states when all conditions are met.  This could be a single parameter such as the bool we are using here, or it could be a combination of factors.
 
 <hr></details>
-<details><summary>What does Has Exit Time do and how does it relate to conditions?</summary>
-
-Has Exit Time is an additional way of triggering a transition.  So if a transition has both Has Exit Time and Conditions defined, the transition occurs when **either** the time has passed **or** the conditions are true.
-
-<hr></details>
 <details><summary>What does the Transition Duration impact?</summary>
 
 Once the conditions are met, the transition from one state to the other completes in the 'Transition Duration' time.  This is a great feature for 3D models as the Unity animator will smooth the transition from one stance to another.  However for sprites, there is no smoothing so we typically want a transition duration of 0.
 
 <hr></details>
+<details><summary>What does the Can Transition to Self impact?</summary>
 
+When creating a transition from Any State, an option for Can Transition to Self is available.  
 
-## 5.8) Climb animation
+ - Checked (the default): This transition applies even when in the target state.  In this example, since the condition is just a bool check and there is no Exit Time - transition to self would cause the animation to keep starting over.
+ - Unchecked: This transition effectively does not exist while in the target state.  e.g. I can't jump restart jumping while jumping.
 
-Add an animation for when climbing ladders.
+<hr></details>
+<details><summary>What does Exit Time do and how does it relate to conditions?</summary>
 
-<details><summary>How</summary>
-
- - Create a new animation for the character Assets/Animations/**CharacterClimb**.
- - Drag in the sprites for the climb animation.  We are using **adverturer_spritesheet_5** and **6**.
- - Select the CharacterClimb state and use the Speed paramater times about .1
- - Create a transition from Any State to CharacterClimb.
-   - Add a condition 'isClimbing true'.
- - Create a transition from CharacterClimb to CharacterWalk.
-   - Uncheck Has Exit Time.
-   - Set Transition Duration to 0.
-   - Uncheck Can Transition to Self.
-   - Add a condition 'isClimbing false'.
- - Select the transition from Any State to CharacterJump
-   - Add a condition 'isClimbing false'.
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-A climb animation for the character was added. As you climb up or down a ladder, the character should move his arms and then resume walking when he gets off.
+Has Exit Time is an additional way of triggering a transition.  So if a transition has both Has Exit Time and Conditions defined, the transition occurs when **either** the time has passed **or** the conditions are true.
 
 <hr></details>
 
-## 5.9) Idle animation
 
-Create an animation for the character to set the sprite to an idle stance.  As there character stands there, animate the scale to make the character look like he is breathing.
+## 5.8) Additional character animations
+
+Add an animation for when climbing ladders and while idle.
 
 <details><summary>How</summary>
 
- - Create a new animation for the character Assets/Animations/**CharacterIdle**.
- - Click record
-   - Change the 'Sprite' under the character's Sprite Renderer component to an idle stance. We are using **adventurer_tilesheet_0**.
-   - Double click to create a keyframe at 1:00.
-   - Switch the current time position to 0:30.
-     - This will move the white line, indicating where in the timeline modifications will be made. 
-   - Set the Transform scale to (1, .95, 1).
-   - Switch the time to 1:00 and set the Transform scale to (1, 1, 1).
-   - Then stop recording.   
- - In the Animator, create a transition from CharacterWalk to CharacterIdle.
-   - Uncheck Has Exit Time.
-   - Set transition duration to 0.
-   - Add a condition when 'Speed' is 'Less' than '.1'
- - Make a transition from CharacterIdle to CharacterWalk.
-   - Uncheck Has Exit Time.
-   - Set transition duration to 0.
-   - Add a condition for 'Speed' is 'Greater' than '.1'
+Climb animation:
 
-The character's animator controller should look something like this now:
+ - Create a new animation for the character Animations/**CharacterClimb**.anim
+   - Drag in the sprites for the climb animation.  We are using **adverturer_spritesheet_5** and **6**.
+ - Open the character's Animator Controller:
+   - Select the CharacterClimb state and use the Speed paramater times .1
+   - Create a transition from Any State to CharacterClimb.
+     - Condition: isClimbing true
+   - Create a transition from CharacterClimb to CharacterWalk.
+     - Uncheck Has Exit Time
+     - Transition Duration: 0
+     - Uncheck Can Transition to Self
+     - Condition: isClimbing false
+   - Select the transition from Any State to CharacterJump
+     - Condition: isClimbing false
 
-<img src="http://i.imgur.com/VotmF1k.png" width=200px />
+<br>Idle animation:
+
+ - Create a new animation for the character Animations/**CharacterIdle**.anim
+   - Click record
+     - Change the 'Sprite' under the character's Sprite Renderer component to an idle stance. We are using **adventurer_tilesheet_0**.
+     - Double click to create a keyframe at 1:00.
+     - Switch the current time position to 0:30.
+       - This will move the white line, indicating where in the timeline modifications will be made. 
+     - Set the Transform scale to (1, .95, 1).
+     - Switch the time to 1:00 and set the Transform scale to (1, 1, 1).
+     - Then stop recording.   
+ - Open the character's Animator Controller:
+   - In the Animator, create a transition from CharacterWalk to CharacterIdle:
+     - Uncheck Has Exit Time
+     - Transition Duration: 0
+     - Condition: 'Speed' is 'Less' than '.1'
+   - Make a transition from CharacterIdle to CharacterWalk:
+     - Uncheck Has Exit Time
+     - Transition Duration: 0
+     - Condition: 'Speed' is 'Greater' than '.1'
+
+<br>Breakdance animation:
+
+ - Create a new animation for the character Animations/**CharacterDance**.anim
+   - Select all the sprites for this animation and drag them into the timeline. We are using **adventurer_tilesheet_11** **- 21** (10 sprites).
+ - Open the character's Animator Controller:
+   - Change the CharacterDance speed to '.1'
+   - Create a transition from CharacterIdle to CharacterDance.
+     - Exit Time: 3
+     - Transition Duration: 0
+   - Create a transition from CharacterDance to CharacterIdle.
+     - Transition Duration: 0
+   - Create a transition from CharacterDance to CharacterWalk.
+     - Uncheck 'Has Exit Time'
+     - Transition Duration: 0
+     - Condition: 'Speed' is 'Greater' than '.1'
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
+
+Climb animation:
+
+A climb animation for the character was added. As you climb up or down a ladder, the character should move his arms and then resume walking when he gets off.
+
+The animation created works just like the original walk animation we created for the character.  By default the speed is way too fast so we turn this down in the Animator Controller.
+
+<br>Idle animation:
 
 When the character is not moving, he will switch to the idle stance.  We also modify the scale, from 1 to .95 on the Y and then back to 1 to create the breathing effect.  
 
 Hit play so see the character switch between walking and standing:
 
-<img src="http://i.imgur.com/YjZ1zrE.gif" width=200px />
+<img src="http://i.imgur.com/YjZ1zrE.gif" width=300px />
 
-<hr></details>
-
-
-## 5.10) Add a breakdance animation
-
-Add an animation for the character dancing after standing still for a bit.  
-
-<details><summary>How</summary>
-
- - Create a new animation for the character Assets/Animations/**CharacterDance**.anim
- - Select all the sprites for this animation and drag them into the timeline. We are using **adventurer_tilesheet_11** **- 21** (10 sprites).
- - Change the CharacterDance speed to '.1'
- - Create a transition from CharacterIdle to CharacterDance.
-   - Change the 'Exit Time' to about '3'
-   - Set Transition Duration to 0.
- - Create a transition from CharacterDance to CharacterIdle.
-   - Set Transition Duration to 0.
- - Create a transition from CharacterDance to CharacterWalk.
-   - Uncheck 'Has Exit Time'.
-   - Set Transition Duration to 0.
-   - Add a Condition for 'Speed' is 'Greater' than '.1'
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
+<br>Breakdance animation:
 
 The character will dance after standing still for a few seconds.
 
-We use 'Has Exit Time' to define how long the character should be in the CharacterIdle state before dancing.  If you start to walk during the dance, he will switch to the walk animation right away.
+We use Exit Time to define how long the character should be in the CharacterIdle state before dancing.  If you start to walk during the dance, he will switch to the walk animation right away.
 
-<img src="http://i.imgur.com/t7cUVPI.gif" width=250px />
+<img src="http://i.imgur.com/t7cUVPI.gif" width=300px />
 
 <hr></details>
 
 
-## 5.11) Add an intro animation for the cloud
+## 5.12) Add an intro timeline
+
+Create a timeline which enables the LevelController and Hammers after the intro is complete.
 
 Create an animation for the cloud entrance at the start of the level.
 
 <details><summary>How</summary>
 
- - Create an animation for the evil cloud sprite Assets/Animations/**CloudLevel1Entrance**.anim
- - Click record:
-   - Start by moving the cloud off screen.
-   - Then over time, modify its position to create a dramatic entrance.
- - Select Assets/Animations/CloudLevel1Entrance and in the Inspector uncheck 'Loop Time'.
+Create an intro animation for the cloud:
+
+ - Create an animation for the Evil Cloud sprite Animations/**CloudLevel1Entrance**.anim
+   - Click record:
+     - Start by moving the cloud off screen.
+     - Then over time, modify its position to create a dramatic entrance.
+ - Select Animations/CloudLevel1Entrance:
+   - In the Inspector uncheck 'Loop Time'.
+
+<br>Create an intro Timeline:
+
+ - Select the Evil Cloud's sprite.
+ - Open menu Window -> Timeline Editor.
+   - Click 'Create'.  Save as Assets/Animations/**Level1Entrance**.
+   - Select 'Add from Animation Clip' and select CloudLevel1Entrance.
+
+<img src="http://i.imgur.com/7HXZs7Z.gif" width=300px />
+
+ - Drag the parent Hammers GameObject (which holds all the hammers) onto the timeline and select **Activation Track**.
+   - Move the box for the script so that it starts after the cloud animation completes.  
+     - The start of the box represents when it will be enabled.
+     - The end must align with the end of the time timeline to prevent it from being disabled.
+
+<img src="http://i.imgur.com/6XyJZlh.gif" width=300px />
+
+ - Repeat, creating activation tracks for the LevelController and the Ladders.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
+
+Create an intro animation for the cloud:
 
 We created an entrance for the cloud to play at the start of the level.  This is just for design, so do whatever you like here.  We'll get the spawners to hold until the animation completes in a bit.  
 
@@ -398,36 +459,13 @@ Our animation looks like this at the moment:
 
 <img src="http://i.imgur.com/o40dfEx.gif" width=300px>
 
-<hr></details>
+<br>Create an intro Timeline:
 
+A Timeline on the evil cloud is used to coordinate the intro sequence across objects. 
 
-## 5.12) Add an intro timeline
-
-Create a timeline which enables the LevelManager and Hammers after the intro is complete.
-
-<details><summary>How</summary>
-
- - Select the evil cloud sprite.
- - Open menu Window -> Timeline.
-   - Click 'Create'.  Save as Assets/Animations/**Level1Entrance**.
-   - Select 'Add from Animation Clip' and select CloudLevel1Entrance.
-
-<img src="http://i.imgur.com/7HXZs7Z.gif" width=300px />
-
- - Drag the parent Hammers GameObject (which holds all the hammers) onto the timeline and select 'Activation Track'.
-   - Move the box for the script so that it starts after the cloud animation completes.  The size of the box itself does not matter, the start represents when it will be enabled and the end must align with the end of the time timeline to prevent it from being disabled.
-
-<img src="http://i.imgur.com/6XyJZlh.gif" width=300px />
-
- - Repeat, creating activation tracks for the LevelManager and the Ladders.
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-A Timeline on the evil cloud is used to coordinate the intro animation across objects.  
-
- - The Hammers and Ladders are hidden until we start their FadeInThenEnable script with an Activation Track.
- - The character is spawned via an Activation Track for the LevelManager.
+ - It plays the intro animation on the Evil Cloud.
+ - The Hammers and Ladders are hidden until we start their FadeInThenEnable script with an Activation Track, after the intro animation completes.
+ - The Character is spawned after the intro by the Level Manager with an Activation Track.
 
 <hr></details>
 <details><summary>What is a Unity Timeline / Activation Track?</summary>
@@ -441,15 +479,31 @@ Previously, achieving similiar results would have required a script.  Now you ca
 Activation Tracks are one of several ways that you trigger behaviour with the Timeline.  An activation track will enable a GameObject where the track begins in the timeline, and disable it again where it ends.  If the activation track ends at the very end of the entire timeline then it will remain active after the timeline completes.
 
 <hr></details>
+<details><summary>How might we do this without using the Timeline Editor?</summary>
+
+There are always alternative ways to achieve a goal, particularly true in this case since the Timeline Editor is brand new.
+
+An alternative solution might be something like this:
+
+ - For the Evil Cloud, simply play the intro animation with a default state in the Animator Controller.
+ - Add a 'InvisibleFor' value to the FadeInThenEnable script, and time that to coordinate with the intro.
+ - Add an initial sleep time to the spawner to align with the intro animation.
+
+The advantage to using the Timeline is as you make adjustments to the sequence, you can make those changes visually and aligning the time between objects may be easier.
+
+<hr</details>
 
 
 ## 5.13) Disable spawners till the intro is complete
 
-Create a script to enable components when the level intro completes.
+Disable the spawners and create a script to later enable them when the level intro completes.
 
 <details><summary>How</summary>
 
- - Create script Code/Components/Life/**EnableComponentsOnTimelineEvent**:
+Enable components when a Timeline event occurs:
+
+ - Create script Components/Animations/**EnableComponentsOnTimelineEvent**:
+   - Note there will be compile issues until TimelineEventPlayable is added.
 
 ```csharp
 using UnityEngine;
@@ -457,21 +511,20 @@ using UnityEngine;
 public class EnableComponentsOnTimelineEvent : MonoBehaviour
 {
   [SerializeField]
-  MonoBehaviour[] componentsOnAlmostLoaded;
+  TimelineEventPlayable.EventType eventType;
 
   [SerializeField]
-  MonoBehaviour[] componentsOnLevelLoaded;
+  MonoBehaviour[] componentList;
 
-  public void OnLevelAlmostLoaded()
+  public void OnEvent(
+    TimelineEventPlayable.EventType currentEventType)
   {
-    EnableComponents(componentsOnAlmostLoaded);
+    if(currentEventType == eventType)
+    {
+      EnableComponents(componentList);
+    }
   }
-
-  public void OnLevelLoaded()
-  {
-    EnableComponents(componentsOnLevelLoaded);
-  }
-
+  
   static void EnableComponents(
     MonoBehaviour[] componentList)
   {
@@ -485,37 +538,69 @@ public class EnableComponentsOnTimelineEvent : MonoBehaviour
 ```
 
  - For both the cloud and door:
-   - Disable the Spawner component.
+   - Disable the **Spawner** component.
    - Add **EnableComponentsOnTimelineEvent**.
-     - Set the 'On Level Loaded' list to include the Spawner component.
- - Create script Code/Components/Animations/**TimelineEventPlayable**:
+     - Add the Spawner component to its list.
+
+<br>Create a Timeline event:
+
+ - Create script Playables/**TimelineEventPlayable**:
 
 ```csharp
-TODO EndOfLevel / TimelineEventPlayable
-TODO find all 'endoflevel'
-TODO EnableComponentsOnTimelineEvent
+using UnityEngine;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
+
+public class TimelineEventPlayable : BasicPlayableBehaviour
+{
+  public enum EventType
+  {
+    AlmostAtStart, Start, End
+  }
+
+  [SerializeField]
+  EventType eventType;
+
+  public override void OnBehaviourPlay(
+    Playable playable,
+    FrameData info)
+  {
+    base.OnBehaviourPlay(playable, info);
+
+    EnableComponentsOnTimelineEvent[] componentList
+      = GameObject.FindObjectsOfType<EnableComponentsOnTimelineEvent>();
+
+    for(int i = 0; i < componentList.Length; i++)
+    {
+      EnableComponentsOnTimelineEvent component = componentList[i];
+      component.OnEvent(eventType);
+    }
+  }
+}
 ```
 
  - Drag drop the script into the timeline.  Set the time like we did for the Hammers.
-   - In the Inspector, change the 'Event Type' to 'Complete'.
-
-<img src="http://i.imgur.com/ynW3z5a.png" width=300px />
-
+   - In the Inspector, change the 'Event Type' to 'Start'.
  - Drag the script in a second time and set the time to fire a bit before the animation ends.
 
-<img src="http://i.imgur.com/AYkG3Jc.png" width=300px />
+<img src="http://i.imgur.com/AYkG3Jc.png" width=500px />
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-EnableComponentsOnLevelLoad is used to enable specific components during the intro sequence (as opposed to the entire GameObject).  There are two event types supported:
+Enable components when a Timeline event occurs:
 
- - Almost Loaded: fired a few moments before the end of the intro.
- - On Complete: fired once the intro sequence is complete.
- 
-EndofLevelPlayable is the component which appears in the Timeline to call each of the EnableComponentsOnLevelLoad in the scene.  
+EnableComponentsOnLevelLoad is used to enable specific components during the intro sequence (as opposed to the entire GameObject).  There are three event types supported:
+
+ - Almost At Start: fired a few moments before the end of the intro.
+ - Start: fired once the intro sequence is complete.
+ - End: fired once the player has beat the level.
 
 We add this to evil cloud and the door so that their sprites are visible but the spawners are not enabled until the intro animations completes.
+
+<br>Create a Timeline event:
+ 
+TimelineEventPlayable is the component which we add to the Timeline to call each of the EnableComponentsOnLevelLoad in the scene.  We add this twice to the intro Timeline, one for the the 'Almost at start' event and another for the 'Start' event.
 
 <hr></details>
 <details><summary>What is a BasicPlayableBehaviour / when is OnBehaviourPlay called?</summary>
@@ -548,6 +633,9 @@ Enums are often used to bring a related set of constants together.  They have so
 
  - You can iterate all possible values using System.Enum.GetValues.
  - You can use ToString to get the named value.
+ - Clarifies intent, making it easier to know what values should be accepted.
+
+Consider using an enum if the set of values is known at compile time.
 
 <hr></details>
 
@@ -558,7 +646,7 @@ Platforms start out straight and then when the intro animation is nearly complet
 
 <details><summary>How</summary>
 
- - Create script Code/Components/Movement/**RotateOvertimeToOriginal**:
+ - Create script Components/Movement/**RotateOvertimeToOriginal**:
 
 ```csharp
 using System.Collections;
@@ -567,7 +655,7 @@ using UnityEngine;
 public class RotateOvertimeToOriginal : MonoBehaviour
 {
   [SerializeField]
-  float rotationTimeFactor = 1;
+  float rotationFactor = 1;
 
   [SerializeField]
   float maxTimeBetweenRotations = .25f;
@@ -591,10 +679,12 @@ public class RotateOvertimeToOriginal : MonoBehaviour
     float sleepTimeLastFrame = 0;
     while(true)
     {
-      sleepTimeLastFrame = UnityEngine.Random.Range(0, maxTimeBetweenRotations);
+      sleepTimeLastFrame 
+        = UnityEngine.Random.Range(0, maxTimeBetweenRotations);
       yield return new WaitForSeconds(sleepTimeLastFrame);
+      sleepTimeLastFrame = Mathf.Max(Time.deltaTime, sleepTimeLastFrame);
 
-      float percentCompleteThisFrame = sleepTimeLastFrame * rotationTimeFactor;
+      float percentCompleteThisFrame = sleepTimeLastFrame * rotationFactor;
       percentCompleteThisFrame *= UnityEngine.Random.Range(0, 10);
       percentComplete += percentCompleteThisFrame;
       if(percentComplete >= 1)
@@ -602,22 +692,34 @@ public class RotateOvertimeToOriginal : MonoBehaviour
         transform.rotation = targetRotation;
         yield break;
       }
-      transform.rotation = Quaternion.Lerp(Quaternion.identity, targetRotation, percentComplete);
+      transform.rotation = Quaternion.Lerp(
+        Quaternion.identity, 
+        targetRotation, 
+        percentComplete);
     }
   }
 }
 ```
 
  - For each Platform:
-   - Add RotateOvertimeToOriginal and disable the component.
-   - Add EnableComponentsOnLevelLoad and add RotateOvertimeToOriginal to the 'Components to enable on almost loaded'.
+   - Add **RotateOvertimeToOriginal**:
+     - Disable the component.
+   - Add **EnableComponentsOnLevelLoad**:
+     - Add RotateOvertimeToOriginal to the 'Components to enable on almost loaded'.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-When the level begins, RotateOvertimeToOriginal stores the object's original rotation (as it was placed in the scene).  We then change the rotation to identity, or the default rotation for the sprite before the first render on screen.
+When the level begins, RotateOvertimeToOriginal stores the object's original rotation (as it was placed in the scene).  We then change the rotation before the first render on-screen to Quaternion.identity, or the default rotation for the sprite.
 
 A coroutine periodically lerps rotation back to the original.  We use RNG, both for a random sleep time between rotation changes and to randomize how much the rotation changes by.  Our goal here is to make it not smooth, as if it were falling / shaking into place.
+
+<hr></details>
+<details><summary>What's C# yield break do?</summary>
+
+Enumerators are methods which can 'yield return' and then later be resumed from where they left off.  Coroutines in Unity are enumerators.  
+
+When working with enumerators, 'yield break' will return from the method and indicate that it's complete and cannot be resumed again.
 
 <hr></details>
 
@@ -627,7 +729,7 @@ Shake the screen when the platforms fall into place.
 
 <details><summary>How</summary>
 
- - Create script Code/Components/Animations/**ScreenShake**.
+ - Create script Components/Animations/**ScreenShake**:
 
 ```csharp
 using System.Collections;
@@ -663,9 +765,13 @@ public class ScreenShake : MonoBehaviour
       {
         percentComplete = 2 - percentComplete;
       }
-      camera.transform.position = startingPosition + (Vector3)UnityEngine.Random.insideUnitCircle * shakeMagnitude * percentComplete;
+      Vector2 deltaPosition 
+        = UnityEngine.Random.insideUnitCircle * shakeMagnitude * percentComplete;
+      camera.transform.position = startingPosition + (Vector3)deltaPosition;
 
-      float sleepTime = UnityEngine.Random.Range(0, maxTimeBetweenShakes * (1 - percentComplete));
+      float maxTime = maxTimeBetweenShakes * (1 - percentComplete);
+      float sleepTime 
+        = UnityEngine.Random.Range(0, maxTime);
       yield return new WaitForSeconds(sleepTime);
       sleepTime = Mathf.Max(Time.deltaTime, sleepTime);
       timePassed += sleepTime;
@@ -679,12 +785,35 @@ public class ScreenShake : MonoBehaviour
  - Select the camera:
    - Add **ScreenShake** and disable the component.
    - Add **EnableComponentsOnLevelLoad**.
-     - Add ScreenShake to the list to enable on 'almost complete'.
+     - Event Type: Almost At Start
+     - Add its ScreenShake component to the component list.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-ScreenShake moves the camera up/down/left/right to create a shaking effect.  This component is enabled when the intro sequence is 'almost complete', and that event aligns with the cloud bouncing - making it look like the cloud is shaking the platforms into place.
+ScreenShake moves the camera up/down/left/right randomly to create a shaking effect.  The effect lasts for a limited time and scales up in magnitude (i.e. the intensity of the shake) and then back down.  This component is enabled when the intro Timeline is almost complete, and that event aligns with the cloud bouncing - making it look like the cloud is shaking the platforms into place.
+
+<hr></details>
+<details><summary>What is the script doing with percent complete?</summary>
+
+Our goal is to smoothly transition from 0 to 1 and then back to 0.  We use this value as a multiple on how much we move the camera that frame - smoothing the start and end of the effect.
+
+We do this by doubling the percent complete and then if greater than 1, use 2 - the value.  This gives us the desired 0 -> 1 -> 0 curve.
+
+<hr></details>
+<details><summary>What does Random.insideUnitCircle do?</summary>
+
+Random.insideUnitCircle is a convience method giving you a random point which falls on a circle with a radius of 1.  We take that value and then multiple it by the desired magnitude, effectively giving us a random point on a larger, or smaller, circle; and then position that the camera that far from its original position.
+
+<hr></details>
+<details><summary>What else could we add to the shake effect?</summary>
+
+Here are a few ideas on how you might be able to make this effect even cooler:
+
+ - Randomly change the z Rotation in addition to the position.
+ - Randomly change the orthagraphic size, causing the camera to zoom in and out.
+ - The current shake algorithm is uses a random offset from the camera's original position, you may be able to improve the effect by giving consideration to the camera position the previous frame.
+ - Add a post processing effect such as blur.  Post processing effects refer to scripts you can add to your camera, modifying the display to create an effect such as blur or bloom.  Here are some [post processing effects, free from Unity](https://www.assetstore.unity3d.com/en/#!/content/83912), you can use.
 
 <hr></details>
 
