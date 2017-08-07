@@ -43,36 +43,25 @@ TODO tutorial video link
 
 TODO demo of level 1
 
-## 1.1) Start a 2D project
+## 1.1) Start a 2D project and import assets
 
 Get Unity and start a 2D project. 
 
+Zip of [all the art assets we are using](https://drive.google.com/open?id=0B2bFgoFxZ-alc0NUejM5cFF5N28).  (TODO this will need updating)
+
 <details><summary>How</summary>
 
+Start a new project:
+
  - [Download Visual Studio Community edition](https://www.visualstudio.com/), if you don't already have it.
- - [Download Unity](https://unity3d.com/) 2017, the free Personal edition has everything you need. 
+ - [Download Unity 2017](https://unity3d.com/), the free Personal edition has everything you need. 
    - You may be prompted to register / sign in.
  - Select '2D' when creating a new project.
  - Enter a name/directory - the other options can be left at defaults.
 
 <img src="http://i.imgur.com/q5NVa7p.png" width=300 />
 
-<hr></details><br>
-<details><summary>Whats the difference between 2D and 3D?</summary>
-
-Presenting the 2D vs 3D option when you create a new project suggests this is a significant choice.  It's not really... 2D just changes default settings on things like your camera.   Unity is a 3D engine, when creating 2D games your actually creating a 3D world where everything is very flat but the camera looks straight ahead and the only rotation in the world is around the z axis.  
-
-[More on 2D vs 3D from Unity](https://docs.unity3d.com/Manual/2Dor3D.html).
-
-<hr></details>
-
-## 1.2) Import assets
-
-Create directories and import assets.  TODO link
-
-Zip of [all the art assets we are using](https://drive.google.com/open?id=0B2bFgoFxZ-alc0NUejM5cFF5N28).  (TODO this will need updating)
-
-<details><summary>How</summary>
+<br>Import assets:
 
  - Right click in the 'Project' window's Assets directory -> Create Folder named "Art".
    - You can rename folders by selecting and pressing F2.
@@ -92,14 +81,33 @@ Zip of [all the art assets we are using](https://drive.google.com/open?id=0B2bFg
 
 TODO create directory structure
 
-We are using:
- - [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) **spritesheets/spritesheet_ground.png**.
-
 TODO check if the sprites present a compression warning.
 
-TODO other assets 
+<br>Save the current scene:
+
+ - File -> 'Save Scenes'.
+ - Save it as Assets/Scenes/**Level1**.
 
 <hr></details><br>
+<details><summary>Can I Unity 5.* or Monodevelop instead?</summary>
+
+Most of the tutorial will work with Unity 5.*, but we will be using the Timeline Editor which was not fully released until 2017.  Because of this you may get stuck on Chapter 5, animations.
+
+You can use Monodevelop or Visual Studio, or any other IDE.
+
+<hr></details>
+<details><summary>Whats the difference between 2D and 3D?</summary>
+
+Presenting the 2D vs 3D option when you create a new project suggests this is a significant choice.  It's not really... 2D just changes default settings on things like your camera.   Unity is a 3D engine, when creating 2D games your actually creating a 3D world where everything is very flat but the camera looks straight ahead and the only rotation in the world is around the z axis.  
+
+[More on 2D vs 3D from Unity](https://docs.unity3d.com/Manual/2Dor3D.html).
+
+<hr></details>
+<details><summary>What's a scene?</summary>
+
+The Scene represents a collection of GameObjects and components (defined below) configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial. 
+
+<hr></details>
 <details><summary>Can I name folders differently?</summary>
 
 Absolutely, with one exception.  "Editor" is a special folder name with Unity, anything under that directory is only run when testing in the Unity editor.
@@ -118,6 +126,14 @@ We will be using sprites only, and not sprite sheets, in this tutorial.  Unity o
 Sprite sheets are an optimization technique games use. Unity has a sprite packer feature that can be used to automatically create sprite sheets.  Once you are in the optimization phase of your project, you could look into the sprite packer to try and gain anything that might have been lost from using individual sprites instead.
 
 <hr></details>
+<details><summary>Who made the art for this tutorial?</summary>
+
+We are using:
+ - [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) **spritesheets/spritesheet_ground.png**.
+
+And TODO
+
+<hr></details>
 <details><summary>Can I use my own art?</summary>
 
 Of course, this tutorial only assumes that you are using sprites.  You can build your own sprite sheet or use individual sprites, but this tutorial is geared towards a 2D game and some things may not work out well if you try using 3D models instead.
@@ -128,11 +144,20 @@ For sounds, we don't have many - just enough to introduce how they may be added 
 </details>
 
 
-## 1.4) Set the filter mode
+## 1.4) Configure sprites
 
 Update each sprite's and sprite sheet's import settings to use filter mode point.
 
 <details><summary>How</summary>
+
+Mesh type:
+
+ - Select all the sprites.
+ - In the Inspector, set 'Mesh Type: Full Rect'.
+
+<img src="http://i.imgur.com/Dhe3Nzt.png" width=300px />
+
+<br>Filter mode:
 
  - Select all of the sprites and sprite sheets.
    - Use Ctrl click or shift click as you would while selecting in Windows Explorer.
@@ -140,7 +165,20 @@ Update each sprite's and sprite sheet's import settings to use filter mode point
 
 <img src="http://i.imgur.com/B0nqf75.png" width=300px />
 
+
 <hr></details><br>
+<details><summary>What is mesh type?</summary>
+
+When a sprite is rendered to the screen, a combination of a mesh (like used for 3D objects) outlining the sprite and transparency is used to draw the picture on screen.  Tradeoffs here are beyond the scope of this tutorial.
+
+ - Tight will attempt to better outline the sprite, using more polygons in the mesh.
+ - Full Rect will use 2 triangles per sprite.
+
+When using tiling on a sprite, Unity recommends updating the sprite sheet to use 'Full Rect'.  I don't have an example of issues that may arise from using 'Tight' instead, but here is the warning from Unity recommending 'Full Rect':
+
+<img src="http://i.imgur.com/e9jE83B.png" width=50% />
+
+<hr></details>
 <details><summary>What is filter mode?</summary>
 
 Using point filter mode gets us closer to pixel perfect sprites and prevents some visual glitches.
@@ -154,34 +192,6 @@ Filter mode of Bilinear or Trilinear blurs the image a bit in attempt to make sm
 For sprite sheets, often each object is touching the one next to it.  Filter Mode Point prevents blending happening between one sprite and it's neighbor.  The blending that occurs with other modes besides Point may lead to random lines showing up on screen.  For example:
 
 <img src="http://i.imgur.com/ZKqg5JP.png" width=50% />
-
-<hr></details>
-
-
-
-## 1.5) Set the mesh type
-
-Update each sprite's and sprite sheet's import settings to use mesh type full rect.
-
-<details><summary>How</summary>
-
- - Select all the sprites.
- - In the Inspector, set 'Mesh Type: Full Rect'.
-
-<img src="http://i.imgur.com/Dhe3Nzt.png" width=300px />
-
-<hr></details><br>
-
-<details><summary>What is mesh type?</summary>
-
-When a sprite is rendered to the screen, a combination of a mesh (like used for 3D objects) outlining the sprite and transparency is used to draw the picture on screen.  Tradeoffs here are beyond the scope of this tutorial.
-
- - Tight will attempt to better outline the sprite, using more polygons in the mesh.
- - Full Rect will use 2 triangles per sprite.
-
-When using tiling on a sprite, Unity recommends updating the sprite sheet to use 'Full Rect'.  I don't have an example of issues that may arise from using 'Tight' instead, but here is the warning from Unity recommending 'Full Rect':
-
-<img src="http://i.imgur.com/e9jE83B.png" width=50% />
 
 <hr></details>
 
@@ -271,7 +281,7 @@ Different resolutions will scale the display larger or smaller but everyone will
 <hr></details>
 
 
-## 1.8) Set the camera size and background color
+## 1.8) Configure camera
 
 Update the camera size to about 10 and change the background color to black.
 
@@ -299,22 +309,6 @@ In the Scene, the white box representing the viewable area has grown.
 2D games by default use 'Projection: Orthographic'.  This means that the camera does not consider perspective, the ability to see more of the world the further it is from your eye. The amount of the world visible with a perspective camera is driven by it's position.  
 
 For an Orthographic camera, the amount of the world visible is driven by a special 'Size' property. 'Size' defines how much of the world is visible vertically.  Then the aspect ratio is used to determine how much to display horizontally.  
-
-<hr></details>
-
-## 1.10) Save the scene
-
-Save the current scene as "Level1".
-
-<details><summary>How</summary>
-
- - File -> 'Save Scenes'.
- - Save it as Assets/Scenes/**Level1**.
-
-<hr></details><br>
-<details><summary>What's a scene?</summary>
-
-The Scene represents a collection of GameObjects and components (defined below) configured for a game level or menu screen.  For this tutorial we are starting by creating part of Level 1.  Level 2, the menu, and other UI screens will be saved as separate scenes.  You can switch scenes via the SceneManager, and will cover this later in the tutorial. 
 
 <hr></details>
 
@@ -366,12 +360,7 @@ AutoSave is a script which will only run while testing in the Unity Editor.  Eve
 You can confirm the save is working by noting the * in Unity's title.  This * indicates unsaved changes and should now go away every time you click play.
 
 <hr></details>
-<details><summary>What about performance?</summary>
-
-As an editor script, this logic is not included in the game you release.  Saving is incremental so there is very little time wasted when there is nothing new to save.  Unless you're one of the lucky ones who never sees Unity crash, this script is absolutely worth the time tradeoff.
-
-<hr></details>
-<details><summary>Why is the folder name important?</summary>
+<details><summary>What's an editor script / why is the folder name important?</summary>
 
 Unity uses special folder names to drive certain capabilities.  Any script under a folder named "Editor" will only run while testing in the Unity editor (vs in your built game).
 
@@ -381,7 +370,7 @@ https://docs.unity3d.com/Manual/SpecialFolders.html) from Unity.
 <hr>
 
 </details>
-<details><summary>What's InitializeOnLoad</summary>
+<details><summary>What's InitializeOnLoad?</summary>
 
 InitializeOnLoad is an attribute which enables the script.  The static constructor of any class with this attribute is executed before anything else in the game.
 
@@ -501,7 +490,11 @@ public class MyCustomComponent : MonoBehaviour
 ```
 
 <hr></details>
+<details><summary>What about performance?</summary>
 
+As an editor script, this logic is not included in the game you release.  Saving is incremental so there is very little time wasted when there is nothing new to save.  Unless you're one of the lucky ones who never sees Unity crash, this script is absolutely worth the time tradeoff.
+
+<hr></details>
 
 
 ## 1.12) Add a platform to the scene
@@ -510,16 +503,34 @@ Add a sprite to the scene representing the middle segment of a platform.
 
 <details><summary>How</summary>
 
+Add a platform:
+
  - Click the arrow on the sprite sheet in your Assets/Art directory (this displays each individual sliced image).  We are using **spritesheet_ground**.
  - Click and drag the platform sprite you want to use into the 'Hierarchy' window.  We are using **spritesheet_ground_72**. 
  
 <img src="http://i.imgur.com/kZC4i6d.png" width=300px />
 
+<br>Tile the width:
+
+ - In the Hierarchy, select the 'spritesheet_ground_72' GameObject.
+ - In the Inspector, under the SpriteRenderer component:
+   - Change 'Draw Mode' to 'Tiled'.
+   - An option for 'Width' appears, increase this to about 10 (but don't change height).
+
+<img src="http://i.imgur.com/MIgzjdO.png" width=300px />
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
+Add a platform:
+
 This adds a GameObject to the scene with a SpriteRenderer component to render the sprite.
+
+<br>Tile the width:
+
+Change the SpriteRenderer draw mode to tiled and increase the width.
+
+You should see the platform sprite get wider, repeating it's pattern.
 
 <hr></details>
 <details><summary>What's a GameObject, Transform, and Component?</summary>
@@ -543,30 +554,9 @@ SpriteRenderer is a Unity component which renders a sprite on screen.  Select th
 <img src="http://i.imgur.com/4w3P1nx.png" width=50% />
 
 <hr></details>
+<details><summary>What's tiling do and why not use Transform scale?</summary>
 
-
-
-## 1.13) Tile the platform's width
-
-Change the SpriteRenderer draw mode to tiled and increase the width.
-
-<details><summary>How</summary>
-
- - In the Hierarchy, select the 'spritesheet_ground_72' GameObject.
- - In the Inspector, under the SpriteRenderer component:
-   - Change 'Draw Mode' to 'Tiled'.
-   - An option for 'Width' appears, increase this to about 10 (but don't change height).
-
-<img src="http://i.imgur.com/MIgzjdO.png" width=300px />
-
-<hr></details><br>
-
-<details><summary>What did that do?</summary>
-
-You should see the platform sprite get wider, repeating it's pattern.
-
-<hr></details>
-<details><summary>Why not use Transform scale?</summary>
+TODO about tile
 
 Using transform scale to change the width cause the sprite displayed to stretch.  We are using tiling so the sprite repeats instead:
 
@@ -574,11 +564,13 @@ Using transform scale to change the width cause the sprite displayed to stretch.
 
 <hr></details>
 
-## 1.14) Create platform GameObject
+## 1.14) Create platform with rounded edges
 
 Create a new parent GameObject for the platform sprite.
 
 <details><summary>How</summary>
+
+Create a parent Platform:
 
  - In the Hierarchy, right click and 'Create Empty'.
    - Rename to "Platform".
@@ -592,29 +584,8 @@ It should appear indented under Platform in the Hierarchy:
 
 <img src="http://i.imgur.com/XOve0Ap.png" width=300px />
 
-<hr></details><br>
-<details><summary>Why create a parent GameObject?</summary>
+<br>Add rounded corners to platforms:
 
-Most of the platforms we will be creating require multiple different sprites to display correctly.  We tackle this in the next section.  Even for platforms which are represented with a single sprite, it's nice to be consistent across all of our platforms.
-
-The implications of using a parent GameObject or not will be more clear when we start to add game mechanics later in the tutorial.
-
-<hr></details>
-<details><summary>How is the sprite position calculated when it's a child?</summary>
-
-When a GameObject is a child of another GameObject, it's position, rotation, and scale are the combination of the child's Transform and the parent's Transform (via matrix multiplication).  
-
-Typically all Transform updates during the game and in level design are done to the parent GameObject.  Child Transforms are often static offsets from the center of the parent GameObject.  e.g. we'll be adding rounded edges to the platform, which will require an x offset so they are positioned next to the middle segment.
-
-<hr></details>
-
-
-
-## 1.15) Add rounded corners to platforms
-
-Add sprites with rounded edges to the left and right of the platform.  
-
-<details><summary>How</summary>
 
  - Click and drag one of the edge sprites onto the 'Platform' GameObject. We're using **spritesheet_ground_65** and **spritesheet_ground_79**.
    - The edge sprite should be a child GameObject, like the middle sprite.  If it does not appear indented, drag drop in the Hierarchy window to rearrange.
@@ -634,9 +605,23 @@ Add sprites with rounded edges to the left and right of the platform.
 
  - Repeat for both edges, creating smooth corners on both sides of the platform.
 
+<hr></details><br>
+<details><summary>Why create a parent GameObject?</summary>
+
+Most of the platforms we will be creating require multiple different sprites to display correctly.  We tackle this in the next section.  Even for platforms which are represented with a single sprite, it's nice to be consistent across all of our platforms.
+
+The implications of using a parent GameObject or not will be more clear when we start to add game mechanics later in the tutorial.
+
+<hr></details>
+<details><summary>How is the sprite position calculated when it's a child?</summary>
+
+When a GameObject is a child of another GameObject, it's position, rotation, and scale are the combination of the child's Transform and the parent's Transform (via matrix multiplication).  
+
+Typically all Transform updates during the game and in level design are done to the parent GameObject.  Child Transforms are often static offsets from the center of the parent GameObject.  e.g. we'll be adding rounded edges to the platform, which will require an x offset so they are positioned next to the middle segment.
+
 <hr></details>
 
-## 1.16) Create a connected platform
+## 1.16) Create two connected platforms
 
 Our level design calls for the bottom platform to rotate half way through.  Create two Platform GameObjects and position and rotate their parents' GameObjects so that they appear connected.
 
@@ -710,9 +695,9 @@ The project should looks something like this, but don't worry about trying to ma
 <hr></details>
 
 
-## 1.18) Add colliders to platforms
+## 1.18) Add colliders and effectors
 
-Add a BoxCollider2D to each of the Platforms.  Add an edge radius and edit colliders to match the sprites.
+Add a BoxCollider2D and PlatformEffector2D to each of the Platforms.  Add an edge radius and edit colliders to match the sprites.
 
 <details><summary>How</summary>
 
@@ -732,6 +717,13 @@ Add a BoxCollider2D to each of the Platforms.  Add an edge radius and edit colli
 
 <img src="http://i.imgur.com/D5gBSiW.gif" width=300px />
 
+<br>Add a PlatformerEffector2D to each platform:
+
+ - Select all of the Platform GameObjects.
+   - Add **PlatformEffector2D**.
+     - Change the 'Surface Arc' to '35'.
+   - Under the BoxCollider2D, select 'Use by Effector'.
+
 </details><br>
 
 <details><summary>What did that do?</summary>
@@ -739,6 +731,13 @@ Add a BoxCollider2D to each of the Platforms.  Add an edge radius and edit colli
 Colliders define an objects shape for the purposes of physical collisions.  We use the edge radius on the box collider in order to smooth out the corners and better match the platform art.
 
 For the bottom platforms, we overlap the colliders for a smooth experience when entities are walking from one to the next.
+
+<br>Add a PlatformerEffector2D to each platform:
+
+
+The PlatformerEffector2D creates one-way collisions for our platforms.  This allows entities to jump through a platform and land on top -- a common mechanic for platformer games.
+
+Reduce the PlatformerEffector2D Surface Arc disables collisions on the sides of the platforms, preventing the character from sticking to the side in a strange way.
 
 <hr></details>
 <details><summary>What is a Collider?</summary>
@@ -763,6 +762,26 @@ Since we are using BoxCollider2D and an Edge radius, getting our sprites to conn
 Additionally, fewer colliders may improve your game's performance - however the difference here will not be noticeable.
 
 </details>
+<details><summary>What are Effectors?</summary>
+
+Effectors in Unity are easy ways to add various mechanics to the game.  The one-way collision effect we are using here happens to be a very common mechanic for 2D games, so Unity has this component ready to drop in.  
+
+Unity is not doing anything with these components that you technically could not have built yourself in a custom script, but that said adding the one-way effect the PlatformerEffector2D creates would not be easy to do.
+
+Read more about the [various 2d effectors in Unity](https://docs.unity3d.com/Manual/Effectors2D.html) including a conveyor belt, repulsion, and floating effects.
+
+</details>
+<details><summary>What does Surface Arc do and why not use a value of 1?</summary>
+
+The surface arc for an effector changes the supported region, in this case the surfaces which are collidable.  By reducing this we are causing the sides to be treated as non-collidable like the bottoms are by default. 
+
+The surface arc is defined in degrees around the Transform's up direction, and compared against the normal of the surface of the collider at the point of collision to determine if effects apply (in this case, if collisions apply).
+
+A very small surface arc still allows the primary use case to work correctly, i.e. you can still stand on platforms.  The sides, where a rounded edge appears, may not be collidable causing the character to fall off prematurely.  
+
+You can adjust the surface arc to find a value that feels good.
+
+</details>
 
 ## 1.19) Create a spike ball
 
@@ -775,28 +794,31 @@ Add a GameObject for the spike ball.
    - Right click -> 'Create Empty' GameObject named "Spike Ball".
    - Drag and drop the sprite into Spike Ball.
  
-<hr></details><br>
-<details><summary>Why use a parent here?</summary>
-
-For consistency.  
-
-In this tutorial we will encounter use cases which warrant using a parent GameObject with the sprite in a child for the character and one enemy type.  For the mechanics we plan to implement, the spike ball would work with or without the sprite in a child GameObject.
-
-<hr></details>
-
-## 1.20) Set the ball's order in layer
-
-Update the Spike Ball's Order in Layer to -1.
-
-<details><summary>How</summary>
+<br>Update the Spike Ball's Order in Layer to -1:
 
  - Select the Spike Ball's sprite.
    - Change the Sprite Renderer's 'Order in Layer' to '-1'.
 
 <img src="http://i.imgur.com/TSqk7hb.png" width=300px />
 
-</details><br>
+<br>Add a rigidbody to the ball:
+
+ - Select the Spike Ball's parent GameObject.
+   - Click Add Component and select **Rigidbody2D**.
+
+<br>Add a collider to the ball:
+
+ - Select the Spike Ball's parent GameObject and add a **CircleCollider2D**.
+   - Modify the radius so the collider is around the main body and not the spikes.
+
+<img src="http://i.imgur.com/crXdz35.gif" width=300px />
+
+
+
+<hr></details><br>
 <details><summary>What did that do?</summary>
+
+<br>Update the Spike Ball's Order in Layer to -1:
 
 When multiple sprites are overlapping, Order in Layer is used to determine which one is on top of the other.  So if the spike ball sprite has Order in Layer '-1' and everything else uses the default Order in Layer '0', the spike ball will always appear behind of other sprites in the world.
 
@@ -804,23 +826,28 @@ Order in Layer may be any int value, positive or negative. Here's an example sho
 
 <img src="http://i.imgur.com/QCHPLDf.png" width=50% />
 
-</details>
-
-## 1.21) Add a rigidbody to the ball
-
-Add a Rigidbody2D to the spike ball.
-
-<details><summary>How</summary>
-
- - Select the Spike Ball's parent GameObject.
-   - Click Add Component and select **Rigidbody2D**.
-
-</details><br>
-<details><summary>What did that do?</summary>
+<br>Add a rigidbody to the ball:
 
 Adding a rigidbody to an object enables physics, including gravity.  Hit play and watch the spike ball fall through the platforms and out of view:
 
 <img src="http://i.imgur.com/PuWWL3z.gif" width=50px />
+
+<br>Add a collider to the ball:
+
+The circle collider allows the ball to roll.  Place the ball at the top of a slanted platform and gravity will get things moving.
+
+Hit play to watch the spike ball fall onto a platform and roll:
+
+<img src="http://i.imgur.com/x4a848N.gif" width=300px />
+
+If the ball gets stuck while testing because some platforms are too close, update the platform position or rotation.
+
+</details>
+<details><summary>Why use a parent here?</summary>
+
+For consistency.  
+
+In this tutorial we will encounter use cases which warrant using a parent GameObject with the sprite in a child for the character and one enemy type.  For the mechanics we plan to implement, the spike ball would work with or without the sprite in a child GameObject.
 
 <hr></details>
 <details><summary>What's a Rigidbody2D?</summary>
@@ -832,31 +859,6 @@ A rigidbody is a core component for the Unity physics engine, Rigidbody2D is the
  - Reacting to collisions with other objects.
 
 </details>
-
-
-## 1.22) Add a collider to the ball
-
-Add a CircleCollider2D to the spike ball.  Adjust the radius as needed.
-
-<details><summary>How</summary>
-
- - Select the Spike Ball's parent GameObject and add a **CircleCollider2D**.
-   - Modify the radius so the collider is around the main body and not the spikes.
-
-<img src="http://i.imgur.com/crXdz35.gif" width=300px />
-
-</details><br>
-<details><summary>What did that do?</summary>
-
-The circle collider allows the ball to roll.  Place the ball at the top of a slanted platform and gravity will get things moving.
-
-Hit play to watch the spike ball fall onto a platform and roll:
-
-<img src="http://i.imgur.com/x4a848N.gif" width=300px />
-
-If the ball gets stuck while testing because some platforms are too close, update the platform position or rotation.
-
-<hr></details>
 <details><summary>Why shrink the collider?</summary>
 
 It's optional, use what you think creates the best experience.
@@ -870,7 +872,6 @@ When we added the CircleCollider2D, it defaulted to surround the entire sprite. 
 On a related note, setting the 'Order in Layer' to '-1' ensures that the spikes are behind the platform.  Without this the spikes would be on top:
 
 <img src="http://i.imgur.com/8cgB7jZ.gif" width=200px />
-
 
 </details>
 
@@ -921,7 +922,7 @@ Hit play, the spike ball should hit the bumper and quickly reverse and then acce
 
 <hr></details>
 
-## 1.24) Add a script to get the ball moving
+## 1.24) Add starting momentum to the ball
 
 Add a script to the spike ball which sets an initial velocity and angular velocity.
 
@@ -1008,7 +1009,18 @@ Rigidbody2D myBody = GetComponent<Rigidbody2D>();
 ```
 
 <hr></details>
+<details><summary>What's RequireComponent do?</summary>
 
+[RequireComponent] is an Unity attribute used to let the editor know that this component requires another component on the same GameObject.
+
+```csharp
+[RequireComponent(typeof(ComponentThatMustBeOnThisGameObject))]
+public class MyComponent ...
+```
+
+When you add a component in the inspector which requires another, and the required component is not already on that GameObject, Unity will automatically add it for you.
+
+</details>
 <details><summary>What's velocity and angularVelocity?</summary>
 
 A GameObject with a rigidbody may be moved with forces.  The Unity Physics engine uses these forces as inputs in order to calculate the object's position and rotation, considering other things in the world such as a wall blocking your path.  
@@ -1032,19 +1044,6 @@ Any public field is a SerializeField by default.  If you do not want a public fi
 So why not just public instead of [SerializeField]?
 
 The fields in question are often only leveraged inside the component itself.  Other components may not interact with these fields directly.  In those scenarios, I prefer to follow the Object-Oriented programming best practice of [data encapsulation](https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)) - meaning we only expose public fields when we want other classes to interact with them.
-
-</details>
-
-<details><summary>What's RequireComponent do?</summary>
-
-[RequireComponent] is an Unity attribute used to let the editor know that this component requires another component on the same GameObject.
-
-```csharp
-[RequireComponent(typeof(ComponentThatMustBeOnThisGameObject))]
-public class MyComponent ...
-```
-
-When you add a component in the inspector which requires another, and the required component is not already on that GameObject, Unity will automatically add it for you.
 
 </details>
 <details><summary>Why use protected on the Unity event?</summary>
@@ -1155,7 +1154,7 @@ A common use case for Debug.Assert is to validate pre-conditions and post-condit
 
 </details>
 
-## 1.25) Add a script to destroy balls that roll off
+## 1.25) Destroy balls that roll off
 
 Add a script to the spike ball which destroys the GameObject after it rolls off the bottom platform.
 
@@ -1264,41 +1263,20 @@ For more, see [Catlike Coding's Object Pool tutorial](http://catlikecoding.com/u
 
 </details>
 
-## 1.26) Create a ball prefab
+## 1.26) Spawn balls from an evil cloud
 
 Create a prefab for the spike ball, and remove the GameObject from the scene.
 
 <details><summary>How</summary>
+
+Create a prefab:
 
  - Select the Spike Ball and click/drag it to the Assets/Prefabs folder.
  - Delete the GameObject from the Hierarchy, removing it from the scene but leaving our prefab in-tact.
 
 <img src="http://i.imgur.com/roE0SWK.gif" width=300px />
 
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-We created a prefab for the spike ball for another component to instantiate.  i.e. this allows the spawner we will be adding to created an endless stream of balls.
-
-</details>
-<details><summary>What's a prefab?</summary>
-
-A prefab is a file representing a configured GameObject.  This includes any child GameObjects as well as Components and their settings from the Inspector. 
-
-This allows things like our spawner to instantiate a GameObject with the appropriate components and configurations, without knowing any details about the specific object type it is spawning.  More [on prefabs from Unity](https://docs.unity3d.com/Manual/Prefabs.html).
-
-When you modify a prefab, all the objects in the world automatically get updated as well.  If you prefer to work with GameObjects in the scene, you can modify any one GameObject and then click 'Apply' to save the changes to the prefab.
-
-You can also override values from the prefab, to create a unique object in the scene.
-
-</details>
-
-
-## 1.27) Create an evil cloud
-
-Add a GameObject for the evil cloud.  Size and position it in the top left.
-
-<details><summary>How</summary>
+<br>Create an evil cloud:
 
  - Drag in the sprite, we are using **spritesheet_jumper_57**.
    - Add it to an empty parent GameObject named "Evil Cloud".
@@ -1309,20 +1287,8 @@ Add a GameObject for the evil cloud.  Size and position it in the top left.
 <br>
 <img src="http://i.imgur.com/kK9dKcD.gif" width=300px />
 
-</details><br>
-<details><summary>What does changing scale Z do?</summary>
+<br>Add a script to spawn balls:
 
-Nothing (for 2D games).  When we are scaling, in order to not distort the art we only need to ensure X and Y scales match.  Z could be left at the default of 1, but I prefer to keep it in sync with X and Y as well as Unity's scale tool will do this by default.
-
-</details>
-
-
-
-## 1.28) Add a script to spawn balls
-
-Add a script to the evil cloud which periodically spawns balls.
-
-<details><summary>How</summary>
 
  - Create script Code/Components/Life/**Spawner**:
 
@@ -1375,14 +1341,34 @@ public class Spawner : MonoBehaviour
  
 <img src="http://i.imgur.com/scu8YUR.gif" width=300px />
 
-</details><br>
+<hr></details><br>
 <details><summary>What did that do?</summary>
+
+We created a prefab for the spike ball for another component to instantiate.  i.e. this allows the spawner we will be adding to created an endless stream of balls.
+
+<br>Add a script to spawn balls:
 
 The spawner component instantiates a prefab at its GameObject's position periodically.  Click play to see the spawner in action:
 
 <img src="http://i.imgur.com/ZJSulAj.gif" width=300px /> 
 
-<hr></details>
+</details>
+<details><summary>What's a prefab?</summary>
+
+A prefab is a file representing a configured GameObject.  This includes any child GameObjects as well as Components and their settings from the Inspector. 
+
+This allows things like our spawner to instantiate a GameObject with the appropriate components and configurations, without knowing any details about the specific object type it is spawning.  More [on prefabs from Unity](https://docs.unity3d.com/Manual/Prefabs.html).
+
+When you modify a prefab, all the objects in the world automatically get updated as well.  If you prefer to work with GameObjects in the scene, you can modify any one GameObject and then click 'Apply' to save the changes to the prefab.
+
+You can also override values from the prefab, to create a unique object in the scene.
+
+</details>
+<details><summary>What does changing scale Z do?</summary>
+
+Nothing (for 2D games).  When we are scaling, in order to not distort the art we only need to ensure X and Y scales match.  Z could be left at the default of 1, but I prefer to keep it in sync with X and Y as well as Unity's scale tool will do this by default.
+
+</details>
 <details><summary>What is StartCoroutine / WaitForSeconds?</summary>
 
 A Coroutine allows you to define a sequence which takes more than a single frame to execute.  It's implemented with a C# enumerator which Unity will then execute over time.  For example:
@@ -1516,11 +1502,16 @@ Quaternion rotationOfZ60Degrees
 
 </details>
 
-## 1.29) Assign an enemy layer
 
-Create a layer for Enemy and assign it to the Spike Ball prefab.
+
+
+## 1.30) Disable collisions between enemies
+
+Update the collision matrix, disabling enemy to enemy collisions.
 
 <details><summary>How</summary>
+
+Assign an enemy layer:
 
  - Menu Edit -> Project Settings -> Tags and Layers.
    - Under 'Layers' add "Enemy" to one of the empty 'User Layer' slots.
@@ -1533,14 +1524,33 @@ Create a layer for Enemy and assign it to the Spike Ball prefab.
 
 <img src="http://i.imgur.com/KPvq22a.png" width=300px />
 
-<hr></details><br>
-<details><summary>What did that do?</summary>
+<br>Configure collision matrix:
 
-Nothing yet.  
+ - Edit -> Project Settings -> Physics 2D.
+   - Under the 'Layer Collision Matrix', uncheck the box where 'Enemy' meets 'Enemy'.
+
+<img src="http://i.imgur.com/JkjXpZN.png" width=300px />
+
+</details><br>
+<details><summary>What did that do?</summary>
 
 Layers are a way of categorizing GameObjects.  We will be using the Enemy layer to allow other enemies to pass through them, in the next section.
 
+Enemies can no longer collide with other enemies, meaning they will walk through each other as if the other did not exist.
+
+We do this with a separate Enemy layer so that that collisions with the player are not impacted.
+
 <hr></details>
+<details><summary>What does the collision matrix impact?</summary>
+
+The collision matrix defines which GameObjects may collide with what other GameObjects, based off of the GameObjects' layers.
+
+A checked box indicates that collisions are supported.  Uncheck to disable collisions between those layers.  When unchecked, collisions between GameObjects with those layers are completely disabled - allowing objects to pass through each other as if the other didn't exist.  
+
+Every possible combination of layers is exposed as a checkbox in settings, including a layer coming in contact with itself.  Remember that layers are defining a category or object type, so by disabling the 'Enemy' layer from coming in contact with itself - we are preventing one ball from colliding with another in the world while still allowing them to roll over platforms.
+
+</details>
+
 <details><summary>What's a Layer and how's it different from a Tag?</summary>
 
 A layer is a number representing a category or type of object in your game which may be compared to a LayerMask.  The Unity editor allows you to associate a string with this value as well for convenience.  Layers can be used to efficiently include or exclude objects based off of their type.  For this reason, the physics matrix in Unity works with layers.
@@ -1593,37 +1603,6 @@ public class MyComponent : MonoBehaviour
 Every GameObject has both one layer and one tag.
 
 </details>
-
-
-## 1.30) Disable collisions between enemies
-
-Update the collision matrix, disabling enemy to enemy collisions.
-
-<details><summary>How</summary>
-
- - Edit -> Project Settings -> Physics 2D.
-   - Under the 'Layer Collision Matrix', uncheck the box where 'Enemy' meets 'Enemy'.
-
-<img src="http://i.imgur.com/JkjXpZN.png" width=300px />
-
-</details><br>
-<details><summary>What did that do?</summary>
-
-Enemies can no longer collide with other enemies, meaning they will walk through each other as if the other did not exist.
-
-We do this with a separate Enemy layer so that that collisions with the player are not impacted.
-
-<hr></details>
-<details><summary>What does the collision matrix impact?</summary>
-
-The collision matrix defines which GameObjects may collide with what other GameObjects, based off of the GameObjects' layers.
-
-A checked box indicates that collisions are supported.  Uncheck to disable collisions between those layers.  When unchecked, collisions between GameObjects with those layers are completely disabled - allowing objects to pass through each other as if the other didn't exist.  
-
-Every possible combination of layers is exposed as a checkbox in settings, including a layer coming in contact with itself.  Remember that layers are defining a category or object type, so by disabling the 'Enemy' layer from coming in contact with itself - we are preventing one ball from colliding with another in the world while still allowing them to roll over platforms.
-
-</details>
-
 
 ## 1.31) Test!
 

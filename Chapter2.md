@@ -513,46 +513,6 @@ Maybe, but it feels like overkill.  The value of separating components is to all
 <hr></details>
 
 
-## 2.9) Add platformer effects
-
-Add a PlatformerEffector2D to each platform.
-
-<details><summary>How</summary>
-
- - Select all of the Platform GameObjects.
-   - Add **PlatformEffector2D**.
-     - Change the 'Surface Arc' to '35'.
-   - Under the BoxCollider2D, select 'Use by Effector'.
-
-</details><br>
-<details><summary>What did that do?</summary>
-
-The PlatformerEffector2D creates one-way collisions for our platforms.  This allows entities to jump through a platform and land on top -- a common mechanic for platformer games.
-
-Reduce the PlatformerEffector2D Surface Arc disables collisions on the sides of the platforms, preventing the character from sticking to the side in a strange way.
-
-<hr></details>
-<details><summary>Wow that was easy, what else like this can Unity do for 'free'?</summary>
-
-Effectors in Unity are easy ways to add various mechanics to the game.  The one-way collision effect we are using here happens to be a very common mechanic for 2D games, so Unity has this component ready to drop in.  
-
-Unity is not doing anything with these components that you technically could not have built yourself in a custom script, but that said adding the one-way effect the PlatformerEffector2D creates would not be easy to do.
-
-Read more about the [various 2d effectors in Unity](https://docs.unity3d.com/Manual/Effectors2D.html) including a conveyor belt, repulsion, and floating effects.
-
-</details>
-<details><summary>What does Surface Arc do and why not use a value of 1?</summary>
-
-The surface arc for an effector changes the supported region, in this case the surfaces which are collidable.  By reducing this we are causing the sides to be treated as non-collidable like the bottoms are by default. 
-
-The surface arc is defined in degrees around the Transform's up direction, and compared against the normal of the surface of the collider at the point of collision to determine if effects apply (in this case, if collisions apply).
-
-A very small surface arc still allows the primary use case to work correctly, i.e. you can still stand on platforms.  The sides, where a rounded edge appears, may not be collidable causing the character to fall off prematurely.  
-
-You can adjust the surface arc to find a value that feels good.
-
-</details>
-
 ## 2.11) Create a pattern for death effects
 
 Create a pattern to use instead of destroying GameObjects directly, allowing an opportunity for objects to animate on death.
