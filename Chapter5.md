@@ -188,7 +188,7 @@ Nothing yet.
 
 <br>Create animation parameters:
 
-The parameters we are creating will be used to cause the Animator controller to transtition from one state to another.  This approach is an alternative to playing the animation state directly like we had done for the Hammer above.  
+The parameters we are creating will be used to cause the Animator controller to transition from one state to another.  This approach is an alternative to playing the animation state directly like we had done for the Hammer above.  
 
 The speed parameter will also be used to scale the animation playback speed based off how quickly the entity is moving at the time.
 
@@ -298,7 +298,7 @@ As you jump, the character should kick his feet a bit and then resume walking wh
 
 Any State is a special 'state' in the Animator Controller, allowing you to define transitions which could happen at any time.
 
-You could create this transiton from the CharacterWalk state instead.  However I am using Any State because as we add more animations for the character, we won't need to define as many total transitions.
+You could create this transition from the CharacterWalk state instead.  However I am using Any State because as we add more animations for the character, we won't need to define as many total transitions.
 
 <hr></details>
 <details><summary>How do animation conditions work?</summary>
@@ -337,7 +337,7 @@ Climb animation:
  - Create a new animation for the character Animations/**CharacterClimb**.anim
    - Drag in the sprites for the climb animation.  We are using **adverturer_spritesheet_5** and **6**.
  - Open the character's Animator Controller:
-   - Select the CharacterClimb state and use the Speed paramater times .1
+   - Select the CharacterClimb state and use the Speed parameter times .1
    - Create a transition from Any State to CharacterClimb.
      - Condition: isClimbing true
    - Create a transition from CharacterClimb to CharacterWalk.
@@ -803,7 +803,7 @@ We do this by doubling the percent complete and then if greater than 1, use 2 - 
 <hr></details>
 <details><summary>What does Random.insideUnitCircle do?</summary>
 
-Random.insideUnitCircle is a convience method giving you a random point which falls on a circle with a radius of 1.  We take that value and then multiple it by the desired magnitude, effectively giving us a random point on a larger, or smaller, circle; and then position that the camera that far from its original position.
+Random.insideUnitCircle is a convenience method giving you a random point which falls on a circle with a radius of 1.  We take that value and then multiple it by the desired magnitude, effectively giving us a random point on a larger, or smaller, circle; and then position that the camera that far from its original position.
 
 <hr></details>
 <details><summary>What else could we add to the shake effect?</summary>
@@ -811,7 +811,7 @@ Random.insideUnitCircle is a convience method giving you a random point which fa
 Here are a few ideas on how you might be able to make this effect even cooler:
 
  - Randomly change the z Rotation in addition to the position.
- - Randomly change the orthagraphic size, causing the camera to zoom in and out.
+ - Randomly change the orthographic size, causing the camera to zoom in and out.
  - The current shake algorithm is uses a random offset from the camera's original position, you may be able to improve the effect by giving consideration to the camera position the previous frame.
  - Add a post processing effect such as blur.  Post processing effects refer to scripts you can add to your camera, modifying the display to create an effect such as blur or bloom.  Here are some [post processing effects, free from Unity](https://www.assetstore.unity3d.com/en/#!/content/83912), you can use.
 

@@ -42,7 +42,7 @@ Picking up the hammer and killing enemies with it is covered in the next section
 <hr></details>
 <details><summary>Why use pivot bottom?</summary>
 
-We will be equipting the hammer on the character and have him swing.  Moving the pivot point to bottom sets it to approximitally where the character will grip the hammer.  
+We will be equipping the hammer on the character and have him swing.  Moving the pivot point to bottom sets it to approximately where the character will grip the hammer.  
 
 When rotating the hammer for a swing, the bottom pivot causes the bottom of the handle to keep its position while the hammer's head swings.  The default middle pivot would create equal motion at the hammer's head and the base of the hammer's handle.
 
@@ -55,12 +55,12 @@ You could.
 
 The hammer's shape does not match either a Box or Capsule collider.  If you were to use one of those, the difference between the collider and the sprite art could be great enough that collisions in the game feel wrong.  e.g. you may miss picking up a hammer you thought you got or not kill an enemy you clearly hit.
 
-The hammer's shape could be approximated well by using 2 box colliders.  A polygon collider does require more processing time, although not a significant difference, so this may be a potential optimization worth the tradeoff sacraficing some percision on collisions.  
+The hammer's shape could be approximated well by using 2 box colliders.  A polygon collider does require more processing time, although not a significant difference, so this may be a potential optimization worth the tradeoff sacrificing some precision on collisions.  
 
 <hr></details>
 <details><summary>Why use Is Trigger?</summary>
 
-When the character jumps for the hammer to pick it up, we do not want the character to bounce off of it.  The collider used on the hammer when the hammer is a pick up item shouldn't respond to anything expect equipting when the character touches it.  This is best achieved with 'Is Trigger'.
+When the character jumps for the hammer to pick it up, we do not want the character to bounce off of it.  The collider used on the hammer when the hammer is a pick up item shouldn't respond to anything expect equipping when the character touches it.  This is best achieved with 'Is Trigger'.
 
 <hr></details>
 
@@ -276,12 +276,12 @@ Unity does not make any guarantee that the amount of time before the coroutine r
 
 Additionally, this simplistic algorithm may drive the variable timePerColorChange to zero.  If that number got small enough, the loop would never terminate.  Ensuring that we progress by at least deltaTime each frame ensures that the loop will end.
 
-Alternatively this method could be rewritten to use Time.timeSinceLevelLoaded.  With that we do not need to sum each itteration but instead can make decisions based off of the current time vs the time the effect began.
+Alternatively this method could be rewritten to use Time.timeSinceLevelLoaded.  With that we do not need to sum each iteration but instead can make decisions based off of the current time vs the time the effect began.
 
 <hr></details>
 <details><summary>Why use GetComponentsInChildren instead of a single sprite?</summary>
 
-Flexibility.  Some use cases would work with GetComponent or GetComponentInChildren.  We get all the sprites in this GameObject and its children, and then updatem all so if something is composed of multiple sprites this script just works. 
+Flexibility.  Some use cases would work with GetComponent or GetComponentInChildren.  We get all the sprites in this GameObject and its children, and then update all so if something is composed of multiple sprites this script just works. 
 
 <hr></details>
 
@@ -318,7 +318,7 @@ Create the fly guy:
  - Add them to a parent named "Door":
    - Scale up the size of the Door to (1.5, 1.5, 1.5).
    - Move the door to the bottom left of the level.
-     - Position its Y so that the midpoint of the Door approximitally aligns with the midpoint of the FlyGuy (at the height we would want it to spawn).
+     - Position its Y so that the midpoint of the Door approximately aligns with the midpoint of the FlyGuy (at the height we would want it to spawn).
 
 <img src="http://i.imgur.com/EjVJkZ4.gif" width=300px />
 
@@ -349,7 +349,7 @@ DeathEffectSpawn creates an explosion when the fly guy is hit by a hammer.
 
 We added a sprite representing the area where fly guys will spawn from.
 
-For simplicity in the Spawner component, the position emenies appear at is the center of the Spawner's GameObject. We attempt to position this for the fly guy, and then adjust the door sprites' positions to fit the visible space.
+For simplicity in the Spawner component, the position enemies appear at is the center of the Spawner's GameObject. We attempt to position this for the fly guy, and then adjust the door sprites' positions to fit the visible space.
 
 The Spawner added should start to spawn fly guys periodically after about 10 seconds into the level.
 
@@ -364,7 +364,7 @@ Add a script to the fly guy to drive random walk movement.
 
 <details><summary>How</summary>
 
- - Create script Compenents/Movement/**WanderWalkController**:
+ - Create script Components/Movement/**WanderWalkController**:
 
 ```csharp
 using System.Collections;
@@ -488,7 +488,7 @@ We don't want the 'feet' to collide with the character because later in the tuto
 
 It does not matter much.  This second collider's only purpose is to ensure that the fly guy hovers above the ground.  So in a sense, we only need a single pixel to represent the correct Y position for Unity physics to use -- represented by the bottom of this circle collider.
 
-Unity physics by default uses discrete collisions instead of continous. 
+Unity physics by default uses discrete collisions instead of continuous. 
 
  - Discrete means that each FixedUpdate, collisions are considered for the object's current position.
  - Continues means that each FixedUpdate, collisions consider the entire path the object has taken since the last FixedUpdate.
@@ -515,7 +515,7 @@ Add a script to entities so they fade in before moving.
 
 <details><summary>How</summary>
 
- - Create script Compenents/Life/**FadeInThenEnable**:
+ - Create script Components/Life/**FadeInThenEnable**:
 
 ```csharp
 using System.Collections;
@@ -607,7 +607,7 @@ The FadeInThenEnable script smoothly transitions the alpha for all the sprites i
 
 FadeInThenEnable is added to the Character and we disable the PlayerController to prevent any input such as walk or jump until complete.
 
-On the FlyGuy we disable wander movemenent until complete.
+On the FlyGuy we disable wander movement until complete.
 
 For the Hammer, we could disable the Hammer component (preventing pickup) but it is unnecessary since the character can't move.
 
@@ -627,7 +627,7 @@ Create a singleton GameController to track points, lives, and hold global data s
 
 <details><summary>How</summary>
 
- - Create script Compenents/Controllers/**GameController**:
+ - Create script Components/Controllers/**GameController**:
 
 ```csharp
 using System;
@@ -802,15 +802,15 @@ There are a few ways you could check for an entity walking off the edge of the s
 <hr></details>
 <details><summary>What's the difference between setting transform.position and using myBody.MovePosition?</summary>
 
-Updates to the Transform directly will teleport your character immediatelly and bypass all physics logic.  
+Updates to the Transform directly will teleport your character immediately and bypass all physics logic.  
 
-Using the rigidbody.MovePosition method will interpellate (i.e. smoothly transition) the object to its new postion and give consideration to other forces on that object.  It's very fast, but if you try and watch closely, MovePosition may animate a few frames on the way to the target position instead of going there immediatelly.
+Using the rigidbody.MovePosition method will interpolate (i.e. smoothly transition) the object to its new position and give consideration to other forces on that object.  It's very fast, but if you try and watch closely, MovePosition may animate a few frames on the way to the target position instead of going there immediately.
 
 We are not suggesting one approach should always be used over the other - consider the use case and how you want your game to feel, sometimes teleporting is exactly the feature you're looking for.  
 
 Be careful when you change position using either of these methods as opposed to using forces on the rigidbody.  It's possible that you teleport right into the middle of another object.  The next frame, Unity will try to react to that collision state and this may result in objects popping out in strange ways.
 
-In this component we are setting transform.position for the teleport effect.  If rigidbody.MovePosition was used instead, occasionally issues may arrise as MovePosition competes with other forces on the object.
+In this component we are setting transform.position for the teleport effect.  If rigidbody.MovePosition was used instead, occasionally issues may arise as MovePosition competes with other forces on the object.
 
 </details>
 
@@ -886,7 +886,7 @@ Add a script to the character to decrement lives in the GameController on death.
 
 <details><summary>How</summary>
 
- - Create script Compenents/Death/**DeathEffectDecrementLives**:
+ - Create script Components/Death/**DeathEffectDecrementLives**:
 
 ```csharp
 public class DeathEffectDecrementLives : DeathEffect
@@ -922,7 +922,7 @@ Add scripts to respawn the character when he dies.
 
 <details><summary>How</summary>
 
- - Create script Compenents/Death/**PlayerDeathMonoBehaviour**:
+ - Create script Components/Death/**PlayerDeathMonoBehaviour**:
 
 ```csharp
 using UnityEngine;
@@ -933,7 +933,7 @@ public abstract class PlayerDeathMonoBehaviour : MonoBehaviour
 }
 ```
 
- - Create script Compenents/Controllers/**LevelController**:
+ - Create script Components/Controllers/**LevelController**:
 
 ```csharp
 using UnityEngine;
@@ -1302,14 +1302,14 @@ The collider we added defines the area to check for the character before allowin
 
 In script, we check for the character by using OverlapCollider.  This is an on-demand way to check for colliders in the area.  The contact filter filters results to only consider the character, so another fly guy in the area does not stop the spawner as well.  
 
-We could have choosen to use OnTriggerEnter and OnTriggerExit instead - this approach was choosen both because it's simple and works well for this use case, and because it exposes us to multiple different techniques during this tutorial.
+We could have chosen to use OnTriggerEnter and OnTriggerExit instead - this approach was chosen both because it's simple and works well for this use case, and because it exposes us to multiple different techniques during this tutorial.
 
 </details>
 <details><summary>Why use a temp collider list?</summary>
 
 For performance reasons, the OverlapCollider method from Unity takes an array and then adds data to it -- as opposed to returning an array with the data requested (as they do for calls such as GetComponents).  They do this because calls like this may occur frequently and the overhead of creating a new array each time may become a bottleneck.
 
-We create the array once and then pass the same one everytime we make the call to OverlapCollider.
+We create the array once and then pass the same one every time we make the call to OverlapCollider.
 
 For this component, we don't actually need the data itself.  We only want to know if any objects overlap or not.  For this reason, we never read anything from the tempColliderList -- we only consider the number of results (the return value for that method).
 
@@ -1428,7 +1428,7 @@ We added a large collider above the enemy to detect when the player is above us.
 <hr></details>
 <details><summary>What's Raycast do?</summary>
 
-Raycast projects a line and returns colliders intersecting with it (in order, closests first).  There are other 'cast' calls to project different shapes when needed, e.g. BoxCast.
+Raycast projects a line and returns colliders intersecting with it (in order, closest first).  There are other 'cast' calls to project different shapes when needed, e.g. BoxCast.
 
 When Raycasting, there are various options available.  Here we provide an origin point for the line and the direction its pointing.  The contact filter defines which objects to include in the results - when using Raycast, it does not consider your configuration in the collision matrix.
 
@@ -1437,7 +1437,7 @@ When Raycasting, there are various options available.  Here we provide an origin
 
 The trigger informs us when there is a player above the enemy.  However, this does not consider any platforms which are also above us.  The raycast is used to determine what is directly above the enemy, and we only award points if it's the player.
 
-Ultimitally the raycast here answers the question of when to award points.  We could raycast each frame in an update loop, but instead leverage the trigger to improve preformance by only checking when the player is near.
+Ultimately the raycast here answers the question of when to award points.  We could raycast each frame in an update loop, but instead leverage the trigger to improve performance by only checking when the player is near.
 
 <hr></details>
 <details><summary>Why add another Rigidbody2D / why check the collision layer manually?</summary>
@@ -1498,7 +1498,7 @@ Update runs each frame.  Changing the Transform each Update may be appropriate w
 
 FixedUpdate runs every x ms of game time.  Changing the Transform each FixedUpdate can be used to impact the physics, such as collision detection. 
 
-It is possible for FixedUpdate to happen twice between Updates.  For this use case, we are only interested in freezing the position for the purpose of trigger enter events.  If we were to change the transform each Update, we would be checking for collisions with some rotation.  That said, this probably would not be noticable for this use case - just noting that using Update instead FixedUpdate is a tiny bit incorrect.
+It is possible for FixedUpdate to happen twice between Updates.  For this use case, we are only interested in freezing the position for the purpose of trigger enter events.  If we were to change the transform each Update, we would be checking for collisions with some rotation.  That said, this probably would not be noticeable for this use case - just noting that using Update instead FixedUpdate is a tiny bit incorrect.
 
 <hr></details>
 

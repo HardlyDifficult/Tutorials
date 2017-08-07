@@ -13,8 +13,6 @@ TODO legal - MIT for source and cc attribution for the text itself.
 
 This is very much a WIP.  I'm trying to make a tutorial helpful to a range of experience levels.  Please let me know if you have any suggestions - I'm creating this live at [twitch.tv/HardlyDifficult](https://twitch.tv/HardlyDifficult) or email nick@HardlyDifficult.com
 
-**FYI**: Chapter 1 - 4 is ready to try.  If you do give it a go, please take note of any questions or issues that come up along the way.
-
 
 Process plan (constantly changing...)
 
@@ -92,7 +90,7 @@ Zip of [all the art assets we are using](https://drive.google.com/open?id=0B2bFg
    - Assets/**Prefabs**
    - Assets/**Scenes**
 
-TODO create directory struture
+TODO create directory structure
 
 We are using:
  - [Kenney.nl's Platformer Pack Redux](http://kenney.nl/assets/platformer-pack-redux) **spritesheets/spritesheet_ground.png**.
@@ -181,7 +179,7 @@ When a sprite is rendered to the screen, a combination of a mesh (like used for 
  - Tight will attempt to better outline the sprite, using more polygons in the mesh.
  - Full Rect will use 2 triangles per sprite.
 
-When using tiling on a sprite, Unity recommends updating the sprite sheet to use 'Full Rect'.  I don't have an example of issues that may arrise from using 'Tight' instead, but here is the warning from Unity recommending 'Full Rect':
+When using tiling on a sprite, Unity recommends updating the sprite sheet to use 'Full Rect'.  I don't have an example of issues that may arise from using 'Tight' instead, but here is the warning from Unity recommending 'Full Rect':
 
 <img src="http://i.imgur.com/e9jE83B.png" width=50% />
 
@@ -323,7 +321,7 @@ The Scene represents a collection of GameObjects and components (defined below) 
 
 ## 1.11) Add an auto save script 
 
-Create an editor script which automatically saves everytime you hit play.
+Create an editor script which automatically saves every time you hit play.
 
 <details><summary>How</summary>
 
@@ -363,9 +361,9 @@ public class AutoSave
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-AutoSave is a script which will only run while testing in the Unity Editor.  Everytime you hit play, the scene and project will save just before play begins.
+AutoSave is a script which will only run while testing in the Unity Editor.  Every time you hit play, the scene and project will save just before play begins.
 
-You can confirm the save is working by noting the * in Unity's title.  This * indicates unsaved changes and should now go away everytime you click play.
+You can confirm the save is working by noting the * in Unity's title.  This * indicates unsaved changes and should now go away every time you click play.
 
 <hr></details>
 <details><summary>What about performance?</summary>
@@ -782,7 +780,7 @@ Add a GameObject for the spike ball.
 
 For consistency.  
 
-In this tutorial we will encounter use cases which warrent using a parent GameObject with the sprite in a child for the character and one enemy type.  For the mechanics we plan to implement, the spike ball would work with or without the sprite in a child GameObject.
+In this tutorial we will encounter use cases which warrant using a parent GameObject with the sprite in a child for the character and one enemy type.  For the mechanics we plan to implement, the spike ball would work with or without the sprite in a child GameObject.
 
 <hr></details>
 
@@ -869,7 +867,7 @@ When we added the CircleCollider2D, it defaulted to surround the entire sprite. 
 
 <img src="http://i.imgur.com/WRLQITb.gif" width=200px />
 
-On a related note, setting the 'Order in Layer' to '-1' ensures that the spikes are behind the platform.  Without this the spikes would be ontop:
+On a related note, setting the 'Order in Layer' to '-1' ensures that the spikes are behind the platform.  Without this the spikes would be on top:
 
 <img src="http://i.imgur.com/8cgB7jZ.gif" width=200px />
 
@@ -880,7 +878,7 @@ On a related note, setting the 'Order in Layer' to '-1' ensures that the spikes 
 
 ## 1.23) Add invisible bumpers
 
-Add additional BoxCollider2Ds offscreen to redirect balls back on screen.
+Add additional BoxCollider2Ds off screen to redirect balls back on screen.
 
 <details><summary>How</summary>
 
@@ -900,7 +898,7 @@ Add additional BoxCollider2Ds offscreen to redirect balls back on screen.
 
 <img src="http://i.imgur.com/5mUaPov.png" width=300px />
 
- - Copy paste the bumper and modify it's position and rotation so that each platform that may send a spike ball offscreen has a bumper.
+ - Copy paste the bumper and modify it's position and rotation so that each platform that may send a spike ball off screen has a bumper.
    - We do not want a bumper for the bottom left as balls should not return after that point.
 
  Your screen with bumpers should look something like this:
@@ -980,7 +978,7 @@ Most of the scripts that you create in Unity will derive from MonoBehaviour.  [M
 
 There are a lot of events available to MonoBehaviours.  In this example we are using Start which is called once per-object, when that object is first spawned in the world.
 
-Note that when implementing MonoBehaviour events, you do not use 'override' nor subscribe to the event.  Unity uses reflection based on the method signature instead to improve performance.  This creates an unintuituve  pattern for C# developers but allows Unity to eliminate unncessary calls.  This optimization normally in development would be considered overkill but for a game engine this kind of thing adds up, particularly since there are typically hundreds of MonoBehaviours in the world.
+Note that when implementing MonoBehaviour events, you do not use 'override' nor subscribe to the event.  Unity uses reflection based on the method signature instead to improve performance.  This creates an unintuitive pattern for C# developers but allows Unity to eliminate unnecessary calls.  This optimization normally in development would be considered overkill but for a game engine this kind of thing adds up, particularly since there are typically hundreds of MonoBehaviours in the world.
 
 See also [Unity's Execution Order of Event Functions](
 https://docs.unity3d.com/Manual/ExecutionOrder.html).
@@ -993,7 +991,7 @@ A Vector2 is a struct which holds 2 floats: X, Y.  A Vector3 holds 3 floats: X, 
  - .magnitude: Returns the length of a line drawn from the origin to this position.
  - .normalized: Returns a new Vector2 representing the same direction but with a magnitude of 1.
 
-For 2D games, we often refer to position and direction as a Vector2.  Unity still stores everything as Vector3, and allows you to easilly convert from one to another.
+For 2D games, we often refer to position and direction as a Vector2.  Unity still stores everything as Vector3, and allows you to easily convert from one to another.
 
 </details>
 <details><summary>What's GetComponent do / what's C# generics?</summary>
@@ -1019,8 +1017,8 @@ Unity follows the [Newton's Laws of Motion](https://en.wikipedia.org/wiki/Newton
 
 There are various APIs for manipulating forces on a rigidbody.  This script will be setting initial values for:
 
- - Velocity: the desired movement direction and speed.  Abstent any additional forces, 'Drag' decreases the velocity every frame until it reaches 0.
- - Angular velocity: degrees per second to rotate the object.  Abstent any additional forces, 'Angular drag' will decrease this until it reaches 0.
+ - Velocity: the desired movement direction and speed.  Absent any additional forces, 'Drag' decreases the velocity every frame until it reaches 0.
+ - Angular velocity: degrees per second to rotate the object.  Absent any additional forces, 'Angular drag' will decrease this until it reaches 0.
 
 </details>
 <details><summary>What's SerializeField and why not use public instead?</summary>
@@ -1159,7 +1157,7 @@ A common use case for Debug.Assert is to validate pre-conditions and post-condit
 
 ## 1.25) Add a script to destroy balls that roll off
 
-Add a script to the spike ball which destroy's the GameObject after it rolls off the bottom platform.
+Add a script to the spike ball which destroys the GameObject after it rolls off the bottom platform.
 
 <details><summary>How</summary>
 
@@ -1256,7 +1254,7 @@ For this example, instead of destroying a spike ball that falls off screen we wo
 
 When should an object pool be used?
 
-Objects which destroy and spawn again several times may warrent an object pool. There is overhead associated with having and using an object pool so it is not recommended for absolutely everything.  For example, a boss which is going to surface once in a game may not be a good choice to include in an object pool.
+Objects which destroy and spawn again several times may warrant an object pool. There is overhead associated with having and using an object pool so it is not recommended for absolutely everything.  For example, a boss which is going to surface once in a game may not be a good choice to include in an object pool.
 
 How is an object pool implemented?
 
@@ -1647,7 +1645,7 @@ To review, you may want to:
 <details><summary>Testing / Debugging tips</summary>
 
  - While testing (in play mode):
-   - You can changing values in the Inpsector and they will not be saved.  This allows you to experiment with a different values easily.
+   - You can changing values in the Inspector and they will not be saved.  This allows you to experiment with a different values easily.
  - Use Project Settings -> Time 'Time Scale' to make everything move faster or slower.
  - You may occasionally see a line between platform tiles or other small glitch even after the settings above have been applied.  The only fix we can find for this is to control for resolution by modifying the camera size so sprites appear with an even multiple of their original size. (out of scope for this tutorial)
 

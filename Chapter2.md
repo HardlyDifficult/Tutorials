@@ -79,7 +79,7 @@ Click Play to test - your character should be walking (in place)!
 
 <details><summary>What's the difference between Animation and Animator?</summary>
 
-An animat**ion** is a collection of sprites on a timeline, creating an animated effect similiar to a flip book.  Animations can also include transform changes, fire events for scripts to react to, etc to create any number of effects.
+An animat**ion** is a collection of sprites on a timeline, creating an animated effect similar to a flip book.  Animations can also include transform changes, fire events for scripts to react to, etc to create any number of effects.
 
 An animat**or** controls which animations should be played at any given time.  An animator uses an animator controller which is a state machine used to select animations.
 
@@ -135,7 +135,7 @@ In addition to killing the character when he comes in contact with an enemy, the
 
 Bottom line, it's not worth the trouble.  Unity does not provide good tools for more accurate collisions on animating sprites.  Implementing this requires a lot of considerations and may be difficult to debug.
 
-Most of the time the collisions in the game would not have been any different if more detailed colliders were used.  Typically 2D games use an approach similiar to what this tutorial recommends. It creates a good game feel and the simplifications taken have become industry standard.
+Most of the time the collisions in the game would not have been any different if more detailed colliders were used.  Typically 2D games use an approach similar to what this tutorial recommends. It creates a good game feel and the simplifications taken have become industry standard.
 
 </details>
 <details><summary>Why freeze rotation and Does freezing mean it can never change?</summary>
@@ -159,7 +159,7 @@ Add a script to the character to be able to move left and right once a controlle
 
 <details><summary>How</summary>
 
- - Create script Code/Compenents/Movement/**WalkMovement**:
+ - Create script Code/Components/Movement/**WalkMovement**:
 
 ```csharp
 using UnityEngine;
@@ -202,7 +202,7 @@ public class WalkMovement : MonoBehaviour
 
 Nothing yet.  This script enables movement, but requires a separate controller to function.
 
-A controller (created in the next section) will set the desiredWalkDirection, then every FixedUpdate WalkMovement turn that into horizontal velocity on the rigidbody while preseving any vertical velocity (so not to interfere with gravity).
+A controller (created in the next section) will set the desiredWalkDirection, then every FixedUpdate WalkMovement turn that into horizontal velocity on the rigidbody while preserving any vertical velocity (so not to interfere with gravity).
 
 <hr></details>
 <details><summary>What's a controller?  Why not read input here?</summary>
@@ -223,7 +223,7 @@ So that's to say you could use AddForce here instead.  Maybe give it a try and s
 
 Update occurs once per rendered frame.  FixedUpdate occurs at a regular interval, every x ms of game time.  FixedUpdate may run 0 or more times each frame.
 
-FixedUpdate is preferred for mechanics which require some level of consistency or apply changes incrementally.  Physics in Unity are processed in FixedUpdated.  So when manipulating physics for the game such as we are here by changing velocity on the rigidbody, we do this on FixedUpdate to match Unity's expectatations. 
+FixedUpdate is preferred for mechanics which require some level of consistency or apply changes incrementally.  Physics in Unity are processed in FixedUpdated.  So when manipulating physics for the game such as we are here by changing velocity on the rigidbody, we do this on FixedUpdate to match Unity's expectations. 
 
 </details>
 <details><summary>Why multiply by Time.fixedDeltaTime?</summary>
@@ -232,7 +232,7 @@ It's optional. Anytime you make a change which includes some speed, such as walk
 
 If speed is being processed in an Update, you must multiply by Time.deltaTime for a smooth experience.  While in FixedUpdate, you could opt to not use Time.fixedDeltaTime, however leaving it out may lead to some confusion as fields which are configured for FixedUpdate may have a different order of magnitude than fields configured for use in Update.
 
-Additionaly you may choose to adjust the time interval between FixedUpdate calls while optimizing your game.  By consistently multiplying by the delta time, you can adjust the interval for FixedUpdate without changing the game play.
+Additionally you may choose to adjust the time interval between FixedUpdate calls while optimizing your game.  By consistently multiplying by the delta time, you can adjust the interval for FixedUpdate without changing the game play.
 
 </details>
 
@@ -244,7 +244,7 @@ Add a script to the character to read user input and drive movement.
 
 <details><summary>How</summary>
 
- - Create script Code/Compenents/Movement/**PlayerController**:
+ - Create script Code/Components/Movement/**PlayerController**:
 
 ```csharp
 using UnityEngine;
@@ -316,7 +316,7 @@ Add a script to the character to be able to jump and update the player controlle
 
 <details><summary>How</summary>
 
- - Create script Code/Compenents/Movement/**JumpMovement**:
+ - Create script Code/Components/Movement/**JumpMovement**:
 
 ```csharp
 using UnityEngine;
@@ -451,7 +451,7 @@ public class PlayerController : MonoBehaviour
 
 When you press space, JumpMovement adds force to the entity causing it to jump up.  But you can spam the space bar to fly away.
 
-A sound should play everytime you jump, you can adjust the volume in the AudioSource component.
+A sound should play every time you jump, you can adjust the volume in the AudioSource component.
 
 Like with walking, we use two separate components for this mechanic. JumpMovement enables the actual jump itself, allowing it to be used on another entity if we choose, and the PlayerController reads input in order to initiate jumps.
 
@@ -480,7 +480,7 @@ For Input:
  - When reading the current Input state (e.g. using Input.GetAxis), either FixedUpdate or Update is fine.  For example if you are checking the current position of the joystick, you'll get the same information in FixedUpdate and Update. 
   - If you need to modify a rigidbody based on current Input state, I recommend reading Input in FixedUpdate to keep it simple.
  - When checking for an Input event (e.g. using Input.GetButtonDown), you must use Update.  Input is polled in the Update loop.  Since it's possible for two Updates to happen before a FixedUpdate, some events may be missed when only checking in FixedUpdate.  
-   - Always read events in Update.  Unity will not block or warn you when checking for an event in FixedUpdate, and most of the time it will work - but occasional bugs will arrise.
+   - Always read events in Update.  Unity will not block or warn you when checking for an event in FixedUpdate, and most of the time it will work - but occasional bugs will arise.
 
 <hr></details>
 <details><summary>Why is AudioSource on a GameObject vs just playing clips?</summary>
@@ -547,7 +547,7 @@ The surface arc for an effector changes the supported region, in this case the s
 
 The surface arc is defined in degrees around the Transform's up direction, and compared against the normal of the surface of the collider at the point of collision to determine if effects apply (in this case, if collisions apply).
 
-A very small surface arc still allows the primary use case to work correcly, i.e. you can still stand on platforms.  The sides, where a rounded edge appears, may not be collidable causing the character to fall off prematurely.  
+A very small surface arc still allows the primary use case to work correctly, i.e. you can still stand on platforms.  The sides, where a rounded edge appears, may not be collidable causing the character to fall off prematurely.  
 
 You can adjust the surface arc to find a value that feels good.
 
@@ -559,7 +559,7 @@ Create a pattern to use instead of destroying GameObjects directly, allowing an 
 
 <details><summary>How</summary>
 
- - Create script Code/Compenents/Death/**DeathEffect**:
+ - Create script Code/Components/Death/**DeathEffect**:
 
 ```csharp
 using UnityEngine;
@@ -576,7 +576,7 @@ public abstract class DeathEffect : MonoBehaviour
 }
 ```
 
- - Create script Code/Compenents/Death/**DeathEffectManager**:
+ - Create script Code/Components/Death/**DeathEffectManager**:
 
 ```csharp
 using UnityEngine;
@@ -636,7 +636,7 @@ This is a pattern we will leverage a few times in this tutorial, starting with t
 
 When an entity dies in the game, we call DeathEffectManager.PlayDeathEffectsThenDestroy instead of the usual Unity Destroy method.  
 
-This allows us to defer the actual Destroy call, and to spawn an explosion or play an animation on the sprite as it dies.  Also it allows us to differentiate between a request to immediatelly destroy a GameObject (e.g. for a scene change) vs a death that should maybe animate and spawn an explosion.
+This allows us to defer the actual Destroy call, and to spawn an explosion or play an animation on the sprite as it dies.  Also it allows us to differentiate between a request to immediately destroy a GameObject (e.g. for a scene change) vs a death that should maybe animate and spawn an explosion.
 
 <hr></details>
 <details><summary>Why not just play effects OnDestroy()?</summary>
@@ -685,7 +685,7 @@ GetComponentsInChildren returns an array with every matching component from this
 
 <details><summary>What's C# abstract do and how's it different from an interface?</summary>
 
-In C#, abstract refers to a class which is incomplete and may not be instantiated directly.  In order to create an object, a sub class inherits from the abstract class and you can then instatiate the sub class. 
+In C#, abstract refers to a class which is incomplete and may not be instantiated directly.  In order to create an object, a sub class inherits from the abstract class and you can then instantiate the sub class. 
 
 The sub class has access to everything created in the parent class, similar to if you had copy pasted everything from the parent into the child.
 
@@ -756,7 +756,7 @@ public class MySubClass : MyParentClass
 }
 ```
 
-In C#, an interface is similiar to an abstract class that has no data or non-abstract methods (including virtual).  Interfaces are a way of defining a common API for classes to leverage.  The name of an interface always starts with "I", by convention.
+In C#, an interface is similar to an abstract class that has no data or non-abstract methods (including virtual).  Interfaces are a way of defining a common API for classes to leverage.  The name of an interface always starts with "I", by convention.
 
 ```csharp
 public interface IMyInterface 
@@ -910,7 +910,7 @@ if(layersToKill.Includes(gameObjectWeJustHit.layer))
 
 We will need the ability to disable this component later in the tutorial.  
 
-A disabled component will not get called for events such as Update.  However it does still recieve some calls while disabled, including OnTriggerEnter. This is why we check if enabled vs depending on Unity to do that for us.
+A disabled component will not get called for events such as Update.  However it does still receive some calls while disabled, including OnTriggerEnter. This is why we check if enabled vs depending on Unity to do that for us.
 
 Unity only allows you to use the enable / disable feature if it detects that there is a method in the script which would be impacted.  We added an empty Start method to get the enable / disable feature since Unity does not enable enable by checking 'if(enabled)' in code.
 
@@ -1036,7 +1036,7 @@ Add a script which spawns the explosion prefab when the character dies.
 
 <details><summary>How</summary>
 
- - Create script Compenents/Death/**DeathEffectSpawn**:
+ - Create script Components/Death/**DeathEffectSpawn**:
 
 ```csharp
 using UnityEngine;
@@ -1089,11 +1089,11 @@ Unity has a number of APIs available for bounds.  Here we are using .center, whi
 </details>
 <details><summary>Why not spawn the explosion at transform.position instead of bounds.center?</summary>
 
-The character sprite was configured with Pivot 'Bottom'.  The transform.position refers to the location of this pivot point.  If we were to target tranform.position instead, the explosion would center around the character's feet.
+The character sprite was configured with Pivot 'Bottom'.  The transform.position refers to the location of this pivot point.  If we were to target transform.position instead, the explosion would center around the character's feet.
 
 This component could be reused on other GameObjects which may have a different pivot point. It will work correctly so long as the object has a collider.
 
-We use the collider's bounds to determine where to spawn the explosion.  The [bounds struct](https://docs.unity3d.com/ScriptReference/Bounds.html) has a number of convienent methods for things like determining the center point of an object.
+We use the collider's bounds to determine where to spawn the explosion.  The [bounds struct](https://docs.unity3d.com/ScriptReference/Bounds.html) has a number of convenient methods for things like determining the center point of an object.
 
 </details>
 
@@ -1104,7 +1104,7 @@ Create a script to destroy the explosion GameObject after the effect completes.
 
 <details><summary>How</summary>
 
- - Create script Compenents/Death/**SuicideIn**:
+ - Create script Components/Death/**SuicideIn**:
 
 ```csharp
 using UnityEngine;
@@ -1153,7 +1153,7 @@ Add a scaling effect for the character dieing, in addition to the explosion.
 
 <details><summary>How</summary>
 
- - Create script Compenents/Death/**DeathEffectThrob**:
+ - Create script Components/Death/**DeathEffectThrob**:
 
 ```csharp
 using UnityEngine;
@@ -1233,7 +1233,7 @@ yield return 0; // Less efficient
 <hr></details>
 <details><summary>Why not use an animation instead?</summary>
 
-You could.  There are numerious ways to create animations and effects - in this tutorial we cover a few different approaches just for the experience.
+You could.  There are numerous ways to create animations and effects - in this tutorial we cover a few different approaches just for the experience.
 
 We will be introducing Unity 'animations' later in this tutorial.
 
@@ -1266,7 +1266,7 @@ Additionally to review, you may want to:
 
 <details><summary>How do you sort components on a GameObject?</summary>
 
-The order does not impact anything.  So why bother?  Just tidyness really.   As the number of components grows it may be nice to have them presented in an order you find more intuative.
+The order does not impact anything.  So why bother?  Just tidiness really.   As the number of components grows it may be nice to have them presented in an order you find more intuitive.
 
 Start by collapsing everything.
 To sort, select the GameObject and in the Inspector
@@ -1279,7 +1279,7 @@ Scripts in order where possible, like DeathEffectManager before any DeathEffects
 
 <img src="http://i.imgur.com/ElAr8xt.gif" width=150px />
 
-On a related note, order does matter when for some scripts in terms of which compoment executes before another.  To ma... Script execution order
+On a related note, order does matter when for some scripts in terms of which component executes before another.  To ma... Script execution order
 
 TODO
 

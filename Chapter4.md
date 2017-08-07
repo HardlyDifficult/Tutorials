@@ -8,7 +8,7 @@ Flip the entity when they switch between walking left and right.
 
 <details><summary>How</summary>
 
- - Create script Compenents/Movement/**RotateFacingDirection**:
+ - Create script Components/Movement/**RotateFacingDirection**:
 
 ```csharp
 using UnityEngine;
@@ -89,7 +89,7 @@ In Unity, numbers are represented with the float data type.  Float is a way of r
 
 The rounding that happens with floats allows operations on floats to be executed very quickly.  However it means we should never look for exact values when comparing floats, as a tiny rounding issue may lead to the numbers not being equal.
 
-In the example above, as the velocity approaches zero, the significance of if the value is positive or negative, is lost.  It's possible that if we were to compare to 0 that at times the float may oscilate between a tiny negative value and a tiny positive value causing the sprite to flip back and forth.
+In the example above, as the velocity approaches zero, the significance of if the value is positive or negative, is lost.  It's possible that if we were to compare to 0 that at times the float may oscillate between a tiny negative value and a tiny positive value causing the sprite to flip back and forth.
 
 </details>
 
@@ -223,10 +223,10 @@ public class FloorDetector : MonoBehaviour
 
   Collider2D DetectTheFloorWeAreStandingOn()
   {
-    int foundColliderCound
+    int foundColliderCount
       = Physics2D.OverlapCollider(myCollider, floorFilter, possibleCollisionResultList);
 
-    for(int i = 0; i < foundColliderCound; i++)
+    for(int i = 0; i < foundColliderCount; i++)
     {
       Collider2D collider = possibleCollisionResultList[i];
       ColliderDistance2D distance = collider.Distance(myCollider);
@@ -247,7 +247,7 @@ public class FloorDetector : MonoBehaviour
    - The Character prefab.
    - The Spike Ball prefab.
    - The Fly Guy's Feet child GameObject.
- - For each of those FloorDectector components, update the Floor Filter:
+ - For each of those FloorDetector components, update the Floor Filter:
      - Check Use Layer Mask
      - Layer Mask: Floor
 
@@ -262,7 +262,7 @@ The FloorDetector collects information about the floor under the entity for othe
  - floorRotation: the rotation of the floor the entity is standing on.
  - distanceToFloor: how far above the floor the entity's feet currently are.  0 if isTouchingFloor.
 
-Each FixedUpdate, we use OverlapCollider to find the floor we may be standing on.  We check multple results and filter out instances which are overlapping the bottom of a platform (necessary because of the one-way platforms), if any remain - the closest is the floor we are on.
+Each FixedUpdate, we use OverlapCollider to find the floor we may be standing on.  We check multiple results and filter out instances which are overlapping the bottom of a platform (necessary because of the one-way platforms), if any remain - the closest is the floor we are on.
 
 If we are standing on a floor we then get rotation information.  If the floor is upside down, we flip these stats as well.
 
@@ -299,7 +299,7 @@ if(floorUnderUs is BoxCollider2D)
 }
 ```
 
-'as' is a similiar feature where instead of returning true or false, it returns null or the casted value.  For example:
+'as' is a similar feature where instead of returning true or false, it returns null or the casted value.  For example:
 
 ```csharp
 Collider2D floorUnderUs;
@@ -314,7 +314,7 @@ if(boxCollider != null)
 <hr></details>
 <details><summary>What's Dot product do?</summary>
 
-The Dot product is a fast operation which can be used to efficiently determine if two directions represented with Vectors are facing the same (or a similiar) way.
+The Dot product is a fast operation which can be used to efficiently determine if two directions represented with Vectors are facing the same (or a similar) way.
 
 In the visualization below, we are rotating two ugly arrows.  These arrows are pointing in a direction and we are using Vector2.Dot to compare those two directions.  The Dot product is shown as we rotate around.
 
@@ -344,8 +344,8 @@ Until now in this tutorial we have been using Trigger* events (e.g. OnTriggerEnt
 We are using 3 different APIs to pull information in this script:
 
  - OverlapCollider returns the colliders which are touching this entity's collider.
- - Raycast projects a line and returns colliders intersecting with it (in order, closests first).  There are other 'cast' calls to project different shapes when needed, e.g. BoxCast.
- - collider.Distance returns percise information about the collision between two specific colliders, such as the contact point or if they are not touching the distance between them.
+ - Raycast projects a line and returns colliders intersecting with it (in order, closest first).  There are other 'cast' calls to project different shapes when needed, e.g. BoxCast.
+ - collider.Distance returns precise information about the collision between two specific colliders, such as the contact point or if they are not touching the distance between them.
 
 <hr></details>
 <details><summary>Why add the edge radius to bounds max when calculating the floor's position?</summary>
@@ -700,7 +700,7 @@ void Start()
 }
 ```
 
-Slerp, or **s**pherical **l**inear int**erp**olation, is similar to lerp but the change in position accelerates at the beginning and deccelerates towards the end.  It's called spherical because it is following the path of a half circle instead of a straight line.
+Slerp, or **s**pherical **l**inear int**erp**olation, is similar to lerp but the change in position accelerates at the beginning and decelerates towards the end.  It's called spherical because it is following the path of a half circle instead of a straight line.
 
 Here you can see lerp vs slerp with only position X changing (the large balls), and change X and Y.  All are moving given the same % progress.  Notice how the movement for slerp at beginning and end are traveling at a different speed than the lerp - but the positions match exactly at the start, middle, and end.
 
@@ -722,7 +722,7 @@ Layout ladders:
  - Create a parent Ladder GameObject, add the ladder sprite(s).  We are using **spritesheet_tiles_23** and **33**.
    - Order in Layer: -2.
  - Position the ladder and repeat, creating several ladders - some which look broken:
-   - The child sprite GameObjects should have a default Transform, with the execption of the Y position when multiple sprites are used.
+   - The child sprite GameObjects should have a default Transform, with the exception of the Y position when multiple sprites are used.
    - It usually looks fine to overlap sprites a bit, as we do to get the space between ladder steps looking good.
 
 <img src="http://i.imgur.com/u299hoi.gif" width=500px />
@@ -1086,7 +1086,7 @@ Note there are some issues at the moment - you can't go down a ladder and on the
 
 In this example both magnitude and sqrMagnitude would give us the same result, as is the case anytime we are comparing if one distance is greater or less than another.  sqrMagnitude executes much faster, so its preferred anytime you do not require the precision that magnitude gives you.
 
-To calculate magnitude, you first calculate the squared magnitude and then take the square root.  Taking the square root is a difficult opperation.
+To calculate magnitude, you first calculate the squared magnitude and then take the square root.  Taking the square root is a difficult operation.
 
 </details>
 
@@ -1430,9 +1430,9 @@ LadderMovement was updated to enable the DisablePhysics component when getting o
 <hr></details>
 <details><summary>What's a C# List?</summary>
 
-In C#, a List is a an array which can easily and automatically be resized as needed.  As you add and remove elements, C# will manage the size of the array which holds the information.  It does not resize the array everytime something is added or removed, it's optimized to try and limit those potentially expensive calls.  
+In C#, a List is a an array which can easily and automatically be resized as needed.  As you add and remove elements, C# will manage the size of the array which holds the information.  It does not resize the array every time something is added or removed, it's optimized to try and limit those potentially expensive calls.  
 
-When you create a List you give it the type of data it will contain.  We make the List for a specific type, as opposed to using objects, to communicate intent and for type saftey - e.g. if we had a List<Dog> it's clear that Cats don't belong there, and if we attempted to add a Cat to the Dog list, C# would throw an error.
+When you create a List you give it the type of data it will contain.  We make the List for a specific type, as opposed to using objects, to communicate intent and for type safety - e.g. if we had a List<Dog> it's clear that Cats don't belong there, and if we attempted to add a Cat to the Dog list, C# would throw an error.
 
 <hr></details>
 <details><summary>What's rigidbody gravityScale do?</summary>
@@ -1444,7 +1444,7 @@ You can modify the gravity for all objects in the world using Project Settings -
 <hr></details>
 <details><summary>Why store the impacted collider list?</summary>
 
-This component is disabling all colliders on the GameObject which were not already triggers.  When we undo this change, we don't have a way to detect the colliders original state.  We store list so we can change those colliders to not triggers anymore, without unintentially changing a collider which is always supposed to be a trigger.
+This component is disabling all colliders on the GameObject which were not already triggers.  When we undo this change, we don't have a way to detect the colliders original state.  We store list so we can change those colliders to not triggers anymore, without unintentionally changing a collider which is always supposed to be a trigger.
 
 <hr></details>
 

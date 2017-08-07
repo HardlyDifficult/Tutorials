@@ -4,7 +4,7 @@ TODO intro
 
 ## Add a win condition
 
-The goal of the game is to save the beautiful mushroom.  For level 1, that means getting close - but before you actually reach it the evil cloud is going to carry the shroom up to level 2.  
+The goal of the game is to save the beautiful mushroom.  For level 1, that means getting close - but before you actually reach it the evil cloud is going to carry the mushroom up to level 2.  
 
 Here we detect the end of the game, the cloud animation will be added later in the tutorial.
 
@@ -504,7 +504,7 @@ We don't want everything to pause.  The evil cloud animation needs to progress. 
 
 Destroying a component is an option.  Once destroyed, that component stops but the rest of the GameObject is still in-tact.
 
-Errors occur if we attempt to destroy the components mentioned above due to other components requiring the ones we removed.  If we wanted to switch to destroying components instead, we would need to be more selective in which components are included to avoid dependancy issues.  Because of this, it's simplier to disable than destroy.
+Errors occur if we attempt to destroy the components mentioned above due to other components requiring the ones we removed.  If we wanted to switch to destroying components instead, we would need to be more selective in which components are included to avoid dependency issues.  Because of this, it's simpler to disable than destroy.
 
 <hr></details>
 <details><summary>What's rigidbody simulated=false do?</summary>
@@ -514,7 +514,7 @@ Setting simulated to false on the rigidbody effectively disables the component. 
 <hr></details>
 <details><summary>What's the lock symbol do?</summary>
 
-Many of the windows in Unity have a lock symbol in the top right.  Clicking this will freeze the selection for that window.  So if you select a GameObject you can freeze the Inspector, allowing you to continue navigating other files while still having that same GameObject's properties displayed in the Inpsector.
+Many of the windows in Unity have a lock symbol in the top right.  Clicking this will freeze the selection for that window.  So if you select a GameObject you can freeze the Inspector, allowing you to continue navigating other files while still having that same GameObject's properties displayed in the Inspector.
 
 This is handy for various things such as above where we want one GameObject to reference another GameObject's component.  Open two Inspectors, select the first GameObject and lock one of the Inspector windows... now you can select the other GameObject and you have one Inspector for each.
 
@@ -606,7 +606,7 @@ Display the number of points in the top right.
 
 Create and position the points text:
 
- - In the Heirarchy, right click create UI -> **Text**.
+ - In the Hierarchy, right click create UI -> **Text**.
    - This creates a Canvas and a Text GameObject.
  - Select the "Text" GameObject:
    - Name it "Points".
@@ -625,7 +625,7 @@ Create and position the points text:
  - Select the Text GameObject:
    - Color: white
    - Font: kenpixel_future
-   - Font size: 32 (text may disapear)
+   - Font size: 32 (text may disappear)
    - Height: 40 (text should be too large)
    - Width: 500
    - Use the scale tool to scale down until its a good size.
@@ -689,7 +689,7 @@ Kenpixel_future is a fixed width font, which makes the points look a little bett
 TextPoints uses Lerp to scroll the number of points displayed up until reaching the current value.  This means if the player earns 100 points, we may see 10 the first frame and 17 the second frame, 20 the third, etc where the number of points increasing each frame slows down as it approaches the actual value.
 
 <hr></details>
-<details><summary>What's a canvas do and why is our level so small in comparision?</summary>
+<details><summary>What's a canvas do and why is our level so small in comparison?</summary>
 
 The Canvas is a container holding UI.  It allows Unity to manage features such as automatically scaling UI to fit the current resolution.  Unity offers components such as the VerticalLayoutGroup which help in getting positioning and sizing correct.
 
@@ -711,12 +711,12 @@ Here is an example, the top is sized only using font size while the bottom is ov
 <hr></details>
 <details><summary>What is a RectTransform, how does it differ from a Transform?</summary>
 
-A RectTransform is the UI version of the Transform used for GameObjects.  RectTransform inherhits from Transform, adding features specifically for UI positioning such as pivot points and an anchor.  Anything displayed in a Canvas must use a RectTransform... as that is how Canvas does layout and positioning.
+A RectTransform is the UI version of the Transform used for GameObjects.  RectTransform inherits from Transform, adding features specifically for UI positioning such as pivot points and an anchor.  Anything displayed in a Canvas must use a RectTransform... as that is how Canvas does layout and positioning.
 
 <hr></details>
 <details><summary>Why use ceiling here?</summary>
 
-We need to ensure that each iteration of Update increases the points displayed by at least one, if we are not already displaying the final value.  Without this, it's possible each Update would calculate less than 1 - if we simply cast that means that each update would progress by 0 and therfore never actually display the correct amount.
+We need to ensure that each iteration of Update increases the points displayed by at least one, if we are not already displaying the final value.  Without this, it's possible each Update would calculate less than 1 - if we simply cast that means that each update would progress by 0 and therefore never actually display the correct amount.
 
 <hr></details>
 <details><summary>What does setting the anchor point / pivot on UI do?</summary>
@@ -828,7 +828,7 @@ Create a main menu to show at the start of the game.  Allow the player to start 
 
 <details><summary>How</summary>
 
-Create the Mene scene:
+Create the Menu scene:
 
  - Create a new Scene, save it as Scenes/**Menu**.
    - Add the Scene to Build Settings.
@@ -1039,7 +1039,7 @@ public class LevelController : MonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-Create the Mene scene:
+Create the Menu scene:
 
 A scene for the Menu was added as the first scene in build settings so that it's what you see first when starting the game.  
 
@@ -1218,7 +1218,7 @@ Rigidbody was added to the center platforms and the mushroom.  We then constrain
 
 <br>Add a section at the top where the Character cannot enter:
 
-The win condition for this level is breaking each of the breakaway blocks.  We don't want you to be able to reach the mushroom as you did in level 1.  Blocks are added to gaurd the mushroom and a layer is used to allow enemies to pass through but block the player.
+The win condition for this level is breaking each of the breakaway blocks.  We don't want you to be able to reach the mushroom as you did in level 1.  Blocks are added to guard the mushroom and a layer is used to allow enemies to pass through but block the player.
 
 The rigidbody is added so this may also fall at the level's end.
 
@@ -1302,7 +1302,7 @@ public class UnfreezeAndDisablePlatformers : MonoBehaviour
 }
 ```
 
- - For each Block gaurding the mushroom, each platform in the center (except the bottom platform), and the mushroom:
+ - For each Block guarding the mushroom, each platform in the center (except the bottom platform), and the mushroom:
    - Add **UnfreezeAndDisablePlatformers**.
      - Disable the component.
    - Add **EnableComponentsOnTimelineEvent**:
@@ -1393,7 +1393,7 @@ public class RandomGG : MonoBehaviour
 <br>Keep the GG in bounds:
 
  - Create an Empty GameObject and add a **BoxCollider2D**
-   - Size and position multiple to gaurd the screen edges.
+   - Size and position multiple to guard the screen edges.
 
 <img src="http://i.imgur.com/KI8JXHK.png" width=300px />
 
@@ -1441,7 +1441,7 @@ The YouWin scene is given a black background.  The GameController is added so th
 
 <br>Create a GG object:
 
-A GameObject is created to display "GG".  We size it too large to start and will scale it down.  A box collider surrounds the letters so we can drop a bunch and have them bounce off eachout.  The rigidbody enables gravity.  Suicide in destroys the GG after 30 seconds, ensuring there is always some movement on the screen.
+A GameObject is created to display "GG".  We size it too large to start and will scale it down.  A box collider surrounds the letters so we can drop a bunch and have them bounce off each other.  The rigidbody enables gravity.  Suicide in destroys the GG after 30 seconds, ensuring there is always some movement on the screen.
 
 <br>Randomize the GG:
 
@@ -1461,7 +1461,7 @@ The Spawner component used in our levels was reused here to spawn GGs.  The posi
 
 <br>Press any key to return to the menu:
 
-Each update, the AnyKeyToLoadScene script checks if any key was pressed that frame.  We check AnyKeyDown instead of AnyKey so that the player does not acidentally skip the GG scene entirely.
+Each update, the AnyKeyToLoadScene script checks if any key was pressed that frame.  We check AnyKeyDown instead of AnyKey so that the player does not accidentally skip the GG scene entirely.
 
 This script could have been added to any GameObject in the world, using the Spawner was an arbitrary choice.
 
