@@ -20,7 +20,7 @@ Code changes
   - Configure ladderFilter on LadderMovement
 
  Add a 'Rigidbody2D' component to the spike ball.
- - Create a script **Spawner** under Assets/Code/Compenents/Life and paste the following:
+ - Create a script **Spawner** under Assets/Code/Components/Life and paste the following:
 
 Add it to an empty parent GameObject named "Character".
 
