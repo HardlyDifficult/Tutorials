@@ -1191,7 +1191,7 @@ protected void OnEnable()
 
 </details>
 
-## 2.14) Spawn and destroy explosion 
+## 2.14) Spawn and destroy explosions
 
 Add a script which spawns the explosion prefab when the character dies.  The explosion should Destroy after a few the effect completes.
 

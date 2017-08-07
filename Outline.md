@@ -167,7 +167,7 @@
  - What's a particle / particle system?
  - Could you RNG select the audio clip to play?
 
-2.14) Spawn and destroy explosion
+2.14) Spawn and destroy explosions
 
  - What's bounds represent?
  - Why not spawn the explosion at transform.position instead of bounds.center?
@@ -359,6 +359,8 @@ Stop everything when the level is over
  <hr>
  6 UI and Scene transitions
 
+Transition scenes to level 2
+
  - Why not use just one scene for the game?
  - What's SceneManager.LoadScene do?
 
@@ -379,7 +381,7 @@ UI for lives
 
 Main menu
 
- - Does order matter for scenes in the Build Settings?
+ - Does order matter for scenes in the Build Settings? 
  - Why Remove Component instead of disable it?
  - How does the Canvas Scaler / Scale with Screen Size work?
  - How do UI events / button OnClick events work?
