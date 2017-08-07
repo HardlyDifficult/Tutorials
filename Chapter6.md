@@ -2,527 +2,9 @@
 
 TODO intro
 
-## Add a win condition
+## Transition scenes to level 2
 
-The goal of the game is to save the beautiful mushroom.  For level 1, that means getting close - but before you actually reach it the evil cloud is going to carry the mushroom up to level 2.  
-
-Here we detect the end of the game, the cloud animation will be added later in the tutorial.
-
-<details><summary>How</summary>
-
-Design the win area:
-
- - Create an empty GameObject named "WinArea".
-   - Add a **BoxCollider2D** sized to cover the area that when entered will end the level.
-     - Check Is Trigger.
-   - Create a Layer "WinArea":
-     - Configure the collision matrix to only support WinArea <-> Player collisions.
-     - Assign the layer to the WinArea GameObject.
-   - Add a sprite to lure the character to the win area.  We are using **spritesheet_jumper_26** with Order in Layer -3.
-     - Make it a child of the WinArea. 
-
-<img src="http://i.imgur.com/WuW9hPk.png" width=300px />
-
-<br>Inform the LevelController when the player won:
-
- - Create script Components/Effects/**TouchMeToWin**:
-
-```csharp
-using System;
-using UnityEngine;
-
-public class TouchMeToWin : MonoBehaviour
-{
-  static int totalNumberActive;
-
-  [SerializeField]
-  MonoBehaviour componentToEnableOnTouch;
-
-  int playerLayer;
-
-  protected void Awake()
-  {
-    playerLayer = LayerMask.NameToLayer("Player");
-  }
-
-  protected void OnEnable()
-  {
-    totalNumberActive++;
-  }
-
-  protected void OnDisable()
-  {
-    totalNumberActive--;
-  }
-
-  protected void OnTriggerEnter2D(
-    Collider2D collision)
-  {
-    if(enabled == false 
-      || collision.gameObject.layer != playerLayer)
-    {
-      return;
-    }
-
-    if(componentToEnableOnTouch != null)
-    {
-      componentToEnableOnTouch.enabled = true;
-    }
-
-    enabled = false;
-    if(totalNumberActive == 0)
-    {
-      GameObject.FindObjectOfType<LevelController>().YouWin();
-    }
-  }
-}
-```
-
- - Add **TouchMeToWin** to the WinArea.
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-Design the win area:
-
-We put a large trigger collider around the mushroom.  When the character enters this area, it will trigger the end the level.  The collider is configured to use a layer which only interacts with the player so enemies cannot accidentally end the level.
-
-<br>Inform the LevelController when the player won:
-
-TouchMeToWin counts the total number of these special zones in the world.  For level 1 we are only using one but for level 2 there will be more.  When the last one is disabled (by the character entering that area), we call YouWin on the LevelController which will own starting the end sequence / switching to level 2.
-
-An enabled check is included to ensure we an area does not call YouWin multiple times.
-
-<hr></details>
-
-
-## Win animation
-
-When the character reaches the win area, play a Timeline to animate the end of the level.
-
-<details><summary>How</summary>
-
-Create a win animation:
-
- - Create another animation for the evil cloud, Animations/**CloudLevel1Exit** to play when the player wins.
-   - You may not be able to record if the Timeline Editor window is open.
-   - Select Animations/CloudLevel1Exit and disable Loop Time.
-
-<br>Create a win Timeline:
-
- - Right click in Assets/Animations -> Create -> Timeline named **Level2Exit**.
-   - Select the evil cloud's sprite GameObject and in the Inspector change the Playable Director's 'Playable' to Level2Exit.
-
-<img src="http://i.imgur.com/Jsah6Ll.png" width=300px />
-
- - In the Timeline Editor window, click 'Add' then 'Animation Track' and select the evil cloud's child GameObject with the animator.
- - Right click in the timeline and 'Add Animation From Clip' and select the CloudLevel1Exit animation.
-
-<img src="http://i.imgur.com/xcR7HWr.gif" width=300px />
-
- - Select the box which appeared for the animation, and in the Inspector modify the speed.
-   - Hit play in the Timeline Editor to preview the speed.  The value is going to depend on how you created the animation.
-
-<br>Hide the mushroom during the animation:
-
- - Select the mushroom GameObject and drag it into the timeline.
-   - Adjust the timeframe so that it starts at the beginning of the timeline and ends when you want the mushroom to disappear.
-   - Select the track's row and in the Inspector change the 'Post-playback state' to 'Inactive'.
-
-<img src="http://i.imgur.com/W9lejAB.png" width=300px />
-
- - Select the evil cloud's sprite GameObject and in the Inspector change the Playable Director's Playable back to Level1Entrance.
-
-<br>Start the Timeline at the end of the level:
-
- - Update **LevelController**:
-
-<details><summary>Existing code</summary>
-
-```csharp
-using UnityEngine;
-```
-
-</details>
-
-```csharp
-using UnityEngine.Playables; 
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-public class LevelController : MonoBehaviour
-{
-  [SerializeField]
-  GameObject playerPrefab;
-
-  protected bool isGameOver;
-```
-
-</details>
-
-```csharp
-  [SerializeField]
-  PlayableDirector director; 
-
-  [SerializeField]
-  PlayableAsset TimelineEventPlayable; 
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-  [SerializeField]
-  int levelNumber = 1; 
-
-  protected void OnEnable()
-  {
-    GameController.instance.onLifeCounterChange
-      += Instance_onLifeCounterChange;
-
-    StartLevel();
-  }
-  
-  protected void OnDisable()
-  {
-    GameController.instance.onLifeCounterChange
-      -= Instance_onLifeCounterChange;
-  }
-
-  void Instance_onLifeCounterChange()
-  {
-    if(isGameOver)
-    {
-      return;
-    }
-
-    BroadcastEndOfLevel();
- 
-    if(GameController.instance.lifeCounter <= 0)
-    {
-      isGameOver = true;
-      YouLose();
-    }
-    else
-    {
-      StartLevel();
-    }
-  }
-
-  public void YouWin()
-  {
-    if(isGameOver == true)
-    {
-      return;
-    }
-
-    isGameOver = true;
-```
-
-</details>
-
-```csharp
-    director.Play(TimelineEventPlayable); 
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-    DisableComponentsOnEndOfLevel[] disableComponentList 
-      = GameObject.FindObjectsOfType<DisableComponentsOnEndOfLevel>();  
-    for(int i = 0; i < disableComponentList.Length; i++)
-    {
-      DisableComponentsOnEndOfLevel disableComponent = disableComponentList[i];
-      disableComponent.OnEndOfLevel();
-    }
-  }
-
-  void StartLevel()
-  {
-    Instantiate(playerPrefab);
-  }
-
-  void BroadcastEndOfLevel()
-  {
-    PlayerDeathMonoBehaviour[] gameObjectList 
-      = GameObject.FindObjectsOfType<PlayerDeathMonoBehaviour>();
-    for(int i = 0; i < gameObjectList.Length; i++)
-    {
-      PlayerDeathMonoBehaviour playerDeath = gameObjectList[i];
-      playerDeath.OnPlayerDeath();
-    }
-
-  }
-
-  void YouLose()
-  {
-    // TODO
-  }
-}
-```
-
-</details>
-
- - Configure the director and set the end of level playable to Level1Exit.
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-Create a win animation:
-
-Another animation was created to play when the player wins.  We leave it up to you what this looks like and how long the animation plays for.  
-
-<br>Create a win Timeline:
-
-A new Timeline is created for the win sequence.  We add the animation just created and adjust the speed as needed.
-
-<br>Hide the mushroom during the animation:
-
-An Activation Track is used to hide the mushroom when the animation is nearly complete.  Setting the post-playback state to inactive ensures that the mushroom does not return when the Timeline completes.
-
-<br>Start the Timeline at the end of the level:
-
-When the win condition is triggered, the LevelController changes the Evil Cloud's Playable Director to play the end of level Timeline just created.
-
-<hr></details>
-<details><summary>Why switch the Playable when editing Timelines?</summary>
-
-Unity 2017 is the first release of Timeline, it's still a work in progress.  
-
-At the moment you cannot edit Timelines unless they are active in the scene.  You can only partially view the Timeline by selecting the file.  So anytime you want to modify the Level1Exit Timeline, you need to change the Playable Director and then when you are complete change it back.
-
-On a related note, you can't edit an animation if the Timeline window is open.  When working with Animations and Timelines, it seems to work best if you only have one open at a time.
-
-<hr></details>
-
-## Stop everything when the level is over
-
-When the level is over, stop the spawners and freeze the character and enemies while the evil cloud animation plays.
-
-<details><summary>How</summary>
-
-Create a script to disable certain mechanics:
-
- - Create script Components/Controllers/**DisableComponentsOnEndOfLevel**:
-
-```csharp
-using UnityEngine;
-
-public class DisableComponentsOnEndOfLevel : MonoBehaviour
-{
-  [SerializeField]
-  Component[] componentsToDisable;
-
-  public void OnEndOfLevel()
-  {
-    for(int i = 0; i < componentsToDisable.Length; i++)
-    {
-      Component component = componentsToDisable[i];
-      if(component is Rigidbody2D)
-      {
-        Rigidbody2D myBody = (Rigidbody2D)component;
-        myBody.simulated = false;
-      }
-      else if(component is Behaviour)
-      {
-        Behaviour behaviour = (Behaviour)component;
-        behaviour.enabled = false;
-        if(behaviour is MonoBehaviour)
-        {
-          MonoBehaviour monoBehaviour = (MonoBehaviour)behaviour;
-          monoBehaviour.StopAllCoroutines();
-        }
-      }
-      else
-      {
-        Destroy(component);
-      }
-    }
-  }
-}
-```
-
-<br>Configure disabling for GameObjects:
-
- - Select the Character prefab.
-   - Add **DisableComponentsOnEndOfLevel** and to the components list, add 3 items:
-     - Its Rigidbody2D.
-     - Its PlayerController.
-     - The character's animator (which is on the child GameObject).  You can do this by:
-       - Open a second Inspector by right click on the Inspector tab and select Add Tab -> Inspector.
-       - With the Character's parent GameObject selected, hit the lock symbol in one of the Inspectors.
-       - Select the character's child sprite, then drag the Animator from one Inspector into the other.
-
-<img src="http://i.imgur.com/UOEJNyx.gif" width=500px />
-
- - Unlock the Inspector.
- - Select the Fly Guy prefab.
-   - Add **DisableComponentsOnEndOfLevel**, and add its Rigidbody2D and Animator.
- - Select the Spike Ball prefab.
-   - Add **DisableComponentsOnEndOfLevel** and add its Rigidbody2D.
- - For the Evil Cloud and the Door:
-   - Add **DisableComponentsOnEndOfLevel** and add its Spawner.
-
-<br>Call scripts at the end of the level:
-
- - Update Components/Controllers/**LevelController**:
-
-<details><summary>Existing code</summary>
-
-```csharp
-using UnityEngine;
-
-public class LevelController : MonoBehaviour
-{
-  [SerializeField]
-  GameObject playerPrefab;
-
-  protected bool isGameOver;
-
-  [SerializeField]
-  int levelNumber = 1; 
-
-  protected void OnEnable()
-  {
-    GameController.instance.onLifeCounterChange
-      += Instance_onLifeCounterChange;
-
-    StartLevel();
-  }
-  
-  protected void OnDisable()
-  {
-    GameController.instance.onLifeCounterChange
-      -= Instance_onLifeCounterChange;
-  }
-
-  void Instance_onLifeCounterChange()
-  {
-    if(isGameOver)
-    {
-      return;
-    }
-
-    BroadcastEndOfLevel();
- 
-    if(GameController.instance.lifeCounter <= 0)
-    {
-      isGameOver = true;
-      YouLose();
-    }
-    else
-    {
-      StartLevel();
-    }
-  }
-
-  public void YouWin()
-  {
-    if(isGameOver == true)
-    { 
-      return;
-    }
-
-    isGameOver = true;
-
-    director.Play(TimelineEventPlayable);
-```
-
-</details>
-
-```csharp
-    DisableComponentsOnEndOfLevel[] disableComponentList 
-      = GameObject.FindObjectsOfType<DisableComponentsOnEndOfLevel>();  
-    for(int i = 0; i < disableComponentList.Length; i++)
-    {
-      DisableComponentsOnEndOfLevel disableComponent = disableComponentList[i];
-      disableComponent.OnEndOfLevel();
-    }
-```
-
-<details><summary>Existing code</summary>
-
-```csharp
-  }
-
-  void StartLevel()
-  {
-    Instantiate(playerPrefab);
-  }
-
-  void BroadcastEndOfLevel()
-  {
-    PlayerDeathMonoBehaviour[] gameObjectList 
-      = GameObject.FindObjectsOfType<PlayerDeathMonoBehaviour>();
-    for(int i = 0; i < gameObjectList.Length; i++)
-    {
-      PlayerDeathMonoBehaviour playerDeath = gameObjectList[i];
-      playerDeath.OnPlayerDeath();
-    }
-  }
-
-  void YouLose()
-  {
-    // TODO
-  }
-}
-```
-
-</details>
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-Create a script to disable certain mechanics:
-
-This script exposes a public method to be called when the level ends.  It will disable a list of components, typically on the same GameObject or a child GameObject.
-
-Depending on the type of component, our approach to 'disabling' differs.
-
-<br>Configure disabling for GameObjects:
-
-At the end of the level, the LevelController will call each DisableComponentsOnEndOfLevel component. This component then disables other components on the GameObject to make the game freeze during our end of level animation.
-
- - Entities disable their rigidbody to stop gravity and the animator to stop playback.
- - The Character also disables the PlayerController so that input does not cause the sprite to flip facing direction.
- - Spawners stop the spawn coroutine so no more enemies appear.
-
-<br>Call scripts at the end of the level:
-
-When the LevelController detects the win condition, it's updated to call each of the DisableComponentsOnEndOfLevel components in the scene.
-
-<hr></details>
-<details><summary>Why not just set timeScale to 0?</summary>
-
-You could, but some things would need to change a bit.
-
-We don't want everything to pause.  The evil cloud animation needs to progress.  If you change the timeScale, you will need to modify the Animators to use Unscaled time -- otherwise the animations would not play until time resumed.
-
-<hr></details>
-<details><summary>Why not just destroy all the components instead?</summary>
-
-Destroying a component is an option.  Once destroyed, that component stops but the rest of the GameObject is still in-tact.
-
-Errors occur if we attempt to destroy the components mentioned above due to other components requiring the ones we removed.  If we wanted to switch to destroying components instead, we would need to be more selective in which components are included to avoid dependency issues.  Because of this, it's simpler to disable than destroy.
-
-<hr></details>
-<details><summary>What's rigidbody simulated=false do?</summary>
-
-Setting simulated to false on the rigidbody effectively disables the component.  The rigidbody does not support an 'enabled' flag like scripts do - 'simulated' is their equivalent.
-
-<hr></details>
-<details><summary>What's the lock symbol do?</summary>
-
-Many of the windows in Unity have a lock symbol in the top right.  Clicking this will freeze the selection for that window.  So if you select a GameObject you can freeze the Inspector, allowing you to continue navigating other files while still having that same GameObject's properties displayed in the Inspector.
-
-This is handy for various things such as above where we want one GameObject to reference another GameObject's component.  Open two Inspectors, select the first GameObject and lock one of the Inspector windows... now you can select the other GameObject and you have one Inspector for each.
-
-<hr></details>
-
-## Create a new empty scene
-
-Create a new scene which will be used for level 2.  Add both levels to the build settings.
+After the level ends, load level 2.
 
 <details><summary>How</summary>
 
@@ -533,27 +15,6 @@ Create a new scene which will be used for level 2.  Add both levels to the build
    - Add level 2 to the Build Settings.
  - Double click Assets/Scenes/Level1 to return to that scene.
 
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-We have a separate scene to manage each level.  By adding these to the build settings, we are informing Unity that these scenes should be included in the build -- allowing us to transition to one either by name or by index (their position in the build settings list).
-
-<hr></details>
-<details><summary>Why not use just one scene for the game?</summary>
-
-You could.  But I would not advise it.
-
-Using multiple scenes, one for each level, makes it easy to customize the layout and behaviour for the level.  Technically this could all be achieved in a single scene but that could make level design confusing.
-
-GameObjects which are shared between levels can use a prefab so that they have a common definition.  With a prefab, you can make a modification and have that change impact every instance.  You can also override a setting from a prefab for a specific use case, such as making enemies move faster in level 2.
-
-<hr></details>
-
-## Scene transition
-
-After the level ends, load level 2.
-
-<details><summary>How</summary>
 
  - Create script Playables/**ChangeScenePlayable**:
 
@@ -579,17 +40,28 @@ public class ChangeScenePlayable : BasicPlayableBehaviour
 }
 ```
 
- - Change the Evil Cloud Director to Level1Exit and open the Timeline.
+ - Change the EvilCloud Director to Level1Exit and open the Timeline.
    - Drag the **ChangeScenePlayable** script into the Timeline.
    - Position it to start after the animation completes.  The size of the box does not matter.
- - Change the Evil Cloud Director back to Level1Entrance.
+ - Change the EvilCloud Director back to Level1Entrance.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
+We have a separate scene to manage each level. By adding these to the build settings, we are informing Unity that these scenes should be included in the build -- allowing us to transition to one either by name or by index (their position in the build settings list).
+
 ChangeScenePlayable allows us to define when to load the next scene in the Timeline directly.  This is handy as we are designing the end sequence so that we don't need to manage a countdown that aligns with our animations.
 
 </details>
+<details><summary>Why not use just one scene for the game?</summary>
+
+You could.  But I would not advise it.
+
+Using multiple scenes, one for each level, makes it easy to customize the layout and behaviour for the level.  Technically this could all be achieved in a single scene but that could make level design confusing.
+
+GameObjects which are shared between levels can use a prefab so that they have a common definition.  With a prefab, you can make a modification and have that change impact every instance.  You can also override a setting from a prefab for a specific use case, such as making enemies move faster in level 2.
+
+<hr></details>
 <details><summary>What's SceneManager.LoadScene do?</summary>
 
 Calling LoadScene will Destroy every GameObject in the scene, except for any which are DontDestroyOnLoad like our GameController, and then loads the requested scene.
@@ -847,7 +319,7 @@ Create the Menu scene:
 
 <img src="http://i.imgur.com/QCrcf66.png" width=150px />
 
- - Add the Evil Cloud sprite
+ - Add the EvilCloud sprite
    - Create an animation to loop, named Animations/**MenuCloud**.
    - Adjust the playback speed in the Animator Controller.
 
@@ -1045,7 +517,7 @@ A scene for the Menu was added as the first scene in build settings so that it's
 
 <br>Design the scene:
 
-A simple platform was added the bottom for the character to walk on.  The character prefab is reused but we modify the configuration, swapping the PlayerController for the random movement components we used on FlyGuy.
+A simple platform was added the bottom for the character to walk on.  The character prefab is reused but we modify the configuration, swapping the PlayerController for the random movement components we used on HoverGuy.
 
 <br>Add a play button:
 
@@ -1091,7 +563,7 @@ Often you will be calling an event on the same object like we did here.
 
 ## Level 2
 
-Create level 2 reusing a lot from level 1 but change various configurations such as having the cloud spawn Fly Guy enemies.  
+Create level 2 reusing a lot from level 1 but change various configurations such as having the cloud spawn HoverGuy enemies.  
 
 The win condition for this level, to be added later, will be to jump over each of the breakaway platforms we add here.  
 
@@ -1105,7 +577,7 @@ Create prefabs from Level 1 to reuse:
    - EventSystem
    - 1 Platform (any is fine, we will use this as a starting point in Level2).
    - 1 Ladder
-   - Evil Cloud
+   - EvilCloud
    - LevelController
 
 <br>Start to design level 2 with prefabs from level 1:
@@ -1116,7 +588,7 @@ Create prefabs from Level 1 to reuse:
    - Main Camera
    - Canvas
    - EventSystem
-   - Evil Cloud
+   - EvilCloud
    - LevelController
      - Level Number: 2
      - Select the Director
@@ -1157,26 +629,26 @@ Create prefabs from Level 1 to reuse:
 
 <br>Configure the enemy:
 
- - Drag the FlyGuy prefab into the scene.
-   - Rename it "FlyGuy2".
+ - Drag the HoverGuy prefab into the scene.
+   - Rename it "HoverGuy2".
    - Remove the **FadeInThenEnable** component.
    - Enable the **WanderWalkController**:
      - Time Before First Wander: 0
    - Change the **RandomClimbController**
      - Odds of going up: .1
      - Odds of going down: .9
-   - Create a new prefab for FlyGuy2 and delete the GameObject.
- - Select the Evil Cloud and change the Thing To Spawn to FlyGuy2.
+   - Create a new prefab for HoverGuy2 and delete the GameObject.
+ - Select the EvilCloud and change the Thing To Spawn to HoverGuy2.
 
 <br>Create the intro Timeline:
 
- - Select the Evil Cloud's sprite GameObject and create a new animation  Animations/**CloudLevel2Entrance**.
+ - Select the EvilCloud's sprite GameObject and create a new animation  Animations/**CloudLevel2Entrance**.
    - Record any sequence you'd like.
    - Select Animations/CloudLevel2Entrance and disable looping.
  - Create a 'Timeline' file at Animations/**Level2Entrance**.
- - Select the Evil Cloud's sprite GameObject and change the Playable Director's Playable to Level2Entrance.
+ - Select the EvilCloud's sprite GameObject and change the Playable Director's Playable to Level2Entrance.
  - Open the Timeline Editor window:
-   - Add an Animation Track for the Evil Cloud 
+   - Add an Animation Track for the EvilCloud 
      - Add an Animation Clip for CloudLevel2Entrance.
      - Update the speed if needed.
    - Add Activation Tracks for the Hammers, Ladders, and LevelController.  
@@ -1189,10 +661,10 @@ Create prefabs from Level 1 to reuse:
  - Create a new Scene named Scenes/**YouWin**:
    - Add it to Build Settings.
    - Return to Level2.
- - Create a new animation on the Evil Cloud for the end of the game, named Animations/**CloudLevel2Exit**.
+ - Create a new animation on the EvilCloud for the end of the game, named Animations/**CloudLevel2Exit**.
  - Create a new Timeline Animations/**Level2Exit** and select it in the Playable Director.
  - Open the Timeline Editor:
-   - Create an **Animation Track** for the Evil Cloud's CloudLevel2Exit clip.
+   - Create an **Animation Track** for the EvilCloud's CloudLevel2Exit clip.
      - Adjust the speed.
    - Add **TimelineEventPlayable**:
      - Position it to start about half way through the animation.
@@ -1234,7 +706,7 @@ To beat level 2 you need to jump or walk over each of the breakaway platforms.
 
 <br>Configure the enemy:
 
-A new prefab was created specifically for level 2.  It's a slight modification to the settings on the Fly Guy we used in level 1.
+A new prefab was created specifically for level 2.  It's a slight modification to the settings on the HoverGuy we used in level 1.
 
  - FadeInThenEnable is removed so that the enemy starts moving as soon as it's dropped from the cloud.
  - WanderWalkController removes the initial sleep so it does not always walk right in the beginning.

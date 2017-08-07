@@ -20,6 +20,7 @@ Process plan (constantly changing...)
  - ~~Refactor code~~
  - ~~Clean steps and draft What did that do and a first cut on FAQ.~~
  - Then big edits - re-organize and add missing FAQs.
+ - Rework the what did that section vs the blurb at top, extract more questions.
  - Chapter by chapter:
    - Review the chapter one more time.
    - Record video.
@@ -35,7 +36,9 @@ Process plan (constantly changing...)
 
 # 1) A game with enemies spawning
 
-In chapter 1, we create a 2D game in Unity with spiked balls spawning at random intervals from an evil cloud.  They roll across platforms and fall from level to level.
+2D project config, sprites, editor script, collider, rigidbody, MonoBehaviour, prefab, Destroy, Instantiate, Coroutines, Collision Matrix.
+
+In chapter 1, we create a 2D game in Unity with spiked balls spawning at random intervals from an EvilCloud.  They roll across platforms and fall from level to level.
 
 TODO tutorial video link
 
@@ -783,32 +786,32 @@ You can adjust the surface arc to find a value that feels good.
 
 </details>
 
-## 1.19) Create a spike ball
+## 1.19) Create a SpikeBall
 
-Add a GameObject for the spike ball. 
+Add a GameObject for the SpikeBall. 
 
 <details><summary>How</summary>
 
  - Drag the sprite into the Hierarchy to create a GameObject for the sprite. We are using **spritesheet_jumper_59**.
  - Create a parent GameObject:
-   - Right click -> 'Create Empty' GameObject named "Spike Ball".
-   - Drag and drop the sprite into Spike Ball.
+   - Right click -> 'Create Empty' GameObject named "SpikeBall".
+   - Drag and drop the sprite into SpikeBall.
  
-<br>Update the Spike Ball's Order in Layer to -1:
+<br>Update the SpikeBall's Order in Layer to -1:
 
- - Select the Spike Ball's sprite.
+ - Select the SpikeBall's sprite.
    - Change the Sprite Renderer's 'Order in Layer' to '-1'.
 
 <img src="http://i.imgur.com/TSqk7hb.png" width=300px />
 
 <br>Add a rigidbody to the ball:
 
- - Select the Spike Ball's parent GameObject.
+ - Select the SpikeBall's parent GameObject.
    - Click Add Component and select **Rigidbody2D**.
 
 <br>Add a collider to the ball:
 
- - Select the Spike Ball's parent GameObject and add a **CircleCollider2D**.
+ - Select the SpikeBall's parent GameObject and add a **CircleCollider2D**.
    - Modify the radius so the collider is around the main body and not the spikes.
 
 <img src="http://i.imgur.com/crXdz35.gif" width=300px />
@@ -818,9 +821,9 @@ Add a GameObject for the spike ball.
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-<br>Update the Spike Ball's Order in Layer to -1:
+<br>Update the SpikeBall's Order in Layer to -1:
 
-When multiple sprites are overlapping, Order in Layer is used to determine which one is on top of the other.  So if the spike ball sprite has Order in Layer '-1' and everything else uses the default Order in Layer '0', the spike ball will always appear behind of other sprites in the world.
+When multiple sprites are overlapping, Order in Layer is used to determine which one is on top of the other.  So if the SpikeBall sprite has Order in Layer '-1' and everything else uses the default Order in Layer '0', the SpikeBall will always appear behind of other sprites in the world.
 
 Order in Layer may be any int value, positive or negative. Here's an example showing the character sprite we will be using with Order in Layer '-1' and with '2'... sitting on a platform which still has the default Order in Layer '0'.
 
@@ -828,7 +831,7 @@ Order in Layer may be any int value, positive or negative. Here's an example sho
 
 <br>Add a rigidbody to the ball:
 
-Adding a rigidbody to an object enables physics, including gravity.  Hit play and watch the spike ball fall through the platforms and out of view:
+Adding a rigidbody to an object enables physics, including gravity.  Hit play and watch the SpikeBall fall through the platforms and out of view:
 
 <img src="http://i.imgur.com/PuWWL3z.gif" width=50px />
 
@@ -836,7 +839,7 @@ Adding a rigidbody to an object enables physics, including gravity.  Hit play an
 
 The circle collider allows the ball to roll.  Place the ball at the top of a slanted platform and gravity will get things moving.
 
-Hit play to watch the spike ball fall onto a platform and roll:
+Hit play to watch the SpikeBall fall onto a platform and roll:
 
 <img src="http://i.imgur.com/x4a848N.gif" width=300px />
 
@@ -847,7 +850,7 @@ If the ball gets stuck while testing because some platforms are too close, updat
 
 For consistency.  
 
-In this tutorial we will encounter use cases which warrant using a parent GameObject with the sprite in a child for the character and one enemy type.  For the mechanics we plan to implement, the spike ball would work with or without the sprite in a child GameObject.
+In this tutorial we will encounter use cases which warrant using a parent GameObject with the sprite in a child for the character and one enemy type.  For the mechanics we plan to implement, the SpikeBall would work with or without the sprite in a child GameObject.
 
 <hr></details>
 <details><summary>What's a Rigidbody2D?</summary>
@@ -863,7 +866,7 @@ A rigidbody is a core component for the Unity physics engine, Rigidbody2D is the
 
 It's optional, use what you think creates the best experience.
 
-When we added the CircleCollider2D, it defaulted to surround the entire sprite.  This may be the right experience, it's up to how you want the game to play.  I'm suggesting that we pull the collider in a bit, this will cause the spike ball to roll on its body with the spikes digging into platforms instead of rolling on the tips of each spike as shown here:
+When we added the CircleCollider2D, it defaulted to surround the entire sprite.  This may be the right experience, it's up to how you want the game to play.  I'm suggesting that we pull the collider in a bit, this will cause the SpikeBall to roll on its body with the spikes digging into platforms instead of rolling on the tips of each spike as shown here:
 
 <img src="http://i.imgur.com/ov1F5Fo.gif" width=200px />
 
@@ -899,7 +902,7 @@ Add additional BoxCollider2Ds off screen to redirect balls back on screen.
 
 <img src="http://i.imgur.com/5mUaPov.png" width=300px />
 
- - Copy paste the bumper and modify it's position and rotation so that each platform that may send a spike ball off screen has a bumper.
+ - Copy paste the bumper and modify it's position and rotation so that each platform that may send a SpikeBall off screen has a bumper.
    - We do not want a bumper for the bottom left as balls should not return after that point.
 
  Your screen with bumpers should look something like this:
@@ -912,11 +915,11 @@ Add additional BoxCollider2Ds off screen to redirect balls back on screen.
 
 <details><summary>What did that do?</summary>
 
-With this level design, spike balls will roll right off the edge of the screen.  Instead of making them bounce of the screen's edge (as we will for other entities later), we wanted to allow the spike balls to go off screen but then return shortly after.  
+With this level design, SpikeBalls will roll right off the edge of the screen.  Instead of making them bounce of the screen's edge (as we will for other entities later), we wanted to allow the SpikeBalls to go off screen but then return shortly after.  
 
 The bumpers we added extend the platforms you can see so that the balls don't fall off completely, but also accelerate the balls return to the world.
 
-Hit play, the spike ball should hit the bumper and quickly reverse and then accelerate the other direction: 
+Hit play, the SpikeBall should hit the bumper and quickly reverse and then accelerate the other direction: 
 
 <img src="http://i.imgur.com/vMjWoia.gif" width=150px />
 
@@ -924,7 +927,7 @@ Hit play, the spike ball should hit the bumper and quickly reverse and then acce
 
 ## 1.24) Add starting momentum to the ball
 
-Add a script to the spike ball which sets an initial velocity and angular velocity.
+Add a script to the SpikeBall which sets an initial velocity and angular velocity.
 
 <details><summary>How</summary>
 
@@ -953,7 +956,7 @@ public class InitializeRigidbody : MonoBehaviour
 }
 ```
 
- - Add the **InitializeRigidbody** component to the spike ball.
+ - Add the **InitializeRigidbody** component to the SpikeBall.
    - Confirm the values in the Inspector are at the defaults written in code:
      - Initial Velocity of (3, 0).
      - Angular Velocity of -500.
@@ -1156,7 +1159,7 @@ A common use case for Debug.Assert is to validate pre-conditions and post-condit
 
 ## 1.25) Destroy balls that roll off
 
-Add a script to the spike ball which destroys the GameObject after it rolls off the bottom platform.
+Add a script to the SpikeBall which destroys the GameObject after it rolls off the bottom platform.
 
 <details><summary>How</summary>
 
@@ -1179,7 +1182,7 @@ public class SuicideOutOfBounds : MonoBehaviour
 }
 ```
 
- - Add 'SuicideOutOfBounds' to the spike ball.
+ - Add 'SuicideOutOfBounds' to the SpikeBall.
 
 </details><br>
 <details><summary>What did that do?</summary>
@@ -1249,7 +1252,7 @@ What is an object pool?
 
 Instantiate (creating a new GameObject) is one of the most expensive calls you can make.  An object pool is the programming term for reusing objects instead of destroying and creating new ones.  
 
-For this example, instead of destroying a spike ball that falls off screen we would instead have it respawn at the top and go through the entire level again.
+For this example, instead of destroying a SpikeBall that falls off screen we would instead have it respawn at the top and go through the entire level again.
 
 When should an object pool be used?
 
@@ -1263,23 +1266,23 @@ For more, see [Catlike Coding's Object Pool tutorial](http://catlikecoding.com/u
 
 </details>
 
-## 1.26) Spawn balls from an evil cloud
+## 1.26) Spawn balls from an EvilCloud
 
-Create a prefab for the spike ball, and remove the GameObject from the scene.
+Create a prefab for the SpikeBall, and remove the GameObject from the scene.
 
 <details><summary>How</summary>
 
 Create a prefab:
 
- - Select the Spike Ball and click/drag it to the Assets/Prefabs folder.
+ - Select the SpikeBall and click/drag it to the Assets/Prefabs folder.
  - Delete the GameObject from the Hierarchy, removing it from the scene but leaving our prefab in-tact.
 
 <img src="http://i.imgur.com/roE0SWK.gif" width=300px />
 
-<br>Create an evil cloud:
+<br>Create an EvilCloud:
 
  - Drag in the sprite, we are using **spritesheet_jumper_57**.
-   - Add it to an empty parent GameObject named "Evil Cloud".
+   - Add it to an empty parent GameObject named "EvilCloud".
    - Move it to the top left of the screen.
    - Use the Scale tool evenly on all dimensions till it fits nicely.
 
@@ -1335,16 +1338,16 @@ public class Spawner : MonoBehaviour
 }
 ```
 
- - Add **Spawner** to the evil cloud.
+ - Add **Spawner** to the EvilCloud.
    - Confirm the values for the component match the defaults in code.
-   - Click/drag the Spike Ball prefab onto the 'Thing To Spawn' field.
+   - Click/drag the SpikeBall prefab onto the 'Thing To Spawn' field.
  
 <img src="http://i.imgur.com/scu8YUR.gif" width=300px />
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-We created a prefab for the spike ball for another component to instantiate.  i.e. this allows the spawner we will be adding to created an endless stream of balls.
+We created a prefab for the SpikeBall for another component to instantiate.  i.e. this allows the spawner we will be adding to created an endless stream of balls.
 
 <br>Add a script to spawn balls:
 
@@ -1518,7 +1521,7 @@ Assign an enemy layer:
 
 <img src="http://i.imgur.com/spZG3NZ.png" width=300px />
 
- - Select the 'Spike Ball' prefab under Assets/Prefabs.
+ - Select the 'SpikeBall' prefab under Assets/Prefabs.
  - In the Inspector, click the dropdown next to 'Layer' in the top right and select 'Enemy'.
    - Select 'No, this object only' when prompted.
 
@@ -1614,7 +1617,7 @@ That's it for chapter 1!  Your game should now look a lot like the gif at the to
 To review, you may want to:
 
  - Try adjusting the variables in Spawner to get a reasonable flow of enemies.
- - Try adjusting the initial velocity values for the spike ball.
+ - Try adjusting the initial velocity values for the SpikeBall.
    - Consider adding randomness to these values as well.
  - Try adjusting the bumper position angles so balls return to the screen promptly / smoothly. 
  - Try adjusting the size of colliders, ensure that objects appear to be touching the ground reasonably.

@@ -2,97 +2,6 @@
 
 TODO
 
-## 4.1) Rotate entities when they walk the other way
-
-Flip the entity when they switch between walking left and right.
-
-<details><summary>How</summary>
-
- - Create script Components/Movement/**RotateFacingDirection**:
-
-```csharp
-using UnityEngine;
-
-[RequireComponent(typeof(Rigidbody2D))]
-public class RotateFacingDirection : MonoBehaviour
-{
-  Rigidbody2D myBody;
-
-  SpriteRenderer sprite;
-  
-  bool _isGoingLeft;
-
-  public bool isGoingLeft
-  {
-    get
-    {
-      return _isGoingLeft;
-    }
-    private set
-    {
-      if(isGoingLeft == value)
-      {
-        return;
-      }
-
-      _isGoingLeft = value;
-      sprite.flipX = isGoingLeft;
-    }
-  }
-
-  protected void Awake()
-  {
-    myBody = GetComponent<Rigidbody2D>();
-    sprite = GetComponentInChildren<SpriteRenderer>();
-  }
-
-  protected void FixedUpdate()
-  {
-    float xVelocity = myBody.velocity.x;
-    if(Mathf.Abs(xVelocity) > 0.1)
-    {
-      isGoingLeft = xVelocity < 0;
-    }
-  }
-}
-```
-
- - Add **RotateFacingDirection** to the character prefab.
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-Each FixedUpdate, we determine which direction the entity is walking by its X velocity.  When the direction changes, we flip the sprite so that the character appears to be facing the other way.
-
-<hr></details>
-<details><summary>What's a C# smart property?</summary>
-
-In C#, data may be exposed as either a Field or a Property.  Fields are simply data as one would expect.  Properties are accessed in code like a field is, but they are capable of more.
-
-In this example, when isGoingRight changes between true and false, the GameObject's transform is rotated so that the sprite faces the correct direction.  Leveraging the property changing to trigger the rotation change is an example of logic in the property making it 'smart'.
-
-There are pros and cons to smart properties.  For example, one may argue that including the transform change when isGoingRight is modified hides the mechanic and makes the code harder to follow.  There are always alternatives if you prefer to not use smart properties.  For example:
-
-```csharp
-bool isGoingLeftNow = xVelocity <> 0;
-if(isGoingLeft != isGoingLeftNow) 
-{
-  sprite.flipX = isGoingLeft;
-  isGoingLeft = isGoingLeftNow;
-}
-```
-
-</details>
-<details><summary>Why not compare to 0 when checking if there is no movement?</summary>
-
-In Unity, numbers are represented with the float data type.  Float is a way of representing decimal numbers but is a not precise representation like you may expect.  When you set a float to some value, internally it may be rounded ever so slightly.
-
-The rounding that happens with floats allows operations on floats to be executed very quickly.  However it means we should never look for exact values when comparing floats, as a tiny rounding issue may lead to the numbers not being equal.
-
-In the example above, as the velocity approaches zero, the significance of if the value is positive or negative, is lost.  It's possible that if we were to compare to 0 that at times the float may oscillate between a tiny negative value and a tiny positive value causing the sprite to flip back and forth.
-
-</details>
-
 
 ## 4.2) Detect floors
 
@@ -245,8 +154,8 @@ public class FloorDetector : MonoBehaviour
 
  - Add **FloorDetector** to:
    - The Character prefab.
-   - The Spike Ball prefab.
-   - The Fly Guy's Feet child GameObject.
+   - The SpikeBall prefab.
+   - The HoverGuy's Feet child GameObject.
  - For each of those FloorDetector components, update the Floor Filter:
      - Check Use Layer Mask
      - Layer Mask: Floor
@@ -475,7 +384,7 @@ You might also want both a cooldown and the floor detection.  Small changes to m
 
 ## 4.4) Update wander to prefer traveling up hill
 
-Update the WanderWalkController so that the fly guy is more likely to walk up hill than down.
+Update the WanderWalkController so that the HoverGuy is more likely to walk up hill than down.
 
 <details><summary>How</summary>
 
@@ -618,7 +527,7 @@ public class WanderWalkController : MonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-Leveraging the FloorDetector, we give the fly guy better odds at walking up a platform vs walking down one.  Without this component the fly guy enemies may collect at the bottom of the level - this keeps them mostly moving forward/up while still using RNG to keep the player on their toes.
+Leveraging the FloorDetector, we give the HoverGuy better odds at walking up a platform vs walking down one.  Without this component the HoverGuy enemies may collect at the bottom of the level - this keeps them mostly moving forward/up while still using RNG to keep the player on their toes.
 
 <hr></details>
 <details><summary>Why take the Dot product with Vector2.right?</summary>
@@ -678,7 +587,7 @@ public class RotateToAlignWithFloor : MonoBehaviour
 }
 ```
 
- - Add **RotateToAlignWithFloor** to the Character and Fly Guy prefabs.
+ - Add **RotateToAlignWithFloor** to the Character and HoverGuy prefabs.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
@@ -748,25 +657,7 @@ Layout ladders:
 <img src="http://i.imgur.com/r0k4eq3.png" width=150px />
 
 
-<hr></details>
-<details><summary>What did that do?</summary>
-
-Layout ladders:
-
-Sprites are added for the ladders with a negative Order in Layer so it appears behind the platforms and entities.  A layer is created allowing us to identify the collisions with ladders later on.  Like the Hammers, ladders fade in at the start of the level.
-
-<br>Add trigger colliders to the ladders:
-
-We are using trigger colliders to define the area of a ladder that entities may climb.  For example, we made the collider thinner than the ladder itself so that entities cannot climb the edges (which may look strange.)  
-
-<hr></details>
-
-
-## 4.8) Add a script to climb ladders
-
-Create a script to climb ladders for all entities to use, and update the player controller to match.
-
-<details><summary>How</summary>
+<br>Script to climb ladders:
 
  - Create script Code/Components/Movement/**LadderMovement**:
 
@@ -977,7 +868,7 @@ public class LadderMovement : MonoBehaviour
 }
 ```
 
- - Add **LadderMovement** to the Character, Fly Guy, and Spike Ball.
+ - Add **LadderMovement** to the Character, HoverGuy, and SpikeBall.
  - Update Components/Controllers/**PlayerController**:
 
 <details><summary>Existing code</summary>
@@ -1063,9 +954,18 @@ public class PlayerController : MonoBehaviour
 </details>
 
 
-
 <hr></details><br>
 <details><summary>What did that do?</summary>
+
+Layout ladders:
+
+Sprites are added for the ladders with a negative Order in Layer so it appears behind the platforms and entities.  A layer is created allowing us to identify the collisions with ladders later on.  Like the Hammers, ladders fade in at the start of the level.
+
+<br>Add trigger colliders to the ladders:
+
+We are using trigger colliders to define the area of a ladder that entities may climb.  For example, we made the collider thinner than the ladder itself so that entities cannot climb the edges (which may look strange.)  
+
+<br>Script:
 
 LadderMovement will climb up or down a ladder, given input from a controller (via desiredClimbDirection).  The PlayerController was updated to read up/down movement and feed that to the LadderMovement component.
 
@@ -1082,6 +982,7 @@ Once on a ladder, LadderMovement will hold the entity's y position by controllin
 Note there are some issues at the moment - you can't go down a ladder and on the way up the entity may pop a bit.  Both fixed in the next section.
 
 <hr></details>
+
 <details><summary>Why use sqrMagnitude instead of magnitude?</summary>
 
 In this example both magnitude and sqrMagnitude would give us the same result, as is the case anytime we are comparing if one distance is greater or less than another.  sqrMagnitude executes much faster, so its preferred anytime you do not require the precision that magnitude gives you.
@@ -1090,13 +991,13 @@ To calculate magnitude, you first calculate the squared magnitude and then take 
 
 </details>
 
-## 4.9) Disable physics when climbing
+## 4.9) Change layers while climbing
 
 While climbing a ladder disable physics, allowing entities to climb down.
 
 <details><summary>How</summary>
 
- - Create script Components/Movement/**DisablePhysics**:
+ - Create script Components/Movement/**DisablePhysics**: TODO change layers
 
 ```csharp
 using System.Collections.Generic;
@@ -1146,7 +1047,7 @@ public class DisablePhysics : MonoBehaviour
 }
 ```
 
- - Add **DisablePhysics** to the Character, Fly Guy, and Spike Ball.
+ - Add **DisablePhysics** to the Character, HoverGuy, and SpikeBall.
    - Disable the DisablePhysics component on each prefab.
  - Update Components/Movement/**LadderMovement**:
 
@@ -1451,7 +1352,7 @@ This component is disabling all colliders on the GameObject which were not alrea
 
 ## 4.10) Random climb controller
 
-Create a script for the fly guy and spike ball to control when to climb a ladder.
+Create a script for the HoverGuy and SpikeBall to control when to climb a ladder.
 
 <details><summary>How</summary>
 
@@ -1521,8 +1422,8 @@ public class RandomClimbController : MonoBehaviour
 }
 ```
 
- - Add **RandomClimbController** to the Fly Guy and Spike Ball.
- - On the Spike Ball, change:
+ - Add **RandomClimbController** to the HoverGuy and SpikeBall.
+ - On the SpikeBall, change:
    - Odds of climbing up: 0
    - Odds of climbing down: .5
 
@@ -1531,7 +1432,7 @@ public class RandomClimbController : MonoBehaviour
 
 Not much yet.
 
-This script will get the fly guy enemies to randomly climb up or down ladders, and the spike balls will randomly climb down.  The problem is they are still walking or rolling, so they quickly get off the ladder and then pop back on top of the platform.
+This script will get the HoverGuy enemies to randomly climb up or down ladders, and the SpikeBalls will randomly climb down.  The problem is they are still walking or rolling, so they quickly get off the ladder and then pop back on top of the platform.
 
 This works by periodically picking a random desired climb direction on the LadderMovement component.  LadderMovement will not do anything with this input until the enemy is positioned on a ladder to climb.
 
@@ -1551,7 +1452,7 @@ You could update this algorithm to calculate the odds correctly.
 <hr></details>
 
 
-## 4.11) Stop walking off ladders
+## 4.11) Stop walking and rolling off ladders
 
 Stop WanderWalkController when climbing up or down.
 
@@ -1706,40 +1607,8 @@ public class WanderWalkController : MonoBehaviour
 }
 ```
 
-</details>
+<br>Stop rolling off:
 
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-This change prevents the fly guy from walking while on a ladder.  Fly guys will never stop moving in this game, they will walk constantly and when reaching a ladder they may climb straight up or straight down - and then resume walking.
-
-<hr></details>
-<details><summary>Why not stop the WalkMovement component instead?</summary>
-
-Stopping the fly guy via the WalkMovement component instead of the WanderWalkController would work fine for the fly guy.  However we share the WalkMovement component with the Character as well, and don't want to prevent the player from being able to walk off the side of a ladder.
-
-You could alternatively put this logic in WalkMovement with a flag to indicate if ladders should prevent walking or not.
-
-<hr></details>
-<details><summary>Why not deregister events here?</summary>
-
-We are assuming that this component will never be removed from the GameObject.  So both WanderWalkController and WalkMovement are expected to exist from Awake till OnDestroy.  When a GameObject is destroyed, the registered events are automatically garbage collected.
-
-If we wanted to optionally remove this component, we would want to deregister the events to prevent a memory leak or unexpected behaviour.
-
-<hr></details>
-<details><summary>Why not stop and restart the coroutine instead?</summary>
-
-You could stop the coroutine when getting on a ladder and then restart it when you get off.  The coroutine from WanderWalkController would need to be updated for this to work, ensuring that when we resume we don't sleep for that initial wait time again.
-
-<hr></details>
-
-
-## 4.12) Stop rolling off ladders
-
-Create a script to stop the ball's momentum when getting on ladders, and restore it when getting off.
-
-<details><summary>How</summary>
 
  - Create a script Components/Movement/**StopMomentumOnLadder**:
 
@@ -1782,21 +1651,45 @@ public class StopMomentumOnLadder : MonoBehaviour
 }
 ```
 
- - Add **StopMomentumOnLadder** to the Spike Ball.
+ - Add **StopMomentumOnLadder** to the SpikeBall.
+
+
+</details>
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-When a spike ball gets on a ladder, we store its velocity (i.e. speed) and angular velocity (i.e. spin) and then set both to 0.  This stops momentum the ball had from rolling down platforms, allowing it to climb straight up or down the ladder.  
+This change prevents the HoverGuy from walking while on a ladder.  HoverGuys will never stop moving in this game, they will walk constantly and when reaching a ladder they may climb straight up or straight down - and then resume walking.
+
+When a SpikeBall gets on a ladder, we store its velocity (i.e. speed) and angular velocity (i.e. spin) and then set both to 0. This stops momentum the ball had from rolling down platforms, allowing it to climb straight up or down the ladder.
 
 Once done climbing, we restore the momentum, but flip both values so that after getting off the ball is rolling in the opposite direction.
+
+<hr></details>
+<details><summary>Why not stop the WalkMovement component instead?</summary>
+
+Stopping the HoverGuy via the WalkMovement component instead of the WanderWalkController would work fine for the HoverGuy.  However we share the WalkMovement component with the Character as well, and don't want to prevent the player from being able to walk off the side of a ladder.
+
+You could alternatively put this logic in WalkMovement with a flag to indicate if ladders should prevent walking or not.
+
+<hr></details>
+<details><summary>Why not deregister events here?</summary>
+
+We are assuming that this component will never be removed from the GameObject.  So both WanderWalkController and WalkMovement are expected to exist from Awake till OnDestroy.  When a GameObject is destroyed, the registered events are automatically garbage collected.
+
+If we wanted to optionally remove this component, we would want to deregister the events to prevent a memory leak or unexpected behaviour.
+
+<hr></details>
+<details><summary>Why not stop and restart the coroutine instead?</summary>
+
+You could stop the coroutine when getting on a ladder and then restart it when you get off.  The coroutine from WanderWalkController would need to be updated for this to work, ensuring that when we resume we don't sleep for that initial wait time again.
 
 <hr></details>
 
 
 ## 4.13) Move towards the center of the ladder
 
-Add a script to the fly guy and spike ball to direct them towards the center of a ladder while climbing.
+Add a script to the HoverGuy and SpikeBall to direct them towards the center of a ladder while climbing.
 
 <details><summary>How</summary>
 
@@ -1840,7 +1733,7 @@ public class MoveTowardsCenterWhileClimbing : MonoBehaviour
 }
 ```
 
- - Add **MoveTowardsCenterWhileClimbing** to the Fly Guy and Spike Ball.
+ - Add **MoveTowardsCenterWhileClimbing** to the HoverGuy and SpikeBall.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>

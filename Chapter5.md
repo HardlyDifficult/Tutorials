@@ -48,11 +48,13 @@ A keyframe is a datapoint on the timeline.  Between each keyframe, Unity will sm
 
 <hr></details>
 
-## 5.2) Stop swinging by default
+## 5.3) Start swinging hammer on equip
 
-Update the hammer animator to not play any animation by default.
+Add a script to the hammer to start the swing animation when it's equip.
 
 <details><summary>How</summary>
+
+Stop swinging by default:
 
  - Select a Hammer.
  - Open menu Window -> Animator.
@@ -60,19 +62,6 @@ Update the hammer animator to not play any animation by default.
    - Select the box which appeared and in the Inspector name it "Idle".
    - Right click "Idle" and 'Set as Layer Default State'.
 
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-An Animator Controller always requires at least one state be active. We created a state which does nothing and made that the default so the hammer does not move until another component switches the state to HammerSwing, starting the animation.
-
-<hr></details>
-
-
-## 5.3) Start swinging hammer on equip
-
-Add a script to the hammer to start the swing animation when it's equip.
-
-<details><summary>How</summary>
 
  - Create script Components/Effects/**PlayAnimationOnEnable**:
 
@@ -108,6 +97,8 @@ public class PlayAnimationOnEnable : MonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
+An Animator Controller always requires at least one state be active. We created a state which does nothing and made that the default so the hammer does not move until another component switches the state to HammerSwing, starting the animation.
+
 When the Hammer component is touched by the Character, it will enable the PlayAnimationOnEnable component which starts the swing animation.  
 
 <hr></details>
@@ -137,6 +128,15 @@ Create animation parameters:
    - A bool named 'isTouchingFloor'.
    - A bool named 'isClimbing'.
    - A bool named 'hasWeapon'.
+
+
+ - In the Animator for the character, select the 'CharacterWalk' state (the orange box).
+   - In the Inspector:
+     - Adjust the 'Speed' to about '.4'
+     - Check the box near 'Multiplier' to enable a 'Parameter'.
+       - Confirm Speed is selected (should be the default).
+
+<img src="http://i.imgur.com/9A6mp98.png" width=300px />
 
 <br>Have the Character sync animation parameters:
 
@@ -169,7 +169,7 @@ public class PlayerAnimatorController : MonoBehaviour
     weaponHolder = GetComponent<WeaponHolder>();
   }
 
-  protected void Update()
+  protected void Update() TODO late update
   {
     animator.SetFloat("Speed", myBody.velocity.magnitude);
     animator.SetBool("isTouchingFloor", floorDetector.isTouchingFloor);
@@ -181,16 +181,24 @@ public class PlayerAnimatorController : MonoBehaviour
 
  - Add **PlayerAnimatorController** to the Character.
 
+
+
 <hr></details><br>
 <details><summary>What did that do</summary>
-
-Nothing yet.
 
 <br>Create animation parameters:
 
 The parameters we are creating will be used to cause the Animator controller to transition from one state to another.  This approach is an alternative to playing the animation state directly like we had done for the Hammer above.  
 
 The speed parameter will also be used to scale the animation playback speed based off how quickly the entity is moving at the time.
+
+<br>Walk speed
+
+This slows the character's walk animation and gradually turns it on and off as the character starts and stops moving.
+
+Now the character's walk animation should align with the moment a little better.  Adjust the value to something you think looks good. However the walk animation also plays while jumping, we'll address this next.
+
+<img src="http://i.imgur.com/2dfN2RE.gif" width=300px />
 
 <br>Have the Character sync animation parameters:
 
@@ -206,31 +214,11 @@ I prefer to use Play for simple objects like the Hammer, and use animation param
 You can also use a combination of the two approaches.  Calling Play will change the current Animator State, and from there any transitions from that state will be considered.
 
 <hr></details>
+<details><summary>Why LateUpdate instead of Update or FixedUpdate?<summary>
 
-## 5.6) Adjust the walk speed
+TODO
 
-Update the walk speed to leverage the speed parameter created.
-
-<details><summary>How</summary>
-
- - In the Animator for the character, select the 'CharacterWalk' state (the orange box).
-   - In the Inspector:
-     - Adjust the 'Speed' to about '.4'
-     - Check the box near 'Multiplier' to enable a 'Parameter'.
-       - Confirm Speed is selected (should be the default).
-
-<img src="http://i.imgur.com/9A6mp98.png" width=300px />
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-This slows the character's walk animation and gradually turns it on and off as the character starts and stops moving.
-
-Now the character's walk animation should align with the moment a little better.  Adjust the value to something you think looks good. However the walk animation also plays while jumping, we'll address this next.
-
-<img src="http://i.imgur.com/2dfN2RE.gif" width=300px />
-
-<hr></details>
+</details>
 <details><summary>What unit/scale is speed defined in?</summary>
 
 Percent.  1 represents the speed as it was defined in the animation itself.  Going to 2 would double the playback speed, going to .5 would cut the playback speed in half.
@@ -423,7 +411,7 @@ Create an animation for the cloud entrance at the start of the level.
 
 Create an intro animation for the cloud:
 
- - Create an animation for the Evil Cloud sprite Animations/**CloudLevel1Entrance**.anim
+ - Create an animation for the EvilCloud sprite Animations/**CloudLevel1Entrance**.anim
    - Click record:
      - Start by moving the cloud off screen.
      - Then over time, modify its position to create a dramatic entrance.
@@ -432,7 +420,7 @@ Create an intro animation for the cloud:
 
 <br>Create an intro Timeline:
 
- - Select the Evil Cloud's sprite.
+ - Select the EvilCloud's sprite.
  - Open menu Window -> Timeline Editor.
    - Click 'Create'.  Save as Assets/Animations/**Level1Entrance**.
    - Select 'Add from Animation Clip' and select CloudLevel1Entrance.
@@ -461,9 +449,9 @@ Our animation looks like this at the moment:
 
 <br>Create an intro Timeline:
 
-A Timeline on the evil cloud is used to coordinate the intro sequence across objects. 
+A Timeline on the EvilCloud is used to coordinate the intro sequence across objects. 
 
- - It plays the intro animation on the Evil Cloud.
+ - It plays the intro animation on the EvilCloud.
  - The Hammers and Ladders are hidden until we start their FadeInThenEnable script with an Activation Track, after the intro animation completes.
  - The Character is spawned after the intro by the Level Manager with an Activation Track.
 
@@ -485,7 +473,7 @@ There are always alternative ways to achieve a goal, particularly true in this c
 
 An alternative solution might be something like this:
 
- - For the Evil Cloud, simply play the intro animation with a default state in the Animator Controller.
+ - For the EvilCloud, simply play the intro animation with a default state in the Animator Controller.
  - Add a 'InvisibleFor' value to the FadeInThenEnable script, and time that to coordinate with the intro.
  - Add an initial sleep time to the spawner to align with the intro animation.
 
@@ -596,7 +584,7 @@ EnableComponentsOnLevelLoad is used to enable specific components during the int
  - Start: fired once the intro sequence is complete.
  - End: fired once the player has beat the level.
 
-We add this to evil cloud and the door so that their sprites are visible but the spawners are not enabled until the intro animations completes.
+We add this to EvilCloud and the door so that their sprites are visible but the spawners are not enabled until the intro animations completes.
 
 <br>Create a Timeline event:
  
@@ -723,7 +711,7 @@ When working with enumerators, 'yield break' will return from the method and ind
 
 <hr></details>
 
-## 5.15) Add screen shake
+## 5.15) Add screen shake during intro
 
 Shake the screen when the platforms fall into place.
 
@@ -816,6 +804,526 @@ Here are a few ideas on how you might be able to make this effect even cooler:
  - Add a post processing effect such as blur.  Post processing effects refer to scripts you can add to your camera, modifying the display to create an effect such as blur or bloom.  Here are some [post processing effects, free from Unity](https://www.assetstore.unity3d.com/en/#!/content/83912), you can use.
 
 <hr></details>
+
+
+## Add a win condition
+
+The goal of the game is to save the beautiful mushroom.  For level 1, that means getting close - but before you actually reach it the EvilCloud is going to carry the mushroom up to level 2.  
+
+Here we detect the end of the game, the cloud animation will be added later in the tutorial.
+
+<details><summary>How</summary>
+
+Design the win area:
+
+ - Create an empty GameObject named "WinArea".
+   - Add a **BoxCollider2D** sized to cover the area that when entered will end the level.
+     - Check Is Trigger.
+   - Create a Layer "WinArea":
+     - Configure the collision matrix to only support WinArea <-> Player collisions.
+     - Assign the layer to the WinArea GameObject.
+   - Add a sprite to lure the character to the win area.  We are using **spritesheet_jumper_26** with Order in Layer -3.
+     - Make it a child of the WinArea. 
+
+<img src="http://i.imgur.com/WuW9hPk.png" width=300px />
+
+<br>Inform the LevelController when the player won:
+
+ - Create script Components/Effects/**TouchMeToWin**:
+
+```csharp
+using System;
+using UnityEngine;
+
+public class TouchMeToWin : MonoBehaviour
+{
+  static int totalNumberActive;
+
+  [SerializeField]
+  MonoBehaviour componentToEnableOnTouch;
+
+  int playerLayer;
+
+  protected void Awake()
+  {
+    playerLayer = LayerMask.NameToLayer("Player");
+  }
+
+  protected void OnEnable()
+  {
+    totalNumberActive++;
+  }
+
+  protected void OnDisable()
+  {
+    totalNumberActive--;
+  }
+
+  protected void OnTriggerEnter2D(
+    Collider2D collision)
+  {
+    if(enabled == false 
+      || collision.gameObject.layer != playerLayer)
+    {
+      return;
+    }
+
+    if(componentToEnableOnTouch != null)
+    {
+      componentToEnableOnTouch.enabled = true;
+    }
+
+    enabled = false;
+    if(totalNumberActive == 0)
+    {
+      GameObject.FindObjectOfType<LevelController>().YouWin();
+    }
+  }
+}
+```
+
+ - Add **TouchMeToWin** to the WinArea.
+
+<hr></details><br>
+<details><summary>What did that do?</summary>
+
+Design the win area:
+
+We put a large trigger collider around the mushroom.  When the character enters this area, it will trigger the end the level.  The collider is configured to use a layer which only interacts with the player so enemies cannot accidentally end the level.
+
+<br>Inform the LevelController when the player won:
+
+TouchMeToWin counts the total number of these special zones in the world.  For level 1 we are only using one but for level 2 there will be more.  When the last one is disabled (by the character entering that area), we call YouWin on the LevelController which will own starting the end sequence / switching to level 2.
+
+An enabled check is included to ensure we an area does not call YouWin multiple times.
+
+<hr></details>
+
+
+## Win animation
+
+When the character reaches the win area, play a Timeline to animate the end of the level.
+
+<details><summary>How</summary>
+
+Create a win animation:
+
+ - Create another animation for the EvilCloud, Animations/**CloudLevel1Exit** to play when the player wins.
+   - You may not be able to record if the Timeline Editor window is open.
+   - Select Animations/CloudLevel1Exit and disable Loop Time.
+
+<br>Create a win Timeline:
+
+ - Right click in Assets/Animations -> Create -> Timeline named **Level2Exit**.
+   - Select the EvilCloud's sprite GameObject and in the Inspector change the Playable Director's 'Playable' to Level2Exit.
+
+<img src="http://i.imgur.com/Jsah6Ll.png" width=300px />
+
+ - In the Timeline Editor window, click 'Add' then 'Animation Track' and select the EvilCloud's child GameObject with the animator.
+ - Right click in the timeline and 'Add Animation From Clip' and select the CloudLevel1Exit animation.
+
+<img src="http://i.imgur.com/xcR7HWr.gif" width=300px />
+
+ - Select the box which appeared for the animation, and in the Inspector modify the speed.
+   - Hit play in the Timeline Editor to preview the speed.  The value is going to depend on how you created the animation.
+
+<br>Hide the mushroom during the animation:
+
+ - Select the mushroom GameObject and drag it into the timeline.
+   - Adjust the timeframe so that it starts at the beginning of the timeline and ends when you want the mushroom to disappear.
+   - Select the track's row and in the Inspector change the 'Post-playback state' to 'Inactive'.
+
+<img src="http://i.imgur.com/W9lejAB.png" width=300px />
+
+ - Select the EvilCloud's sprite GameObject and in the Inspector change the Playable Director's Playable back to Level1Entrance.
+
+<br>Start the Timeline at the end of the level:
+
+ - Update **LevelController**:
+
+<details><summary>Existing code</summary>
+
+```csharp
+using UnityEngine;
+```
+
+</details>
+
+```csharp
+using UnityEngine.Playables; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+public class LevelController : MonoBehaviour
+{
+  [SerializeField]
+  GameObject playerPrefab;
+
+  protected bool isGameOver;
+```
+
+</details>
+
+```csharp
+  [SerializeField]
+  PlayableDirector director; 
+
+  [SerializeField]
+  PlayableAsset TimelineEventPlayable; 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  [SerializeField]
+  int levelNumber = 1; 
+
+  protected void OnEnable()
+  {
+    GameController.instance.onLifeCounterChange
+      += Instance_onLifeCounterChange;
+
+    StartLevel();
+  }
+  
+  protected void OnDisable()
+  {
+    GameController.instance.onLifeCounterChange
+      -= Instance_onLifeCounterChange;
+  }
+
+  void Instance_onLifeCounterChange()
+  {
+    if(isGameOver)
+    {
+      return;
+    }
+
+    BroadcastEndOfLevel();
+ 
+    if(GameController.instance.lifeCounter <= 0)
+    {
+      isGameOver = true;
+      YouLose();
+    }
+    else
+    {
+      StartLevel();
+    }
+  }
+
+  public void YouWin()
+  {
+    if(isGameOver == true)
+    {
+      return;
+    }
+
+    isGameOver = true;
+```
+
+</details>
+
+```csharp
+    director.Play(TimelineEventPlayable); 
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+    DisableComponentsOnEndOfLevel[] disableComponentList 
+      = GameObject.FindObjectsOfType<DisableComponentsOnEndOfLevel>();  
+    for(int i = 0; i < disableComponentList.Length; i++)
+    {
+      DisableComponentsOnEndOfLevel disableComponent = disableComponentList[i];
+      disableComponent.OnEndOfLevel();
+    }
+  }
+
+  void StartLevel()
+  {
+    Instantiate(playerPrefab);
+  }
+
+  void BroadcastEndOfLevel()
+  {
+    PlayerDeathMonoBehaviour[] gameObjectList 
+      = GameObject.FindObjectsOfType<PlayerDeathMonoBehaviour>();
+    for(int i = 0; i < gameObjectList.Length; i++)
+    {
+      PlayerDeathMonoBehaviour playerDeath = gameObjectList[i];
+      playerDeath.OnPlayerDeath();
+    }
+
+  }
+
+  void YouLose()
+  {
+    // TODO
+  }
+}
+```
+
+</details>
+
+ - Configure the director and set the end of level playable to Level1Exit.
+
+<hr></details><br>
+<details><summary>What did that do?</summary>
+
+Create a win animation:
+
+Another animation was created to play when the player wins.  We leave it up to you what this looks like and how long the animation plays for.  
+
+<br>Create a win Timeline:
+
+A new Timeline is created for the win sequence.  We add the animation just created and adjust the speed as needed.
+
+<br>Hide the mushroom during the animation:
+
+An Activation Track is used to hide the mushroom when the animation is nearly complete.  Setting the post-playback state to inactive ensures that the mushroom does not return when the Timeline completes.
+
+<br>Start the Timeline at the end of the level:
+
+When the win condition is triggered, the LevelController changes the EvilCloud's Playable Director to play the end of level Timeline just created.
+
+<hr></details>
+<details><summary>Why switch the Playable when editing Timelines?</summary>
+
+Unity 2017 is the first release of Timeline, it's still a work in progress.  
+
+At the moment you cannot edit Timelines unless they are active in the scene.  You can only partially view the Timeline by selecting the file.  So anytime you want to modify the Level1Exit Timeline, you need to change the Playable Director and then when you are complete change it back.
+
+On a related note, you can't edit an animation if the Timeline window is open.  When working with Animations and Timelines, it seems to work best if you only have one open at a time.
+
+<hr></details>
+
+## Stop everything when the level is over
+
+When the level is over, stop the spawners and freeze the character and enemies while the EvilCloud animation plays.
+
+<details><summary>How</summary>
+
+Create a script to disable certain mechanics:
+
+ - Create script Components/Controllers/**DisableComponentsOnEndOfLevel**:
+
+```csharp
+using UnityEngine;
+
+public class DisableComponentsOnEndOfLevel : MonoBehaviour
+{
+  [SerializeField]
+  Component[] componentsToDisable;
+
+  public void OnEndOfLevel()
+  {
+    for(int i = 0; i < componentsToDisable.Length; i++)
+    {
+      Component component = componentsToDisable[i];
+      if(component is Rigidbody2D)
+      {
+        Rigidbody2D myBody = (Rigidbody2D)component;
+        myBody.simulated = false;
+      }
+      else if(component is Behaviour)
+      {
+        Behaviour behaviour = (Behaviour)component;
+        behaviour.enabled = false;
+        if(behaviour is MonoBehaviour)
+        {
+          MonoBehaviour monoBehaviour = (MonoBehaviour)behaviour;
+          monoBehaviour.StopAllCoroutines();
+        }
+      }
+      else
+      {
+        Destroy(component);
+      }
+    }
+  }
+}
+```
+
+<br>Configure disabling for GameObjects:
+
+ - Select the Character prefab.
+   - Add **DisableComponentsOnEndOfLevel** and to the components list, add 3 items:
+     - Its Rigidbody2D.
+     - Its PlayerController.
+     - The character's animator (which is on the child GameObject).  You can do this by:
+       - Open a second Inspector by right click on the Inspector tab and select Add Tab -> Inspector.
+       - With the Character's parent GameObject selected, hit the lock symbol in one of the Inspectors.
+       - Select the character's child sprite, then drag the Animator from one Inspector into the other.
+
+<img src="http://i.imgur.com/UOEJNyx.gif" width=500px />
+
+ - Unlock the Inspector.
+ - Select the HoverGuy prefab.
+   - Add **DisableComponentsOnEndOfLevel**, and add its Rigidbody2D and Animator.
+ - Select the SpikeBall prefab.
+   - Add **DisableComponentsOnEndOfLevel** and add its Rigidbody2D.
+ - For the EvilCloud and the Door:
+   - Add **DisableComponentsOnEndOfLevel** and add its Spawner.
+
+<br>Call scripts at the end of the level:
+
+ - Update Components/Controllers/**LevelController**:
+
+<details><summary>Existing code</summary>
+
+```csharp
+using UnityEngine;
+
+public class LevelController : MonoBehaviour
+{
+  [SerializeField]
+  GameObject playerPrefab;
+
+  protected bool isGameOver;
+
+  [SerializeField]
+  int levelNumber = 1; 
+
+  protected void OnEnable()
+  {
+    GameController.instance.onLifeCounterChange
+      += Instance_onLifeCounterChange;
+
+    StartLevel();
+  }
+  
+  protected void OnDisable()
+  {
+    GameController.instance.onLifeCounterChange
+      -= Instance_onLifeCounterChange;
+  }
+
+  void Instance_onLifeCounterChange()
+  {
+    if(isGameOver)
+    {
+      return;
+    }
+
+    BroadcastEndOfLevel();
+ 
+    if(GameController.instance.lifeCounter <= 0)
+    {
+      isGameOver = true;
+      YouLose();
+    }
+    else
+    {
+      StartLevel();
+    }
+  }
+
+  public void YouWin()
+  {
+    if(isGameOver == true)
+    { 
+      return;
+    }
+
+    isGameOver = true;
+
+    director.Play(TimelineEventPlayable);
+```
+
+</details>
+
+```csharp
+    DisableComponentsOnEndOfLevel[] disableComponentList 
+      = GameObject.FindObjectsOfType<DisableComponentsOnEndOfLevel>();  
+    for(int i = 0; i < disableComponentList.Length; i++)
+    {
+      DisableComponentsOnEndOfLevel disableComponent = disableComponentList[i];
+      disableComponent.OnEndOfLevel();
+    }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  }
+
+  void StartLevel()
+  {
+    Instantiate(playerPrefab);
+  }
+
+  void BroadcastEndOfLevel()
+  {
+    PlayerDeathMonoBehaviour[] gameObjectList 
+      = GameObject.FindObjectsOfType<PlayerDeathMonoBehaviour>();
+    for(int i = 0; i < gameObjectList.Length; i++)
+    {
+      PlayerDeathMonoBehaviour playerDeath = gameObjectList[i];
+      playerDeath.OnPlayerDeath();
+    }
+  }
+
+  void YouLose()
+  {
+    // TODO
+  }
+}
+```
+
+</details>
+
+<hr></details><br>
+<details><summary>What did that do?</summary>
+
+Create a script to disable certain mechanics:
+
+This script exposes a public method to be called when the level ends.  It will disable a list of components, typically on the same GameObject or a child GameObject.
+
+Depending on the type of component, our approach to 'disabling' differs.
+
+<br>Configure disabling for GameObjects:
+
+At the end of the level, the LevelController will call each DisableComponentsOnEndOfLevel component. This component then disables other components on the GameObject to make the game freeze during our end of level animation.
+
+ - Entities disable their rigidbody to stop gravity and the animator to stop playback.
+ - The Character also disables the PlayerController so that input does not cause the sprite to flip facing direction.
+ - Spawners stop the spawn coroutine so no more enemies appear.
+
+<br>Call scripts at the end of the level:
+
+When the LevelController detects the win condition, it's updated to call each of the DisableComponentsOnEndOfLevel components in the scene.
+
+<hr></details>
+<details><summary>Why not just set timeScale to 0?</summary>
+
+You could, but some things would need to change a bit.
+
+We don't want everything to pause.  The EvilCloud animation needs to progress.  If you change the timeScale, you will need to modify the Animators to use Unscaled time -- otherwise the animations would not play until time resumed.
+
+<hr></details>
+<details><summary>Why not just destroy all the components instead?</summary>
+
+Destroying a component is an option.  Once destroyed, that component stops but the rest of the GameObject is still in-tact.
+
+Errors occur if we attempt to destroy the components mentioned above due to other components requiring the ones we removed.  If we wanted to switch to destroying components instead, we would need to be more selective in which components are included to avoid dependency issues.  Because of this, it's simpler to disable than destroy.
+
+<hr></details>
+<details><summary>What's rigidbody simulated=false do?</summary>
+
+Setting simulated to false on the rigidbody effectively disables the component.  The rigidbody does not support an 'enabled' flag like scripts do - 'simulated' is their equivalent.
+
+<hr></details>
+<details><summary>What's the lock symbol do?</summary>
+
+Many of the windows in Unity have a lock symbol in the top right.  Clicking this will freeze the selection for that window.  So if you select a GameObject you can freeze the Inspector, allowing you to continue navigating other files while still having that same GameObject's properties displayed in the Inspector.
+
+This is handy for various things such as above where we want one GameObject to reference another GameObject's component.  Open two Inspectors, select the first GameObject and lock one of the Inspector windows... now you can select the other GameObject and you have one Inspector for each.
+
+<hr></details>
+
 
 ## 5.16) Test
 

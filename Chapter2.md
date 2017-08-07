@@ -1,6 +1,8 @@
-# 2) A character that walks, jumps, and dies
+# 2) Walk, jump, and die
 
-In chapter 2, we add a character to the scene.  He can walk and jump, and dies when hitting an enemy, creating a basic platformer. 
+Basic animations, player controller, effector, particle system
+
+In chapter 2, we add a character to the scene.  He can walk and jump, and dies when hitting an enemy, creating a basic platformer.
 
 This assumes you completed chapter 1, or you can download the project so far. (TODO link)
 
@@ -11,90 +13,31 @@ TODO try retaking gif
 
 demo build of level 2
 
-## 2.1) Change the character's pivot point
+## 2.2) Create an animated character
 
-Change the character's sprite sheet to use a bottom pivot point.
+Add a GameObject for the character with a walk animation. Change the order in layer to 2.
 
 <details><summary>How</summary>
+
+Change the character's pivot point:
 
  - Select all the character sprites, we are using **adventurer_tilesheet_TODO**.
  - In the Inspector, change 'Pivot' to 'Bottom'.
 
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-For the character, we are moving the pivot point to the 'Bottom'.  This allows us to position and rotate the character starting at the feet instead of the center of his body.  
-
-<hr></details>
-<details><summary>What's Pivot do?</summary>
-
-A pivot point is the main anchor point for the sprite.  By default, pivot points are at the center of the sprite.  
-
-Here's an example showing a character with a default 'Center' pivot and one with the recommended 'Bottom' pivot.  They both have the same Y position.  Notice the the vertical position of each character as well as how the rotation centers around the different pivot points:
-
-<img src="http://i.imgur.com/AQY4FOT.gif" width=320 />
-
-The pivot point you select is going to impact how we create animations and implement movement mechanics.  The significance of this topic should become more clear later in the tutorial.
-
-</details>
-
-
-
-## 2.2) Create an animated character
-
-Add a GameObject for the character with a walk animation. Change the order in layer to 2.  
-
-<details><summary>How</summary>
+<br>Create character:
 
  - Hold Ctrl to select both **adventurer_tilesheet_9** and **10**.
-   - Drag them into the Hierarchy.  
+   - Drag them into the Hierarchy.
    - When prompted, save the animation as Assets/Animations/**CharacterWalk**.anim
 
 <img src="http://i.imgur.com/jPvFvnq.gif" width=300px />
- 
+
  - Select the GameObject just created:
    - Order in Layer: 2
  - Create an empty parent GameObject named "Character":
    - Add the sprite GameObject as a child.
 
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-Dragging multiple sprites into the Hierarchy created:
- - The character's GameObject.
- - A SpriteRenderer component on the GameObject defaulting to the first selected sprite.
- - An Animation representing those 2 sprites changing over time.
- - An Animator Controller for the character with a default state for the Walk animation.
- - An Animator component on the GameObject configured for the Animator Controller just created.
-
-The order in layer ensures that the character appears on top of other sprites such as platforms when jumping.  
-
-We add the sprite to a parent Character GameObject so that any animations we create do not impact other things that may be attached to the Character.  Specifically is this tutorial this ensures that the hammer we equip is not impacted by the idle animation we will be creating.
-
-Click Play to test - your character should be walking (in place)! 
-
-<img src="http://i.imgur.com/2bkJdtS.gif" width=100px />
-
-<hr></details>
-
-<details><summary>What's the difference between Animation and Animator?</summary>
-
-An animat**ion** is a collection of sprites on a timeline, creating an animated effect similar to a flip book.  Animations can also include transform changes, fire events for scripts to react to, etc to create any number of effects.
-
-An animat**or** controls which animations should be played at any given time.  An animator uses an animator controller which is a state machine used to select animations.
-
-A state machine is a common pattern in development where logic is split across several states.  The state machine selects one primary state which owns the experience until the state machine transitions to another state.  Each animator state has an associated animation to play.  When you transition from one state to another, Unity switches from one animation to the next.  
-
-We will be diving into more detail about animations and animators later in the tutorial.  
-
-<hr></details>
-
-
-## 2.3) Add a collider to the character
-
-Add a Rigidbody2D and a CapsuleCollider2D to the character.  Adjust the size as needed.
-
-<details><summary>How</summary>
+<br>Add a collider:
 
  - Select the Character parent GameObject:
    - Add a **Rigidbody2D**.
@@ -108,20 +51,58 @@ Add a Rigidbody2D and a CapsuleCollider2D to the character.  Adjust the size as 
 <img src="http://i.imgur.com/KFwBZeo.gif" width=150px />
 
 
-</details><br>
+<hr></details><br>
 <details><summary>What did that do?</summary>
 
+For the character, we are moving the pivot point to the 'Bottom'.  This allows us to position and rotate the character starting at the feet instead of the center of his body.
+
+
+Dragging multiple sprites into the Hierarchy created:
+ - The character's GameObject.
+ - A SpriteRenderer component on the GameObject defaulting to the first selected sprite.
+ - An Animation representing those 2 sprites changing over time.
+ - An Animator Controller for the character with a default state for the Walk animation.
+ - An Animator component on the GameObject configured for the Animator Controller just created.
+
+The order in layer ensures that the character appears on top of other sprites such as platforms when jumping.
+
+We add the sprite to a parent Character GameObject so that any animations we create do not impact other things that may be attached to the Character.  Specifically is this tutorial this ensures that the hammer we equip is not impacted by the idle animation we will be creating.
+
+Click Play to test - your character should be walking (in place)!
+
+<img src="http://i.imgur.com/2bkJdtS.gif" width=100px />
+
+<br>Add a collider:
+
 The rigidbody and collider enable physics for the character.  We size the collider to be used for standing on platforms, colliding with enemies, and picking up items.
-
-
-
 
 Add a constraint to the character's rigidbody to freeze its rotation.
 The character shouldn't fall over anymore.  In fact he will stand straight up even on slanted platforms.  This will be addressed later in the tutorial.
 
 
 <hr></details>
+<details><summary>What's Pivot do?</summary>
 
+A pivot point is the main anchor point for the sprite.  By default, pivot points are at the center of the sprite.
+
+Here's an example showing a character with a default 'Center' pivot and one with the recommended 'Bottom' pivot.  They both have the same Y position.  Notice the the vertical position of each character as well as how the rotation centers around the different pivot points:
+
+<img src="http://i.imgur.com/AQY4FOT.gif" width=320 />
+
+The pivot point you select is going to impact how we create animations and implement movement mechanics.  The significance of this topic should become more clear later in the tutorial.
+
+</details>
+<details><summary>What's the difference between Animation and Animator?</summary>
+
+An animat**ion** is a collection of sprites on a timeline, creating an animated effect similar to a flip book.  Animations can also include transform changes, fire events for scripts to react to, etc to create any number of effects.
+
+An animat**or** controls which animations should be played at any given time.  An animator uses an animator controller which is a state machine used to select animations.
+
+A state machine is a common pattern in development where logic is split across several states.  The state machine selects one primary state which owns the experience until the state machine transitions to another state.  Each animator state has an associated animation to play.  When you transition from one state to another, Unity switches from one animation to the next.
+
+We will be diving into more detail about animations and animators later in the tutorial.
+
+<hr></details>
 <details><summary>How do I know what size to make the collider?</summary>
 
 The collider does not fit the character perfectly, and that's okay.  In order for the game to feel fair for the player we should lean in their favor.  When designing colliders for the character and enemies, we may prefer to make the colliders a little smaller than the sprite so that there are no collisions in game which may leave the player feeling cheated.
@@ -138,7 +119,7 @@ Bottom line, it's not worth the trouble.  Unity does not provide good tools for 
 Most of the time the collisions in the game would not have been any different if more detailed colliders were used.  Typically 2D games use an approach similar to what this tutorial recommends. It creates a good game feel and the simplifications taken have become industry standard.
 
 </details>
-<details><summary>Why freeze rotation and Does freezing mean it can never change?</summary>
+<details><summary>Why freeze rotation and does freezing mean it can never change?</summary>
 
 We freeze the character so he does not fall over on the slanted platforms like this:
 
@@ -175,7 +156,7 @@ public class WalkMovement : MonoBehaviour
   float walkSpeed = 100;
 
   Rigidbody2D myBody;
-  
+
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
@@ -183,13 +164,13 @@ public class WalkMovement : MonoBehaviour
 
   protected void FixedUpdate()
   {
-    float desiredXVelocity 
-      = desiredWalkDirection 
-        * walkSpeed 
+    float desiredXVelocity
+      = desiredWalkDirection
+        * walkSpeed
         * Time.fixedDeltaTime;
 
     myBody.velocity = new Vector2(
-      desiredXVelocity, 
+      desiredXVelocity,
       myBody.velocity.y);
   }
 }
@@ -223,12 +204,12 @@ So that's to say you could use AddForce here instead.  Maybe give it a try and s
 
 Update occurs once per rendered frame.  FixedUpdate occurs at a regular interval, every x ms of game time.  FixedUpdate may run 0 or more times each frame.
 
-FixedUpdate is preferred for mechanics which require some level of consistency or apply changes incrementally.  Physics in Unity are processed in FixedUpdated.  So when manipulating physics for the game such as we are here by changing velocity on the rigidbody, we do this on FixedUpdate to match Unity's expectations. 
+FixedUpdate is preferred for mechanics which require some level of consistency or apply changes incrementally.  Physics in Unity are processed in FixedUpdated.  So when manipulating physics for the game such as we are here by changing velocity on the rigidbody, we do this on FixedUpdate to match Unity's expectations.
 
 </details>
 <details><summary>Why multiply by Time.fixedDeltaTime?</summary>
 
-It's optional. Anytime you make a change which includes some speed, such as walking, we multiply by the time elapsed so motion is smooth even when the frame rate may not be.  While using FixedUpdate, the time passed between calls is always the same - so Time.fixedDeltaTime is essentially a constant.  
+It's optional. Anytime you make a change which includes some speed, such as walking, we multiply by the time elapsed so motion is smooth even when the frame rate may not be.  While using FixedUpdate, the time passed between calls is always the same - so Time.fixedDeltaTime is essentially a constant.
 
 If speed is being processed in an Update, you must multiply by Time.deltaTime for a smooth experience.  While in FixedUpdate, you could opt to not use Time.fixedDeltaTime, however leaving it out may lead to some confusion as fields which are configured for FixedUpdate may have a different order of magnitude than fields configured for use in Update.
 
@@ -238,7 +219,7 @@ Additionally you may choose to adjust the time interval between FixedUpdate call
 
 
 
-## 2.6) Add a player controller 
+## 2.6) Add a player controller
 
 Add a script to the character to read user input and drive movement.
 
@@ -253,7 +234,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
   WalkMovement walkMovement;
-  
+
   protected void Awake()
   {
     walkMovement = GetComponent<WalkMovement>();
@@ -292,7 +273,7 @@ You can add, remove, rename, and configure the inputs for your game.  Inputs may
 
 To read / detect Input, Unity offers a few APIs including:
 
- - GetAxis: Gets the current state as a float.  E.g. horizontal may return 1 for right, -1 for left.  
+ - GetAxis: Gets the current state as a float.  E.g. horizontal may return 1 for right, -1 for left.
  - GetButtonDown/GetButtonUp: Determines if a button was pressed or released this frame.
  - GetMouseButtonDown/GetMouseButtonUp: Same as above, but for mouse buttons.
 
@@ -301,7 +282,7 @@ There are a ton of options, check out the [complete list of Input APIs](https://
 </details>
 <details><summary>Why not use a bool or Enum for Left/Right instead of a float?</summary>
 
-You could for the game we are making at the moment.  When playing with a keyboard, a button is down or it isn't.  
+You could for the game we are making at the moment.  When playing with a keyboard, a button is down or it isn't.
 
 The nice thing about using a float here is it could be leveraged to allow players even more control over movement.  When playing with a controller, left and right are not simply on and off - the amount you move the joystick  by scales how quickly the character should walk.
 
@@ -350,7 +331,7 @@ public class JumpMovement : MonoBehaviour
 
   protected void FixedUpdate()
   {
-    if(wasJumpRequestedSinceLastFixedUpdate) 
+    if(wasJumpRequestedSinceLastFixedUpdate)
     {
       myBody.AddForce(
           new Vector2(0, jumpSpeed),
@@ -456,30 +437,30 @@ A sound should play every time you jump, you can adjust the volume in the AudioS
 Like with walking, we use two separate components for this mechanic. JumpMovement enables the actual jump itself, allowing it to be used on another entity if we choose, and the PlayerController reads input in order to initiate jumps.
 
 <hr></details>
-<details><summary>Why AddForce here instead and what's 'Impulse'?</summary>
+<details><summary>Why AddForce here instead of velocity and what's 'Impulse'?</summary>
 
 As discussed above when creating the WalkMovement component, you could always create mechanics using either AddForce or by modifying the velocity.
 
-We are using AddForce to jump in this component.  Using velocity here instead would have actually created the same basic jump experience we are looking for.  
+We are using AddForce to jump in this component.  Using velocity here instead would have actually created the same basic jump experience we are looking for.
 
 Using AddForce for the jump may provide a better experience for some corner cases or future mechanics.  For example, if we wanted to support double jump in this game, initiating the second jump while in the air would feel much different.
 
 What is ForceMode2D.Impulse and how is it different from ForceMode2D.Force?
 
-These options have very similar effects on objects, the biggest difference is the scale (i.e. how much motion X creates when Impulse vs Force).   The unit for Impulse is defined as force per FixedUpdate.  The unit for Force is defined as force per second.  
+These options have very similar effects on objects, the biggest difference is the scale (i.e. how much motion X creates when Impulse vs Force).   The unit for Impulse is defined as force per FixedUpdate.  The unit for Force is defined as force per second.
 
 </details>
 <details><summary>How do you know when to use Update vs FixedUpdate for Input and rigidbodies?</summary>
 
-Unity recommends always using FixedUpdate when interacting with a rigidbody as physics is processed in FixedUpdate. 
+Unity recommends always using FixedUpdate when interacting with a rigidbody as physics is processed in FixedUpdate.
 
 There is nothing blocking you from changing the rigidbody in an Update loop.  You could, for example, AddForce every Update.  This is not recommended and may lead to inconsistent experiences.
 
 For Input:
 
- - When reading the current Input state (e.g. using Input.GetAxis), either FixedUpdate or Update is fine.  For example if you are checking the current position of the joystick, you'll get the same information in FixedUpdate and Update. 
+ - When reading the current Input state (e.g. using Input.GetAxis), either FixedUpdate or Update is fine.  For example if you are checking the current position of the joystick, you'll get the same information in FixedUpdate and Update.
   - If you need to modify a rigidbody based on current Input state, I recommend reading Input in FixedUpdate to keep it simple.
- - When checking for an Input event (e.g. using Input.GetButtonDown), you must use Update.  Input is polled in the Update loop.  Since it's possible for two Updates to happen before a FixedUpdate, some events may be missed when only checking in FixedUpdate.  
+ - When checking for an Input event (e.g. using Input.GetButtonDown), you must use Update.  Input is polled in the Update loop.  Since it's possible for two Updates to happen before a FixedUpdate, some events may be missed when only checking in FixedUpdate.
    - Always read events in Update.  Unity will not block or warn you when checking for an event in FixedUpdate, and most of the time it will work - but occasional bugs will arise.
 
 <hr></details>
@@ -487,19 +468,21 @@ For Input:
 
 Audio playback in Unity is built to support 3D audio.  3D audio refers to the feature where the closer an object making noise is to your ear, the louder it is.  Additionally 3D sound is directional, so sounds to the players left would be loudest in the left speaker.
 
+TODO 2D is left and right channels.  3D adds distance.
+
 Your 'ear' is typically the camera itself.  This is managed by the AudioListener component which was placed on the Main Camera by default when the scene was created.  You could choose to move this component to the character instead, if appropriate.
 
 To enable 3D audio, sounds need to originate at a position in the world.  We use the AudioSource component to play clips.  As a component, it must live an a GameObject which in turn must have a Transform -- the position we are looking for.
 
 For consistency, 2D audio is played the same way.  2D means we don't have the features above, the clip sounds the same regardless of where it the world it was initiated from.  Note that audio is 2D by default.
 
-Alternatively you could use the Unity API to play a clip as shown below.  This API will create an empty GameObject at the location provided, add an AudioSource component to it, configure that source to use the clip specified and have the AudioSource start playing.  After the clip completes, the GameObject will be destroyed automatically.  
+Alternatively you could use the Unity API to play a clip as shown below.  This API will create an empty GameObject at the location provided, add an AudioSource component to it, configure that source to use the clip specified and have the AudioSource start playing.  After the clip completes, the GameObject will be destroyed automatically.
 
 ```csharp
 [SerializeField]
 AudioClip clip;
 
-protected void Start() 
+protected void Start()
 {
   AudioSource.PlayClipAtPoint(clip, new Vector3(5, 1, 2));
 }
@@ -511,6 +494,210 @@ protected void Start()
 Maybe, but it feels like overkill.  The value of separating components is to allow us to mix and match to create new experiences.  In this tutorial, we have no use case for using one or the other player controller mechanic (i.e. just support walking or just support jumping).
 
 <hr></details>
+
+
+## 4.1) Flip entities when they walk the other way
+
+Flip the entity when they switch between walking left and right.
+
+<details><summary>How</summary>
+
+ - Create script Components/Movement/**FlipFacingDirection**:
+
+```csharp
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody2D))]
+public class FlipFacingDirection : MonoBehaviour
+{
+  Rigidbody2D myBody;
+
+  SpriteRenderer sprite;
+  
+  bool _isGoingLeft;
+
+  public bool isGoingLeft
+  {
+    get
+    {
+      return _isGoingLeft;
+    }
+    private set
+    {
+      if(isGoingLeft == value)
+      {
+        return;
+      }
+
+      _isGoingLeft = value;
+      sprite.flipX = isGoingLeft;
+    }
+  }
+
+  protected void Awake()
+  {
+    myBody = GetComponent<Rigidbody2D>();
+    sprite = GetComponentInChildren<SpriteRenderer>();
+  }
+
+  protected void FixedUpdate()
+  {
+    float xVelocity = myBody.velocity.x;
+    if(Mathf.Abs(xVelocity) > 0.1)
+    {
+      isGoingLeft = xVelocity < 0;
+    }
+  }
+}
+```
+
+ - Add **FlipFacingDirection** to the character prefab.
+
+<hr></details><br>
+<details><summary>What did that do?</summary>
+
+Each FixedUpdate, we determine which direction the entity is walking by its X velocity.  When the direction changes, we flip the sprite so that the character appears to be facing the other way.
+
+<hr></details>
+<details><summary>What's a C# smart property?</summary>
+
+In C#, data may be exposed as either a Field or a Property.  Fields are simply data as one would expect.  Properties are accessed in code like a field is, but they are capable of more.
+
+In this example, when isGoingRight changes between true and false, the GameObject's transform is rotated so that the sprite faces the correct direction.  Leveraging the property changing to trigger the rotation change is an example of logic in the property making it 'smart'.
+
+There are pros and cons to smart properties.  For example, one may argue that including the transform change when isGoingRight is modified hides the mechanic and makes the code harder to follow.  There are always alternatives if you prefer to not use smart properties.  For example:
+
+```csharp
+bool isGoingLeftNow = xVelocity <> 0;
+if(isGoingLeft != isGoingLeftNow) 
+{
+  sprite.flipX = isGoingLeft;
+  isGoingLeft = isGoingLeftNow;
+}
+```
+
+</details>
+<details><summary>Why not compare to 0 when checking if there is no movement?</summary>
+
+In Unity, numbers are represented with the float data type.  Float is a way of representing decimal numbers but is a not precise representation like you may expect.  When you set a float to some value, internally it may be rounded ever so slightly.
+
+The rounding that happens with floats allows operations on floats to be executed very quickly.  However it means we should never look for exact values when comparing floats, as a tiny rounding issue may lead to the numbers not being equal.
+
+In the example above, as the velocity approaches zero, the significance of if the value is positive or negative, is lost.  It's possible that if we were to compare to 0 that at times the float may oscillate between a tiny negative value and a tiny positive value causing the sprite to flip back and forth.
+
+</details>
+
+## 3.10) Fade in
+
+Add a script to entities so they fade in before moving.
+
+<details><summary>How</summary>
+
+ - Create script Components/Life/**FadeInThenEnable**:
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+public class FadeInThenEnable : MonoBehaviour
+{
+  [SerializeField]
+  float timeTillEnabled = 3;
+
+  [SerializeField]
+  MonoBehaviour[] componentsToEnable;
+
+  protected void OnEnable()
+  {
+    StartCoroutine(FadeIn());
+  }
+
+  protected void OnDisable()
+  {
+    StopAllCoroutines();
+  }
+
+  IEnumerator FadeIn()
+  {
+    SpriteRenderer[] spriteList
+      = gameObject.GetComponentsInChildren<SpriteRenderer>();
+
+    float timePassed = 0;
+    while(timePassed < timeTillEnabled)
+    {
+      float percentComplete = timePassed / timeTillEnabled;
+      SetAlpha(spriteList, percentComplete);
+
+      yield return null;
+
+      timePassed += Time.deltaTime;
+    }
+
+    SetAlpha(spriteList, 1);
+
+    for(int i = 0; i < componentsToEnable.Length; i++)
+    {
+      MonoBehaviour component = componentsToEnable[i];
+      component.enabled = true;
+    }
+  }
+
+  void SetAlpha(
+    SpriteRenderer[] spriteList,
+    float alpha)
+  {
+    for(int i = 0; i < spriteList.Length; i++)
+    {
+      SpriteRenderer sprite = spriteList[i];
+      Color originalColor = sprite.color;
+      sprite.color = new Color(
+        originalColor.r, 
+        originalColor.g, 
+        originalColor.b, 
+        alpha);
+    }
+  }
+}
+```
+
+ - Disable the character's PlayerController component.
+
+<img src="http://i.imgur.com/5WtzPmv.png" width=300px />
+
+ - Select the Character and add **FadeInThenEnable**:
+   - Expand 'Components to Enable'.
+   - Set 'Size' to 1 and then hit tab for the list to update.
+   - Drag/drop the PlayerController into the list as 'Element 0'.
+
+<img src="http://i.imgur.com/hrXMt1f.gif" width=300px />
+
+ - Select the HoverGuy prefab:
+   - Disable the WanderWalkController.
+   - Add **FadeInThenEnable**:
+     - Assign WanderWalkController to the Components to Enable list.
+ - Select the Hammer prefab:
+   - Add **FadeInThenEnable** (nothing needed in the to enable list).
+
+<hr></details><br>
+<details><summary>What does this do?</summary>
+
+The FadeInThenEnable script smoothly transitions the alpha for all the sprites in that GameObject from 0 (hidden) to 1 (visible) and then enables the list of components configured.
+
+FadeInThenEnable is added to the Character and we disable the PlayerController to prevent any input such as walk or jump until complete.
+
+On the HoverGuy we disable wander movement until complete.
+
+For the Hammer, we could disable the Hammer component (preventing pickup) but it is unnecessary since the character can't move.
+
+<hr></details>
+<details><summary>What does StopAllCoroutines do?</summary>
+
+StopAllCoroutines will stop any coroutines which were started by this script.  Coroutines in Unity are not running on a different thread, so nothing will be interrupted in that sense - however any coroutine which has yield returned and is expecting to be resumed will not be.
+
+Coroutines are automatically stopped when a GameObject is Destroyed or SetActive(false) is called.  However disabling a component (and not the entire GameObject) does not automatically stop coroutines - which is why we do it explicitly OnDisable here.
+
+</details>
+
 
 
 ## 2.11) Create a pattern for death effects
@@ -590,11 +777,11 @@ public class DeathEffectManager : MonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-Nothing yet.  
+Nothing yet.
 
 This is a pattern we will leverage a few times in this tutorial, starting with the next section.
 
-When an entity dies in the game, we call DeathEffectManager.PlayDeathEffectsThenDestroy instead of the usual Unity Destroy method.  
+When an entity dies in the game, we call DeathEffectManager.PlayDeathEffectsThenDestroy instead of the usual Unity Destroy method.
 
 This allows us to defer the actual Destroy call, and to spawn an explosion or play an animation on the sprite as it dies.  Also it allows us to differentiate between a request to immediately destroy a GameObject (e.g. for a scene change) vs a death that should maybe animate and spawn an explosion.
 
@@ -616,7 +803,7 @@ As always, there are probably a thousand different ways you could achieve simila
 
 PlayDeathEffects() in the DeathEffect class has a public method with a comment saying it 'should not be called directly'.  So why is it public?
 
-In order to support multiple DeathEffects and to be able to fallback gracefully when an object does not have one, we always start effects by calling the public static method in DeathEffectManager, PlayDeathEffectsThenDestroy.  
+In order to support multiple DeathEffects and to be able to fallback gracefully when an object does not have one, we always start effects by calling the public static method in DeathEffectManager, PlayDeathEffectsThenDestroy.
 
 Since DeathEffectManager is a class of its own, we would not be able to call a private or protected method in DeathEffect.
 
@@ -627,7 +814,7 @@ You might also consider using nested classes.  For simplicity in the tutorial, w
 </details>
 <details><summary>Why are you using Mathf and not System.Math?</summary>
 
-Unity offers the UnityEngine.Mathf class to try and make some things a little easier.  Basically it's the same APIs which are offered from the standard System.Math class (which is also still available to use if you prefer).  The main difference is all of the APIs in Mathf are focused on the float data type, where the System.Math class often prefers double.  Most of the data you interact with in Unity is float.  
+Unity offers the UnityEngine.Mathf class to try and make some things a little easier.  Basically it's the same APIs which are offered from the standard System.Math class (which is also still available to use if you prefer).  The main difference is all of the APIs in Mathf are focused on the float data type, where the System.Math class often prefers double.  Most of the data you interact with in Unity is float.
 
 </details>
 
@@ -645,7 +832,7 @@ GetComponentsInChildren returns an array with every matching component from this
 
 <details><summary>What's C# abstract do and how's it different from an interface?</summary>
 
-In C#, abstract refers to a class which is incomplete and may not be instantiated directly.  In order to create an object, a sub class inherits from the abstract class and you can then instantiate the sub class. 
+In C#, abstract refers to a class which is incomplete and may not be instantiated directly.  In order to create an object, a sub class inherits from the abstract class and you can then instantiate the sub class.
 
 The sub class has access to everything created in the parent class, similar to if you had copy pasted everything from the parent into the child.
 
@@ -657,7 +844,7 @@ public abstract class MyParentClass
 
 public class MySubClass : MyParentClass
 {
-  public void PrintPoints() 
+  public void PrintPoints()
   {
     print(points);
   }
@@ -676,7 +863,7 @@ public abstract class MyParentClass
 
 public class MySubClass : MyParentClass
 {
-  public override void PrintPoints() 
+  public override void PrintPoints()
   {
     print(points);
   }
@@ -686,7 +873,7 @@ public class MySubClass : MyParentClass
 This allows you to create an API that works with all sub classes of the parent.
 
 ```csharp
-public void Print(MyParentClass a) 
+public void Print(MyParentClass a)
 {
   a.PrintPoints();
 }
@@ -700,7 +887,7 @@ public abstract class MyParentClass
 {
   public int points;
 
-  public virtual void PrintPoints() 
+  public virtual void PrintPoints()
   {
     print(points);
   }
@@ -708,7 +895,7 @@ public abstract class MyParentClass
 
 public class MySubClass : MyParentClass
 {
-  public override void PrintPoints() 
+  public override void PrintPoints()
   {
     print("You have... ");
     base.PrintPoints();
@@ -719,7 +906,7 @@ public class MySubClass : MyParentClass
 In C#, an interface is similar to an abstract class that has no data or non-abstract methods (including virtual).  Interfaces are a way of defining a common API for classes to leverage.  The name of an interface always starts with "I", by convention.
 
 ```csharp
-public interface IMyInterface 
+public interface IMyInterface
 {
   void PrintPoints();
 }
@@ -728,7 +915,7 @@ public class MyClass : IMyInterface
 {
   public int points;
 
-  public void PrintPoints() 
+  public void PrintPoints()
   {
     print(points);
   }
@@ -738,7 +925,7 @@ public class MyClass : IMyInterface
 Other methods can leverage an interface without knowing the class that implemented the method like we did with the abstract class.
 
 ```csharp
-public void Print(IMyInterface a) 
+public void Print(IMyInterface a)
 {
   a.PrintPoints();
 }
@@ -801,7 +988,7 @@ public class KillOnContactWith : MonoBehaviour
     {
       return;
     }
-    
+
     if(layersToKill.Includes(gameObjectWeJustHit.layer) == false)
     {
       return;
@@ -817,7 +1004,7 @@ public class KillOnContactWith : MonoBehaviour
  - Select the Character GameObject:
    - Change its Layer to Player.
      - When prompted, 'No, this object only'.
- - Select the Spike Ball prefab in Assets/Prefabs:
+ - Select the SpikeBall prefab in Assets/Prefabs:
     - Add **KillOnContactWith**:
       - Update 'Layers To Kill' to Player.
 
@@ -847,53 +1034,38 @@ In order to do this with a Collision Matrix, a child GameObject with its own Lay
 Bitwise operations... which are beyond the scope of this tutorial.  More specifically, this is 'bitwise and' and 'bit shifting' if you would like to read more about this.  Here is a [Stackoverflow post on the topic](http://answers.unity3d.com/questions/8715/how-do-i-use-layermasks.html).
 
 <hr></details>
-<details><summary>What is a C# extension method and why use it?</summary>
+<details><summary>What is a C# extension method?</summary>
 
 Extension methods are a way of adding additional methods to a class or struct you don't own.  In this example, Unity has a struct 'LayerMask'.  That struct does not offer an easy way to determine if a layer is part of that LayerMask.  Using extensions, we are able to create an 'Includes' method that then can be used as if Unity had written it for us.
 
 This allows us to focus on intent and forget the gory details.  For example this statement:
 
 ```csharp
-if((layersToKill.value & 1 << gameObjectWeJustHit.layer) > 0) 
+if((layersToKill.value & 1 << gameObjectWeJustHit.layer) > 0)
 ...
 ```
 
 Can now be written like so, which should be easier for people to follow.
 
 ```csharp
-if(layersToKill.Includes(gameObjectWeJustHit.layer)) 
+if(layersToKill.Includes(gameObjectWeJustHit.layer))
 ...
 ```
 
 </details>
 <details><summary>Why is there an empty Start method and why check if enabled?</summary>
 
-We will need the ability to disable this component later in the tutorial.  
+We will need the ability to disable this component later in the tutorial.
 
 A disabled component will not get called for events such as Update.  However it does still receive some calls while disabled, including OnTriggerEnter. This is why we check if enabled vs depending on Unity to do that for us.
 
 Unity only allows you to use the enable / disable feature if it detects that there is a method in the script which would be impacted.  We added an empty Start method to get the enable / disable feature since Unity does not enable enable by checking 'if(enabled)' in code.
 
 <hr></details>
-<details><summary>What's the difference between Trigger and a non trigger Collider?</summary>
 
-Any collider with 'Is Trigger' checked will not respond to physical collisions.  Trigger colliders will fire and event when another collider overlaps it, just like a non-trigger collider.  
+## 2.13) Create an explosion prefab with sound effect
 
-We use Triggers to fire an event without interacting with the rigidbody. Non-triggers may be used for both scripts and physics; Triggers are for scripts to respond to only.
-
-</details>
-<details><summary>Why kill on trigger enter vs just on collision?</summary>
-
-Later in the tutorial we will be adding ladders for entities to climb.  In order to allow entities to walk down ladders (and therefore through a floor), we temporarily disable collisions.  While in on a ladder, we still want enemies to be able to kill the character.
-
-As always, there are other ways this could have been handled.
-
-<hr></details>
-
-
-## 2.13) Create an explosion prefab
-
-Create an explosion particle system and save it as a prefab.  
+Create an explosion particle system and save it as a prefab.
 
 <details><summary>How</summary>
 
@@ -936,21 +1108,50 @@ Create an explosion particle system and save it as a prefab.
  - Drag the Explosion GameObject into Assets/Prefabs.
  - Delete the Explosion GameObject.
 
+
+ - Create script Components/Death/**SuicideIn**:
+
+```csharp
+using UnityEngine;
+using System.Collections;
+
+public class SuicideIn : MonoBehaviour
+{
+  [SerializeField]
+  float timeTillDeath = 5;
+
+  protected void Start()
+  {
+    StartCoroutine(CountdownToDeath());
+  }
+
+  IEnumerator CountdownToDeath()
+  {
+    yield return new WaitForSeconds(timeTillDeath);
+    DeathEffectManager.PlayDeathEffectsThenDestroy(gameObject);
+  }
+}
+```
+
+ - Add **SuicideIn** to the Explosion prefab.
+
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-We created a particle system to represent a simple explosion and added a sound effect to match.  The 'system' is just 3 particles which look a bit like clouds.  They scale and color overtime to create the effect.  
+We created a particle system to represent a simple explosion and added a sound effect to match.  The 'system' is just 3 particles which look a bit like clouds.  They scale and color overtime to create the effect.
 
-Briefly, the rational for each change recommended above: 
+Briefly, the rational for each change recommended above:
 
  - Set the material: the default may be broken due to a Unity Bug, we are simply selecting what should have been the default.
- - Particle Size: this limits the size of the effect you may see on the screen.  We crank it up so that while previewing the in Scene window we can zoom in.  
+ - Particle Size: this limits the size of the effect you may see on the screen.  We crank it up so that while previewing the in Scene window we can zoom in.
  - Looping: just one explosion.
  - Start Lifetime: Defines how long until each particle should be destroyed.
  - Start Size: How large each particle is.
  - Scaling Mode: Enables us to scale the size of the explosion using Transform scale.
- - Color over Lifetime: Changes the coloring to add to the effect. 
+ - Color over Lifetime: Changes the coloring to add to the effect.
  - Emission: Defines when and how many particles to create.  We are using exactly 3 particles for each explosion.
+
+
 
 <hr></details>
 <details><summary>What's a particle / particle system?</summary>
@@ -960,9 +1161,9 @@ A particle is a small 2D image managed by a particle system.  It's optimized to 
 A Particle System component animates a number of particles to create effects such as fluid, smoke, and fire. Read more about [Particle Systems from Unity](https://docs.unity3d.com/Manual/class-ParticleSystem.html).
 
 </details>
-<details><summary>Could you RNG select the clip to play?</summary>
+<details><summary>Could you RNG select the audio clip to play?</summary>
 
-Anything is possible.  Here's a little code sample that may help you get started.  
+Anything is possible.  Here's a little code sample that may help you get started.
 
 On a related note, you could also randomize the pitch to get some variation between each clip played.  e.g. this could be a nice addition to a rapidly firing gun.
 
@@ -990,9 +1191,9 @@ protected void OnEnable()
 
 </details>
 
-## 2.14) Spawn explosion when the character dies
+## 2.14) Spawn and destroy explosion 
 
-Add a script which spawns the explosion prefab when the character dies.
+Add a script which spawns the explosion prefab when the character dies.  The explosion should Destroy after a few the effect completes.
 
 <details><summary>How</summary>
 
@@ -1021,7 +1222,7 @@ public class DeathEffectSpawn : DeathEffect
 
     Instantiate(
       gameObjectToSpawnOnDeath,
-      collider.bounds.center, 
+      collider.bounds.center,
       Quaternion.identity);
   }
 }
@@ -1030,12 +1231,15 @@ public class DeathEffectSpawn : DeathEffect
  - Add **DeathEffectSpawn** to the character (this will automatically add a **DeathEffectManager** as well).
    - Assign the Explosion prefab to 'Game Object To Spawn'.
 
+
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
 DeathEffectSpawn will spawn in another GameObject when the entity it's on dies.  In this case, we spawn the explosion when the character dies:
 
 <img src="http://i.imgur.com/XhhkRpC.gif" width=150px />
+
+This component starts DeathEffects for a GameObject, which in turn will destroy the GameObject, after a period of time.  We use it on the explosion to prevent a memory leak by deleting it's GameObject after the explosion itself is no longer visible.
 
 <hr></details>
 <details><summary>What's bounds represent?</summary>
@@ -1056,47 +1260,7 @@ This component could be reused on other GameObjects which may have a different p
 We use the collider's bounds to determine where to spawn the explosion.  The [bounds struct](https://docs.unity3d.com/ScriptReference/Bounds.html) has a number of convenient methods for things like determining the center point of an object.
 
 </details>
-
-
-## 2.16) Explosion self destruct
-
-Create a script to destroy the explosion GameObject after the effect completes.
-
-<details><summary>How</summary>
-
- - Create script Components/Death/**SuicideIn**:
-
-```csharp
-using UnityEngine;
-using System.Collections;
-
-public class SuicideIn : MonoBehaviour
-{
-  [SerializeField]
-  float timeTillDeath = 5;
-  
-  protected void Start()
-  {
-    StartCoroutine(CountdownToDeath());
-  }
-
-  IEnumerator CountdownToDeath()
-  {
-    yield return new WaitForSeconds(timeTillDeath);
-    DeathEffectManager.PlayDeathEffectsThenDestroy(gameObject);
-  }
-}
-```
-
- - Add **SuicideIn** to the Explosion prefab.
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-This component starts DeathEffects for a GameObject, which in turn will destroy the GameObject, after a period of time.  We use it on the explosion to prevent a memory leak by deleting it's GameObject after the explosion itself is no longer visible.
-
-<hr></details>
-<details><summary>Why bother, the explosion is not visible after a few seconds?</summary>
+<details><summary>Why bother destroying, the explosion is not visible after a few seconds?</summary>
 
 Similar to how we destroyed balls which rolled off the bottom of the screen in chapter 1, we need to ensure the explosion GameObjects are destroyed at some point.
 
@@ -1139,21 +1303,21 @@ public class DeathEffectThrob : DeathEffect
   {
     StartCoroutine(ThrobToDeath());
   }
-  
+
   IEnumerator ThrobToDeath()
   {
-    float timePerPulse 
+    float timePerPulse
       = lengthOfEffectInSeconds / numberOfPulses;
     float timeRun = 0;
     while(timeRun < lengthOfEffectInSeconds)
     {
-      float percentComplete 
+      float percentComplete
         = timeRun / lengthOfEffectInSeconds;
-      float sinValue 
+      float sinValue
         = Mathf.Sin(Mathf.PI * timeRun / timePerPulse);
       float pulse = .5f + Mathf.Abs(sinValue);
       float scale = (1 - percentComplete) * pulse;
-      gameObject.transform.localScale 
+      gameObject.transform.localScale
         = Vector3.one * scale;
 
       yield return null;
@@ -1178,7 +1342,7 @@ When the DeathEffects for an entity are initiated, this component will scale the
 
 <details><summary>What does yield return null do?</summary>
 
-Enumerators are methods which can 'yield return' and then later be resumed from where they left off.  Coroutines in Unity are enumerators.  
+Enumerators are methods which can 'yield return' and then later be resumed from where they left off.  Coroutines in Unity are enumerators.
 
 With Coroutines, "yield return null" is shorthand for wait for one frame.
 
@@ -1211,6 +1375,231 @@ We add .5 to the result, giving us .5 -> 1.5.  That's used as a multiple when sc
 More about how you can use [Sin and Cos to create nice curves from OSU.edu](https://accad.osu.edu/~aprice/courses/694/Sin_fun.htm).
 
 <hr></details>
+<details><summary>How might we disable movement when the character is dying?</summary>
+
+After the character dies and the throb animation begins, you can still walk around.  This could be addressed, but we are leaving it like this for the tutorial for simplicity and because it's kind of funny looking.
+
+To stop movement, you could disable the PlayerController or the Rigidbody.  You might also want to stop the current animation as well.
+
+<hr></details>
+
+## 3.4) Spawn in a hovering enemy
+
+Create a GameObject for the HoverGuy, reusing components from the SpikeBall and character.  
+
+<details><summary>How</summary>
+
+Create the HoverGuy:
+
+ - Select **spritesheet_jumper_30**, **84**, and **90** and drag them into the Hierarchy, creating Assets/Animations/**HoverGuyWalk**.
+   - Order in Layer: 1
+ - Add the sprite to a parent GameObject named "HoverGuy":
+   - Layer: Enemy
+   - Add a **Rigidbody2D**:
+     - Freeze the Z rotation.
+   - Add a **CapsuleCollider2D**:
+     - Adjust the size to fit the sprite's body.
+
+<img src="http://i.imgur.com/d1lxoEj.png" width=150px />
+
+<br>Make the HoverGuy float above the ground:
+
+ - Create a Layer for "Feet".
+   - Update the Physics 2D collision matrix to:
+     - Disable Feet / Player.
+     - Disable Feet / Enemy.
+     - Disable Feet / Feet.
+ - Add an empty GameObject as a child under the HoverGuy.  
+   - Name it "Feet".
+   - Assign its Layer to Feet.
+   - Add a **CircleCollider2D** 
+     - Set the radius to .1
+     - Position it a little below the sprite.
+
+<img src="http://i.imgur.com/BPohw5V.png" width=150px />
+
+<br>Add a spawner for HoverGuys:
+
+ - Select HoverGuy:
+   - Add **DeathEffectSpawn**:
+     - GameObject to Spawn: the Explosion prefab
+   - Add **KillOnContactWith**:
+     - Layers to kill: Player
+- Drag in **spritesheet_tiles_43** and then drag in **47**.
+   - Order in Layer: -2
+ - Add them to a parent named "Door":
+   - Scale up the size of the Door to (1.5, 1.5, 1.5).
+   - Move the door to the bottom left of the level.
+     - Position its Y so that the midpoint of the Door approximately aligns with the midpoint of the HoverGuy (at the height we would want it to spawn).
+
+<img src="http://i.imgur.com/EjVJkZ4.gif" width=300px />
+
+ - Move the sprite for the top into position, then vertex snap the bottom.
+
+<img src="http://i.imgur.com/SF57oFs.gif" width=150px />
+
+ - Create a prefab for 'HoverGuy' and delete the GameObject.
+ - Select the Door and add **Spawner**:
+   - Thing to spawn: HoverGuy
+   - Initial wait time: 10
+
+
+<hr></details><br>
+<details><summary>What did that do?</summary>
+
+Create the HoverGuy:
+
+The HoverGuy animation we created simply kicks its feet around.  We are not going to do anything more with this animation in this tutorial.  But you could use some of the same techniques we did for the character if you want to improve the experience.
+
+The rigidbody and collider enables physics and allows them to stay on platforms.  We freeze the z rotation so the HoverGuy does not fall over.
+
+The collider, layer, and KillOnContactWith replicates the configuration we used for the SpikeBall to kill the character.
+
+DeathEffectSpawn creates an explosion when the HoverGuy is hit by a hammer.
+
+<br>Make the HoverGuy float above the ground:
+
+The second collider we added is configured to collide with platforms but not with the character or other entities. This allows it to prop up the HoverGuy, making it hover above the ground.
+
+We don't want the 'feet' to collide with the character because later in the tutorial we will be adding ladders. While the HoverGuy is on a ladder, the character can walk underneath. If the feet could hit the character he may die unexpectedly.
+
+<br>Add a spawner for HoverGuys:
+
+We added a sprite representing the area where HoverGuys will spawn from.
+
+For simplicity in the Spawner component, the position enemies appear at is the center of the Spawner's GameObject. We attempt to position this for the HoverGuy, and then adjust the door sprites' positions to fit the visible space.
+
+The Spawner added should start to spawn HoverGuys periodically after about 10 seconds into the level.
+
+Note that if the character stands still at the level start, a HoverGuy will spawn and kill him. This will be corrected later.
+
+<hr></details>
+
+<details><summary>How do you know what size to make the second collider?</summary>
+
+It does not matter much.  This second collider's only purpose is to ensure that the HoverGuy hovers above the ground.  So in a sense, we only need a single pixel to represent the correct Y position for Unity physics to use -- represented by the bottom of this circle collider.
+
+Unity physics by default uses discrete collisions instead of continuous. 
+
+ - Discrete means that each FixedUpdate, collisions are considered for the object's current position.
+ - Continues means that each FixedUpdate, collisions consider the entire path the object has taken since the last FixedUpdate.
+
+Discrete is is the default because it is more performant.  However Discrete is also less accurate. 
+
+When a collider is too small, collisions may be missed entirely as the object changes from a little above to a little below an obstacle. e.g. this is a common problem when shooting, bullets may start to travel through walls instead of hitting them.
+
+The collider may also be too large, causing our HoverGuy to continue standing on a platform when they should have fallen off the edge.
+
+<hr></details>
+<details><summary>Why use a child GameObject instead of two colliders on the parent?</summary>
+
+You could opt to do this using just one GameObject instead.
+
+We are using a child GameObject for the HoverGuy's feet in order to simplify future components.  Specifically we will be created a FloorDetector which will need to know which collider represents the bottom of the object. 
+
+<hr></details>
+
+## 3.5) Make the HoverGuy walk
+
+Add a script to the HoverGuy to drive random walk movement.
+
+<details><summary>How</summary>
+
+ - Create script Components/Movement/**WanderWalkController**:
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+[RequireComponent(typeof(WalkMovement))]
+public class WanderWalkController : MonoBehaviour
+{
+  [SerializeField]
+  float timeBeforeFirstWander = 10;
+
+  [SerializeField]
+  float minTimeBetweenReconsideringDirection = 1;
+
+  [SerializeField]
+  float maxTimeBetweenReconsideringDirection = 10;
+
+  WalkMovement walkMovement;
+
+  protected void Awake()
+  {
+    walkMovement = GetComponent<WalkMovement>();
+  }
+
+  protected void Start()
+  {
+    StartCoroutine(Wander());
+  }
+
+  IEnumerator Wander()
+  {
+    walkMovement.desiredWalkDirection = 1;
+    if(timeBeforeFirstWander > 0) 
+    {
+      yield return new WaitForSeconds(timeBeforeFirstWander);
+    } 
+
+    while(true)
+    {
+      SelectARandomWalkDirection();
+      float timeToSleep = UnityEngine.Random.Range(
+        minTimeBetweenReconsideringDirection,
+        maxTimeBetweenReconsideringDirection);
+      yield return new WaitForSeconds(timeToSleep);
+    }
+  }
+
+  void SelectARandomWalkDirection()
+  {
+    walkMovement.desiredWalkDirection
+      = UnityEngine.Random.value <= .5f ? 1 : -1;
+  }
+}
+```
+
+ - Add **WanderWalkController** to the HoverGuy (it should automatically add WalkMovement as well).
+
+<hr></details><br>
+<details><summary>What did that do?</summary>
+
+WanderWalkController is a controller to drive the WalkMovement component, similar to how the PlayerController does.  
+
+The PlayerController reads input from the keyboard (or controller) and feeds that to WalkMovement.  WanderWalkController uses RNG to effectively do the same, simulating holding the right or left button.
+
+WanderWalkController will always request movement either left or right.  It starts by going right for a period of time and then chooses directions randomly.  You could extend this logic to have the HoverGuy occasionally stand in the same place for a moment before continuing on.
+
+You can configure the walk speed by modifying the WalkMovement component's 'Walk Speed'.
+
+Note that at the moment HoverGuys will walk right off the screen.  This will be addressed soon.
+
+<hr></details>
+<details><summary>Why use timeBeforeFirstWander instead of RNG from the start?</summary>
+
+When the HoverGuy first spawns in the bottom left of the world, we always want those enemies to walk to the right.  It would look strange for the enemies to go left and promptly hit the side of the screen before turning around.
+
+When the coroutine starts, we tell WalkMovement to go right and then wait a period of time.  The time we wait before entering the while loop should be configured to be long enough for HoverGuys to reach the first ladder -- maybe even longer.
+
+<hr></details>
+<details><summary>Why not set desiredWalkDirection to a random value instead of 1 or -1?</summary>
+
+You could, if it creates the experience you want in the game.  For example:
+
+```csharp
+walkMovement.desiredWalkDirection 
+  = UnityEngine.Random.Range(-1, 1);
+```
+
+This call would achieve the goal of getting the HoverGuy to walk randomly in one direction or the other. desiredWalkDirection is a percent - so 1 means walk at full speed to the right and -1 is full speed to the left.  Using Random.Range will often give you a much smaller value (e.g. .1) and therefore the walk speed in game may appear too slow.
+
+</details>
+
+
+
+
 
 
 

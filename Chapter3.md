@@ -1,6 +1,8 @@
-# 3) An item and another enemy (TODO)
+# 3) Triggers, collisions, and raycasts
 
-In chapter 3, we add hammers (an item/weapon), fly guy (a second enemy), lives (and respawn), and points. 
+Triggers, singleton game controller, OverlapCollider, Raycast
+
+In chapter 3, we add hammers (an item/weapon), HoverGuy (a second enemy), lives (and respawn), and points. 
 
 TODO intro...
 
@@ -13,11 +15,12 @@ TODO gif
 demo build of level 3
 
 
+
 ## 3.1) Create a Hammer
 
 Create a Hammer prefab and then layout several in the world.
 
-<details open><summary>How</summary>
+<details><summary>How</summary>
 
  - Change the sprite's pivot to Bottom. We are using **Hammer**.
  - Add to the world and scale (to about .2).
@@ -25,6 +28,72 @@ Create a Hammer prefab and then layout several in the world.
    - Check Is Trigger.
  - Create a prefab.
  - Add several Hammers and lay them out for the level.
+
+<br>Hammer blinks red before despawning:
+
+ - Create script Components/Death/**DeathEffectFlash**:
+
+```csharp
+using System.Collections;
+using UnityEngine;
+
+public class DeathEffectFlash : DeathEffect
+{
+  [SerializeField]
+  float lengthToFlashFor = 5;
+
+  [SerializeField]
+  float timePerColorChange = .75f;
+
+  [SerializeField]
+  float colorChangeTimeFactorPerFlash = .85f;
+
+  public override float timeUntilObjectMayBeDestroyed
+  {
+    get
+    {
+      return lengthToFlashFor;
+    }
+  }
+
+  public override void PlayDeathEffects()
+  {
+    StartCoroutine(FlashToDeath());
+  }
+
+  IEnumerator FlashToDeath()
+  {
+    SpriteRenderer[] spriteList 
+      = GetComponentsInChildren<SpriteRenderer>();
+    float timePassed = 0;
+    bool isRed = false;
+    while(timePassed < lengthToFlashFor)
+    {
+      SetColor(spriteList, isRed ? Color.red : Color.white);
+      isRed = !isRed;
+
+      yield return new WaitForSeconds(timePerColorChange);
+      timePerColorChange = Mathf.Max(Time.deltaTime, timePerColorChange);
+      timePassed += timePerColorChange;
+      timePerColorChange *= colorChangeTimeFactorPerFlash;
+    }
+  }
+
+  void SetColor(
+    SpriteRenderer[] spriteList,
+    Color color)
+  {
+    for(int i = 0; i < spriteList.Length; i++)
+    {
+      SpriteRenderer sprite = spriteList[i];
+      sprite.color = color;
+    }
+  }
+}
+```
+
+ - Add **DeathEffectFlash** to the hammer prefab, (it should automatically add DeathEffectManager as well).
+
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
@@ -39,6 +108,14 @@ However we are using a polygon collider, which outlines the sprite art. In order
 
 Picking up the hammer and killing enemies with it is covered in the next sections.
 
+
+<br>Hammer blinks red before despawning:
+
+DeathEffectFlash will start when another component triggers death on the GameObject (using DeathEffectManager).  Over a period of time the sprite will flash red faster and faster until the object dies.  
+
+This is added to the hammer and the effect begins when SuicideIn's time completes.  When configuring the length of time a player has the hammer for, sum the SuicideIn time as well as the length to flash for configured in DeathEffectFlash.
+
+The other fields in DeathEffectFlash may be used to control how quickly flash occurs as well as how it accelerates over time.  You could play with these values or modify the formula use in FlashToDeath to create your own effect.
 <hr></details>
 <details><summary>Why use pivot bottom?</summary>
 
@@ -64,6 +141,27 @@ When the character jumps for the hammer to pick it up, we do not want the charac
 
 <hr></details>
 
+<details><summary>Why not simply sum the time used in WaitForSeconds instead of max with deltaTime?</summary>
+
+In the following example, we are requesting the coroutine sleep for a period of time:
+
+```csharp
+yield return new WaitForSeconds(timePerColorChange);
+timePerColorChange = Mathf.Max(Time.deltaTime, timePerColorChange);
+```
+
+Unity does not make any guarantee that the amount of time before the coroutine resumes aligns with the wait time requested.  If we request a near zero time to wait, Unity will wait for a single frame -- we want to ensure that the effect progresses by at least that amount of time as well.
+
+Additionally, this simplistic algorithm may drive the variable timePerColorChange to zero.  If that number got small enough, the loop would never terminate.  Ensuring that we progress by at least deltaTime each frame ensures that the loop will end.
+
+Alternatively this method could be rewritten to use Time.timeSinceLevelLoaded.  With that we do not need to sum each iteration but instead can make decisions based off of the current time vs the time the effect began.
+
+<hr></details>
+<details><summary>Why use GetComponentsInChildren instead of a single sprite?</summary>
+
+Flexibility.  Some use cases would work with GetComponent or GetComponentInChildren.  We get all the sprites in this GameObject and its children, and then update all so if something is composed of multiple sprites this script just works. 
+
+<hr></details>
 
 ## 3.2) Equip the hammer
 
@@ -183,444 +281,6 @@ When modifying the Transform position - you can do so with either .position or .
 <hr></details>
 
 
-
-## 3.3) Hammer blinks red before despawning
-
-Add a script to the hammer to flash red before it's gone.
-
-<details><summary>How</summary>
-
- - Create script Components/Death/**DeathEffectFlash**:
-
-```csharp
-using System.Collections;
-using UnityEngine;
-
-public class DeathEffectFlash : DeathEffect
-{
-  [SerializeField]
-  float lengthToFlashFor = 5;
-
-  [SerializeField]
-  float timePerColorChange = .75f;
-
-  [SerializeField]
-  float colorChangeTimeFactorPerFlash = .85f;
-
-  public override float timeUntilObjectMayBeDestroyed
-  {
-    get
-    {
-      return lengthToFlashFor;
-    }
-  }
-
-  public override void PlayDeathEffects()
-  {
-    StartCoroutine(FlashToDeath());
-  }
-
-  IEnumerator FlashToDeath()
-  {
-    SpriteRenderer[] spriteList 
-      = GetComponentsInChildren<SpriteRenderer>();
-    float timePassed = 0;
-    bool isRed = false;
-    while(timePassed < lengthToFlashFor)
-    {
-      SetColor(spriteList, isRed ? Color.red : Color.white);
-      isRed = !isRed;
-
-      yield return new WaitForSeconds(timePerColorChange);
-      timePerColorChange = Mathf.Max(Time.deltaTime, timePerColorChange);
-      timePassed += timePerColorChange;
-      timePerColorChange *= colorChangeTimeFactorPerFlash;
-    }
-  }
-
-  void SetColor(
-    SpriteRenderer[] spriteList,
-    Color color)
-  {
-    for(int i = 0; i < spriteList.Length; i++)
-    {
-      SpriteRenderer sprite = spriteList[i];
-      sprite.color = color;
-    }
-  }
-}
-```
-
- - Add **DeathEffectFlash** to the hammer prefab, (it should automatically add DeathEffectManager as well).
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-DeathEffectFlash will start when another component triggers death on the GameObject (using DeathEffectManager).  Over a period of time the sprite will flash red faster and faster until the object dies.  
-
-This is added to the hammer and the effect begins when SuicideIn's time completes.  When configuring the length of time a player has the hammer for, sum the SuicideIn time as well as the length to flash for configured in DeathEffectFlash.
-
-The other fields in DeathEffectFlash may be used to control how quickly flash occurs as well as how it accelerates over time.  You could play with these values or modify the formula use in FlashToDeath to create your own effect.
-
-<hr></details>
-<details><summary>Why not simply sum the time used in WaitForSeconds instead of max with deltaTime?</summary>
-
-In the following example, we are requesting the coroutine sleep for a period of time:
-
-```csharp
-yield return new WaitForSeconds(timePerColorChange);
-timePerColorChange = Mathf.Max(Time.deltaTime, timePerColorChange);
-```
-
-Unity does not make any guarantee that the amount of time before the coroutine resumes aligns with the wait time requested.  If we request a near zero time to wait, Unity will wait for a single frame -- we want to ensure that the effect progresses by at least that amount of time as well.
-
-Additionally, this simplistic algorithm may drive the variable timePerColorChange to zero.  If that number got small enough, the loop would never terminate.  Ensuring that we progress by at least deltaTime each frame ensures that the loop will end.
-
-Alternatively this method could be rewritten to use Time.timeSinceLevelLoaded.  With that we do not need to sum each iteration but instead can make decisions based off of the current time vs the time the effect began.
-
-<hr></details>
-<details><summary>Why use GetComponentsInChildren instead of a single sprite?</summary>
-
-Flexibility.  Some use cases would work with GetComponent or GetComponentInChildren.  We get all the sprites in this GameObject and its children, and then update all so if something is composed of multiple sprites this script just works. 
-
-<hr></details>
-
-
-
-## 3.4) Spawn in a flying enemy
-
-Create a GameObject for the fly guy, reusing components from the spike ball and character.  
-
-<details><summary>How</summary>
-
-Create the fly guy:
-
- - Select **spritesheet_jumper_30**, **84**, and **90** and drag them into the Hierarchy, creating Assets/Animations/**FlyGuyWalk**.
-   - Order in Layer: 1
- - Add the sprite to a parent GameObject named "FlyGuy":
-   - Layer: Enemy
-   - Add a **Rigidbody2D**:
-     - Freeze the Z rotation.
-   - Add a **CapsuleCollider2D**:
-     - Adjust the size to fit the sprite's body.
-
-<img src="http://i.imgur.com/d1lxoEj.png" width=150px />
-
-<br>Add a spawner for fly guys:
-
- - Select FlyGuy:
-   - Add **DeathEffectSpawn**:
-     - GameObject to Spawn: the Explosion prefab
-   - Add **KillOnContactWith**:
-     - Layers to kill: Player
-- Drag in **spritesheet_tiles_43** and then drag in **47**.
-   - Order in Layer: -2
- - Add them to a parent named "Door":
-   - Scale up the size of the Door to (1.5, 1.5, 1.5).
-   - Move the door to the bottom left of the level.
-     - Position its Y so that the midpoint of the Door approximately aligns with the midpoint of the FlyGuy (at the height we would want it to spawn).
-
-<img src="http://i.imgur.com/EjVJkZ4.gif" width=300px />
-
- - Move the sprite for the top into position, then vertex snap the bottom.
-
-<img src="http://i.imgur.com/SF57oFs.gif" width=150px />
-
- - Create a prefab for 'FlyGuy' and delete the GameObject.
- - Select the Door and add **Spawner**:
-   - Thing to spawn: FlyGuy
-   - Initial wait time: 10
-
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-Create the fly guy:
-
-The fly guy animation we created simply kicks its feet around.  We are not going to do anything more with this animation in this tutorial.  But you could use some of the same techniques we did for the character if you want to improve the experience.
-
-The rigidbody and collider enables physics and allows them to stay on platforms.  We freeze the z rotation so the fly guy does not fall over.
-
-The collider, layer, and KillOnContactWith replicates the configuration we used for the spike ball to kill the character.
-
-DeathEffectSpawn creates an explosion when the fly guy is hit by a hammer.
-
-<br>Add a spawner for fly guys:
-
-We added a sprite representing the area where fly guys will spawn from.
-
-For simplicity in the Spawner component, the position enemies appear at is the center of the Spawner's GameObject. We attempt to position this for the fly guy, and then adjust the door sprites' positions to fit the visible space.
-
-The Spawner added should start to spawn fly guys periodically after about 10 seconds into the level.
-
-Note that if the character stands still at the level start, a fly guy will spawn and kill him. This will be corrected later.
-
-<hr></details>
-
-
-## 3.5) Make the fly guy walk
-
-Add a script to the fly guy to drive random walk movement.
-
-<details><summary>How</summary>
-
- - Create script Components/Movement/**WanderWalkController**:
-
-```csharp
-using System.Collections;
-using UnityEngine;
-
-[RequireComponent(typeof(WalkMovement))]
-public class WanderWalkController : MonoBehaviour
-{
-  [SerializeField]
-  float timeBeforeFirstWander = 10;
-
-  [SerializeField]
-  float minTimeBetweenReconsideringDirection = 1;
-
-  [SerializeField]
-  float maxTimeBetweenReconsideringDirection = 10;
-
-  WalkMovement walkMovement;
-
-  protected void Awake()
-  {
-    walkMovement = GetComponent<WalkMovement>();
-  }
-
-  protected void Start()
-  {
-    StartCoroutine(Wander());
-  }
-
-  IEnumerator Wander()
-  {
-    walkMovement.desiredWalkDirection = 1;
-    if(timeBeforeFirstWander > 0) 
-    {
-      yield return new WaitForSeconds(timeBeforeFirstWander);
-    } 
-
-    while(true)
-    {
-      SelectARandomWalkDirection();
-      float timeToSleep = UnityEngine.Random.Range(
-        minTimeBetweenReconsideringDirection,
-        maxTimeBetweenReconsideringDirection);
-      yield return new WaitForSeconds(timeToSleep);
-    }
-  }
-
-  void SelectARandomWalkDirection()
-  {
-    walkMovement.desiredWalkDirection
-      = UnityEngine.Random.value <= .5f ? 1 : -1;
-  }
-}
-```
-
- - Add **WanderWalkController** to the FlyGuy (it should automatically add WalkMovement as well).
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-WanderWalkController is a controller to drive the WalkMovement component, similar to how the PlayerController does.  
-
-The PlayerController reads input from the keyboard (or controller) and feeds that to WalkMovement.  WanderWalkController uses RNG to effectively do the same, simulating holding the right or left button.
-
-WanderWalkController will always request movement either left or right.  It starts by going right for a period of time and then chooses directions randomly.  You could extend this logic to have the fly guy occasionally stand in the same place for a moment before continuing on.
-
-You can configure the walk speed by modifying the WalkMovement component's 'Walk Speed'.
-
-Note that at the moment fly guys will walk right off the screen.  This will be addressed soon.
-
-<hr></details>
-<details><summary>Why use timeBeforeFirstWander instead of RNG from the start?</summary>
-
-When the fly guy first spawns in the bottom left of the world, we always want those enemies to walk to the right.  It would look strange for the enemies to go left and promptly hit the side of the screen before turning around.
-
-When the coroutine starts, we tell WalkMovement to go right and then wait a period of time.  The time we wait before entering the while loop should be configured to be long enough for fly guys to reach the first ladder -- maybe even longer.
-
-<hr></details>
-<details><summary>Why not set desiredWalkDirection to a random value instead of 1 or -1?</summary>
-
-You could, if it creates the experience you want in the game.  For example:
-
-```csharp
-walkMovement.desiredWalkDirection 
-  = UnityEngine.Random.Range(-1, 1);
-```
-
-This call would achieve the goal of getting the Fly Guy to walk randomly in one direction or the other. desiredWalkDirection is a percent - so 1 means walk at full speed to the right and -1 is full speed to the left.  Using Random.Range will often give you a much smaller value (e.g. .1) and therefore the walk speed in game may appear too slow.
-
-</details>
-
-## 3.6) Make the fly guy float above the ground
-
-Add a second collider so that the body of the fly guy is above the ground but does not kill a character walking underneath.
-
-<details><summary>How</summary>
-
- - Create a Layer for "Feet".
-   - Update the Physics 2D collision matrix to:
-     - Disable Feet / Player.
-     - Disable Feet / Enemy.
-     - Disable Feet / Feet.
- - Add an empty GameObject as a child under the FlyGuy.  
-   - Name it "Feet".
-   - Assign its Layer to Feet.
-   - Add a **CircleCollider2D** 
-     - Set the radius to .1
-     - Position it a little below the sprite.
-
-<img src="http://i.imgur.com/BPohw5V.png" width=150px />
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-The second collider we added is configured to collide with platforms but not with the character or other entities.  This allows it to prop up the fly guy, making it hover above the ground.  
-
-We don't want the 'feet' to collide with the character because later in the tutorial we will be adding ladders.  While the fly guy is on a ladder, the character can walk underneath.  If the feet could hit the character he may die unexpectedly.
-
-<hr></details>
-<details><summary>How do you know what size to make the second collider?</summary>
-
-It does not matter much.  This second collider's only purpose is to ensure that the fly guy hovers above the ground.  So in a sense, we only need a single pixel to represent the correct Y position for Unity physics to use -- represented by the bottom of this circle collider.
-
-Unity physics by default uses discrete collisions instead of continuous. 
-
- - Discrete means that each FixedUpdate, collisions are considered for the object's current position.
- - Continues means that each FixedUpdate, collisions consider the entire path the object has taken since the last FixedUpdate.
-
-Discrete is is the default because it is more performant.  However Discrete is also less accurate. 
-
-When a collider is too small, collisions may be missed entirely as the object changes from a little above to a little below an obstacle. e.g. this is a common problem when shooting, bullets may start to travel through walls instead of hitting them.
-
-The collider may also be too large, causing our fly guy to continue standing on a platform when they should have fallen off the edge.
-
-<hr></details>
-<details><summary>Why use a child GameObject instead of two colliders on the parent?</summary>
-
-You could opt to do this using just one GameObject instead.
-
-We are using a child GameObject for the fly guy's feet in order to simplify future components.  Specifically we will be created a FloorDetector which will need to know which collider represents the bottom of the object. 
-
-<hr></details>
-
-
-## 3.10) Fade in entities
-
-Add a script to entities so they fade in before moving.
-
-<details><summary>How</summary>
-
- - Create script Components/Life/**FadeInThenEnable**:
-
-```csharp
-using System.Collections;
-using UnityEngine;
-
-public class FadeInThenEnable : MonoBehaviour
-{
-  [SerializeField]
-  float timeTillEnabled = 3;
-
-  [SerializeField]
-  MonoBehaviour[] componentsToEnable;
-
-  protected void OnEnable()
-  {
-    StartCoroutine(FadeIn());
-  }
-
-  protected void OnDisable()
-  {
-    StopAllCoroutines();
-  }
-
-  IEnumerator FadeIn()
-  {
-    SpriteRenderer[] spriteList
-      = gameObject.GetComponentsInChildren<SpriteRenderer>();
-
-    float timePassed = 0;
-    while(timePassed < timeTillEnabled)
-    {
-      float percentComplete = timePassed / timeTillEnabled;
-      SetAlpha(spriteList, percentComplete);
-
-      yield return null;
-
-      timePassed += Time.deltaTime;
-    }
-
-    SetAlpha(spriteList, 1);
-
-    for(int i = 0; i < componentsToEnable.Length; i++)
-    {
-      MonoBehaviour component = componentsToEnable[i];
-      component.enabled = true;
-    }
-  }
-
-  void SetAlpha(
-    SpriteRenderer[] spriteList,
-    float alpha)
-  {
-    for(int i = 0; i < spriteList.Length; i++)
-    {
-      SpriteRenderer sprite = spriteList[i];
-      Color originalColor = sprite.color;
-      sprite.color = new Color(
-        originalColor.r, 
-        originalColor.g, 
-        originalColor.b, 
-        alpha);
-    }
-  }
-}
-```
-
- - Disable the character's PlayerController component.
-
-<img src="http://i.imgur.com/5WtzPmv.png" width=300px />
-
- - Select the Character and add **FadeInThenEnable**:
-   - Expand 'Components to Enable'.
-   - Set 'Size' to 1 and then hit tab for the list to update.
-   - Drag/drop the PlayerController into the list as 'Element 0'.
-
-<img src="http://i.imgur.com/hrXMt1f.gif" width=300px />
-
- - Select the FlyGuy prefab:
-   - Disable the WanderWalkController.
-   - Add **FadeInThenEnable**:
-     - Assign WanderWalkController to the Components to Enable list.
- - Select the Hammer prefab:
-   - Add **FadeInThenEnable** (nothing needed in the to enable list).
-
-<hr></details><br>
-<details><summary>What does this do?</summary>
-
-The FadeInThenEnable script smoothly transitions the alpha for all the sprites in that GameObject from 0 (hidden) to 1 (visible) and then enables the list of components configured.
-
-FadeInThenEnable is added to the Character and we disable the PlayerController to prevent any input such as walk or jump until complete.
-
-On the FlyGuy we disable wander movement until complete.
-
-For the Hammer, we could disable the Hammer component (preventing pickup) but it is unnecessary since the character can't move.
-
-<hr></details>
-<details><summary>What does StopAllCoroutines do?</summary>
-
-StopAllCoroutines will stop any coroutines which were started by this script.  Coroutines in Unity are not running on a different thread, so nothing will be interrupted in that sense - however any coroutine which has yield returned and is expecting to be resumed will not be.
-
-Coroutines are automatically stopped when a GameObject is Destroyed or SetActive(false) is called.  However disabling a component (and not the entire GameObject) does not automatically stop coroutines - which is why we do it explicitly OnDisable here.
-
-</details>
-
-
 ## 3.11) Create a GameController 
 
 Create a singleton GameController to track points, lives, and hold global data such as the world size.
@@ -707,6 +367,30 @@ public class GameController : MonoBehaviour
     - Add the **GameController** component.
     - Create a prefab for the GameController at Prefabs/**GameController**.
 
+<br>Decrement lives when the character dies:
+
+ - Create script Components/Death/**DeathEffectDecrementLives**:
+
+```csharp
+public class DeathEffectDecrementLives : DeathEffect
+{
+  public override float timeUntilObjectMayBeDestroyed
+  {
+    get
+    {
+      return 0;
+    }
+  }
+
+  public override void PlayDeathEffects()
+  {
+    GameController.instance.lifeCounter--;
+  }
+}
+```
+
+ - Add **DeathEffectDecrementLives** to the Character.
+
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
@@ -717,6 +401,10 @@ We store the original life count so that we can add a feature later to reset whe
 An event, onLifeCounterChange, allows other components to react to the number of lives changing.
 
 ScreenBounds was included in this class for other components to leverage without having to calculate the value multiple times.
+
+<br>Decrement lives when the character dies:
+
+When the character dies, the life count goes down by one. You can test this by looking at the life count go down in the GameController component (the value in the Inspector will update in real-time).
 
 <hr></details>
 <details><summary>What does DontDestroyOnLoad do?</summary>
@@ -744,7 +432,8 @@ Here's a [good article about singleton from dotnetperls](https://www.dotnetperls
 
 ## 3.8) Restrict movement to stay on screen
 
-Create a script which ensures entities can not walk off screen.
+<!-- Create a script which ensures entities can not walk off screen. -->
+
 
 <details><summary>How</summary>
 
@@ -782,14 +471,21 @@ public class KeepOnScreen : MonoBehaviour
 }
 ```
 
- - Add **KeepOnScreen** to both the Character and Fly Guy prefabs.
+ - Add **KeepOnScreen** to both the Character and HoverGuy prefabs.
+
+<hr></details>
+<details><summary>What</summary>
+
+When an entity attempts to move off screen, KeepOnScreen will position them back to the nearest on screen location.
+
+When positioned by KeepOnScreen, an event is fired. This allows other components to add additional logic to be executed when an entity attempts to leave the screen. 
 
 <hr></details><br>
-<details><summary>What did that do?</summary>
+<details><summary>Does setting the position cause the entity to pop on-screen?</summary>
 
-When the GameObject attempts to move off screen, this script will teleport them back to the nearest on screen location.  Since this is checked every FixedUpdate, the teleporting effect does not cause popping on the screen.  Typically this has the impact of undoing the move which would have occurred if not for this script.
+Since this is checked every FixedUpdate, the teleporting effect does not cause popping on the screen.  Typically this has the impact of undoing the move which would have occurred if not for this script.
 
-When a GameObject is teleported by this script, an event is fired.  This event allows other components to add additional logic to be executed when an entity attempts to leave the screen.  For example, in the next section we will be asking the fly guy to turn around and start walking the other way.
+TODO
 
 <hr></details>
 <details><summary>Why use bounds for these checks?</summary>
@@ -813,10 +509,23 @@ Be careful when you change position using either of these methods as opposed to 
 In this component we are setting transform.position for the teleport effect.  If rigidbody.MovePosition was used instead, occasionally issues may arise as MovePosition competes with other forces on the object.
 
 </details>
+<details><summary>Why use an event when another component could check screen bounds again?</summary>
 
-## 3.9) Fly guy turns around when reaching the edge
+TODO
 
-Create a script to have the fly guy bounce off the edge of the screen and never stop walking.
+When a GameObject is teleported by this script, an event is fired.  This event allows other components to add additional logic to be executed when an entity attempts to leave the screen.  For example, in the next section we will be asking the HoverGuy to turn around and start walking the other way.
+
+2 reasons.
+
+Encourage reuse.  If our definition of leaving the screen changes, it would be best if that was contained in a single script.  For example, ATM half of the entity's body goes off screen before we consider it to be out of bounds.  We may want to change that in the future to use the entity's collider bounds to ensure that the entire body stays visible.
+
+It may not work reliably.  If both components checked screen bounds independently, the result may differ depending on which of those components executed first.  For example, KeepOnScreen may teleport you back on screen and then BounceOffScreenEdges would not consider you out of bounds (and therefore not turn you around.)  You could make this work by modifying the 'Script Execution Order', but I prefer reusing the KeepOnScreen component.
+
+<hr></details>
+
+## 3.9) HoverGuy turns around when reaching the edge
+
+Create a script to have the HoverGuy bounce off the edge of the screen and never stop walking.
 
 <details><summary>How</summary>
 
@@ -845,82 +554,40 @@ public class BounceOffScreenEdges : MonoBehaviour
 
   void KeepOnScreen_onAttemptToLeaveScreen()
   {
+    TODO check direction , instead of flipping we go towards origin
     walkMovement.desiredWalkDirection
       = -walkMovement.desiredWalkDirection;
   }
 }
 ```
 
- - Add **BounceOffScreenEdges** to the FlyGuy prefab.
- - Open menu Edit -> Project Settings -> Script Execution Order
+ - Add **BounceOffScreenEdges** to the HoverGuy prefab.
+ - Open menu Edit -> Project Settings -> Script Execution Order TODO -- NOO
    - Add **WalkMovement** and position it at the bottom of the list (positive number / below Default Time).
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
+The DestroyWhenPlayerDies component can be added to any GameObject to have it destroy itself when the player dies.  We use this on the HoverGuy and SpikeBall to clear enemies from the screen before respawning the character.
+
+DestroyWhenPlayerDies uses Destroy, bypassing any DeathEffects.  We do this instead of using the DeathEffect pattern because we don't want a bunch of explosions spawning.
+
+The spawner also inherits from PlayerDeathMonoBehaviour, restarting the SpawnEnemies coroutine.  We restart the spawner so that any initial wait time is executed again as well.  Additionally we may want to extend the spawner logic to do something like spawn faster the longer the player has been alive, which can also easily be reset by restarting the coroutine.
+
+
+
 This component leverages the KeepOnScreen component to know when the entity attempts to walk off screen.  When hitting the edge, this will flip the entities desired walk direction causing it to start walking the opposite way.
 
 <hr></details>
-<details><summary>What does Script Execution Order do?</summary>
-
-Normally in Unity when a GameObject has multiple components, it's not clear which order those components will be executed in.  Most of the time the order does not matter - but in cases like the example above, components executing in a different order would change the behaviour.
-
-Unity's Script Execution Order is how you can declare the order scripts should be called.  Normally you would not add many scripts to this, reserve it for only when the order will have a real impact.
-
-Sometimes when it seems script execution order is required, you could instead use different events to get the desired behaviour.  For example, every component will execute its Awake before each of them start to execute Start - which may allow you to initialize dependent data in one component for another to use in Start.
-
-</details>
-<details><summary>Why not use screen bounds again instead of the event?</summary>
-
-2 reasons.
-
-Encourage reuse.  If our definition of leaving the screen changes, it would be best if that was contained in a single script.  For example, ATM half of the entity's body goes off screen before we consider it to be out of bounds.  We may want to change that in the future to use the entity's collider bounds to ensure that the entire body stays visible.
-
-It may not work reliably.  If both components checked screen bounds independently, the result may differ depending on which of those components executed first.  For example, KeepOnScreen may teleport you back on screen and then BounceOffScreenEdges would not consider you out of bounds (and therefore not turn you around.)  You could make this work by modifying the 'Script Execution Order', but I prefer reusing the KeepOnScreen component.
-
-<hr></details>
-
-## 3.12) Decrement lives when the character dies
-
-Add a script to the character to decrement lives in the GameController on death.
-
-<details><summary>How</summary>
-
- - Create script Components/Death/**DeathEffectDecrementLives**:
-
-```csharp
-public class DeathEffectDecrementLives : DeathEffect
-{
-  public override float timeUntilObjectMayBeDestroyed
-  {
-    get
-    {
-      return 0;
-    }
-  }
-
-  public override void PlayDeathEffects()
-  {
-    GameController.instance.lifeCounter--;
-  }
-}
-```
-
- - Add **DeathEffectDecrementLives** to the Character.
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-When the character dies, the life count goes down by one.  You can test this by looking at the life count go down in the GameController component (the value in the Inspector will update in real-time).
-
-<hr></details>
 
 
-## 3.13) Respawn on death
+## 3.13) Clear and restart the level on death
 
 Add scripts to respawn the character when he dies.
 
 <details><summary>How</summary>
+
+Respawn on Death:
 
  - Create script Components/Death/**PlayerDeathMonoBehaviour**:
 
@@ -1021,59 +688,7 @@ public class LevelController : MonoBehaviour
  - Add a GameObject named "LevelController":
    - Assign the Character prefab.
 
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-The LevelController is going to be responsible for starting and restarting a level.  It does this by instantiating a player and then broadcasting to all components which inherit from PlayerDeathMonoBehaviour when the level restarts.
-
-The LevelController knows when a player dies by subscribing the life count in the GameController.  When the lives go down, we push the event to all components which inherit from PlayerDeathMonoBehaviour.
-
-Any component may inherit from PlayerDeathMonoBehaviour to receive this event and perform whatever action is appropriate.  For example, enemies should die so we can have a clear level when the player respawns.
-
-The LevelController also has placeholders for completing the level as well as for when the player is out of lives.
-
-At the moment we do not a sequence which ends the game, so if the life count goes negative you stop spawning but the game never ends.
-
-<hr></details>
-<details><summary>Why does position before saving the prefab matter?</summary>
-
-As a simplification, when the GameController spawns in the Character, we reuse the prefabs Transform position (and rotation/scale).  This is the default behaviour when you Instantiate from a prefab.
-
-To be more flexible, we could have a default position for the Character defined somewhere for that level - allowing the spawn location to vary level to level.  
-
-<hr></details>
-<details><summary>Why not use an interface instead of abstract?</summary>
-
-An interface would have been appropriate to use in this use case.  However Unity currently does not have an API for FindObjectsOfType for an interface.  You can work around this by getting all the GameObjects and then calling GetComponents, which does work with interfaces - but that is not an efficient solution.
-
-<hr></details>
-<details><summary>What does FindObjectsOfType do?</summary>
-
-Unity offers a few similar calls allowing you to find all components attached to any GameObject in the scene.  
-
-We are using FindObjectsOfType to get an array of every component which inherited from PlayerDeathMonoBehaviour.  This call won't return components on an inactive GameObject but you could use FindObjectsOfTypeAll if you needed that.
-
-Unity's Find* calls are very slow.  You should not use this frequently, such as every Update.  Depending on the use case, you may be able to collect the information just once OnEnable, or only periodically like we do here only when the player dies.  
-
-If you find the need to call Find* frequently, look for an alternative solution.  For example you may be able to create a static list of relevant references and have objects add/remove themselves as appropriate.
-
-<hr></details>
-<details><summary>Why not have all objects subscribe to life count changes instead or this new pattern?</summary>
-
-There is a performance consideration, but this game likely would work fine either way.  I wanted to introduce another pattern for the tutorial to expose you to multiple possible solutions.
-
-There is some overhead with subscribing and unsubscribing to events.  And as more and more objects subscribe to the same event, each sub and unsub is slower.  We are removing this overhead from the gameplay entirely by using this approach.  
-
-Find* is much slower overall, but in this use case it does not happen until after gameplay has ended - so losing a frames would not be as impactful.
-
-<hr></details>
-
-
-## 3.14) Clear and restart the level on death
-
-Add scripts to kill all the enemies and restart spawners when the character dies.
-
-<details><summary>How</summary>
+<br>Clear and restart the level on death:
 
  - Create script Components/Death/**DestroyWhenPlayerDies**:
 
@@ -1087,7 +702,7 @@ public class DestroyWhenPlayerDies : PlayerDeathMonoBehaviour
 }
 ```
 
- - Add **DestroyWhenPlayerDies** to the Fly Guy and the Spike Ball prefabs.
+ - Add **DestroyWhenPlayerDies** to the HoverGuy and the SpikeBall prefabs.
  - Update Components/Controllers/**Spawner**:
 
 <details><summary>Existing code</summary>
@@ -1162,16 +777,63 @@ public class Spawner : PlayerDeathMonoBehaviour
 
 </details>
 
+
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-The DestroyWhenPlayerDies component can be added to any GameObject to have it destroy itself when the player dies.  We use this on the fly guy and spike ball to clear enemies from the screen before respawning the character.
+The LevelController is going to be responsible for starting and restarting a level.  It does this by instantiating a player and then broadcasting to all components which inherit from PlayerDeathMonoBehaviour when the level restarts.
 
-DestroyWhenPlayerDies uses Destroy, bypassing any DeathEffects.  We do this instead of using the DeathEffect pattern because we don't want a bunch of explosions spawning.
+The LevelController knows when a player dies by subscribing the life count in the GameController.  When the lives go down, we push the event to all components which inherit from PlayerDeathMonoBehaviour.
 
-The spawner also inherits from PlayerDeathMonoBehaviour, restarting the SpawnEnemies coroutine.  We restart the spawner so that any initial wait time is executed again as well.  Additionally we may want to extend the spawner logic to do something like spawn faster the longer the player has been alive, which can also easily be reset by restarting the coroutine.
+Any component may inherit from PlayerDeathMonoBehaviour to receive this event and perform whatever action is appropriate.  For example, enemies should die so we can have a clear level when the player respawns.
+
+The LevelController also has placeholders for completing the level as well as for when the player is out of lives.
+
+At the moment we do not a sequence which ends the game, so if the life count goes negative you stop spawning but the game never ends.
+
+<br>Clear and restart the level on death:
+
+The DestroyWhenPlayerDies component can be added to any GameObject to have it destroy itself when the player dies. We use this on the HoverGuy and SpikeBall to clear enemies from the screen before respawning the character.
+
+DestroyWhenPlayerDies uses Destroy, bypassing any DeathEffects. We do this instead of using the DeathEffect pattern because we don't want a bunch of explosions spawning.
+
+The spawner also inherits from PlayerDeathMonoBehaviour, restarting the SpawnEnemies coroutine. We restart the spawner so that any initial wait time is executed again as well. Additionally we may want to extend the spawner logic to do something like spawn faster the longer the player has been alive, which can also easily be reset by restarting the coroutine.
 
 <hr></details>
+<details><summary>Why does position before saving the prefab matter?</summary>
+
+As a simplification, when the GameController spawns in the Character, we reuse the prefabs Transform position (and rotation/scale).  This is the default behaviour when you Instantiate from a prefab.
+
+To be more flexible, we could have a default position for the Character defined somewhere for that level - allowing the spawn location to vary level to level.  
+
+<hr></details>
+<details><summary>Why not use an interface instead of abstract?</summary>
+
+An interface would have been appropriate to use in this use case.  However Unity currently does not have an API for FindObjectsOfType for an interface.  You can work around this by getting all the GameObjects and then calling GetComponents, which does work with interfaces - but that is not an efficient solution.
+
+<hr></details>
+<details><summary>What does FindObjectsOfType do?</summary>
+
+Unity offers a few similar calls allowing you to find all components attached to any GameObject in the scene.  
+
+We are using FindObjectsOfType to get an array of every component which inherited from PlayerDeathMonoBehaviour.  This call won't return components on an inactive GameObject but you could use FindObjectsOfTypeAll if you needed that.
+
+Unity's Find* calls are very slow.  You should not use this frequently, such as every Update.  Depending on the use case, you may be able to collect the information just once OnEnable, or only periodically like we do here only when the player dies.  
+
+If you find the need to call Find* frequently, look for an alternative solution.  For example you may be able to create a static list of relevant references and have objects add/remove themselves as appropriate.
+
+<hr></details>
+<details><summary>Why not have all objects subscribe to life count changes instead or this new pattern?</summary>
+
+There is a performance consideration, but this game likely would work fine either way.  I wanted to introduce another pattern for the tutorial to expose you to multiple possible solutions.
+
+There is some overhead with subscribing and unsubscribing to events.  And as more and more objects subscribe to the same event, each sub and unsub is slower.  We are removing this overhead from the gameplay entirely by using this approach.  
+
+Find* is much slower overall, but in this use case it does not happen until after gameplay has ended - so losing a frames would not be as impactful.
+
+<hr></details>
+
+
 
 
 ## 3.15) Prevent enemies spawning on top of the character
@@ -1295,27 +957,16 @@ public class Spawner : PlayerDeathMonoBehaviour
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
-The collider we added defines the area to check for the character before allowing a spawn to happen.  We make this large enough to cover the entire entrance area so that there is never a fly guy which spawns in and instantly kills the character - leaving the player feeling cheated.
+The collider we added defines the area to check for the character before allowing a spawn to happen.  We make this large enough to cover the entire entrance area so that there is never a HoverGuy which spawns in and instantly kills the character - leaving the player feeling cheated.
 
 <hr></details>
 <details><summary>What does OverlapCollider do?</summary>
 
-In script, we check for the character by using OverlapCollider.  This is an on-demand way to check for colliders in the area.  The contact filter filters results to only consider the character, so another fly guy in the area does not stop the spawner as well.  
+In script, we check for the character by using OverlapCollider.  This is an on-demand way to check for colliders in the area.  The contact filter filters results to only consider the character, so another HoverGuy in the area does not stop the spawner as well.  
 
 We could have chosen to use OnTriggerEnter and OnTriggerExit instead - this approach was chosen both because it's simple and works well for this use case, and because it exposes us to multiple different techniques during this tutorial.
 
 </details>
-<details><summary>Why use a temp collider list?</summary>
-
-For performance reasons, the OverlapCollider method from Unity takes an array and then adds data to it -- as opposed to returning an array with the data requested (as they do for calls such as GetComponents).  They do this because calls like this may occur frequently and the overhead of creating a new array each time may become a bottleneck.
-
-We create the array once and then pass the same one every time we make the call to OverlapCollider.
-
-For this component, we don't actually need the data itself.  We only want to know if any objects overlap or not.  For this reason, we never read anything from the tempColliderList -- we only consider the number of results (the return value for that method).
-
-Unity also uses the array we pass in to define the max number of results it should discover.  That is why our temp array has a length of 1 and not 0.
-
-<hr></details>
 <details><summary>Why use a contact filter instead of a tag or a layermask?</summary>
 
 You could but it may change how we interact with Unity here.  OverlapCollider answers our question of if the character is in the area, and it accepts a ContactFilter2D.
@@ -1332,6 +983,17 @@ If you do want to use the same LayerMask as defined in the collision matrix, you
 ```csharp
 LayerMask myLayerMask = Physics2D.GetLayerCollisionMask(gameObject.layer);
 ```
+
+<hr></details>
+<details><summary>Why use a temp collider list?</summary>
+
+For performance reasons, the OverlapCollider method from Unity takes an array and then adds data to it -- as opposed to returning an array with the data requested (as they do for calls such as GetComponents).  They do this because calls like this may occur frequently and the overhead of creating a new array each time may become a bottleneck.
+
+We create the array once and then pass the same one every time we make the call to OverlapCollider.
+
+For this component, we don't actually need the data itself.  We only want to know if any objects overlap or not.  For this reason, we never read anything from the tempColliderList -- we only consider the number of results (the return value for that method).
+
+Unity also uses the array we pass in to define the max number of results it should discover.  That is why our temp array has a length of 1 and not 0.
 
 <hr></details>
 
@@ -1402,7 +1064,7 @@ public class AwardPointsOnJumpOver : MonoBehaviour
 }
 ```
 
-- Add the Fly Guy and Spike Ball to scene and for each:
+- Add the HoverGuy and SpikeBall to scene and for each:
   - Add a new empty GameObject as a child:
     - Name it "Points".
     - Add **AwardPointsOnJumpOver**:
@@ -1420,10 +1082,42 @@ public class AwardPointsOnJumpOver : MonoBehaviour
 
  - Apply changes to the prefabs and delete the GameObjects.
 
+<br>Hold rotation on the point collider:
+
+ - Create script Code/Components/Movement/**HoldRotation**:
+
+```csharp
+using UnityEngine;
+
+public class HoldRotation : MonoBehaviour
+{
+  Quaternion originalRotation;
+
+  protected void Awake()
+  {
+    originalRotation = transform.rotation;
+  }
+
+  protected void FixedUpdate()
+  {
+    transform.rotation = originalRotation;
+  }
+}
+```
+
+ - Add **HoldRotation** to the Points GameObject under the SpikeBall prefab.
+
+
 <hr></details><br>
 <details><summary>What did that do?</summary>
 
 We added a large collider above the enemy to detect when the player is above us.  The script AwardPointsOnJumpOver awards points if the player is directly above vs having a platform between them.  A cooldown to prevents the player from doubling up on points with a single jump.
+
+<br>Hold rotation on the point collider:
+
+Each FixedUpdate, we set the rotation back to the original. We add this to the points child on the SpikeBall to ensure we are always checking for the player straight up.
+
+Without this, the points collider would spin with the parent ball.
 
 <hr></details>
 <details><summary>What's Raycast do?</summary>
@@ -1452,44 +1146,6 @@ The second Rigidbody2D does not prevent events on the parent from reaching any s
 Yes, as the code is currently written.  Removing the cooldown would result in huge payouts as the player jumped over.  
 
 This could be addressed other ways.  Consider exactly when you would want to award more points for jumping over an enemy. e.g. we allow you to move back and forth while in the air - if I did this over an enemy, should I get paid twice?
-
-<hr></details>
-
-## 3.17) Hold rotation on the point collider
-
-Create a script for the spike ball to hold the child GameObject's rotation while the parent spins.
-
-<details><summary>How</summary>
-
- - Create script Code/Components/Movement/**HoldRotation**:
-
-```csharp
-using UnityEngine;
-
-public class HoldRotation : MonoBehaviour
-{
-  Quaternion originalRotation;
-
-  protected void Awake()
-  {
-    originalRotation = transform.rotation;
-  }
-
-  protected void FixedUpdate()
-  {
-    transform.rotation = originalRotation;
-  }
-}
-```
-
- - Add **HoldRotation** to the Points GameObject under the Spike Ball prefab.
-
-<hr></details><br>
-<details><summary>What did that do?</summary>
-
-Each FixedUpdate, we set the rotation back to the original.  We add this to the points child on the spike ball to ensure we are always checking for the player straight up.  
-
-Without this, the points collider would spin with the parent ball.
 
 <hr></details>
 <details><summary>Why FixedUpdate instead of Update here?</summary>
