@@ -1,0 +1,77 @@
+- Project setup
+  - Start a 2D project and import assets
+  - Configure sprites
+  - Disable Anti-Aliasing
+  - Select an aspect ratio
+  - Configure camera
+  - Add an auto save script
+- Platforms
+  - Add a platform to the scene
+  - Create platform with rounded edges
+  - Create two connected platforms
+  - Complete level 1 platform layout
+  - Add colliders and effectors
+- SpikeBall
+  - Create a SpikeBall
+  - Add invisible bumpers
+  - Spawn balls from an EvilCloud
+  - Add starting momentum to the ball
+  - Disable collisions between enemies
+  - Destroy balls that roll off
+- Character and Hover Guy
+  - Create an animated character
+  - Add a script to move left & right
+  - Add a player controller
+  - Flip entities when they walk the other way
+  - Spawn in a hovering enemy
+  - Make the HoverGuy walk
+  - Jump
+  - Fade in entities
+- Death effects
+  - Create a pattern for death effects
+  - Kill the player when he hits a ball
+  - Prevent enemies spawning on top of the character
+  - Create an explosion prefab with sound effect
+  - Spawn and destroy explosions
+  - Animate characters death
+- GameController
+  - Create a GameController
+  - Restrict movement to stay on screen
+  - HoverGuy turns around when reaching the edge
+  - Clear and restart the level on death
+  - Add points for jumping over enemies
+- Ground detection
+  - Detect floors
+  - Prevent double jump
+  - Update wander to prefer traveling up hill
+  - Rotate so feet are flat on the floor
+- Ladders
+  - Add ladders to the world
+  - Change layers while climbing
+  - Random climb controller
+  - Stop walking and rolling off ladders
+  - Move towards the center of the ladder
+- Animations
+  - Create and equip a hammer
+  - Hammer animation
+  - Start swinging hammer on equip
+  - Character animation parameters
+  - Jump animation
+  - Additional character animations
+- Timeline
+  - Add an intro timeline
+  - Disable spawners till the intro is complete
+  - Rotate platforms during intro
+  - Add screen shake during intro
+  - Add a win condition
+  - Win animation
+  - Stop everything when the level is over
+- UI and Scene transitions
+  - Transition scenes to level 2
+  - UI for points
+  - UI for lives
+  - Main menu
+- To review, level 2
+  - Level 2
+  - Level 2 breakaway sequence
+  - GG screen
