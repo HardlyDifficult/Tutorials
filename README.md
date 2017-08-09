@@ -1,7 +1,7 @@
 # 2D Platformer tutorial:
 
- - [Intro](/Intro.md)
- - [Project setup](/C1.md)
+ - [Intro](Intro.md)
+ - [Project setup](C1.md)
  - [Platforms](C2.md)
  - [SpikeBall](C3.md)
  - [Character](C4.md)
