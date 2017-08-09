@@ -100,7 +100,7 @@ public class DeathEffectFlash : DeathEffect
 
 We sized the hammer to be about as large as the character.  You could go larger or smaller if you think that looks better.  
 
-However we are using a polygon collider, which outlines the sprite art. In order for the hammer to kill an enemy later on, the hammer needs to make contact with the enemy before the character's body does.  If the hammer is too small, the character may start dieing instead.
+However we are using a polygon collider, which outlines the sprite art. In order for the hammer to kill an enemy later on, the hammer needs to make contact with the enemy before the character's body does.  If the hammer is too small, the character may start dying instead.
 
 <img src="http://i.imgur.com/mfrIum0.png" width=300px /> 
 

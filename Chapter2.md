@@ -27,7 +27,7 @@ Change the character's pivot point:
 <br>Create character:
 
  - Hold Ctrl to select both **adventurer_tilesheet_9** and **10**.
-   - Drag them into the Hierarchy.
+   - Drag them into the Hierarchy. TODO change to drop in scene.
    - When prompted, save the animation as Assets/Animations/**CharacterWalk**.anim
 
 <img src="http://i.imgur.com/jPvFvnq.gif" width=300px />
@@ -149,6 +149,7 @@ using System;
 [RequireComponent(typeof(Rigidbody2D))]
 public class WalkMovement : MonoBehaviour
 {
+  TODO change all nonserialized to HideInInspector
   [NonSerialized]
   public float desiredWalkDirection;
 
@@ -321,7 +322,7 @@ public class JumpMovement : MonoBehaviour
   protected void Awake()
   {
     myBody = GetComponent<Rigidbody2D>();
-    audioSource = GetComponent<AudioSource>();
+    audioSource = GetComponent<AudioSource>(); // TODO is audioSource and jumpClip optional or required?
   }
 
   public void Jump()
@@ -625,7 +626,7 @@ public class FadeInThenEnable : MonoBehaviour
     float timePassed = 0;
     while(timePassed < timeTillEnabled)
     {
-      float percentComplete = timePassed / timeTillEnabled;
+      float percentComplete = timePassed / timeTillEnabled; TODO squared
       SetAlpha(spriteList, percentComplete);
 
       yield return null;
@@ -715,7 +716,7 @@ using UnityEngine;
 public abstract class DeathEffect : MonoBehaviour
 {
   public abstract float timeUntilObjectMayBeDestroyed
-  {
+  { TODO change this to be the return param for play
     get;
   }
 
@@ -730,7 +731,7 @@ using UnityEngine;
 
 public class DeathEffectManager : MonoBehaviour
 {
-  bool isInProcessOfDieing;
+  bool isInProcessOfDying;
 
   public static void PlayDeathEffectsThenDestroy(
     GameObject gameObject)
@@ -749,11 +750,11 @@ public class DeathEffectManager : MonoBehaviour
 
   void PlayDeathEffectsThenDestroy()
   {
-    if(isInProcessOfDieing)
+    if(isInProcessOfDying)
     {
       return;
     }
-    isInProcessOfDieing = true;
+    isInProcessOfDying = true;
 
     DeathEffect[] deathEffectList
       = gameObject.GetComponentsInChildren<DeathEffect>();
@@ -1105,11 +1106,15 @@ Create an explosion particle system and save it as a prefab.
 
  - Add **AudioSource** to the GameObject:
    - Change the AudioClip.  We are using **Death**.
+
+TODO change volume
+
+
  - Drag the Explosion GameObject into Assets/Prefabs.
  - Delete the Explosion GameObject.
 
 
- - Create script Components/Death/**SuicideIn**:
+ - Create script Components/Death/**SuicideIn**: 
 
 ```csharp
 using UnityEngine;
@@ -1273,7 +1278,7 @@ In other words, this script ensures that our explosions do not result in a memor
 
 ## 2.17) Animate characters death
 
-Add a scaling effect for the character dieing, in addition to the explosion.
+Add a scaling effect for the character dying, in addition to the explosion.
 
 <details><summary>How</summary>
 
@@ -1318,7 +1323,7 @@ public class DeathEffectThrob : DeathEffect
       float pulse = .5f + Mathf.Abs(sinValue);
       float scale = (1 - percentComplete) * pulse;
       gameObject.transform.localScale
-        = Vector3.one * scale;
+        = Vector3.one * scale; TODO change to use original scale
 
       yield return null;
       timeRun += Time.deltaTime;

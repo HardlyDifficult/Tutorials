@@ -268,6 +268,8 @@ You'll also want to update the supported resolutions for the different platforms
 
 <img src="http://i.imgur.com/NhCWDTp.png" width=300px />
 
+TODO label pictures PC and GL.
+
 <hr></details><br>
 <details><summary>Why use a fixed aspect ratio</summary>
 
@@ -520,6 +522,8 @@ Add a platform:
    - Change 'Draw Mode' to 'Tiled'.
    - An option for 'Width' appears, increase this to about 10 (but don't change height).
 
+TODO pick a size which more likely fits
+
 <img src="http://i.imgur.com/MIgzjdO.png" width=300px />
 
 <hr></details><br>
@@ -581,6 +585,8 @@ Create a parent Platform:
 
 <img src="http://i.imgur.com/FAkZf1H.png" width=300px />
 
+TODO this is easy to miss, need debugging tips 
+
  - Drag and drop the sprite (spritesheet_ground_72) onto the Platform GameObject.  
  
 It should appear indented under Platform in the Hierarchy:
@@ -608,6 +614,14 @@ It should appear indented under Platform in the Hierarchy:
 
  - Repeat for both edges, creating smooth corners on both sides of the platform.
 
+
+TODO 
+9:49  Moderator  Verified  HardlyDifficult: yea ... even as in an even multiple of the original 1.28. that's clear right =p just confirmed that works with those sprites. so try 12.8 width
+
+TODO size and positioning will keep changing, don't try to get it perfect.
+
+
+
 <hr></details><br>
 <details><summary>Why create a parent GameObject?</summary>
 
@@ -629,6 +643,8 @@ Typically all Transform updates during the game and in level design are done to 
 Our level design calls for the bottom platform to rotate half way through.  Create two Platform GameObjects and position and rotate their parents' GameObjects so that they appear connected.
 
 <details><summary>How</summary>
+
+TODO too verbose.
 
  - Use two copies of the Platform GameObject.
    - Select and copy / paste or right click and 'Duplicate'.
@@ -675,6 +691,7 @@ The width of the world players are going to see is fixed so you could argue that
 At this point we have covered everything you need to match the level 1 platform layout.  You can match the layout we used or come up with your own.
 
 <details><summary>How</summary>
+
 
 The basic steps are:
 
@@ -816,7 +833,7 @@ Add a GameObject for the SpikeBall.
 
 <img src="http://i.imgur.com/crXdz35.gif" width=300px />
 
-
+TODO start hitting play after every step to see whats happening.
 
 <hr></details><br>
 <details><summary>What did that do?</summary>
@@ -988,6 +1005,8 @@ See also [Unity's Execution Order of Event Functions](
 https://docs.unity3d.com/Manual/ExecutionOrder.html).
 
 </details>
+TODO FAQ on warnings or resharper recommendations 
+- e.g. may recommend readonly here.  that will not work.
 <details><summary>What's a Vector2 and how's it differ from Vector3?</summary>
 
 A Vector2 is a struct which holds 2 floats: X, Y.  A Vector3 holds 3 floats: X, Y, Z.  It has an API helpful for managing positions and directions, including:
@@ -1293,7 +1312,7 @@ Create a prefab:
 <br>Add a script to spawn balls:
 
 
- - Create script Code/Components/Life/**Spawner**:
+ - Create script Code/Components/Controllers/**Spawner**:
 
 ```csharp
 using System.Collections;
@@ -1356,6 +1375,7 @@ The spawner component instantiates a prefab at its GameObject's position periodi
 <img src="http://i.imgur.com/ZJSulAj.gif" width=300px /> 
 
 </details>
+TODO debugging, spawn in the wrong spot?  check the child is at 00.
 <details><summary>What's a prefab?</summary>
 
 A prefab is a file representing a configured GameObject.  This includes any child GameObjects as well as Components and their settings from the Inspector. 
@@ -1544,6 +1564,7 @@ Enemies can no longer collide with other enemies, meaning they will walk through
 We do this with a separate Enemy layer so that that collisions with the player are not impacted.
 
 <hr></details>
+TODO faq why not change children too.
 <details><summary>What does the collision matrix impact?</summary>
 
 The collision matrix defines which GameObjects may collide with what other GameObjects, based off of the GameObjects' layers.

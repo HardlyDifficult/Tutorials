@@ -103,7 +103,7 @@ public class FloorDetector : MonoBehaviour
     return myCollider.bounds.min.y - yOfTopOfFloor;
   }
 
-  static void CalculateFloorRotation(
+  void CalculateFloorRotation(
     Collider2D floorWeAreStandingOn)
   {
     floorUp = floorWeAreStandingOn.transform.up;
@@ -151,6 +151,8 @@ public class FloorDetector : MonoBehaviour
   }
 }
 ```
+
+this is a aosnetaosnethuao
 
  - Add **FloorDetector** to:
    - The Character prefab.
