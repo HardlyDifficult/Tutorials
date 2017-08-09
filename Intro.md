@@ -33,3 +33,5 @@ Process plan (constantly changing...)
    - Start grammar reviews.
 
 <br><br>
+
+Post questions on YouTube even if you are following the text and not the videos.  
