@@ -17,3 +17,7 @@
  - [UI and scene transitions](C14.md)
  - [To review, level 2](C15.md)
  - [Outro](Outro.md)
+
+ 
+<br><br>
+Enjoying the tutorial?  Support on [Patreon](https://www.patreon.com/HardlyDifficult), with [Paypal](https://u.muxy.io/tip/HardlyDifficult), or by subscribing on [Twitch](https://www.twitch.tv/HardlyDifficult) (free with Amazon Prime).

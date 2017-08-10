@@ -23,19 +23,24 @@ Process plan (constantly changing...)
  - ~~Complete draft of step-by-step~~
  - ~~Refactor code~~
  - ~~Clean steps and draft What did that do and a first cut on FAQ.~~
- - Then big edits - re-organize and add missing FAQs.
- - Rework the what did that section vs the blurb at top, extract more questions.
+ - ~~Then big edits - re-organize and add missing FAQs.~~
  - Chapter by chapter:
-   - Review the chapter one more time.
-   - Record video.
-   - Throw the videos out for editing, how are we cutting/presenting things?
    - Finalize draft including
       - Code snippets and links with comments (double check folders)
       - Screenshots / gifs
       - Asset links
       - Intro/outro
-   - Start grammar reviews.
+   - Start grammar reviews (chapter 1 and 2 are ready for review)
+ - Chapter by chapter:
+   - Record video.
+   - Throw the videos out for editing, how are we cutting/presenting things?
+
 
 <br><br>
 
 Post questions on YouTube even if you are following the text and not the videos.  
+
+
+
+<br><br>
+Support on [Patreon](https://www.patreon.com/HardlyDifficult), with [Paypal](https://u.muxy.io/tip/HardlyDifficult), or by subscribing on [Twitch](https://www.twitch.tv/HardlyDifficult) (free with Amazon Prime).

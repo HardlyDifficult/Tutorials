@@ -76,7 +76,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -86,7 +86,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -96,7 +96,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -106,7 +106,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -116,7 +116,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -126,7 +126,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -136,7 +136,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -146,7 +146,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -156,7 +156,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -166,7 +166,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -176,7 +176,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -186,7 +186,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -196,7 +196,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -206,7 +206,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -216,7 +216,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -226,7 +226,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 ```csharp
 ```
@@ -236,7 +236,7 @@ TODO
 ```csharp
 ```
 
-</details>
+<hr></details>
 
 
 
@@ -312,7 +312,7 @@ GetComponent<AudioSource>().PlayOneShot(clip);
 
 This will start playing another clip, re-using an existing AudioSource component (and its GameObject's position as well as the audio configuration options such as pitch).
 
-</details>
+<hr></details>
 
 
 <details><summary>Why FindObjectsOfType<GameObject> followed by GetComponents instead of FindObjectsOfType<ICareWhenPlayerDies>?</summary>
@@ -340,16 +340,16 @@ Slice each of the sprite sheets in order to access the individual sprites within
 - Select a sprite sheet in the 'Project' (such as Assets/Art/**spritesheet_ground**).
 - In the 'Inspector', set 'Sprite Mode' to 'Multiple'.
 
-<img src="http://i.imgur.com/duYuVMy.png" width=300px />
+<img src="https://i.imgur.com/duYuVMy.png" width=300px />
 
 - Click 'Sprite Editor' and apply changes when prompted.
 - Click the 'Slice' menu item (see below for the type to use per sprite).
   - If all the sprites in the sheet are the same size, use Grid By Cell Count and enter the number of sprites in the sheet horizontally (columns) and vertically (rows).
   - If the sprites in the sheet are various sizes, use Automatic.
 
-<img src="http://i.imgur.com/3wLWBZG.png" width=300px />
+<img src="https://i.imgur.com/3wLWBZG.png" width=300px />
 
-<img src="http://i.imgur.com/d3XzhRU.png" width=300px />
+<img src="https://i.imgur.com/d3XzhRU.png" width=300px />
 
 - Click 'Slice' button.
 - Close the Sprite Editor and apply changes when prompted.
@@ -368,11 +368,11 @@ Slicing is the process of defining each individual sprite in a sprite sheet.  On
 
 After you have sliced, white lines appear in the 'Sprite Editor'.  These lines show you how the sprite sheet is cut, boxing in each individual sprite.  Any whitespace as shown in this example is ignored (i.e. it does not generate blank sprites as well).
 
-<img src="http://i.imgur.com/NawupLS.png" width=50% />
+<img src="https://i.imgur.com/NawupLS.png" width=50% />
 
 After closing the 'Sprite Editor' and applying changes you can expand the sprite sheet in Assets to see each sprite it created.
 
-<img src="http://i.imgur.com/Qq0nn2B.png" width=50% />
+<img src="https://i.imgur.com/Qq0nn2B.png" width=50% />
 
 <hr></details>
 <details><summary>Why not always use Automatic?</summary>
@@ -381,7 +381,7 @@ Automatic does not always provide the desired results.
 
 One issue may be consistency between sprites in a sprite sheet.  Often we want each sprite to be treated the same. For example with the character, using automatic will create different sized sprites for each pose.  This can make animating a challenge.
 
-<img src="http://i.imgur.com/lKfaiMj.png" width=300px />
+<img src="https://i.imgur.com/lKfaiMj.png" width=300px />
 
 Other issues may arise as well, such as different objects in a sprite sheet being combined into a single sprite.
 
@@ -398,4 +398,4 @@ Unity's Script Execution Order is how you can declare the order scripts should b
 
 Sometimes when it seems script execution order is required, you could instead use different events to get the desired behaviour.  For example, every component will execute its Awake before each of them start to execute Start - which may allow you to initialize dependent data in one component for another to use in Start.
 
-</details>
+<hr></details>
