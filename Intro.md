@@ -3,6 +3,10 @@
 TODO intro. Setting up 'pixel perfect'.
 [Demo of the game](https://hardlydifficult.com/Kong/index.html)
 
+Requirements:
+ - Unity 2017+
+ - C# 4+
+
 Target audience: we try to assume little without boring those with experience.  You don't need to know how to code and it's okay if this is your first time with Unity.  You can follow step-by-step and copy/paste scripts, but we aim to teach the process along the way as well.  New concepts are introduced as they come to help beginners and intermediate developers understand.  
 
 TODO encourage experimenting along the way.  At the start of each chapter we have a download with the project up to that point.  Hack away, then reset to the baseline and hack some more.
