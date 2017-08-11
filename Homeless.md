@@ -399,3 +399,26 @@ Unity's Script Execution Order is how you can declare the order scripts should b
 Sometimes when it seems script execution order is required, you could instead use different events to get the desired behaviour.  For example, every component will execute its Awake before each of them start to execute Start - which may allow you to initialize dependent data in one component for another to use in Start.
 
 <hr></details>
+
+
+
+
+
+<details><summary>What's a C# smart property?</summary>
+
+In C#, data may be exposed as either a Field or a Property.  Fields are simply data as one would expect.  Properties are accessed in code like a field is, but they are capable of more.
+
+In this example, when isGoingRight changes between true and false, the GameObject's transform is rotated so that the sprite faces the correct direction.  Leveraging the property changing to trigger the rotation change is an example of logic in the property making it 'smart'.
+
+There are pros and cons to smart properties.  For example, one may argue that including the transform change when isGoingRight is modified hides the mechanic and makes the code harder to follow.  There are always alternatives if you prefer to not use smart properties.  For example:
+
+```csharp
+bool isGoingLeftNow = xVelocity <> 0;
+if(isGoingLeft != isGoingLeftNow) 
+{
+  sprite.flipX = isGoingLeft;
+  isGoingLeft = isGoingLeftNow;
+}
+```
+
+<hr></details>

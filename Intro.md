@@ -1,6 +1,6 @@
 # 2D Platformer Tutorial for Unity 2017
 
-TODO intro. Setting up 'pixel perfect'.
+TODO intro. Setting up 'pixel-perfect'.
 [Demo of the game](https://hardlydifficult.com/Kong/index.html)
 
 Requirements:
@@ -35,6 +35,9 @@ Process plan (constantly changing...)
    - Record video.
    - Throw the videos out for editing, how are we cutting/presenting things?
 
+
+
+[https://goo.gl/forms/Ee9PXtYoLdT6xavy1](fill out this form for credits) if you have been helping with the tutorial.
 
 <br><br>
 
