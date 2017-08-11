@@ -1,9 +1,5 @@
 # 2D Platformer tutorial:
 
-```
-* Not Ready.
-```
-
  - [Intro](Intro.md)*
  - [Project Setup](C1.md) 
  - [Platforms](C2.md)
@@ -21,3 +17,7 @@
  - [UI and Scene Transitions](C14.md)*
  - [To Review, Level 2](C15.md)*
  - [Outro](Outro.md)*
+
+```
+* Not Ready.
+```
