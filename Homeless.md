@@ -396,17 +396,6 @@ Use the white lines in the 'Sprite Editor' to confirm the results.  There is als
 <hr></details>
 
 
-<details><summary>What does Script Execution Order do?</summary>
-
-Normally in Unity when a GameObject has multiple components, it's not clear which order those components will be executed in.  Most of the time the order does not matter - but in cases like the example above, components executing in a different order would change the behaviour.
-
-Unity's Script Execution Order is how you can declare the order scripts should be called.  Normally you would not add many scripts to this, reserve it for only when the order will have a real impact.
-
-Sometimes when it seems script execution order is required, you could instead use different events to get the desired behaviour.  For example, every component will execute its Awake before each of them start to execute Start - which may allow you to initialize dependent data in one component for another to use in Start.
-
-<hr></details>
-
-
 
 
 
