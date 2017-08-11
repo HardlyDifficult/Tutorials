@@ -30,7 +30,7 @@ Process plan (constantly changing...)
       - Screenshots / gifs
       - Asset links
       - Intro/outro
-   - Start grammar reviews (chapter 1 and 2 are ready for review)
+   - Start grammar reviews (chapter 1-4 are ready for review)
  - Chapter by chapter:
    - Record video.
    - Throw the videos out for editing, how are we cutting/presenting things?

@@ -6,7 +6,13 @@ Major changes:
 
 
 
+TODO      - Disable Feet / Player.
 
+ - Select HoverGuy:
+   - Add **DeathEffectSpawn**:
+     - GameObject to Spawn: the Explosion prefab
+   - Add **KillOnContactWith**:
+     - Layers to kill: Player
 
 
 
