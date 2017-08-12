@@ -31,6 +31,9 @@ Code changes
  Add a 'Rigidbody2D' component to the spike ball.
  - Create a script **Spawner** under Assets/Code/Components/Life and paste the following:
 
+
+Existing code sections need to remove HR.
+
 Add it to an empty parent GameObject named "Character".
 
 TODO: Long sections with more than x bullets need subtitles to split things up
@@ -417,3 +420,91 @@ if(isGoingLeft != isGoingLeftNow)
 ```
 
 <hr></details>
+
+
+
+
+<br>**Update Spawner**:
+
+ - Update Code/Controllers/**Spawner**:
+
+<details><summary>Existing code</summary>
+
+```csharp
+using System.Collections;
+using UnityEngine;
+```
+
+<hr></details>
+
+```csharp
+public class Spawner : PlayerDeathMonoBehaviour
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+{
+  [SerializeField]
+  GameObject thingToSpawn;
+  
+  [SerializeField]
+  float minTimeBetweenSpawns = .5f;
+
+  [SerializeField]
+  float maxTimeBetweenSpawns = 10;
+
+  [SerializeField]
+  ContactFilter2D contactFilter;
+
+  Collider2D safeZoneCollider;
+
+  static Collider2D[] tempColliderList = new Collider2D[1];
+
+  protected void Awake()
+  {
+    safeZoneCollider = GetComponent<Collider2D>();
+  }
+
+  protected void Start()
+  {
+    StartCoroutine(SpawnEnemiesCoroutine());
+  }
+```
+
+</details>
+
+```csharp
+  public override void OnPlayerDeath()
+  {
+    StopAllCoroutines();
+    StartCoroutine(SpawnEnemiesCoroutine());
+  }
+```
+
+<details><summary>Existing code</summary>
+
+```csharp
+  IEnumerator SpawnEnemiesCoroutine()
+  {
+    while(true)
+    {
+      if(safeZoneCollider == null
+        || safeZoneCollider.OverlapCollider(
+          contactFilter, tempColliderList) == 0)
+      {
+        Instantiate(
+        thingToSpawn,
+        transform.position,
+        Quaternion.identity);
+      }
+
+      float sleepTime = UnityEngine.Random.Range(
+        minTimeBetweenSpawns,
+        maxTimeBetweenSpawns);
+      yield return new WaitForSeconds(sleepTime);
+    }
+  }
+}
+```
+</details>
