@@ -7,7 +7,7 @@
  - [Character](C4.md)
  - [HoverGuy](C5.md)
  - [Death Effects](C6.md)
- - [Game Controller](C7.md)*
+ - [Game Controller](C7.md)
  - [Ground Detection](C8.md)*
  - [Ladders](C9.md)*
  - [Hammer](C10.md)*
