@@ -40,7 +40,7 @@ Process plan (constantly changing...)
    - Throw the videos out for editing, how are we cutting/presenting things?
 
 
-[https://goo.gl/forms/Ee9PXtYoLdT6xavy1](fill out this form for credits) if you have been helping with the tutorial.
+[Fill out this form for credits](https://goo.gl/forms/Ee9PXtYoLdT6xavy1) if you have been helping with the tutorial.
 
 <br><br>
 
