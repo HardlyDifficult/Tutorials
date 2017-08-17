@@ -508,3 +508,55 @@ public class Spawner : PlayerDeathMonoBehaviour
 }
 ```
 </details>
+
+
+
+
+
+## 1.4) Disable Anti Aliasing
+
+[YouTube]() | [Source before](https://github.com/hardlydifficult/2DUnityTutorial/archive/cb9527525820b72f3a8dbff786153b92a6c2ebc4.zip) | [Source after](https://github.com/hardlydifficult/2DUnityTutorial/archive/0c2993c651a60b56e583c80d1006f232c93539b3.zip)
+
+Disable anti aliasing for each quality level.
+
+<details><summary>How</summary>
+
+**Disable anti aliasing**:
+
+ - Open menu Edit -> Project Settings -> Quality.
+ - In the Inspector:
+   - Anti Aliasing: Disabled
+
+<img src="https://i.imgur.com/auHPjbi.png" width=300px />
+
+<br>**Repeat for each quality 'Level'**:
+
+   - Click on the row to modify (e.g., 'Very High').
+   - Update Anti Aliasing if needed.
+
+<img src="https://i.imgur.com/KYym6V0.png" width=300px />
+
+ - Click 'Ultra' to resume testing with the best settings.
+
+<hr></details><br>
+<details><summary>What's anti aliasing?</summary>
+
+Anti aliasing is a technique used to smooth jagged edges as shown here:
+
+<img src="https://qph.ec.quoracdn.net/main-qimg-10856ecbea4f439fb9fb751d41ff704a" width=150px />
+
+Disabling anti aliasing gets us closer to pixel-perfect sprites and prevents some visual glitches, particularly when using sprite sheets. Like changing the filter mode to Point, we do this when working with sprites because we often want control over images down to the pixel.
+
+<hr></details>
+<details><summary>Why do we need to change this setting multiple times?</summary>
+
+The highlighted 'Level' is what you are testing with at the moment.  It will default to Ultra.  The green checkboxes represent the default quality level for different build types.  To avoid artifacts, we disable anti aliasing in every level and then switch back to Ultra so that we are testing with the best settings.
+
+<hr></details>
+<details><summary>Why not update the camera instead?</summary>
+
+The camera in your scene has an option to disable 'Allow MSAA'.  Disabling this will turn off Anti Aliasing, as we did above.  Since Anti Aliasing is disabled in the project settings, this checkbox has no effect.
+
+You could opt to disable Anti Aliasing in the camera and not in the project settings; however, if you do, be sure that the cameras you use in other scenes have the same settings.
+
+<hr></details>
