@@ -31,12 +31,14 @@ Process plan (constantly changing...)
       - Asset links
       - Intro/outro
    - Start grammar reviews
+ - Fill in TODOs
  - Review FAQ ordering
  - Debug tips section
  - Intro/Outro
  - Chapter by chapter:
    - Record video.
    - Throw the videos out for editing, how are we cutting/presenting things?
+     - Leaning towards no edits, maybe have a brief intro and outro overlay show
 
 
 [Fill out this form for credits](https://goo.gl/forms/Ee9PXtYoLdT6xavy1) if you have been helping with the tutorial.
@@ -48,4 +50,4 @@ Post questions on YouTube even if you are following the text and not the videos.
 
 
 <br><br>
-Support on [Patreon](https://www.patreon.com/HardlyDifficult), with [Paypal](https://u.muxy.io/tip/HardlyDifficult), or by subscribing on [Twitch](https://www.twitch.tv/HardlyDifficult) (free with Amazon Prime).
+Support on [Patreon](https://www.patreon.com/HardlyDifficult), with [Paypal](https://u.muxy.io/tip/HardlyDifficult), or by subscribing on [Twitch](https://www.twitch.tv/HardlyDifficult/subscribe) (free with Amazon Prime).
