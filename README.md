@@ -9,7 +9,7 @@
  - [Death Effects](C6.md)
  - [Game Controller](C7.md)
  - [Ground Detection](C8.md)
- - [Ladders](C9.md)*
+ - [Ladders](C9.md)
  - [Hammer](C10.md)*
  - [Character Animations](C11.md)*
  - [Intro Timeline](C12.md)*
