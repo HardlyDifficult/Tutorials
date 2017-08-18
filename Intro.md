@@ -31,9 +31,8 @@ Process plan (constantly changing...)
       - Asset links
       - Intro/outro
    - Start grammar reviews
-      - chapter 1-7 are ready for review
-      - 1-3 had a pass already
  - Review FAQ ordering
+ - Debug tips section
  - Intro/Outro
  - Chapter by chapter:
    - Record video.
