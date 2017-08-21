@@ -1,3 +1,6 @@
+Include an ETA per chapter.
+
+
 Major changes:
  
  - Sprite sheets
