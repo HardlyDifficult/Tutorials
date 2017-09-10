@@ -1,14 +1,21 @@
-# Quaternions
+# Intro to Quaternions 
+
+ - 1) [Euler](#euler)
+   - 1.1) [Gimbal lock](#gimbal-lock)
+   - 1.2) [Working with Euler in Unity](#working-with-euler-in-unity)
+ - 2) [Axis-Angle](#axis-angle)
+
+Goal: 
 
 TODO
 
-## Euler
+## 1) Euler
 
 When we think of rotations, we typically think in terms of 'Euler' (pronounced oi-ler) rotations.  Euler rotations are degrees of rotation around each axis; e.g., (0, 0, 30) means "rotate the object by 30 degrees around the Z axis."
 
 In the inspector, modifying a Transform's rotation is done in Euler.  In code, you can either work with Quaternions directly, or use Euler and then convert it back to Quaternion for storage.
 
-### Gimbal lock
+### 1.1) Gimbal lock
 
 The main reason that euler is not the primary way of storing and manipulating rotations in a game is because of issues which arise from "Gimbal lock".
 
@@ -22,9 +29,22 @@ Gimbal lock is not an all or nothing situation. As you approach certain angles t
 
 Note that euler can represent any possible rotation.  Gimbal lock is only a concern when modifying or combining rotations.
 
-For a lot more detail - see [Wikipedia's article on Gimbal Lock](https://en.wikipedia.org/wiki/Gimbal_lock).
+For a lot more detail - see [Wikipedia's article on Gimbal Lock](https://en.wikipedia.org/wiki/Gimbal_lock) or [GuerrillaCG's video on Gimbal Lock](https://www.youtube.com/watch?v=zc8b2Jo7mno&feature=youtu.be&t=176).
 
-For more, see [GuerrillaCG's video on Gimbal Lock](https://www.youtube.com/watch?v=zc8b2Jo7mno&feature=youtu.be&t=176).
+## Working with Euler in Unity
+
+Given a Quaternion, you can calculate the Euler value like so:
+
+```csharp
+Quaternion myRotationInQuaternion = transform.rotation;
+Vector3 myRotationInEuler = myRotationInQuaternion.eulerAngles;
+```
+
+Given an Euler value, you can calculate the Quaternion:
+
+```csharp
+Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
+```
 
 ## Axis-Angle
 
@@ -32,22 +52,62 @@ Another way of representing rotations is Axis-Angle.  This approach defines an a
 
 Here is a simple example where we are rotating around the X axis only.  When the axis is one of the world axes like this, the angle is equivalent to an Euler angle.
 
-<img src=https://i.imgur.com/r90qOtA.gif width=500px>
+<img src=https://i.imgur.com/NhEjxZd.gif width=500px>
 
 The following example shows a more complex rotation where the axis is not aligned with a world axis. 
 
- - It's hard to see with this render, but in the perspective on the right the red axis line is not straight up and down.
+ - It's hard to see with this render, but in the perspective on the right the red axis line is not just straight up and down but also angled from front to back.
  - The bottom two perspectives show the same rotation but with a straight on view of the axis itself.
 
-<img src=https://i.imgur.com/zgK3H5j.gif width=500px>
+<img src=https://i.imgur.com/9jPicRb.gif width=500px>
 
 Axis-Angle and other rotation approaches including Quaternions and Matrices are not impacting by Gimbal Lock.  The only downside to Axis-Angle is that it does not perform as well as Quaternions.
+
+## Working with Axis-Angle in Unity
+
+Given a Quaternion, you can calculate the Axis-Angle value like so:
+
+```csharp
+float angle;
+Vector3 axis;
+transform.rotation.ToAngleAxis(out angle, out axis);
+```
+
+Given an Axis-Angle value, you can calculate the Quaternion:
+
+```csharp
+Quaternion rotation = Quaternion.AngleAxis(angle, axis);
+```
 
 ## Quaternion
 
 A Quaternion is an axis-angle representation which is scaled in way which optimizes common calculations such as combining multiple rotations and interpolating between different rotation values.
 
-This is the formula for Quaternion, given an axis-angle rotation.
+Quaternions are composed of 4 floats, like an Axis-Angle.  The first three (x, y, z) are logically grouped into a vector component of the Quaternion and the last value (w) is the scalar component.
+
+### Working with Quaternions in Unity
+
+In Unity, all rotations are stored as Quaternions.  You may prefer working with another rotation format in code and then need to convert to/from Quaternions.  See the Euler and Axis-Angle sections above for examples.
+
+You may also construct a Quaternion from the calculated components.
+
+```csharp
+Quaternion rotation = new Quaternion(0, 0, 0, 1);
+```
+
+Generally you would not use the Quaternion constructor as selecting the values for x, y, z, w to create the rotation you are looking for is difficult for people to do.  
+
+Often rotations are created as Euler and then converted to Quaternion.  Then Quaternions are used to modify other Quaternions using the techniques covered later in this tutorial.
+
+The default rotation for an object, known as 'identity', is (0, 0, 0) in Euler and (0, 0, 0, 1) in Quaternion.  
+
+```csharp
+Quaternion rotation = Quaternion.identity;
+```
+
+### Math for Creating Quaternions
+
+Here is the formula for Quaternion, given an axis-angle rotation.  You don't need to know this when working in Unity.
 
 ```csharp
 // Given an Axis-Angle rotation
@@ -104,46 +164,46 @@ x * x + y * y + z * z + w * w == 1;
 
 When a lerp calculation is performed, the resulting values need to be normalized again.
 
-Slerp, a similar but more difficult formula, can also be calculated on Quaternions but left out from this tutorial for simplicity.
+[Slerp](https://docs.unity3d.com/ScriptReference/Quaternion.Slerp.html), a similar but more difficult formula, can also be calculated on Quaternions but left out from this tutorial for simplicity.
+
+[RotateTowards](https://docs.unity3d.com/ScriptReference/Quaternion.RotateTowards.html) is an alternative to Lerp for selecting a rotation between two other rotations.  Lerp will progress based off of the percent progress and RotateTowards will progress using a fixed rotation speed.
 
 ### Combining Rotations (Quaternion Multiplication)
 
 Often you need to combine rotations.  With Quaternions this is done with multiplication.
 
-When combining rotations, order matters.  For example a parent GameObject may rotate the parent and a child and then the child could add an additional rotation of its own.  With Quaternions you write the multiplication in reverse, where the last term is the rotation which is conceptually added first.
+When combining rotations, order matters.  For example a parent GameObject may rotate the parent and a child and then the child could add an additional rotation of its own. With Quaternions you write the multiplication such that the parent comes before the child.  
 
-// TODO visual for order matters if we can.
+<img src=https://i.imgur.com/6ydPWQp.gif width=500px>
 
 ```csharp
-Quaternion parentRotation;
-Quaternion childRotation;
-
-Quaternion rotation = childRotation * parentRotation;
+Quaternion rotation = parentRotation * childRotation;
 ```
 
+You can use multiplication to combine any number of rotations (e.g. grandparent * parent * child).
+
+In Unity, you should use the method above.  However for the interested, below is how multiplication may be calculated.
+
 ```csharp
-// Given two random rotations
-Quaternion childRotation = Random.rotation;
+// Split the Quaternion components
+Vector3 parentVector = new Vector3(
+  parentRotation.x, parentRotation.y, parentRotation.z);
+float parentScalar = parentRotation.w;
+
 Vector3 childVector = new Vector3(
   childRotation.x, childRotation.y, childRotation.z);
 float childScalar = childRotation.w;
 
-Quaternion parentRotation = Random.rotation;
-Vector3 pVector = new Vector3(
-  parentRotation.x, parentRotation.y, parentRotation.z);
-float pScalar = parentRotation.w;
-
-// Calculate childRotation * parentRotation
+// Calculate parentRotation * childRotation
 Quaternion targetRotation;
-Vector3 targetVector = childScalar * pVector 
-  + pScalar * childVector 
-  + Vector3.Cross(childVector, pVector);
-float targetScalar = childScalar * pScalar 
-  - Vector3.Dot(childVector, pVector);
+Vector3 targetVector = parentScalar * childVector
+  + childScalar * parentVector
+  + Vector3.Cross(parentVector, childVector);
+float targetScalar = parentScalar * childScalar
+  - Vector3.Dot(parentVector, childVector);
 targetRotation = new Quaternion(
   targetVector.x, targetVector.y, targetVector.z, targetScalar);
 ```
-
 
 ### Rotating Vectors
 
@@ -155,7 +215,12 @@ TODO
 
 
 
+Topics:
 
+ - Dot, Angle
+ - FromToRotation
+ - LookRotation
+ - operator==
 
 
 The performance Quaternions offer come with a small cost in terms of storage.  A rotation technically has 3 degrees of freedom which means that it may be represented with 3 floats (like an Euler) however a Quaternion requires 4 floats.  This tradeoff has been deemed worthwhile by the industry.  If size matters, such as for network communication, quaternions may be compressed as well as an Euler could be.
