@@ -205,19 +205,60 @@ targetRotation = new Quaternion(
   targetVector.x, targetVector.y, targetVector.z, targetScalar);
 ```
 
+### Inverse 
+
+The inverse of a rotation is the opposite rotation.  So if you apply a rotation and then apply the inverse of that rotation it results in no change.
+
+<img src=https://i.imgur.com/O6lHMMb.gif width=500px>
+
+```csharp
+Quaternion inverseRotation = Quaternion.Inverse(rotation);
+```
+
+In Unity, you should use the method above.  However for the interested, below is how multiplication may be calculated.
+
+```csharp
+// Split the Quaternion components
+Vector3 vector = new Vector3(
+    rotation.x, rotation.y, rotation.z);
+float scalar = rotation.w;
+
+// Calculate inverse
+vector = -vector;
+
+// Return results
+Quaternion inverseRotation = new Quaternion(vector.x, vector.y, vector.z, scalar);
+```
+
 ### Rotating Vectors
 
+Given a vector you can calculate its position after a rotation has been applied.  For example, given vertex of a mesh you can calculate what its position would be after a rotation.
+
+<img src=https://i.imgur.com/0YIicjK.gif width=500px>
+
+In Unity, you can simply use the multiplication symbol (Quaternion * Vector), for example:
+
+```csharp
+transform.position = rotation * originalPosition;
+```
+
+You must have the Quaternion before the Vector for multiplication (i.e. originalPosition * rotation does not work). 
+
+
+
+
+
+
+
 TODO
 
-Inverse 
-
-TODO
 
 
 
 Topics:
 
  - Dot, Angle
+
  - FromToRotation
  - LookRotation
  - operator==
