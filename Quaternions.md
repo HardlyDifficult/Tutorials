@@ -121,12 +121,12 @@ Knowing the Quaternion rotations are normalized simplifies some of the math for 
 
 ### 3.1) Working with Quaternions in Unity
 
-In Unity, all rotations are stored as Quaternions.  You may prefer working with another rotation format in code and then need to convert to/from Quaternions.  See the Euler and Axis-Angle sections above for examples.
+In Unity, all rotations are stored as Quaternions.  You may prefer working with another rotation format in code and convert to or from Quaternions as needed.  See the Euler and Axis-Angle sections above for examples on converting rotation formats.
 
 You may also construct a Quaternion from the calculated components.
 
 ```csharp
-Quaternion rotation = new Quaternion(0, 0, 0, 1);
+Quaternion identity = new Quaternion(0, 0, 0, 1);
 ```
 
 Generally you would not use the Quaternion constructor as selecting the values for x, y, z, w to create the rotation you are looking for is difficult for people to do.  
