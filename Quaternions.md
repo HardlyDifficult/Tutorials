@@ -30,7 +30,7 @@ The main reason that Euler is not the primary way of storing and manipulating ro
 
 Gimbal lock is a situation when 2 of the rotation axes collapse, effectively representing the same movement.  This means instead of the usual 3 degrees of freedom (x, y, and z) you only have two.
 
-Here is an example.  Once an object reaches 90 degrees on the X axis the Y and Z axes collapse and modifying either produces the same results (where a change to Y is the same as a negative change to Z).
+Here is an example.  Once an object reaches 90 degrees on the X axis, the Y and Z axes collapse and modifying either produces the same results (where a change to Y is the same as a negative change to Z).
 
 <img src=https://i.imgur.com/uUxzimi.gif width=500px>
 
@@ -49,7 +49,7 @@ Quaternion myRotationInQuaternion = transform.rotation;
 Vector3 myRotationInEuler = myRotationInQuaternion.EulerAngles;
 ```
 
-Given an Euler value, you can calculate the Quaternion:
+Euler rotations are stored as a Vector3.  You can perform any of the operations you might use on a position Vector3 such as +, *, and Lerp.  Then given an Euler value, you can calculate the Quaternion:
 
 ```csharp
 Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
