@@ -12,7 +12,7 @@ Goal: This tutorial aims to introduce working with rotations in Unity, with a fo
    - 2.1) [About Axis-Angle](#21-about-axis-angle)
    - 2.2) [Working with Axis-Angle in Unity](#21-working-with-axis-angle-in-unity)
  - 3.) [Quaternion](#3-quaternion)
-   - 3.1) [About Quaternion](#31-about-quaternion)
+   - 3.1) [About Quaternion Rotations](#31-about-quaternion-rotations)
    - 3.2) [Creating Quaternions](#33-creating-quaternions)   
      - 3.2.1) [Creating Quaternions in Unity](#31-working-with-quaternions-in-unity)
      - 3.2.2) [Math for Creating Quaternions](#32-math-for-creating-quaternions)
@@ -104,6 +104,8 @@ Quaternion rotation = Quaternion.AngleAxis(angle, axis);
 ```
 
 ## 3) Quaternion
+
+### 3.1) About Quaternion Rotations
 
 A Quaternion is an axis-angle representation which is scaled in way which optimizes common calculations such as combining multiple rotations and interpolating between different rotation values.
 
