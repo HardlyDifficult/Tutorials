@@ -137,13 +137,12 @@ Quaternion identity = new Quaternion(0, 0, 0, 1);
 
 Generally you would not use the Quaternion constructor as selecting the values for x, y, z, w to create the rotation you are looking for is difficult for people to do.  
 
-Often rotations are created as Euler and then converted to Quaternion.  Then Quaternions are used to modify other Quaternions using the techniques covered later in this tutorial.  You can also create Quaternions using:
-
+Often rotations are created as Euler and then converted to Quaternion.  Then Quaternions are used to modify other Quaternions using the techniques covered later in this tutorial. 
 
 
 #### 3.2.2) Quaternion.LookRotation in Unity
 
-LookRotation creates a rotation which will orient an object to have the given forward and up directions.  The up direction defaults to the world's positive Y direction but you could change this, for example making it the negative Y direction to rotate an object upside down.
+LookRotation creates a rotation which will orient an object so that its forward faces the target forward direction and its up faces the target up direction.  The up direction defaults to the world's positive Y direction but you could change this, for example making it the negative Y direction to rotate an object upside down.
 
 ```csharp
 Vector3 directionToCamera
