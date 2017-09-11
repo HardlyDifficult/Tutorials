@@ -97,7 +97,7 @@ Vector3 axis;
 transform.rotation.ToAngleAxis(out angle, out axis);
 ```
 
-Given an Axis-Angle value, you can calculate the Quaternion:
+You could modify the angle or even the axis itself.  Then given an Axis-Angle value, you can calculate the Quaternion:
 
 ```csharp
 Quaternion rotation = Quaternion.AngleAxis(angle, axis);
