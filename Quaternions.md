@@ -107,7 +107,7 @@ Quaternion rotation = Quaternion.AngleAxis(angle, axis);
 
 ### 3.1) About Quaternion Rotations
 
-A Quaternion is an axis-angle representation which is scaled in way which optimizes common calculations such as combining multiple rotations and interpolating between different rotation values.
+A Quaternion is an axis-angle representation scaled in way which optimizes common calculations such as combining multiple rotations and interpolating between different rotation values.
 
 Quaternions are composed of 4 floats, like an Axis-Angle.  The first three (x, y, z) are logically grouped into a vector component of the Quaternion and the last value (w) is the scalar component.
 
