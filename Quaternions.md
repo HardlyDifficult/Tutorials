@@ -49,10 +49,6 @@ Here is an example.  Once an object reaches 90 degrees on the X axis, the Y and 
 
 <img src=https://i.imgur.com/pWILGUW.gif width=500px>
 
-
-<img src=https://i.imgur.com/uUxzimi.gif width=500px>
-
-
 Gimbal lock is not an all or nothing situation. As you approach certain angles the impact of changing axes may not offer the full range of motion you might expect.
 
 Note that Euler can represent any possible rotation.  Gimbal lock is only a concern when modifying or combining rotations.
@@ -82,14 +78,14 @@ Another way of representing rotations is Axis-Angle.  This approach defines an a
 
 Here is a simple example where we are rotating around the X axis only.  When the axis is one of the world axes like this, the angle is equivalent to an Euler angle.
 
-<img src=https://i.imgur.com/NhEjxZd.gif width=500px>
+<img src=https://i.imgur.com/YPelrfF.gif width=500px>
 
 The following example shows a more complex rotation where the axis is not aligned with a world axis. 
 
  - It's hard to see with this render, but in the perspective on the right the red axis line is not just straight up and down but also angled from front to back.
  - The bottom two perspectives show the same rotation but with a straight on view of the axis itself.
 
-<img src=https://i.imgur.com/9jPicRb.gif width=500px>
+<img src=https://i.imgur.com/5zCrTdn.gif width=500px>
 
 Axis-Angle and other rotation approaches including Quaternions and Matrices are not impacting by Gimbal Lock. 
 
@@ -252,9 +248,9 @@ When a lerp calculation is performed, the resulting values need to be normalized
 
 Often you need to combine rotations.  With Quaternions this is done with multiplication.
 
-When combining rotations, order matters.  For example a parent GameObject may rotate the parent and a child and then the child could add an additional rotation of its own. With Quaternions you write the multiplication such that the parent comes before the child.  
+When combining rotations, a parent GameObject may rotate the parent and a child and then the child could add an additional rotation of its own. With Quaternions you write the multiplication such that the parent comes before the child.  Order matters as shown in this example:
 
-<img src=https://i.imgur.com/6ydPWQp.gif width=500px>
+<img src=https://i.imgur.com/LwyP3vz.gif width=500px>
 
 ```csharp
 Quaternion rotation = parentRotation * childRotation;
@@ -289,7 +285,7 @@ targetRotation = new Quaternion(
 
 The inverse of a rotation is the opposite rotation.  So if you apply a rotation and then apply the inverse of that rotation it results in no change.
 
-<img src=https://i.imgur.com/O6lHMMb.gif width=500px>
+<img src=https://i.imgur.com/gLsG1OQ.gif width=500px>
 
 ```csharp
 Quaternion inverseRotation = Quaternion.Inverse(rotation);
@@ -314,7 +310,7 @@ Quaternion inverseRotation = new Quaternion(vector.x, vector.y, vector.z, scalar
 
 Given a vector you can calculate its position after a rotation has been applied.  For example, given vertex of a mesh you can calculate what its position would be after a rotation.
 
-<img src=https://i.imgur.com/0YIicjK.gif width=500px>
+<img src=https://i.imgur.com/LAV5HN8.gif width=500px>
 
 In Unity, you can simply use the multiplication symbol (Quaternion * Vector), for example:
 
