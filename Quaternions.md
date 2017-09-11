@@ -369,6 +369,8 @@ In Unity, you should use the method above.  However for the interested, below is
 float dot = a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 ```
 
+
+
  - [Angle](https://docs.unity3d.com/ScriptReference/Quaternion.Angle.html) is very similar to Dot product returning the difference between two rotations in degrees.
  - [operator==](https://docs.unity3d.com/ScriptReference/Quaternion-operator_eq.html) uses the dot product to test if two rotations are nearly identical.
 
