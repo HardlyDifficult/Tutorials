@@ -47,7 +47,11 @@ Gimbal lock is a situation when 2 of the rotation axes collapse, effectively rep
 
 Here is an example.  Once an object reaches 90 degrees on the X axis, the Y and Z axes collapse and modifying either produces the same results (where a change to Y is the same as a negative change to Z).
 
+<img src=https://i.imgur.com/pWILGUW.gif width=500px>
+
+
 <img src=https://i.imgur.com/uUxzimi.gif width=500px>
+
 
 Gimbal lock is not an all or nothing situation. As you approach certain angles the impact of changing axes may not offer the full range of motion you might expect.
 
