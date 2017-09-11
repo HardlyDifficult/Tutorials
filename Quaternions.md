@@ -14,8 +14,11 @@ Goal: This tutorial aims to introduce working with rotations in Unity, with a fo
  - 3.) [Quaternion](#3-quaternion)
    - 3.1) [About Quaternion Rotations](#31-about-quaternion-rotations)
    - 3.2) [Creating Quaternions](#33-creating-quaternions)   
-     - 3.2.1) [Creating Quaternions in Unity](#31-working-with-quaternions-in-unity)
-     - 3.2.2) [Math for Creating Quaternions](#32-math-for-creating-quaternions)
+     - 3.2.1) [Creating Quaternions in Unity](#321-creating-quaternions-in-unity)
+       - 3.2.1.1) [Quaternion Constructor]()
+       - 3.2.1.2) [Quaternion.LookRotation]()
+       - 3.2.1.3) [Quaternion.FromToRotation]()
+     - 3.2.2) [Math for Constructing Quaternions](#32-math-for-creating-quaternions)
    - 3.3) [Interpolation (Lerp/Slerp/MoveTowards)](#33-interpolation-lerp-slerp-movetowards)
      - 3.3.1) [About Lerp]()
      - 3.3.2) [Lerp in Unity]()
@@ -121,7 +124,11 @@ Knowing the Quaternion rotations are normalized simplifies some of the math for 
 
 The default rotation for an object, known as 'identity', is (0, 0, 0) in Euler and (0, 0, 0, 1) in Quaternion.  
 
-### 3.1) Working with Quaternions in Unity
+### 3.2) Creating Quaternions
+
+### 3.2.1) Creating Quaternions in Unity
+
+#### 3.2.1.1) Quaternion Constructor
 
 In Unity, all rotations are stored as Quaternions.  You may prefer working with another rotation format in code and convert to or from Quaternions as needed.  See the Euler and Axis-Angle sections above for examples on converting rotation formats.
 
@@ -137,19 +144,7 @@ Often rotations are created as Euler and then converted to Quaternion.  Then Qua
 
 
 
-
-FromToRotation creates a rotation which would modify a Vector's direction so that after the rotation the Vector is facing the given target direction.  In the following example, we rotate an object so that its 'up' direction faces the camera.
-
-```csharp
-Vector3 directionToCamera 
-  = Camera.main.transform.position - transform.position;
-Quaternion deltaRotation 
-  = Quaternion.FromToRotation(transform.up, directionToCamera);
-transform.up = deltaRotation * transform.up;
-```
-
-Note that the input directions do not need to be normalized.  Later in this tutorial we cover Quaternion multiplication.
-
+#### 3.2.1.2) Quaternion.LookRotation
 
 LookRotation creates a rotation which will orient an object to have the given forward and up directions.  The up direction defaults to the world's positive Y direction but you could change this, for example making it the negative Y direction to rotate an object upside down.
 
@@ -164,6 +159,20 @@ transform.rotation = targetRotation;
 Note that the input directions do not need to be normalized.
 
 <img src=https://i.imgur.com/nK9ijDJ.gif width=500px>
+
+#### 3.2.1.3) Quaternion.FromToRotation
+
+FromToRotation creates a rotation which would modify a Vector's direction so that after the rotation the Vector is facing the given target direction.  In the following example, we rotate an object so that its 'up' direction faces the camera.
+
+```csharp
+Vector3 directionToCamera 
+  = Camera.main.transform.position - transform.position;
+Quaternion deltaRotation 
+  = Quaternion.FromToRotation(transform.up, directionToCamera);
+transform.up = deltaRotation * transform.up;
+```
+
+Note that the input directions do not need to be normalized.  Later in this tutorial we cover Quaternion multiplication.
 
 
 
