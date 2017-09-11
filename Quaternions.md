@@ -135,20 +135,21 @@ You may also construct a Quaternion from the calculated components.
 Quaternion identity = new Quaternion(0, 0, 0, 1);
 ```
 
-Generally you would not use the Quaternion constructor as selecting the values for x, y, z, w to create the rotation you are looking for is difficult for people to do.  Often rotations are created as Euler and then converted to Quaternion.  Then Quaternions are used to modify other Quaternions using the techniques covered later in this tutorial. 
+Generally you would not use the Quaternion constructor.  Selecting the values for x, y, z, w to create the rotation you are looking for is difficult for people to do.  Often rotations are created as Euler and then converted to Quaternion.  Then, Quaternions are used to modify other Quaternions using the techniques covered later in this tutorial. 
 
-For identity, instead of using the constructor you can use the Quaternion.identity variable.
+For identity, instead of using the constructor you can use the Quaternion.identity variable:
 
 ```csharp
 Quaternion rotation = Quaternion.identity;
 ```
 
-Note that this is not a valid rotation and may not be used with any rotation method:
+Note that the 'default' Quaternion is not a valid rotation and may not be used with any rotation method:
 
 ```csharp
 Quaternion invalidQuaternion = default(Quaternion);
+// invalidQuaternion == new Quaternion(0, 0, 0, 0) 
+// This is not normalized, therefor not a valid quaternion
 ```
-
 
 The performance Quaternions offer come with a small cost in terms of storage.  A rotation technically has 3 degrees of freedom which means that it may be represented with 3 floats (like an Euler) however a Quaternion requires 4 floats.  This tradeoff has been deemed worthwhile by the industry for the performance when a game is running.  If size matters, such as for network communication, quaternions may be compressed as well as an Euler could be.
 
