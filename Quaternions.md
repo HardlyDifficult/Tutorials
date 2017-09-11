@@ -123,6 +123,8 @@ Knowing the Quaternion rotations are normalized simplifies some of the math for 
 
 The default rotation for an object (i.e. a rotation that would have no impact on object when applied) , known as 'identity', is (0, 0, 0) in Euler and (0, 0, 0, 1) in Quaternion.  
 
+The performance Quaternions offer come with a small cost in terms of storage.  A rotation technically has 3 degrees of freedom which means that it may be represented with 3 floats (like an Euler) however a Quaternion requires 4 floats.  This tradeoff has been deemed worthwhile by the industry for the performance when a game is running.  If size matters, such as for network communication, quaternions may be compressed as well as an Euler could be.
+
 ### 3.2) Creating Quaternions
 
 #### 3.2.1) Quaternion Constructor in Unity
@@ -150,9 +152,6 @@ Quaternion invalidQuaternion = default(Quaternion);
 // invalidQuaternion == new Quaternion(0, 0, 0, 0) 
 // This is not normalized, therefor not a valid quaternion
 ```
-
-The performance Quaternions offer come with a small cost in terms of storage.  A rotation technically has 3 degrees of freedom which means that it may be represented with 3 floats (like an Euler) however a Quaternion requires 4 floats.  This tradeoff has been deemed worthwhile by the industry for the performance when a game is running.  If size matters, such as for network communication, quaternions may be compressed as well as an Euler could be.
-
 
 #### 3.2.2) Quaternion.LookRotation in Unity
 
