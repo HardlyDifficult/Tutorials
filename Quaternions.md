@@ -2,29 +2,42 @@
 
 [View on YouTube](TODO) | [Source code of the examples below](TODO)
 
+Goal: This tutorial aims to introduce working with rotations in Unity, with a focus on Quaternions.  By the end you should feel comfortable working with Quaternions in Unity and we will introduce some of the math that goes into them so that it does not feel like black magic anymore.  
+
  - 1.) [Euler](#1-euler)
+   - 1.1) [About Euler Rotations](#11-about-euler-rotations)
    - 1.1) [Gimbal lock](#11-gimbal-lock)
    - 1.2) [Working with Euler in Unity](#12-working-with-euler-in-unity)
  - 2.) [Axis-Angle](#2-axis-angle)
-   - 2.1) [Working with Axis-Angle in Unity](#21-working-with-axis-angle-in-unity)
+   - 2.1) [About Axis-Angle](#21-about-axis-angle)
+   - 2.2) [Working with Axis-Angle in Unity](#21-working-with-axis-angle-in-unity)
  - 3.) [Quaternion](#3-quaternion)
-   - 3.1) [Working with Quaternions in Unity](#31-working-with-quaternions-in-unity)
-   - 3.2) [Math for Creating Quaternions](#32-math-for-creating-quaternions)
+   - 3.1) [About Quaternion](#31-about-quaternion)
+   - 3.2) [Creating Quaternions](#33-creating-quaternions)   
+     - 3.2.1) [Creating Quaternions in Unity](#31-working-with-quaternions-in-unity)
+     - 3.2.2) [Math for Creating Quaternions](#32-math-for-creating-quaternions)
    - 3.3) [Lerp](#33-lerp)
+     - 3.3.1) [About Lerp]()
+     - 3.3.2) [Lerp in Unity]()
+     - 3.3.3) [Math for Quaternion Lerp]()
+   - 3.3) [Slerp](#33-lerp)
+     - 3.3.1) [About Slerp]()
+     - 3.3.2) [Slerp in Unity]()
+     - 3.3.3) [Math for Quaternion Slerp]()
    - 3.4) [Combining Rotations (Quaternion Multiplication)](#34-combining-rotations-quaternion-multiplication)
    - 3.5) [Inverse](#35-inverse)
    - 3.6) [Rotating Vectors](#36-rotating-vectors)
    - 3.7) [Dot Product](#37-dot-product)
 
-Goal: This tutorial aims to introduce working with rotations in Unity, with a focus on Quaternions.  By the end you should feel comfortable working with Quaternions in Unity and we will introduce some of the math that goes into them so that it does not feel like black magic anymore.  
-
 ## 1) Euler
+
+### 1.1) About Euler Rotations
 
 When we think of rotations, we typically think in terms of 'Euler' (pronounced oi-ler).  Euler rotations are degrees of rotation around each axis; e.g., (0, 0, 30) means "rotate the object by 30 degrees around the Z axis."
 
 In the Inspector, modifying a Transform's rotation is done in Euler.  In code, you can either work with Quaternions directly, or use Euler (or other representation) and then convert it back to Quaternion for storage.
 
-### 1.1) Gimbal lock
+### 1.2) Gimbal lock
 
 The main reason that Euler is not the primary way of storing and manipulating rotations in a game is because of issues which arise from "Gimbal lock".
 
@@ -40,13 +53,13 @@ Note that Euler can represent any possible rotation.  Gimbal lock is only a conc
 
 For a lot more detail - see [Wikipedia's article on Gimbal Lock](https://en.wikipedia.org/wiki/Gimbal_lock) or [GuerrillaCG's video on Gimbal Lock](https://www.youtube.com/watch?v=zc8b2Jo7mno&feature=youtu.be&t=176).
 
-### 1.2) Working with Euler in Unity
+### 1.3) Working with Euler in Unity
 
 Given a Quaternion, you can calculate the Euler value like so:
 
 ```csharp
 Quaternion myRotationInQuaternion = transform.rotation;
-Vector3 myRotationInEuler = myRotationInQuaternion.EulerAngles;
+Vector3 myRotationInEuler = myRotationInQuaternion.eulerAngles;
 ```
 
 Euler rotations are stored as a Vector3.  You can perform any of the operations you might use on a position Vector3 such as +, *, and Lerp.  Then given an Euler value, you can calculate the Quaternion:
@@ -56,6 +69,8 @@ Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
 ```
 
 ## 2) Axis-Angle
+
+### 2.1) About Axis-Angle
 
 Another way of representing rotations is Axis-Angle.  This approach defines an axis for rotating around and the angle defining how much to rotate.
 
@@ -72,7 +87,7 @@ The following example shows a more complex rotation where the axis is not aligne
 
 Axis-Angle and other rotation approaches including Quaternions and Matrices are not impacting by Gimbal Lock.  The only downside to Axis-Angle is that it does not perform as well as Quaternions.
 
-### 2.1) Working with Axis-Angle in Unity
+### 2.2) Working with Axis-Angle in Unity
 
 Given a Quaternion, you can calculate the Axis-Angle value like so:
 
@@ -150,6 +165,8 @@ transform.rotation = Quaternion.Lerp(
 ```
 
 In Unity, you should use the method above.  However for the interested, below is how the lerp may be calculated.
+
+TODO do we use the Vector parts?
 
 ```csharp
 // Define terms
