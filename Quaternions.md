@@ -1,4 +1,4 @@
-# Intro to Quaternions 
+# Intro to Quaternions (with Unity 2017)
 
 [View on YouTube](TODO) | [Source code of the examples below](TODO)
 
@@ -7,25 +7,22 @@ Goal: This tutorial aims to introduce working with rotations in Unity, with a fo
  - 1.) [Euler](#1-euler)
    - 1.1) [About Euler Rotations](#11-about-euler-rotations)
    - 1.1) [Gimbal lock](#11-gimbal-lock)
-   - 1.2) [Working with Euler in Unity](#12-working-with-euler-in-unity)
+   - 1.2) [Working with Euler](#12-working-with-euler-in-unity)
  - 2.) [Axis-Angle](#2-axis-angle)
    - 2.1) [About Axis-Angle](#21-about-axis-angle)
-   - 2.2) [Working with Axis-Angle in Unity](#21-working-with-axis-angle-in-unity)
+   - 2.2) [Working with Axis-Angle](#21-working-with-axis-angle-in-unity)
  - 3.) [Quaternion](#3-quaternion)
    - 3.1) [About Quaternion Rotations](#31-about-quaternion-rotations)
    - 3.2) [Creating Quaternions](#33-creating-quaternions)   
-     - 3.2.1) [Quaternion Constructors in Unity]()
-     - 3.2.2) [Quaternion.LookRotation in Unity]()
-     - 3.2.3) [Quaternion.FromToRotation in Unity]()
+     - 3.2.1) [Quaternion Constructors]()
+     - 3.2.2) [Quaternion.LookRotation]()
+     - 3.2.3) [Quaternion.FromToRotation]()
      - 3.2.4) [Math for Constructing Quaternions](#32-math-for-creating-quaternions)
    - 3.3) [Interpolation (Lerp/Slerp/MoveTowards)](#33-interpolation-lerp-slerp-movetowards)
-     - 3.3.1) [About Lerp]()
-     - 3.3.2) [Lerp in Unity]()
-     - 3.3.3) [Math for Quaternion Lerp]()
-   - 3.3) [Slerp](#33-lerp)
-     - 3.3.1) [About Slerp]()
-     - 3.3.2) [Slerp in Unity]()
-     - 3.3.3) [Math for Quaternion Slerp]()
+     - 3.3.1) [Lerp]()
+     - 3.3.2) [Slerp]()
+     - 3.3.3) [RotateTowards]()
+     - 3.3.4) [Math for Quaternion Lerp]()
    - 3.4) [Combining Rotations (Quaternion Multiplication)](#34-combining-rotations-quaternion-multiplication)
    - 3.5) [Inverse](#35-inverse)
    - 3.6) [Rotating Vectors](#36-rotating-vectors)
@@ -184,7 +181,7 @@ transform.rotation = Quaternion.FromToRotation(
 Note that the input directions do not need to be normalized.  Later in this tutorial we cover Quaternion multiplication.
 
 
-### 3.2) Math for Creating Quaternions
+#### 3.2.4) Math for Creating Quaternions
 
 Here is the formula for Quaternion, given an axis-angle rotation.  You don't need to know this when working in Unity.
 
@@ -195,9 +192,11 @@ float angle;
 transform.rotation.ToAngleAxis(out angle, out axis);
 angle *= Mathf.Deg2Rad;
 
-// Create a Quaternion
+// Calculated the Quaternion components
 Vector3 vectorComponent = axis * Mathf.Sin(angle / 2);
 float scalarComponent = Mathf.Cos(angle / 2);
+
+// Construct the result
 Quaternion rotation = new Quaternion(
   vectorComponent.x,
   vectorComponent.y,
@@ -206,6 +205,8 @@ Quaternion rotation = new Quaternion(
 ```
 
 ### 3.3) Interpolation (Lerp/Slerp/MoveTowards)
+
+#### 3.3.1) Lerp
 
 Lerp, or **l**inear int**erp**olation, is a fancy term for a simple concept.  If you were to smoothly/evenly rotate from rotation A to B, lerp is the formula that calculates the interim rotation given a percent progress from 0 to 1.  For example:
 
@@ -216,27 +217,33 @@ transform.rotation = Quaternion.Lerp(
     percentComplete);
 ```
 
-In Unity, you should use the method above.  However for the interested, below is how the lerp may be calculated.
+#### 3.3.4) Math for Quaternion Lerp
 
-TODO do we use the Vector parts?
+In Unity, you should use the method above.  However for the interested, below is how the lerp may be calculated.
 
 ```csharp
 // Define terms
 Quaternion a = transform.rotation;
 Quaternion b = targetRotation;
+
+// Split the Quaternion components
+Vector3 aVector = new Vector3(a.x, a.y, a.z);
+float aScalar = a.w;
+Vector3 bVector = new Vector3(b.x, b.y, b.z);
+float bScalar = b.w;
+
 // Calculate target quaternion values
-float x = (1 - percentComplete) * a.x + percentComplete * b.x;
-float y = (1 - percentComplete) * a.y + percentComplete * b.y;
-float z = (1 - percentComplete) * a.z + percentComplete * b.z;
-float w = (1 - percentComplete) * a.w + percentComplete * b.w;
+Vector3 targetVector = (1 - percentComplete) * aVector + percentComplete * bVector;
+float targetScalar = (1 - percentComplete) * aScalar + percentComplete * bScalar;
+
 // Normalize results
-float factor = Mathf.Sqrt(x * x + y * y + z * z + w * w);
-x /= factor;
-y /= factor;
-z /= factor;
-w /= factor;
+float factor = Mathf.Sqrt(targetVector.sqrMagnitude + targetScalar * targetScalar);
+targetVector /= factor;
+targetScalar /= factor;
+
 // Update the rotation to the lerped value
-transform.rotation = new Quaternion(x, y, z, w);
+transform.rotation = new Quaternion(
+  targetVector.x, targetVector.y, targetVector.z, targetScalar);
 ```
 
 
