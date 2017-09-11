@@ -1,13 +1,22 @@
 # Intro to Quaternions 
 
- - 1) [Euler](#euler)
-   - 1.1) [Gimbal lock](#gimbal-lock)
-   - 1.2) [Working with Euler in Unity](#working-with-euler-in-unity)
- - 2) [Axis-Angle](#axis-angle)
+[View on YouTube](TODO) | [Source code of the examples below](TODO)
 
-Goal: 
+ - 1.) [Euler](#1-euler)
+   - 1.1) [Gimbal lock](#11-gimbal-lock)
+   - 1.2) [Working with Euler in Unity](#12-working-with-euler-in-unity)
+ - 2.) [Axis-Angle](#2-axis-angle)
+   - 2.1) [Working with Axis-Angle in Unity](#21-working-with-axis-angle-in-unity)
+ - 3.) [Quaternion](#3-quaternion)
+   - 3.1) [Working with Quaternions in Unity](#31-working-with-quaternions-in-unity)
+   - 3.2) [Math for Creating Quaternions](#32-math-for-creating-quaternions)
+   - 3.3) [Lerp](#33-lerp)
+   - 3.4) [Combining Rotations (Quaternion Multiplication)](#34-combining-rotations-quaternion-multiplication)
+   - 3.5) [Inverse](#35-inverse)
+   - 3.6) [Rotating Vectors](#36-rotating-vectors)
+   - 3.7) [Dot Product](#37-dot-product)
 
-TODO
+Goal: This tutorial aims to introduce working with rotations in Unity, with a focus on Quaternions.  We hope to cover enough detail to give a good overview of how things work and to introduce some of the math that goes into them.  
 
 ## 1) Euler
 
@@ -31,7 +40,7 @@ Note that euler can represent any possible rotation.  Gimbal lock is only a conc
 
 For a lot more detail - see [Wikipedia's article on Gimbal Lock](https://en.wikipedia.org/wiki/Gimbal_lock) or [GuerrillaCG's video on Gimbal Lock](https://www.youtube.com/watch?v=zc8b2Jo7mno&feature=youtu.be&t=176).
 
-## Working with Euler in Unity
+### 1.2) Working with Euler in Unity
 
 Given a Quaternion, you can calculate the Euler value like so:
 
@@ -46,7 +55,7 @@ Given an Euler value, you can calculate the Quaternion:
 Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
 ```
 
-## Axis-Angle
+## 2) Axis-Angle
 
 Another way of representing rotations is Axis-Angle.  This approach defines an axis for rotating around and the angle defining how much to rotate.
 
@@ -63,7 +72,7 @@ The following example shows a more complex rotation where the axis is not aligne
 
 Axis-Angle and other rotation approaches including Quaternions and Matrices are not impacting by Gimbal Lock.  The only downside to Axis-Angle is that it does not perform as well as Quaternions.
 
-## Working with Axis-Angle in Unity
+### 2.1) Working with Axis-Angle in Unity
 
 Given a Quaternion, you can calculate the Axis-Angle value like so:
 
@@ -79,13 +88,13 @@ Given an Axis-Angle value, you can calculate the Quaternion:
 Quaternion rotation = Quaternion.AngleAxis(angle, axis);
 ```
 
-## Quaternion
+## 3) Quaternion
 
 A Quaternion is an axis-angle representation which is scaled in way which optimizes common calculations such as combining multiple rotations and interpolating between different rotation values.
 
 Quaternions are composed of 4 floats, like an Axis-Angle.  The first three (x, y, z) are logically grouped into a vector component of the Quaternion and the last value (w) is the scalar component.
 
-### Working with Quaternions in Unity
+### 3.1) Working with Quaternions in Unity
 
 In Unity, all rotations are stored as Quaternions.  You may prefer working with another rotation format in code and then need to convert to/from Quaternions.  See the Euler and Axis-Angle sections above for examples.
 
@@ -110,7 +119,7 @@ Quaternion rotation = Quaternion.identity;
 
 The performance Quaternions offer come with a small cost in terms of storage.  A rotation technically has 3 degrees of freedom which means that it may be represented with 3 floats (like an Euler) however a Quaternion requires 4 floats.  This tradeoff has been deemed worthwhile by the industry.  If size matters, such as for network communication, quaternions may be compressed as well as an Euler could be.
 
-### Math for Creating Quaternions
+### 3.2) Math for Creating Quaternions
 
 Here is the formula for Quaternion, given an axis-angle rotation.  You don't need to know this when working in Unity.
 
@@ -129,7 +138,7 @@ Quaternion rotation = new Quaternion(
   Mathf.Cos(angle / 2));
 ```
 
-### Lerp
+### 3.3) Lerp
 
 Lerp, or **l**inear int**erp**olation, is a fancy term for a simple concept.  If you were to smoothly/evenly rotate from rotation A to B, lerp is the formula that calculates the interim rotation given a percent progress from 0 to 1.  For example:
 
@@ -173,7 +182,7 @@ When a lerp calculation is performed, the resulting values need to be normalized
 
 [RotateTowards](https://docs.unity3d.com/ScriptReference/Quaternion.RotateTowards.html) is an alternative to Lerp for selecting a rotation between two other rotations.  Lerp will progress based off of the percent progress and RotateTowards will progress using a fixed rotation speed.
 
-### Combining Rotations (Quaternion Multiplication)
+### 3.4) Combining Rotations (Quaternion Multiplication)
 
 Often you need to combine rotations.  With Quaternions this is done with multiplication.
 
@@ -210,7 +219,7 @@ targetRotation = new Quaternion(
   targetVector.x, targetVector.y, targetVector.z, targetScalar);
 ```
 
-### Inverse 
+### 3.5) Inverse 
 
 The inverse of a rotation is the opposite rotation.  So if you apply a rotation and then apply the inverse of that rotation it results in no change.
 
@@ -235,7 +244,7 @@ vector = -vector;
 Quaternion inverseRotation = new Quaternion(vector.x, vector.y, vector.z, scalar);
 ```
 
-### Rotating Vectors
+### 3.6) Rotating Vectors
 
 Given a vector you can calculate its position after a rotation has been applied.  For example, given vertex of a mesh you can calculate what its position would be after a rotation.
 
@@ -267,7 +276,7 @@ Vector3 newPosition = new Vector3(
 The approach above creates a Quaternion for the position simple to enable the multiplication operations required.  Its possible to implement this algorithm without reusing the Quaternion data structure in this way.
 
 
-### Dot Product
+### 3.7) Dot Product
 
 Dot product is a fast operation which informs you how well aligned two rotations are to each other.  A dot product of 1 means the two rotations are identical and -1 means they are oriented in opposite directions.  
 
@@ -288,4 +297,10 @@ float dot = a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 
 
 
+<br><hr>
 
+Questions, issues, or suggestions?  Please use the [YouTube comments](TODO).
+
+Support on [Patreon](https://www.patreon.com/HardlyDifficult), with [Paypal](https://u.muxy.io/tip/HardlyDifficult), or by subscribing on [Twitch](https://www.twitch.tv/HardlyDifficult/subscribe) (free with Amazon Prime).
+ 
+[License](TODO). Created live at [twitch.tv/HardlyDifficult](https://www.twitch.tv/HardlyDifficult) August 2017.  
