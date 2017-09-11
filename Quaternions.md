@@ -111,6 +111,12 @@ A Quaternion is an axis-angle representation scaled in way which optimizes commo
 
 Quaternions are composed of 4 floats, like an Axis-Angle.  The first three (x, y, z) are logically grouped into a vector component of the Quaternion and the last value (w) is the scalar component.
 
+Quaternion rotations must be normalized, meaning:
+
+```csharp
+x * x + y * y + z * z + w * w == 1;
+```
+
 ### 3.1) Working with Quaternions in Unity
 
 In Unity, all rotations are stored as Quaternions.  You may prefer working with another rotation format in code and then need to convert to/from Quaternions.  See the Euler and Axis-Angle sections above for examples.
@@ -189,13 +195,8 @@ w /= factor;
 transform.rotation = new Quaternion(x, y, z, w);
 ```
 
-Quaternions are normalized, meaning:
 
-```csharp
-x * x + y * y + z * z + w * w == 1;
-```
-
-When a lerp calculation is performed, the resulting values need to be normalized again.
+When a lerp calculation is performed, the resulting values need to be normalized so that the resulting Quaternion is normalized.
 
 [Slerp](https://docs.unity3d.com/ScriptReference/Quaternion.Slerp.html), a similar but more difficult formula, can also be calculated on Quaternions but left out from this tutorial for simplicity.
 
