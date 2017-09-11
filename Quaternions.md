@@ -142,7 +142,9 @@ Often rotations are created as Euler and then converted to Quaternion.  Then Qua
 
 #### 3.2.2) Quaternion.LookRotation in Unity
 
-LookRotation creates a rotation which will orient an object so that its forward faces the target forward direction and its up faces the target up direction.  The up direction defaults to the world's positive Y direction but you could change this, for example making it the negative Y direction to rotate an object upside down.
+LookRotation creates a rotation which will orient an object so that its forward will face the target forward direction and its up will face the target up direction.  The up direction defaults to the world's positive Y direction but you could change this, for example making it the negative Y direction to rotate an object upside down.
+
+In the following example (code followed by gif), an object is rotated so that it's always facing away from the camera (since the camera defaults to a negative Z position in the world it is behind objects by default).
 
 ```csharp
 Vector3 directionToCamera
