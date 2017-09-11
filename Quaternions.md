@@ -196,11 +196,13 @@ transform.rotation.ToAngleAxis(out angle, out axis);
 angle *= Mathf.Deg2Rad;
 
 // Create a Quaternion
+Vector3 vectorComponent = axis * Mathf.Sin(angle / 2);
+float scalarComponent = Mathf.Cos(angle / 2);
 Quaternion rotation = new Quaternion(
-  axis.x * Mathf.Sin(angle / 2),
-  axis.y * Mathf.Sin(angle / 2),
-  axis.z * Mathf.Sin(angle / 2),
-  Mathf.Cos(angle / 2));
+  vectorComponent.x,
+  vectorComponent.y,
+  vectorComponent.z,
+  scalarComponent);
 ```
 
 ### 3.3) Interpolation (Lerp/Slerp/MoveTowards)
