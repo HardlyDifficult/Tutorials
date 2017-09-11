@@ -150,7 +150,6 @@ Quaternion invalidQuaternion = default(Quaternion);
 ```
 
 
-
 The performance Quaternions offer come with a small cost in terms of storage.  A rotation technically has 3 degrees of freedom which means that it may be represented with 3 floats (like an Euler) however a Quaternion requires 4 floats.  This tradeoff has been deemed worthwhile by the industry for the performance when a game is running.  If size matters, such as for network communication, quaternions may be compressed as well as an Euler could be.
 
 
