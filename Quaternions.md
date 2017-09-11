@@ -72,7 +72,7 @@ Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
 
 ### 2.1) About Axis-Angle
 
-Another way of representing rotations is Axis-Angle.  This approach defines an axis for rotating around and the angle defining how much to rotate.
+Another way of representing rotations is Axis-Angle.  This approach defines an axis to rotate around and the angle defining how much to rotate.
 
 Here is a simple example where we are rotating around the X axis only.  When the axis is one of the world axes like this, the angle is equivalent to an Euler angle.
 
@@ -85,7 +85,7 @@ The following example shows a more complex rotation where the axis is not aligne
 
 <img src=https://i.imgur.com/9jPicRb.gif width=500px>
 
-Axis-Angle and other rotation approaches including Quaternions and Matrices are not impacting by Gimbal Lock.  The only downside to Axis-Angle is that it does not perform as well as Quaternions.
+Axis-Angle and other rotation approaches including Quaternions and Matrices are not impacting by Gimbal Lock. 
 
 ### 2.2) Working with Axis-Angle in Unity
 
