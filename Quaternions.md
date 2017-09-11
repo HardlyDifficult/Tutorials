@@ -16,17 +16,17 @@
    - 3.6) [Rotating Vectors](#36-rotating-vectors)
    - 3.7) [Dot Product](#37-dot-product)
 
-Goal: This tutorial aims to introduce working with rotations in Unity, with a focus on Quaternions.  We hope to cover enough detail to give a good overview of how things work and to introduce some of the math that goes into them.  
+Goal: This tutorial aims to introduce working with rotations in Unity, with a focus on Quaternions.  By the end you should feel comfortable working with Quaternions in Unity and we will introduce some of the math that goes into them so that it does not feel like black magic anymore.  
 
 ## 1) Euler
 
-When we think of rotations, we typically think in terms of 'Euler' (pronounced oi-ler) rotations.  Euler rotations are degrees of rotation around each axis; e.g., (0, 0, 30) means "rotate the object by 30 degrees around the Z axis."
+When we think of rotations, we typically think in terms of 'Euler' (pronounced oi-ler).  Euler rotations are degrees of rotation around each axis; e.g., (0, 0, 30) means "rotate the object by 30 degrees around the Z axis."
 
-In the inspector, modifying a Transform's rotation is done in Euler.  In code, you can either work with Quaternions directly, or use Euler and then convert it back to Quaternion for storage.
+In the Inspector, modifying a Transform's rotation is done in Euler.  In code, you can either work with Quaternions directly, or use Euler (or other representation) and then convert it back to Quaternion for storage.
 
 ### 1.1) Gimbal lock
 
-The main reason that euler is not the primary way of storing and manipulating rotations in a game is because of issues which arise from "Gimbal lock".
+The main reason that Euler is not the primary way of storing and manipulating rotations in a game is because of issues which arise from "Gimbal lock".
 
 Gimbal lock is a situation when 2 of the rotation axes collapse, effectively representing the same movement.  This means instead of the usual 3 degrees of freedom (x, y, and z) you only have two.
 
@@ -36,7 +36,7 @@ Here is an example.  Once an object reaches 90 degrees on the X axis the Y and Z
 
 Gimbal lock is not an all or nothing situation. As you approach certain angles the impact of changing axes may not offer the full range of motion you might expect.
 
-Note that euler can represent any possible rotation.  Gimbal lock is only a concern when modifying or combining rotations.
+Note that Euler can represent any possible rotation.  Gimbal lock is only a concern when modifying or combining rotations.
 
 For a lot more detail - see [Wikipedia's article on Gimbal Lock](https://en.wikipedia.org/wiki/Gimbal_lock) or [GuerrillaCG's video on Gimbal Lock](https://www.youtube.com/watch?v=zc8b2Jo7mno&feature=youtu.be&t=176).
 
@@ -46,7 +46,7 @@ Given a Quaternion, you can calculate the Euler value like so:
 
 ```csharp
 Quaternion myRotationInQuaternion = transform.rotation;
-Vector3 myRotationInEuler = myRotationInQuaternion.eulerAngles;
+Vector3 myRotationInEuler = myRotationInQuaternion.EulerAngles;
 ```
 
 Given an Euler value, you can calculate the Quaternion:
