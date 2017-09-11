@@ -97,13 +97,18 @@ Quaternion rotation = new Quaternion(0, 0, 0, 1);
 
 Generally you would not use the Quaternion constructor as selecting the values for x, y, z, w to create the rotation you are looking for is difficult for people to do.  
 
-Often rotations are created as Euler and then converted to Quaternion.  Then Quaternions are used to modify other Quaternions using the techniques covered later in this tutorial.
+Often rotations are created as Euler and then converted to Quaternion.  Then Quaternions are used to modify other Quaternions using the techniques covered later in this tutorial.  You can also create Quaternions using:
+
+ - [FromToRotation](https://docs.unity3d.com/ScriptReference/Quaternion.FromToRotation.html) creates a rotation which rotates from one direction to another direction.
+ - [LookRotation](https://docs.unity3d.com/ScriptReference/Quaternion.LookRotation.html) creates a rotation which will orient an object to have the given forward and up directions.  
 
 The default rotation for an object, known as 'identity', is (0, 0, 0) in Euler and (0, 0, 0, 1) in Quaternion.  
 
 ```csharp
 Quaternion rotation = Quaternion.identity;
 ```
+
+The performance Quaternions offer come with a small cost in terms of storage.  A rotation technically has 3 degrees of freedom which means that it may be represented with 3 floats (like an Euler) however a Quaternion requires 4 floats.  This tradeoff has been deemed worthwhile by the industry.  If size matters, such as for network communication, quaternions may be compressed as well as an Euler could be.
 
 ### Math for Creating Quaternions
 
@@ -244,25 +249,43 @@ transform.position = rotation * originalPosition;
 
 You must have the Quaternion before the Vector for multiplication (i.e. originalPosition * rotation does not work). 
 
+In Unity, you should use the method above.  However for the interested, below is how multiplication may be calculated.
+
+```csharp
+// Prep for calculations
+Quaternion positionQuaternion = new Quaternion(
+    position.x, position.y, position.z, 0);
+Quaternion inverseRotation = Quaternion.Inverse(rotation);
+
+// Calculate new position
+Quaternion newPositionQuaternion 
+    = rotation * positionQuaternion * inverseRotation;
+Vector3 newPosition = new Vector3(
+    newPositionQuaternion.x, newPositionQuaternion.y, newPositionQuaternion.z);
+```
+
+The approach above creates a Quaternion for the position simple to enable the multiplication operations required.  Its possible to implement this algorithm without reusing the Quaternion data structure in this way.
+
+
+### Dot Product
+
+Dot product is a fast operation which informs you how well aligned two rotations are to each other.  A dot product of 1 means the two rotations are identical and -1 means they are oriented in opposite directions.  
+
+Note that the dot product does not include direction.  e.g. a value of .9 tells you that you are nearly facing the same direction but does not provide enough data for you to rotate closer to 1.
+
+```csharp
+float dot = Quaternion.Dot(a, b);
+```
+
+In Unity, you should use the method above.  However for the interested, below is how the dot product may be calculated.
+
+```csharp
+float dot = a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+```
+
+ - [Angle](https://docs.unity3d.com/ScriptReference/Quaternion.Angle.html) is very similar to Dot product returning the difference between two rotations in degrees.
+ - [operator==](https://docs.unity3d.com/ScriptReference/Quaternion-operator_eq.html) uses the dot product to test if two rotations are nearly identical.
 
 
 
-
-
-
-TODO
-
-
-
-
-Topics:
-
- - Dot, Angle
-
- - FromToRotation
- - LookRotation
- - operator==
-
-
-The performance Quaternions offer come with a small cost in terms of storage.  A rotation technically has 3 degrees of freedom which means that it may be represented with 3 floats (like an Euler) however a Quaternion requires 4 floats.  This tradeoff has been deemed worthwhile by the industry.  If size matters, such as for network communication, quaternions may be compressed as well as an Euler could be.
 
