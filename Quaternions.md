@@ -217,6 +217,16 @@ transform.rotation = Quaternion.Lerp(
     percentComplete);
 ```
 
+#### 3.3.2) Slerp
+
+TODO
+
+[Slerp](https://docs.unity3d.com/ScriptReference/Quaternion.Slerp.html), a similar but more difficult formula, can also be calculated on Quaternions but left out from this tutorial for simplicity.
+
+#### 3.3.3) RotateTowards
+
+[RotateTowards](https://docs.unity3d.com/ScriptReference/Quaternion.RotateTowards.html) is an alternative to Lerp for selecting a rotation between two other rotations.  Lerp will progress based off of the percent progress and RotateTowards will progress using a fixed rotation speed.
+
 #### 3.3.4) Math for Quaternion Lerp
 
 In Unity, you should use the method above.  However for the interested, below is how the lerp may be calculated.
@@ -246,12 +256,8 @@ transform.rotation = new Quaternion(
   targetVector.x, targetVector.y, targetVector.z, targetScalar);
 ```
 
+When a lerp calculation is performed, the values need to be normalized so that the resulting Quaternion is normalized.
 
-When a lerp calculation is performed, the resulting values need to be normalized so that the resulting Quaternion is normalized.
-
-[Slerp](https://docs.unity3d.com/ScriptReference/Quaternion.Slerp.html), a similar but more difficult formula, can also be calculated on Quaternions but left out from this tutorial for simplicity.
-
-[RotateTowards](https://docs.unity3d.com/ScriptReference/Quaternion.RotateTowards.html) is an alternative to Lerp for selecting a rotation between two other rotations.  Lerp will progress based off of the percent progress and RotateTowards will progress using a fixed rotation speed.
 
 ### 3.4) Combining Rotations (Quaternion Multiplication)
 
