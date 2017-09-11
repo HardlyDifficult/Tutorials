@@ -16,7 +16,7 @@ Goal: This tutorial aims to introduce working with rotations in Unity, with a fo
    - 3.2) [Creating Quaternions](#33-creating-quaternions)   
      - 3.2.1) [Creating Quaternions in Unity](#31-working-with-quaternions-in-unity)
      - 3.2.2) [Math for Creating Quaternions](#32-math-for-creating-quaternions)
-   - 3.3) [Lerp](#33-lerp)
+   - 3.3) [Interpolation (Lerp/Slerp/MoveTowards)](#33-interpolation-lerp-slerp-movetowards)
      - 3.3.1) [About Lerp]()
      - 3.3.2) [Lerp in Unity]()
      - 3.3.3) [Math for Quaternion Lerp]()
@@ -119,6 +119,8 @@ x * x + y * y + z * z + w * w == 1;
 
 Knowing the Quaternion rotations are normalized simplifies some of the math for using and manipulating Quaternions shown below.
 
+The default rotation for an object, known as 'identity', is (0, 0, 0) in Euler and (0, 0, 0, 1) in Quaternion.  
+
 ### 3.1) Working with Quaternions in Unity
 
 In Unity, all rotations are stored as Quaternions.  You may prefer working with another rotation format in code and convert to or from Quaternions as needed.  See the Euler and Axis-Angle sections above for examples on converting rotation formats.
@@ -133,10 +135,43 @@ Generally you would not use the Quaternion constructor as selecting the values f
 
 Often rotations are created as Euler and then converted to Quaternion.  Then Quaternions are used to modify other Quaternions using the techniques covered later in this tutorial.  You can also create Quaternions using:
 
- - [FromToRotation](https://docs.unity3d.com/ScriptReference/Quaternion.FromToRotation.html) creates a rotation which rotates from one direction to another direction.
- - [LookRotation](https://docs.unity3d.com/ScriptReference/Quaternion.LookRotation.html) creates a rotation which will orient an object to have the given forward and up directions.  
 
-The default rotation for an object, known as 'identity', is (0, 0, 0) in Euler and (0, 0, 0, 1) in Quaternion.  
+
+
+FromToRotation creates a rotation which would modify a Vector's direction so that after the rotation the Vector is facing the given target direction.  In the following example, we rotate an object so that its 'up' direction faces the camera.
+
+```csharp
+Vector3 directionToCamera 
+  = Camera.main.transform.position - transform.position;
+Quaternion deltaRotation 
+  = Quaternion.FromToRotation(transform.up, directionToCamera);
+transform.up = deltaRotation * transform.up;
+```
+
+Note that the input directions do not need to be normalized.  Later in this tutorial we cover Quaternion multiplication.
+
+
+LookRotation creates a rotation which will orient an object to have the given forward and up directions.  The up direction defaults to the world's positive Y direction but you could change this, for example making it the negative Y direction to rotate an object upside down.
+
+```csharp
+Vector3 directionToCamera
+  = Camera.main.transform.position - transform.position;
+Quaternion targetRotation
+  = Quaternion.LookRotation(-directionToCamera, Vector3.up);
+transform.rotation = targetRotation;
+```
+
+Note that the input directions do not need to be normalized.
+
+<img src=https://i.imgur.com/nK9ijDJ.gif width=500px>
+
+
+
+
+
+
+
+
 
 ```csharp
 Quaternion rotation = Quaternion.identity;
@@ -163,7 +198,7 @@ Quaternion rotation = new Quaternion(
   Mathf.Cos(angle / 2));
 ```
 
-### 3.3) Lerp
+### 3.3) Interpolation (Lerp/Slerp/MoveTowards)
 
 Lerp, or **l**inear int**erp**olation, is a fancy term for a simple concept.  If you were to smoothly/evenly rotate from rotation A to B, lerp is the formula that calculates the interim rotation given a percent progress from 0 to 1.  For example:
 
