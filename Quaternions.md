@@ -121,7 +121,7 @@ x * x + y * y + z * z + w * w == 1;
 
 Knowing the Quaternion rotations are normalized simplifies some of the math for using and manipulating Quaternions shown below.
 
-The default rotation for an object, known as 'identity', is (0, 0, 0) in Euler and (0, 0, 0, 1) in Quaternion.  
+The default rotation for an object (i.e. a rotation that would have no impact on object when applied) , known as 'identity', is (0, 0, 0) in Euler and (0, 0, 0, 1) in Quaternion.  
 
 ### 3.2) Creating Quaternions
 
@@ -135,9 +135,23 @@ You may also construct a Quaternion from the calculated components.
 Quaternion identity = new Quaternion(0, 0, 0, 1);
 ```
 
-Generally you would not use the Quaternion constructor as selecting the values for x, y, z, w to create the rotation you are looking for is difficult for people to do.  
+Generally you would not use the Quaternion constructor as selecting the values for x, y, z, w to create the rotation you are looking for is difficult for people to do.  Often rotations are created as Euler and then converted to Quaternion.  Then Quaternions are used to modify other Quaternions using the techniques covered later in this tutorial. 
 
-Often rotations are created as Euler and then converted to Quaternion.  Then Quaternions are used to modify other Quaternions using the techniques covered later in this tutorial. 
+For identity, instead of using the constructor you can use the Quaternion.identity variable.
+
+```csharp
+Quaternion rotation = Quaternion.identity;
+```
+
+Note that this is not a valid rotation and may not be used with any rotation method:
+
+```csharp
+Quaternion invalidQuaternion = default(Quaternion);
+```
+
+
+
+The performance Quaternions offer come with a small cost in terms of storage.  A rotation technically has 3 degrees of freedom which means that it may be represented with 3 floats (like an Euler) however a Quaternion requires 4 floats.  This tradeoff has been deemed worthwhile by the industry for the performance when a game is running.  If size matters, such as for network communication, quaternions may be compressed as well as an Euler could be.
 
 
 #### 3.2.2) Quaternion.LookRotation in Unity
@@ -149,42 +163,27 @@ In the following example (code followed by gif), an object is rotated so that it
 ```csharp
 Vector3 directionToCamera
   = Camera.main.transform.position - transform.position;
-Quaternion targetRotation
+transform.rotation
   = Quaternion.LookRotation(-directionToCamera, Vector3.up);
-transform.rotation = targetRotation;
 ```
 
 Note that the input directions do not need to be normalized.
 
-<img src=https://i.imgur.com/nK9ijDJ.gif width=500px>
+<img src=https://i.imgur.com/nK9ijDJ.gif width=300px>
 
 #### 3.2.3) Quaternion.FromToRotation in Unity
 
-FromToRotation creates a rotation which would modify a Vector's direction so that after the rotation the Vector is facing the given target direction.  In the following example, we rotate an object so that its 'up' direction faces the camera.
+FromToRotation creates a rotation which would modify a Vector's direction so that after the rotation the Vector is facing the given target direction.  In the following example, we rotate an object so that its 'back' direction faces the camera (creating the same effect as the example above).
 
 ```csharp
-Vector3 directionToCamera 
+Vector3 directionToCamera
   = Camera.main.transform.position - transform.position;
-Quaternion deltaRotation 
-  = Quaternion.FromToRotation(transform.up, directionToCamera);
-transform.up = deltaRotation * transform.up;
+transform.rotation = Quaternion.FromToRotation(
+  Vector3.back, directionToCamera);
 ```
 
 Note that the input directions do not need to be normalized.  Later in this tutorial we cover Quaternion multiplication.
 
-
-
-
-
-
-
-
-
-```csharp
-Quaternion rotation = Quaternion.identity;
-```
-
-The performance Quaternions offer come with a small cost in terms of storage.  A rotation technically has 3 degrees of freedom which means that it may be represented with 3 floats (like an Euler) however a Quaternion requires 4 floats.  This tradeoff has been deemed worthwhile by the industry.  If size matters, such as for network communication, quaternions may be compressed as well as an Euler could be.
 
 ### 3.2) Math for Creating Quaternions
 
