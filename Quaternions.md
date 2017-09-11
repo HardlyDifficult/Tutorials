@@ -109,13 +109,15 @@ Quaternion rotation = Quaternion.AngleAxis(angle, axis);
 
 A Quaternion is an axis-angle representation scaled in way which optimizes common calculations such as combining multiple rotations and interpolating between different rotation values.
 
-Quaternions are composed of 4 floats, like an Axis-Angle.  The first three (x, y, z) are logically grouped into a vector component of the Quaternion and the last value (w) is the scalar component.
+Quaternions are composed of 4 floats, like an Axis-Angle.  The first three (x, y, z) are logically grouped into a vector component of the Quaternion and the last value (w) is the scalar component.  In some of the math below, you'll see the implications of logically separating the components like this.
 
 Quaternion rotations must be normalized, meaning:
 
 ```csharp
 x * x + y * y + z * z + w * w == 1;
 ```
+
+Knowing the Quaternion rotations are normalized simplifies some of the math for using and manipulating Quaternions shown below.
 
 ### 3.1) Working with Quaternions in Unity
 
