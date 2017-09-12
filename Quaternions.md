@@ -36,8 +36,9 @@ Goal: This tutorial aims to introduce working with rotations in Unity, with a fo
      - 3.4.1) [Math for Quaternion/Vector3 Multiplication]()
    - 3.7) [Comparing Rotations]()
      - 3.7.1) [Dot Product / Quaternion.Dot](#37-dot-product)
-     - 3.7.1) [Quaternion.Angle](#37)
-     - 3.7.1) [Quaternion == Quaternion](#37)
+     - 3.7.2) [Quaternion.Angle](#37)
+     - 3.7.3) [Quaternion == Quaternion](#37)
+     - 3.7.4) [Math for Quaternion Dot]()
 
 ## 1) Euler
 
@@ -429,30 +430,46 @@ Vector3 newPosition = new Vector3(
     newPositionQuat.x, newPositionQuat.y, newPositionQuat.z);
 ```
 
-The approach above creates a Quaternion for the position simple to enable the multiplication operations required.  Its possible to implement this algorithm without reusing the Quaternion data structure in this way.
+The approach above creates a Quaternion for the position simply to enable the multiplication operations required.  It's possible to implement this algorithm without reusing the Quaternion data structure in this way.
 
 
-### 3.7) Dot Product
+### 3.7) Comparing Rotations
+
+#### 3.7.1) Dot Product / Quaternion.Dot
 
 Dot product is a fast operation which informs you how well aligned two rotations are to each other.  A dot product of 1 means the two rotations are identical and -1 means they are oriented in opposite directions.  
 
-Note that the dot product does not include direction.  e.g. a value of .9 tells you that you are nearly facing the same direction but does not provide enough data for you to rotate closer to 1.
+Note that the dot product does not include direction.  e.g. a value of .9 tells you that you are nearly facing the same direction but does not give you enough information to rotate closer to 1.
 
 ```csharp
 float dot = Quaternion.Dot(a, b);
 ```
+
+#### 3.7.2) Quaternion.Angle
+
+Angle returns the difference between two rotations in degrees.  This is very similar to the information you get from the Dot product, but returned in degrees which may be useful for some scenarios.
+
+```csharp
+float angle = Quaternion.Angle(a, b);
+```
+
+#### 3.7.3) Quaternion == Quaternion
+
+The equals operator (operator==) uses the dot product to test if two rotations are nearly identical.  Any data structure which uses floats should not use exact comparisons as rounding issues may result in very tiny differences which have no impact on how the game is rendered, hence the 'nearly'.
+
+
+```csharp
+if(transform.rotation == Quaternion.identity) 
+...
+```
+
+#### 3.7.4) Dot Product / Quaternion.Dot
 
 In Unity, you should use the method above.  However for the interested, below is how the dot product may be calculated.
 
 ```csharp
 float dot = a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 ```
-
-
-
- - [Angle](https://docs.unity3d.com/ScriptReference/Quaternion.Angle.html) is very similar to Dot product returning the difference between two rotations in degrees.
- - [operator==](https://docs.unity3d.com/ScriptReference/Quaternion-operator_eq.html) uses the dot product to test if two rotations are nearly identical.
-
 
 
 <br><hr>
