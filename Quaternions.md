@@ -396,7 +396,8 @@ Quaternion inverseRotation = new Quaternion(
 
 #### 3.6.1) Quaternion * Vector3 (or Vector2)
 
-Given a vector you can calculate its position after a rotation has been applied.  For example, given vertex of a mesh you can calculate what its position would be after a rotation.
+Given a vector you can calculate its position after a rotation has been applied.  For example, given an originalPosition
+vertex of a mesh you can calculate what its position would be after a rotation.
 
 <img src=https://i.imgur.com/LAV5HN8.gif width=500px>
 
@@ -408,7 +409,7 @@ transform.position = rotation * originalPosition;
 
 You must have the Quaternion before the Vector for multiplication (i.e. originalPosition * rotation does not work). 
 
-#### 3.6.2) Math for 
+#### 3.6.2) Math for Quaternion/Vector3 Multiplication
 
 In Unity, you should use the method above.  However for the interested, below is how multiplication may be calculated.
 
@@ -421,6 +422,8 @@ Quaternion inverseRotation = Quaternion.Inverse(rotation);
 // Calculate new position
 Quaternion newPositionQuaternion 
     = rotation * positionQuaternion * inverseRotation;
+
+// Store result
 Vector3 newPosition = new Vector3(
     newPositionQuaternion.x, newPositionQuaternion.y, newPositionQuaternion.z);
 ```
