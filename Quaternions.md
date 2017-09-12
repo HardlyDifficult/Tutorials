@@ -421,12 +421,12 @@ Quaternion positionQuaternion = new Quaternion(
 Quaternion inverseRotation = Quaternion.Inverse(rotation);
 
 // Calculate new position
-Quaternion newPositionQuaternion 
+Quaternion newPositionQuat 
     = rotation * positionQuaternion * inverseRotation;
 
 // Store result
 Vector3 newPosition = new Vector3(
-    newPositionQuaternion.x, newPositionQuaternion.y, newPositionQuaternion.z);
+    newPositionQuat.x, newPositionQuat.y, newPositionQuat.z);
 ```
 
 The approach above creates a Quaternion for the position simple to enable the multiplication operations required.  Its possible to implement this algorithm without reusing the Quaternion data structure in this way.
