@@ -19,7 +19,7 @@ Goal: This tutorial aims to introduce working with rotations in Unity, with a fo
      - 3.2.1) [Quaternion Constructors](#321-quaternion-constructors)
      - 3.2.2) [Quaternion.LookRotation](#322-quaternionlookrotation)
      - 3.2.3) [Quaternion.FromToRotation](#323-quaternionfromtorotation)
-     - 3.2.4) [Math for Constructing Quaternions](#32-math-for-constructing-quaternions)
+     - 3.2.4) [Math for Constructing Quaternions](#324-math-for-constructing-quaternions)
    - 3.3) [Interpolating Rotations](#33-interpolating-rotations)
      - 3.3.1) [Quaternion.Lerp](#331-quaternionlerp)
      - 3.3.2) [Quaternion.Slerp](#332-quaternionslerp)
@@ -222,9 +222,9 @@ Quaternion rotation = new Quaternion(
   scalarComponent);
 ```
 
-### 3.3) Interpolation (Lerp/Slerp/MoveTowards)
+### 3.3) Interpolating Rotations
 
-#### 3.3.1) Lerp
+#### 3.3.1) Quaternion.Lerp
 
 Lerp, or **l**inear int**erp**olation, is a fancy term for a simple concept.  If you were to smoothly/evenly rotate from rotation A to B, lerp is the formula that calculates the interim rotation given a percent progress from 0 to 1, named 't'.  For example:
 
@@ -248,7 +248,7 @@ transform.rotation = Quaternion.Lerp(
 
 [View source for this example](TODO).
 
-#### 3.3.2) Slerp
+#### 3.3.2) Quaternion.Slerp
 
 Slerp, or **s**pherical **l**inear int**erp**olation, is very similar to lerp when interpolating rotations.  The following example shows two objects, one which is rotating with Lerp (blue) and the other with Slerp (red).
 
@@ -265,7 +265,7 @@ transform.rotation = Quaternion.Slerp(
 
 [View source for this example](TODO).
 
-#### 3.3.3) RotateTowards
+#### 3.3.3) Quaternion.RotateTowards
 
 RotateTowards is an alternative to Lerp/Slerp for selecting a rotation between two other rotations.  RotateTowards uses a fixed rotation speed instead of rotating by percent (like Lerp and Slerp).
 
