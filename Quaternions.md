@@ -29,7 +29,7 @@ Goal: This tutorial aims to introduce working with rotations in Unity, with a fo
      - 3.4.1) [Quaternion * Quaternion](#341-quaternion-quaternion)
      - 3.4.2) [Math for Quaternion/Quaternion Multiplication](#342-math-for-quaternionquaternion-multiplication)
    - 3.5) [Inverse](#35-inverse)
-     - 3.5.1) [Quaternion.Inverse](#351-quaternion-inverse)
+     - 3.5.1) [Quaternion.Inverse](#351-quaternioninverse)
      - 3.5.2) [Math for Quaternion Inverse](#352-math-for-quaternion-inverse)
    - 3.6) [Rotating Vectors](#36-rotating-vectors)
      - 3.6.1) [Quaternion * Vector3 (or Vector2)](#361-quaternion-vector3-or-vector2)
