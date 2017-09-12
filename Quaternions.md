@@ -32,12 +32,12 @@ Goal: This tutorial aims to introduce working with rotations in Unity, with a fo
      - 3.5.1) [Quaternion.Inverse](#351-quaternion-inverse)
      - 3.5.2) [Math for Quaternion Inverse](#352-math-for-quaternion-inverse)
    - 3.6) [Rotating Vectors](#36-rotating-vectors)
-     - 3.4.1) [Quaternion * Vector3 (or Vector2)](#341-quaternion-vector3-or-vector2)
-     - 3.4.1) [Math for Quaternion/Vector3 Multiplication](#341-math-for-quaternionvector3-multiplication)
+     - 3.6.1) [Quaternion * Vector3 (or Vector2)](#361-quaternion-vector3-or-vector2)
+     - 3.6.2) [Math for Quaternion/Vector3 Multiplication](#362-math-for-quaternionvector3-multiplication)
    - 3.7) [Comparing Rotations](#37-comparing-rotations)
-     - 3.7.1) [Dot Product / Quaternion.Dot](#371-dot-product-quateniondot)
+     - 3.7.1) [Dot Product / Quaternion.Dot](#371-dot-product--quaterniondot)
      - 3.7.2) [Quaternion.Angle](#372-quaternionangle)
-     - 3.7.3) [Quaternion == Quaternion](#373-quaternion-quaternion)
+     - 3.7.3) [Quaternion == Quaternion](#373-quaternion--quaternion)
      - 3.7.4) [Math for Quaternion Dot](#374-math-for-quaternion-dot)
 
 ## 1) Euler Rotations
