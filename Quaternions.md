@@ -366,7 +366,7 @@ Quaternion targetRotation = new Quaternion(
 
 The inverse of a rotation is the opposite rotation; if you apply a rotation and then apply the inverse of that rotation, it results in no change.
 
-<img src=https://i.imgur.com/gLsG1OQ.gif width=500px>
+<img src=https://i.imgur.com/gLsG1OQ.gif width=300px>
 
 [View source for this example](TODO).
 
@@ -387,7 +387,7 @@ float scalar = rotation.w;
 // Calculate inverse
 vector = -vector;
 
-// Return results
+// Store results
 Quaternion inverseRotation = new Quaternion(
   vector.x, vector.y, vector.z, scalar);
 ```
@@ -398,7 +398,7 @@ Quaternion inverseRotation = new Quaternion(
 
 Given a vector you can calculate its position after a rotation has been applied.  For example, given an offset from the center you can rotate to orbit around that center point.
 
-<img src=https://i.imgur.com/LAV5HN8.gif width=500px>
+<img src=https://i.imgur.com/LAV5HN8.gif width=300px>
 
 In Unity, you can simply use the multiplication symbol, for example:
 
@@ -408,7 +408,7 @@ Vector3 offsetPosition = ...;
 transform.position = rotation * offsetPosition;
 ```
 
-You must have the Quaternion before the Vector for multiplication (i.e. originalPosition * rotation does not work). 
+You must have the Quaternion before the Vector for multiplication (i.e. offsetPosition * rotation does not work). 
 
 #### 3.6.2) Math for Quaternion/Vector3 Multiplication
 
