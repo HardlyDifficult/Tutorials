@@ -473,8 +473,8 @@ float dot = a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 
 # GG
 
-That's all for now.  Questions, issues, or suggestions?  Please use the [YouTube comments](TODO).
+That's all for now.  Questions, issues, or suggestions?  Please use the [YouTube comments](TODO) or stop by [twitch.tv/HardlyDifficult].
 
 Support on [Patreon](https://www.patreon.com/HardlyDifficult), with [Paypal](https://u.muxy.io/tip/HardlyDifficult), or by subscribing on [Twitch](https://www.twitch.tv/HardlyDifficult/subscribe) (free with Amazon Prime).
  
-[License](TODO). Created live at [twitch.tv/HardlyDifficult](https://www.twitch.tv/HardlyDifficult) August 2017.  
+[License](https://creativecommons.org/licenses/by/4.0/). Created live at [twitch.tv/HardlyDifficult](https://www.twitch.tv/HardlyDifficult) August 2017.  
