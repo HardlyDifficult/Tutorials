@@ -362,7 +362,9 @@ Quaternion targetRotation = new Quaternion(
 
 ### 3.5) Inverse 
 
-The inverse of a rotation is the opposite rotation.  So if you apply a rotation and then apply the inverse of that rotation it results in no change.
+#### 3.5.1) Quaternion.Inverse
+
+The inverse of a rotation is the opposite rotation; if you apply a rotation and then apply the inverse of that rotation it results in no change.
 
 <img src=https://i.imgur.com/gLsG1OQ.gif width=500px>
 
