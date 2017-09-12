@@ -19,7 +19,7 @@ Goal: This tutorial aims to introduce working with rotations in Unity, with a fo
      - 3.2.1) [Quaternion Constructors](#321-quaternion-constructors)
      - 3.2.2) [Quaternion.LookRotation](#322-quaternionlookrotation)
      - 3.2.3) [Quaternion.FromToRotation](#323-quaternionfromtorotation)
-     - 3.2.4) [Math for Constructing Quaternions](#324-math-for-constructing-quaternions)
+     - 3.2.4) [Math for Creating Quaternions](#324-math-for-creating-quaternions)
    - 3.3) [Interpolating Rotations](#33-interpolating-rotations)
      - 3.3.1) [Quaternion.Lerp](#331-quaternionlerp)
      - 3.3.2) [Quaternion.Slerp](#332-quaternionslerp)
