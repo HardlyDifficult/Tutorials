@@ -1,23 +1,6 @@
-# 2D Platformer tutorial:
+# Hardly Difficult Tutorials
 
- - [Intro](Intro.md)*
- - [Project Setup](C1.md) 
- - [Platforms](C2.md)
- - [SpikeBall](C3.md)
- - [Character](C4.md)
- - [HoverGuy](C5.md)
- - [Death Effects](C6.md)
- - [Game Controller](C7.md)
- - [Ground Detection](C8.md)
- - [Ladders](C9.md)
- - [Hammer](C10.md)
- - [Character Animations](C11.md)
- - [Intro Timeline](C12.md)
- - [Level Won Timeline](C13.md)
- - [UI](C14.md)
- - [To Review, Level 2](C15.md)*
- - [Outro](Outro.md)*
-
-```
-* Not Ready.
-```
+- [Intro to Quaternion Rotations](Quaternions.mds) (with Unity 2017)
+  - Introduce working with rotations in Unity, with a focus on Quaternions.
+- WIP: [Platformer Step-by-step Tutorial](Platformer/Outline.md)
+  - A detailed step-by-step on creating a 2D Platformer game end to end.
