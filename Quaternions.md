@@ -396,8 +396,7 @@ Quaternion inverseRotation = new Quaternion(
 
 #### 3.6.1) Quaternion * Vector3 (or Vector2)
 
-Given a vector you can calculate its position after a rotation has been applied.  For example, given an originalPosition
-vertex of a mesh you can calculate what its position would be after a rotation.
+Given a vector you can calculate its position after a rotation has been applied.  For example, given an offset from the center you can rotate to orbit around that center point.
 
 <img src=https://i.imgur.com/LAV5HN8.gif width=500px>
 
