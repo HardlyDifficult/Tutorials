@@ -1,4 +1,4 @@
-[hardlydifficult.com/Tutorials](https://hardlydifficult.com/Tutorials)
+[HardlyDifficult.com/Tutorials](https://HardlyDifficult.com/Tutorials)
 
 # Hardly Difficult Tutorials
 

@@ -1,4 +1,4 @@
-[HardlyDifficult.com/Tutorials](https://HardlyDifficult.com/Tutorials/Quaternions)
+[HardlyDifficult.com/Tutorials/Quaternions](https://HardlyDifficult.com/Tutorials/Quaternions)
 
 # Intro to Quaternion Rotations (with Unity 2017)
 
@@ -58,7 +58,7 @@ Here is an example.  Once an object reaches 90 degrees on the X axis, the Y and 
 
 <img src=https://i.imgur.com/pWILGUW.gif width=500px>
 
-[View source for this example](TODO).
+[View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/GimbalLockAnimation.cs).
 
 Gimbal lock is not an all or nothing situation. As you approach certain angles the impact of changing axes may not offer the full range of motion you might expect.
 
@@ -91,7 +91,7 @@ Here is a simple example where we are rotating around the X axis only.  When the
 
 <img src=https://i.imgur.com/YPelrfF.gif width=500px>
 
-[View source for this example](TODO) and the one below.
+[View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/AxisAngleAnimation.cs) and the one below.
 
 The following example shows a more complex rotation where the axis is not aligned with a world axis. 
 
@@ -183,7 +183,7 @@ Note that the input directions do not need to be normalized.
 
 <img src=https://i.imgur.com/nK9ijDJ.gif width=300px>
 
-[View source for this example](TODO).
+[View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/LookRotation.cs).
 
 #### 3.2.3) Quaternion.FromToRotation
 
@@ -246,7 +246,7 @@ transform.rotation = Quaternion.Lerp(
 
 <img src=https://i.imgur.com/E5rwh3i.gif width=500>
 
-[View source for this example](TODO).
+[View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/Lerp.cs) and the Slerp example below.
 
 #### 3.3.2) Quaternion.Slerp
 
@@ -262,8 +262,6 @@ transform.rotation = Quaternion.Slerp(
 ```
 
 <img src=https://i.imgur.com/Qu2wWvW.gif width=500>
-
-[View source for this example](TODO).
 
 #### 3.3.3) Quaternion.RotateTowards
 
@@ -327,7 +325,7 @@ When combining rotations, a parent GameObject may rotate the parent and a child,
 
 <img src=https://i.imgur.com/LwyP3vz.gif width=500px>
 
-[View source for this example](TODO).
+[View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/RotateVertex.cs).
 
 ```csharp
 Quaternion rotation = parentRotation * childRotation;
@@ -369,7 +367,7 @@ The inverse of a rotation is the opposite rotation; if you apply a rotation and 
 
 <img src=https://i.imgur.com/gLsG1OQ.gif width=300px>
 
-[View source for this example](TODO).
+[View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/MirrorRotation.cs).
 
 ```csharp
 Quaternion inverseRotation = Quaternion.Inverse(rotation);
