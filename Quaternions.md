@@ -6,15 +6,15 @@ TODO get a friendly URL.
 
 Goal: This tutorial aims to introduce working with rotations in Unity, with a focus on Quaternions.  By the end you should feel comfortable working with Quaternions in Unity and we will introduce some of the math that goes into them so that it does not feel like black magic anymore.  
 
- - 1.) [Euler Rotations](#1-euler)
-   - 1.1) [About Euler](#11-about-euler-rotations)
-   - 1.1) [Gimbal lock](#11-gimbal-lock)
-   - 1.2) [Working with Euler](#12-working-with-euler-in-unity)
+ - 1.) [Euler Rotations](#1-euler-Rotations)
+   - 1.1) [About Euler](#11-about-euler)
+   - 1.2) [Gimbal lock](#12-gimbal-lock)
+   - 1.2) [Working with Euler](#12-working-with-euler)
  - 2.) [Axis-Angle Rotations](#2-axis-angle)
    - 2.1) [About Axis-Angle](#21-about-axis-angle)
-   - 2.2) [Working with Axis-Angle](#21-working-with-axis-angle-in-unity)
- - 3.) [Quaternion Rotations](#3-quaternion)
-   - 3.1) [About Quaternions](#31-about-quaternion-rotations)
+   - 2.2) [Working with Axis-Angle](#21-working-with-axis-angle)
+ - 3.) [Quaternion Rotations](#3-quaternion-rotations)
+   - 3.1) [About Quaternions](#31-about-quaternions)
    - 3.2) [Creating Quaternions](#33-creating-quaternions)   
      - 3.2.1) [Quaternion Constructors]()
      - 3.2.2) [Quaternion.LookRotation]()
@@ -40,9 +40,9 @@ Goal: This tutorial aims to introduce working with rotations in Unity, with a fo
      - 3.7.3) [Quaternion == Quaternion](#37)
      - 3.7.4) [Math for Quaternion Dot]()
 
-## 1) Euler
+## 1) Euler Rotations
 
-### 1.1) About Euler Rotations
+### 1.1) About Euler
 
 When we think of rotations, we typically think in terms of 'Euler' (pronounced oi-ler).  Euler rotations are degrees of rotation around each axis; e.g., (0, 0, 30) means "rotate the object by 30 degrees around the Z axis."
 
@@ -66,7 +66,7 @@ Note that Euler can represent any possible rotation.  Gimbal lock is only a conc
 
 For a lot more detail - see [Wikipedia's article on Gimbal Lock](https://en.wikipedia.org/wiki/Gimbal_lock) or [GuerrillaCG's video on Gimbal Lock](https://www.youtube.com/watch?v=zc8b2Jo7mno&feature=youtu.be&t=176).
 
-### 1.3) Working with Euler in Unity
+### 1.3) Working with Euler
 
 Given a Quaternion, you can calculate the Euler value like so:
 
@@ -81,7 +81,7 @@ Euler rotations are stored as a Vector3.  You can perform any of the operations 
 Quaternion rotationOfZ30Degrees = Quaternion.Euler(0, 0, 30);
 ```
 
-## 2) Axis-Angle
+## 2) Axis-Angle Rotations
 
 ### 2.1) About Axis-Angle
 
@@ -102,7 +102,7 @@ The following example shows a more complex rotation where the axis is not aligne
 
 Axis-Angle and other rotation approaches including Quaternions and Matrices are not impacting by Gimbal Lock. 
 
-### 2.2) Working with Axis-Angle in Unity
+### 2.2) Working with Axis-Angle
 
 Given a Quaternion, you can calculate the Axis-Angle value like so:
 
@@ -118,9 +118,9 @@ You could modify the angle or even the axis itself.  Then given an Axis-Angle va
 Quaternion rotation = Quaternion.AngleAxis(angle, axis);
 ```
 
-## 3) Quaternion
+## 3) Quaternion Rotations
 
-### 3.1) About Quaternion Rotations
+### 3.1) About Quaternions
 
 A Quaternion is an axis-angle representation scaled in way which optimizes common calculations such as combining multiple rotations and interpolating between different rotation values.
 
@@ -140,7 +140,7 @@ The performance Quaternions offer come with a small cost in terms of storage.  A
 
 ### 3.2) Creating Quaternions
 
-#### 3.2.1) Quaternion Constructor in Unity
+#### 3.2.1) Quaternion Constructors
 
 In Unity, all rotations are stored as Quaternions.  You may prefer working with another rotation format in code and convert to or from Quaternions as needed.  See the Euler and Axis-Angle sections above for examples on converting rotation formats.
 
@@ -166,7 +166,7 @@ Quaternion invalidQuaternion = default(Quaternion);
 // This is not normalized, therefor not a valid quaternion
 ```
 
-#### 3.2.2) Quaternion.LookRotation in Unity
+#### 3.2.2) Quaternion.LookRotation
 
 LookRotation creates a rotation which will orient an object so that its forward will face the target forward direction and its up will face the target up direction.  The up direction defaults to the world's positive Y direction but you could change this, for example making it the negative Y direction to rotate an object upside down.
 
@@ -185,7 +185,7 @@ Note that the input directions do not need to be normalized.
 
 [View source for this example](TODO).
 
-#### 3.2.3) Quaternion.FromToRotation in Unity
+#### 3.2.3) Quaternion.FromToRotation
 
 FromToRotation creates a rotation which would modify a Vector's direction so that after the rotation the Vector is facing the given target direction.  In the following example, we rotate an object so that its 'back' direction faces the camera (creating the same effect as the example above).
 
