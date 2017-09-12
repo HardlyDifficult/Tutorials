@@ -1,8 +1,8 @@
+[HardlyDifficult.com/Tutorials](https://HardlyDifficult.com/Tutorials/Quaternions)
+
 # Intro to Quaternion Rotations (with Unity 2017)
 
-TODO get a friendly URL.
-
-[View on YouTube](TODO) | [Source code of the examples below](TODO)
+[View on YouTube](TODO) 
 
 Goal: This tutorial aims to introduce working with rotations in Unity, with a focus on Quaternions.  By the end you should feel comfortable working with Quaternions in Unity and we will introduce some of the math that goes into them so that it does not feel like black magic anymore.  
 
