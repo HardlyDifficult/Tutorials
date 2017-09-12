@@ -322,7 +322,7 @@ When a lerp calculation is performed, the values need to be normalized so that t
 
 Often you need to combine rotations.  With Quaternions this is done with multiplication.
 
-When combining rotations, a parent GameObject may rotate the parent and a child and then the child could add an additional rotation of its own. With Quaternions you write the multiplication such that the parent comes before the child.  Order matters as shown in this example:
+When combining rotations, a parent GameObject may rotate the parent and a child, and then the child could add an additional rotation of its own. With Quaternions you write the multiplication such that the parent comes before the child.  Order matters as shown in this example:
 
 <img src=https://i.imgur.com/LwyP3vz.gif width=500px>
 
@@ -334,7 +334,7 @@ Quaternion rotation = parentRotation * childRotation;
 
 You can use multiplication to combine any number of rotations (e.g. grandparent * parent * child).
 
-####
+#### 3.4.2) Math for Quaternion Multiplication
 
 In Unity, you should use the method above.  However for the interested, below is how multiplication may be calculated.
 
@@ -349,13 +349,14 @@ Vector3 childVector = new Vector3(
 float childScalar = childRotation.w;
 
 // Calculate parentRotation * childRotation
-Quaternion targetRotation;
 Vector3 targetVector = parentScalar * childVector
   + childScalar * parentVector
   + Vector3.Cross(parentVector, childVector);
 float targetScalar = parentScalar * childScalar
   - Vector3.Dot(parentVector, childVector);
-targetRotation = new Quaternion(
+
+// Store result
+Quaternion targetRotation = new Quaternion(
   targetVector.x, targetVector.y, targetVector.z, targetScalar);
 ```
 
