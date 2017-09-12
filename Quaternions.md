@@ -46,6 +46,8 @@ Here is an example.  Once an object reaches 90 degrees on the X axis, the Y and 
 
 <img src=https://i.imgur.com/pWILGUW.gif width=500px>
 
+[View source for this example](TODO).
+
 Gimbal lock is not an all or nothing situation. As you approach certain angles the impact of changing axes may not offer the full range of motion you might expect.
 
 Note that Euler can represent any possible rotation.  Gimbal lock is only a concern when modifying or combining rotations.
@@ -76,6 +78,8 @@ Another way of representing rotations is Axis-Angle.  This approach defines an a
 Here is a simple example where we are rotating around the X axis only.  When the axis is one of the world axes like this, the angle is equivalent to an Euler angle.
 
 <img src=https://i.imgur.com/YPelrfF.gif width=500px>
+
+[View source for this example](TODO) and the one below.
 
 The following example shows a more complex rotation where the axis is not aligned with a world axis. 
 
@@ -167,6 +171,8 @@ Note that the input directions do not need to be normalized.
 
 <img src=https://i.imgur.com/nK9ijDJ.gif width=300px>
 
+[View source for this example](TODO).
+
 #### 3.2.3) Quaternion.FromToRotation in Unity
 
 FromToRotation creates a rotation which would modify a Vector's direction so that after the rotation the Vector is facing the given target direction.  In the following example, we rotate an object so that its 'back' direction faces the camera (creating the same effect as the example above).
@@ -208,7 +214,7 @@ Quaternion rotation = new Quaternion(
 
 #### 3.3.1) Lerp
 
-Lerp, or **l**inear int**erp**olation, is a fancy term for a simple concept.  If you were to smoothly/evenly rotate from rotation A to B, lerp is the formula that calculates the interim rotation given a percent progress from 0 to 1.  For example:
+Lerp, or **l**inear int**erp**olation, is a fancy term for a simple concept.  If you were to smoothly/evenly rotate from rotation A to B, lerp is the formula that calculates the interim rotation given a percent progress from 0 to 1, named 't'.  For example:
 
 ```csharp
 transform.rotation = Quaternion.Lerp(
@@ -217,15 +223,56 @@ transform.rotation = Quaternion.Lerp(
     percentComplete);
 ```
 
+Another way of leveraging the Lerp method is by using it in an update loop and providing the same constant for 't' each frame instead of using a percent complete.  This will create a motion that slows the closer it is to the target rotation.
+
+```csharp
+transform.rotation = Quaternion.Lerp(
+  transform.rotation, 
+  Quaternion.identity, 
+  speed * Time.deltaTime);
+```
+
+<img src=https://i.imgur.com/E5rwh3i.gif width=500>
+
+[View source for this example](TODO).
+
 #### 3.3.2) Slerp
 
-TODO
+Slerp, or **s**pherical **l**inear int**erp**olation, is very similar to lerp when interpolating rotations.  The following example shows two objects, one which is rotating with Lerp (blue) and the other with Slerp (red).
 
-[Slerp](https://docs.unity3d.com/ScriptReference/Quaternion.Slerp.html), a similar but more difficult formula, can also be calculated on Quaternions but left out from this tutorial for simplicity.
+You can use Slerp the exact same way you use Lerp.  For example:
+
+```csharp
+transform.rotation = Quaternion.Slerp(
+    transform.rotation, 
+    targetRotation, 
+    percentComplete);
+```
+
+<img src=https://i.imgur.com/Qu2wWvW.gif width=500>
+
+[View source for this example](TODO).
 
 #### 3.3.3) RotateTowards
 
-[RotateTowards](https://docs.unity3d.com/ScriptReference/Quaternion.RotateTowards.html) is an alternative to Lerp for selecting a rotation between two other rotations.  Lerp will progress based off of the percent progress and RotateTowards will progress using a fixed rotation speed.
+RotateTowards is an alternative to Lerp/Slerp for selecting a rotation between two other rotations.  RotateTowards uses a fixed rotation speed instead of rotating by percent (like Lerp and Slerp).
+
+You can use RotateTowards like you use Lerp and Slerp, however instead of specifying 't' you are providing a speed which is the max degrees the object may rotate this frame.
+
+```csharp
+transform.rotation = Quaternion.RotateTowards(
+    transform.rotation, 
+    targetRotation, 
+    speed);
+```
+
+To help clarify some use case differences between each of these interpolation options:
+
+ - Use RotateTowards when you want to rotate with a fixed angular velocity.  
+ - Use Lerp with t = percentComplete when you want the rotation to complete in a fixed amount of time.
+ - Use Lerp with t = constant when you want the rotation to start fast and slow down as it approaches the target rotation.
+ - Use Slerp over Lerp when you need some acceleration and deceleration at the start/end to smooth the experience Lerp offers.  Note that Slerp is computationally much more expensive.
+
 
 #### 3.3.4) Math for Quaternion Lerp
 
@@ -258,8 +305,9 @@ transform.rotation = new Quaternion(
 
 When a lerp calculation is performed, the values need to be normalized so that the resulting Quaternion is normalized.
 
-
 ### 3.4) Combining Rotations (Quaternion Multiplication)
+
+
 
 Often you need to combine rotations.  With Quaternions this is done with multiplication.
 
@@ -267,11 +315,15 @@ When combining rotations, a parent GameObject may rotate the parent and a child 
 
 <img src=https://i.imgur.com/LwyP3vz.gif width=500px>
 
+[View source for this example](TODO).
+
 ```csharp
 Quaternion rotation = parentRotation * childRotation;
 ```
 
 You can use multiplication to combine any number of rotations (e.g. grandparent * parent * child).
+
+####
 
 In Unity, you should use the method above.  However for the interested, below is how multiplication may be calculated.
 
@@ -301,6 +353,8 @@ targetRotation = new Quaternion(
 The inverse of a rotation is the opposite rotation.  So if you apply a rotation and then apply the inverse of that rotation it results in no change.
 
 <img src=https://i.imgur.com/gLsG1OQ.gif width=500px>
+
+[View source for this example](TODO).
 
 ```csharp
 Quaternion inverseRotation = Quaternion.Inverse(rotation);
