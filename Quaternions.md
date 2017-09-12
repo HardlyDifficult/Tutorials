@@ -400,10 +400,12 @@ Given a vector you can calculate its position after a rotation has been applied.
 
 <img src=https://i.imgur.com/LAV5HN8.gif width=500px>
 
-In Unity, you can simply use the multiplication symbol (Quaternion * Vector), for example:
+In Unity, you can simply use the multiplication symbol, for example:
 
 ```csharp
-transform.position = rotation * originalPosition;
+Quaternion rotation = ...;
+Vector3 offsetPosition = ...; 
+transform.position = rotation * offsetPosition;
 ```
 
 You must have the Quaternion before the Vector for multiplication (i.e. originalPosition * rotation does not work). 
