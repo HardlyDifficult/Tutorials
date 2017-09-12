@@ -6,35 +6,35 @@ TODO get a friendly URL.
 
 Goal: This tutorial aims to introduce working with rotations in Unity, with a focus on Quaternions.  By the end you should feel comfortable working with Quaternions in Unity and we will introduce some of the math that goes into them so that it does not feel like black magic anymore.  
 
- - 1.) [Euler Rotations](#1-euler-rotations)
+ - 1.) Euler Rotations
    - 1.1) [About Euler](#11-about-euler)
    - 1.2) [Gimbal lock](#12-gimbal-lock)
    - 1.3) [Working with Euler](#13-working-with-euler)
- - 2.) [Axis-Angle Rotations](#2-axis-angle-rotations)
+ - 2.) Axis-Angle Rotations
    - 2.1) [About Axis-Angle](#21-about-axis-angle)
    - 2.2) [Working with Axis-Angle](#22-working-with-axis-angle)
- - 3.) [Quaternion Rotations](#3-quaternion-rotations)
+ - 3.) Quaternion Rotations
    - 3.1) [About Quaternions](#31-about-quaternions)
-   - 3.2) [Creating Quaternions](#32-creating-quaternions)   
+   - 3.2) Creating Quaternions  
      - 3.2.1) [Quaternion Constructors](#321-quaternion-constructors)
      - 3.2.2) [Quaternion.LookRotation](#322-quaternionlookrotation)
      - 3.2.3) [Quaternion.FromToRotation](#323-quaternionfromtorotation)
      - 3.2.4) [Math for Creating Quaternions](#324-math-for-creating-quaternions)
-   - 3.3) [Interpolating Rotations](#33-interpolating-rotations)
+   - 3.3) Interpolating Rotations
      - 3.3.1) [Quaternion.Lerp](#331-quaternionlerp)
      - 3.3.2) [Quaternion.Slerp](#332-quaternionslerp)
      - 3.3.3) [Quaternion.RotateTowards](#333-quaternionrotatetowards)
      - 3.3.4) [Math for Quaternion Lerp](#334-math-for-quaternion-lerp)
-   - 3.4) [Combining Rotations](#34-combining-rotations)
+   - 3.4) Combining Rotations
      - 3.4.1) [Quaternion * Quaternion](#341-quaternion--quaternion)
      - 3.4.2) [Math for Quaternion/Quaternion Multiplication](#342-math-for-quaternionquaternion-multiplication)
-   - 3.5) [Inverse](#35-inverse)
+   - 3.5) Inverse
      - 3.5.1) [Quaternion.Inverse](#351-quaternioninverse)
      - 3.5.2) [Math for Quaternion Inverse](#352-math-for-quaternion-inverse)
-   - 3.6) [Rotating Vectors](#36-rotating-vectors)
+   - 3.6) Rotating Vectors
      - 3.6.1) [Quaternion * Vector3 (or Vector2)](#361-quaternion--vector3-or-vector2)
      - 3.6.2) [Math for Quaternion/Vector3 Multiplication](#362-math-for-quaternionvector3-multiplication)
-   - 3.7) [Comparing Rotations](#37-comparing-rotations)
+   - 3.7) Comparing Rotations
      - 3.7.1) [Dot Product / Quaternion.Dot](#371-dot-product--quaterniondot)
      - 3.7.2) [Quaternion.Angle](#372-quaternionangle)
      - 3.7.3) [Quaternion == Quaternion](#373-quaternion--quaternion)
