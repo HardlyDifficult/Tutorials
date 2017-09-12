@@ -471,10 +471,9 @@ In Unity, you should use the method above.  However for the interested, below is
 float dot = a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 ```
 
+# GG
 
-<br><hr>
-
-Questions, issues, or suggestions?  Please use the [YouTube comments](TODO).
+That's all for now.  Questions, issues, or suggestions?  Please use the [YouTube comments](TODO).
 
 Support on [Patreon](https://www.patreon.com/HardlyDifficult), with [Paypal](https://u.muxy.io/tip/HardlyDifficult), or by subscribing on [Twitch](https://www.twitch.tv/HardlyDifficult/subscribe) (free with Amazon Prime).
  
