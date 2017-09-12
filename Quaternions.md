@@ -1,32 +1,43 @@
-# Intro to Quaternions (with Unity 2017)
+# Intro to Quaternion Rotations (with Unity 2017)
+
+TODO get a friendly URL.
 
 [View on YouTube](TODO) | [Source code of the examples below](TODO)
 
 Goal: This tutorial aims to introduce working with rotations in Unity, with a focus on Quaternions.  By the end you should feel comfortable working with Quaternions in Unity and we will introduce some of the math that goes into them so that it does not feel like black magic anymore.  
 
- - 1.) [Euler](#1-euler)
-   - 1.1) [About Euler Rotations](#11-about-euler-rotations)
+ - 1.) [Euler Rotations](#1-euler)
+   - 1.1) [About Euler](#11-about-euler-rotations)
    - 1.1) [Gimbal lock](#11-gimbal-lock)
    - 1.2) [Working with Euler](#12-working-with-euler-in-unity)
- - 2.) [Axis-Angle](#2-axis-angle)
+ - 2.) [Axis-Angle Rotations](#2-axis-angle)
    - 2.1) [About Axis-Angle](#21-about-axis-angle)
    - 2.2) [Working with Axis-Angle](#21-working-with-axis-angle-in-unity)
- - 3.) [Quaternion](#3-quaternion)
-   - 3.1) [About Quaternion Rotations](#31-about-quaternion-rotations)
+ - 3.) [Quaternion Rotations](#3-quaternion)
+   - 3.1) [About Quaternions](#31-about-quaternion-rotations)
    - 3.2) [Creating Quaternions](#33-creating-quaternions)   
      - 3.2.1) [Quaternion Constructors]()
      - 3.2.2) [Quaternion.LookRotation]()
      - 3.2.3) [Quaternion.FromToRotation]()
      - 3.2.4) [Math for Constructing Quaternions](#32-math-for-creating-quaternions)
-   - 3.3) [Interpolation (Lerp/Slerp/MoveTowards)](#33-interpolation-lerp-slerp-movetowards)
-     - 3.3.1) [Lerp]()
-     - 3.3.2) [Slerp]()
-     - 3.3.3) [RotateTowards]()
+   - 3.3) [Interpolation Rotations](#33-interpolation-lerp-slerp-movetowards)
+     - 3.3.1) [Quaternion.Lerp]()
+     - 3.3.2) [Quaternion.Slerp]()
+     - 3.3.3) [Quaternion.RotateTowards]()
      - 3.3.4) [Math for Quaternion Lerp]()
-   - 3.4) [Combining Rotations (Quaternion Multiplication)](#34-combining-rotations-quaternion-multiplication)
+   - 3.4) [Combining Rotations](#34-combining-rotations-quaternion-multiplication)
+     - 3.4.1) [Quaternion * Quaternion]()
+     - 3.4.2) [Math for Quaternion Multiplication]()
    - 3.5) [Inverse](#35-inverse)
+     - 3.5.1) [Quaternion.Inverse]()
+     - 3.5.2) [Math for Quaternion Inverse]()
    - 3.6) [Rotating Vectors](#36-rotating-vectors)
-   - 3.7) [Dot Product](#37-dot-product)
+     - 3.4.1) [Quaternion * Vector]()
+     - 3.4.1) [Math for Quaternion Multiplication]()
+   - 3.7) [Comparing Rotations]()
+     - 3.7.1) [Dot Product / Quaternion.Dot](#37-dot-product)
+     - 3.7.1) [Quaternion.Angle](#37)
+     - 3.7.1) [Quaternion == Quaternion](#37)
 
 ## 1) Euler
 
@@ -305,9 +316,9 @@ transform.rotation = new Quaternion(
 
 When a lerp calculation is performed, the values need to be normalized so that the resulting Quaternion is normalized.
 
-### 3.4) Combining Rotations (Quaternion Multiplication)
+### 3.4) Combining Rotations 
 
-
+#### 3.4.1) Quaternion * Quaternion
 
 Often you need to combine rotations.  With Quaternions this is done with multiplication.
 
