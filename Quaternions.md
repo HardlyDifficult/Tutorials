@@ -36,8 +36,8 @@ Goal: This tutorial aims to introduce working with rotations in Unity, with a fo
      - 3.4.1) [Math for Quaternion/Vector3 Multiplication](#341-math-for-quaternionvector3-multiplication)
    - 3.7) [Comparing Rotations](#37-comparing-rotations)
      - 3.7.1) [Dot Product / Quaternion.Dot](#371-dot-product-quateniondot)
-     - 3.7.2) [Quaternion.Angle](#372-quatenionangle)
-     - 3.7.3) [Quaternion == Quaternion](#373-quatenion-quatenion)
+     - 3.7.2) [Quaternion.Angle](#372-quaternionangle)
+     - 3.7.3) [Quaternion == Quaternion](#373-quaternion-quaternion)
      - 3.7.4) [Math for Quaternion Dot](#374-math-for-quaternion-dot)
 
 ## 1) Euler Rotations
@@ -463,7 +463,7 @@ if(transform.rotation == Quaternion.identity)
 ...
 ```
 
-#### 3.7.4) Dot Product / Quaternion.Dot
+#### 3.7.4) Math for Quaternion Dot
 
 In Unity, you should use the method above.  However for the interested, below is how the dot product may be calculated.
 
