@@ -27,13 +27,13 @@ Goal: This tutorial aims to introduce working with rotations in Unity, with a fo
      - 3.3.4) [Math for Quaternion Lerp]()
    - 3.4) [Combining Rotations](#34-combining-rotations-quaternion-multiplication)
      - 3.4.1) [Quaternion * Quaternion]()
-     - 3.4.2) [Math for Quaternion Multiplication]()
+     - 3.4.2) [Math for Quaternion/Quaternion Multiplication]()
    - 3.5) [Inverse](#35-inverse)
      - 3.5.1) [Quaternion.Inverse]()
      - 3.5.2) [Math for Quaternion Inverse]()
    - 3.6) [Rotating Vectors](#36-rotating-vectors)
-     - 3.4.1) [Quaternion * Vector]()
-     - 3.4.1) [Math for Quaternion Multiplication]()
+     - 3.4.1) [Quaternion * Vector3 (or Vector2)]()
+     - 3.4.1) [Math for Quaternion/Vector3 Multiplication]()
    - 3.7) [Comparing Rotations]()
      - 3.7.1) [Dot Product / Quaternion.Dot](#37-dot-product)
      - 3.7.1) [Quaternion.Angle](#37)
@@ -364,7 +364,7 @@ Quaternion targetRotation = new Quaternion(
 
 #### 3.5.1) Quaternion.Inverse
 
-The inverse of a rotation is the opposite rotation; if you apply a rotation and then apply the inverse of that rotation it results in no change.
+The inverse of a rotation is the opposite rotation; if you apply a rotation and then apply the inverse of that rotation, it results in no change.
 
 <img src=https://i.imgur.com/gLsG1OQ.gif width=500px>
 
@@ -374,7 +374,9 @@ The inverse of a rotation is the opposite rotation; if you apply a rotation and 
 Quaternion inverseRotation = Quaternion.Inverse(rotation);
 ```
 
-In Unity, you should use the method above.  However for the interested, below is how multiplication may be calculated.
+#### 3.5.2) Math for Quaternion Inverse 
+
+In Unity, you should use the method above.  However for the interested, below is how the inverse may be calculated.
 
 ```csharp
 // Split the Quaternion components
@@ -386,10 +388,13 @@ float scalar = rotation.w;
 vector = -vector;
 
 // Return results
-Quaternion inverseRotation = new Quaternion(vector.x, vector.y, vector.z, scalar);
+Quaternion inverseRotation = new Quaternion(
+  vector.x, vector.y, vector.z, scalar);
 ```
 
 ### 3.6) Rotating Vectors
+
+#### 3.6.1) Quaternion * Vector3 (or Vector2)
 
 Given a vector you can calculate its position after a rotation has been applied.  For example, given vertex of a mesh you can calculate what its position would be after a rotation.
 
@@ -402,6 +407,8 @@ transform.position = rotation * originalPosition;
 ```
 
 You must have the Quaternion before the Vector for multiplication (i.e. originalPosition * rotation does not work). 
+
+#### 3.6.2) Math for 
 
 In Unity, you should use the method above.  However for the interested, below is how multiplication may be calculated.
 
