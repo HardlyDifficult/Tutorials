@@ -335,7 +335,7 @@ Quaternion rotation = parentRotation * childRotation;
 
 You can use multiplication to combine any number of rotations (e.g. grandparent * parent * child).
 
-#### 3.4.2) Math for Quaternion Multiplication
+#### 3.4.2) Math for Quaternion/Quaternion Multiplication
 
 In Unity, you should use the method above.  However for the interested, below is how multiplication may be calculated.
 
