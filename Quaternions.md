@@ -4,7 +4,7 @@
 
 [View on YouTube](TODO) 
 
-Goal: This tutorial aims to introduce working with rotations, with a focus on Quaternions.  Some math that goes into Quaternions is included; it may help to explain what these numbers represent, but it's not necessary to know when working with a game engine. By the end, you should feel comfortable using Quaternions in Unity.  
+Goal: This tutorial introduces working with rotations, with a focus on Quaternions.  Some math that goes into Quaternions is included; it may help to explain what these numbers represent, but it's not necessary to know when working with a game engine. By the end, you should feel comfortable using Quaternions in Unity.  
 
  - 1.) Euler Rotations
    - 1.1) [About Euler](#11-about-euler)
