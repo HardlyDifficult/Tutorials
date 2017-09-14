@@ -2,7 +2,7 @@
 
 # Intro to Quaternion Rotations (with Unity 2017)
 
-[View on YouTube](TODO) 
+[View on YouTube](https://youtu.be/kYOtk5a6_x4) 
 
 Goal: This tutorial introduces working with rotations, with a focus on Quaternions.  Some math that goes into Quaternions is included; it may help to explain what these numbers represent, but it's not necessary to know when working with a game engine. By the end, you should feel comfortable using Quaternions in Unity.  
 
@@ -128,6 +128,8 @@ The default rotation for an object known as 'identity' is (0, 0, 0) in Euler and
 
 ### 3.2) Properties of a Quaternion
 
+Quaternions are composed of 4 floats, like an Axis-Angle.  The first three (x, y, z) are logically grouped into a vector component of the Quaternion and the last value (w) is a scalar component.  Some of the math below shows how these parts may be considered separately.
+
 Quaternion rotations must be normalized, meaning:
 
 ```csharp
@@ -135,8 +137,6 @@ x * x + y * y + z * z + w * w == 1;
 ```
 
 Knowing the Quaternion rotations are normalized simplifies some of the math for using and manipulating Quaternions.
-
-Quaternions are composed of 4 floats, like an Axis-Angle.  The first three (x, y, z) are logically grouped into a vector component of the Quaternion and the last value (w) is a scalar component.  Some of the math below shows how these parts may be considered separately.
 
 The performance Quaternions offer comes with a small cost in terms of storage.  A rotation technically has 3 degrees of freedom, which means that it may be represented with 3 floats (like an Euler); however, a Quaternion requires 4 floats.  This tradeoff has been deemed worthwhile by the industry for the performance when a game is running.  If size matters, such as for network communication, quaternions may be compressed as well as an Euler could be.
 
@@ -482,7 +482,7 @@ float dot = a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 
 # GG
 
-That's all for now.  Questions, issues, or suggestions?  Please use the [YouTube comments](TODO).
+That's all for now.  Questions, issues, or suggestions?  Please use the [YouTube comments](https://youtu.be/kYOtk5a6_x4).
 
 Support on [Patreon](https://www.patreon.com/HardlyDifficult), with [Paypal](https://u.muxy.io/tip/HardlyDifficult), or by subscribing on [Twitch](https://www.twitch.tv/HardlyDifficult/subscribe) (free with Amazon Prime).
  

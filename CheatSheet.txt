@@ -1,0 +1,46 @@
+ - Euler: 00
+ - Gimbal lock: 01
+    - not all or nothing
+    - Euler can do any rotation
+    - Using: EditModeTest.cs
+ - Axis-Angle: 02 simple then advanced
+   - Using: EditModeTest.cs
+ - Quaternions
+    - Axis-Angle scaled for performance (multiplication/interpolation).
+    - Properties2
+      - 4 floats: vector and scalar
+      - Vector * Sin(angle/2); Cos(angle/2)
+      - Normalized
+    - Constructor: EditModeTest.cs
+       - Don't use it. Euler -> Quat then Quat * Quat.
+    - LookRotation: 02 
+       (by hand, not far)
+       - Forward (p1) up (p2 / default world up)
+      - Using: LookRotation.cs
+    - FromToRotation
+        (by hand, not far)
+        - Using: FromTo.cs
+        - Object's direction (back) to desired target direction
+    - Slerp spherical linear interpolation: 06
+       - Percent
+       - Constant
+       - Using: Lerp.cs
+       - Perf on par with Lerp
+    - Lerp: 07
+       - Like Slerp but accelerates / dec at the ends. (slow->fast->slow)
+       - Using: Lerp.cs
+    - RotateTowards: EditModeTest.cs
+      - Degrees instead of percent.   
+    - Quaternion * Quaternion: 03
+       - Using: EditModeTest.cs
+       - parent * child
+    - Inverse: 04
+       - Rotate then rotate by inverse = zero change
+       - Using: EditModeTest.cs
+    - Quaternion * Vector: 05
+      - Using RotateVertex.cs
+    - Dot: EditModeTest.cs 
+       - 1 = same, -1 = opposite
+       - No direction
+    - Angle: Dot in Degrees: EditModeTest.cs 
+
