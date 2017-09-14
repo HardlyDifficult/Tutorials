@@ -21,10 +21,10 @@ Goal: This tutorial introduces working with rotations, with a focus on Quaternio
      - 3.2.3) [Quaternion.FromToRotation](#323-quaternionfromtorotation)
      - 3.2.4) [Math for Creating Quaternions](#324-math-for-creating-quaternions)
    - 3.3) Interpolating Rotations
-     - 3.3.1) [Quaternion.Lerp](#331-quaternionlerp)
-     - 3.3.2) [Quaternion.Slerp](#332-quaternionslerp)
+     - 3.3.1) [Quaternion.Lerp](#331-quaternionLerp)
+     - 3.3.2) [Quaternion.Slerp](#332-quaternionSlerp)
      - 3.3.3) [Quaternion.RotateTowards](#333-quaternionrotatetowards)
-     - 3.3.4) [Math for Quaternion Lerp](#334-math-for-quaternion-lerp)
+     - 3.3.4) [Math for Quaternion Lerp](#334-math-for-quaternion-Lerp)
    - 3.4) Combining Rotations
      - 3.4.1) [Quaternion * Quaternion](#341-quaternion--quaternion)
      - 3.4.2) [Math for Quaternion/Quaternion Multiplication](#342-math-for-quaternionquaternion-multiplication)
@@ -170,7 +170,7 @@ Quaternion invalidQuaternion = default(Quaternion);
 
 #### 3.2.2) Quaternion.LookRotation
 
-LookRotation creates a rotation which will orient an object so that its forward will face the target forward direction and its up will face the target up direction.  The up direction defaults to the world's positive Y direction, but you could change this; for example, making it the negative Y direction to rotate an object upside down.
+LookRotation creates a rotation which will orient an object so that its forward will face the target forward direction. Its up will face the target up direction as best it can while maintaining the target forward.  The up direction defaults to the world's positive Y direction, but you could change this; for example, making it the negative Y direction to rotate an object upside down.
 
 In the following example (code followed by gif), an object is rotated so that it's always facing away from the camera (since the camera defaults to a negative Z position in the world, it is behind objects by default).
 
@@ -227,7 +227,7 @@ Quaternion rotation = new Quaternion(
 
 #### 3.3.2) Quaternion.Slerp
 
-Slerp, or **s**pherical **l**inear int**erp**olation, is a fancy term for a simple concept.  If you were to smoothly/evenly rotate from rotation A to B, slerp is the formula that calculates the interim rotation given a percent progress from 0 to 1, named 't'.  For example:
+Slerp, or **s**pherical **l**inear int**erp**olation, is a fancy term for a simple concept.  If you were to smoothly/evenly rotate from rotation A to B, Slerp is the formula that calculates the interim rotation given a percent progress from 0 to 1, named 't'.  For example:
 
 ```csharp
 transform.rotation = Quaternion.Slerp(
@@ -245,11 +245,11 @@ transform.rotation = Quaternion.Slerp(
   speed * Time.deltaTime);
 ```
 
-The following is an example of the two different ways of leveraging 't' in slerp:
+The following is an example of the two different ways of leveraging 't' in Slerp:
 
 <img src=https://i.imgur.com/Mlaxbvo.gif width=500>
 
-[View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/Lerp.cs) and the Slerp example below.
+[View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/Lerp.cs) and the Lerp example below.
 
 The performance of Slerp is almost on-par with Lerp.  We tested running Slerp or Lerp 10k times per frame in Unity and there was no measurable difference between them.
 
@@ -257,7 +257,7 @@ The performance of Slerp is almost on-par with Lerp.  We tested running Slerp or
 
 Lerp, or **l**inear int**erp**olation, for rotations is very similar to Slerp.  It follows a straight line between rotations instead of curving to ensure a constant angular velocity like Slerp does.
 
-You can use Slerp the exact same way you use Lerp.  For example:
+You can use Lerp the exact same way you use Slerp.  For example:
 
 ```csharp
 transform.rotation = Quaternion.Lerp(
@@ -294,7 +294,7 @@ To help clarify some use case differences between each of these interpolation op
 
 #### 3.3.4) Math for Quaternion Lerp
 
-In Unity, you should use the method above.  However, for the interested, below is how the lerp may be calculated.
+In Unity, you should use the method above.  However, for the interested, below is how the Lerp may be calculated.
 
 ```csharp
 // Define terms
@@ -316,12 +316,12 @@ float factor = Mathf.Sqrt(targetVector.sqrMagnitude + targetScalar * targetScala
 targetVector /= factor;
 targetScalar /= factor;
 
-// Update the rotation to the lerped value
+// Update the rotation to the Lerped value
 transform.rotation = new Quaternion(
   targetVector.x, targetVector.y, targetVector.z, targetScalar);
 ```
 
-When a lerp calculation is performed, the values need to be normalized so that the resulting Quaternion is normalized.
+When a Lerp calculation is performed, the values need to be normalized so that the resulting Quaternion is normalized.
 
 ### 3.4) Combining Rotations 
 
@@ -406,17 +406,18 @@ Given a vector, you can calculate its position after a rotation has been applied
 In Unity, you can simply use the multiplication symbol, for example:
 
 ```csharp
+GameObject center = ...;
 Quaternion rotation = ...;
 Vector3 offsetPosition = ...; 
-transform.position = rotation * offsetPosition;
+transform.position 
+  = center.transform.position + rotation * offsetPosition;
 ```
 
 You must have the Quaternion before the Vector for multiplication (i.e., offsetPosition * rotation does not work).
 
 <img src=https://i.imgur.com/SjxHgY1.gif width=300px>
 
-[View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/RotateVertex.cs).
- 
+[View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/RotateVertex.cs). 
 
 #### 3.6.2) Math for Quaternion/Vector3 Multiplication
 
