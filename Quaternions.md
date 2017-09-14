@@ -232,7 +232,7 @@ Slerp, or **s**pherical **l**inear int**erp**olation, is a fancy term for a simp
 
 ```csharp
 transform.rotation = Quaternion.Slerp(
-    transform.rotation, 
+    originalRotation, 
     targetRotation, 
     percentComplete);
 ```
@@ -262,7 +262,7 @@ You can use Lerp the exact same way you use Slerp.  For example:
 
 ```csharp
 transform.rotation = Quaternion.Lerp(
-    transform.rotation, 
+    originalRotation, 
     targetRotation, 
     percentComplete);
 ```
