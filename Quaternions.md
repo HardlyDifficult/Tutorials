@@ -15,30 +15,31 @@ Goal: This tutorial introduces working with rotations, with a focus on Quaternio
    - 2.2) [Working with Axis-Angle](#22-working-with-axis-angle)
  - 3.) Quaternion Rotations
    - 3.1) [About Quaternions](#31-about-quaternions)
-   - 3.2) Creating Quaternions  
-     - 3.2.1) [Quaternion Constructors](#321-quaternion-constructors)
-     - 3.2.2) [Quaternion.LookRotation](#322-quaternionlookrotation)
-     - 3.2.3) [Quaternion.FromToRotation](#323-quaternionfromtorotation)
-     - 3.2.4) [Math for Creating Quaternions](#324-math-for-creating-quaternions)
-   - 3.3) Interpolating Rotations
-     - 3.3.1) [Quaternion.Lerp](#331-quaternionLerp)
-     - 3.3.2) [Quaternion.Slerp](#332-quaternionSlerp)
-     - 3.3.3) [Quaternion.RotateTowards](#333-quaternionrotatetowards)
-     - 3.3.4) [Math for Quaternion Lerp](#334-math-for-quaternion-Lerp)
-   - 3.4) Combining Rotations
-     - 3.4.1) [Quaternion * Quaternion](#341-quaternion--quaternion)
-     - 3.4.2) [Math for Quaternion/Quaternion Multiplication](#342-math-for-quaternionquaternion-multiplication)
-   - 3.5) Inverse Rotation
-     - 3.5.1) [Quaternion.Inverse](#351-quaternioninverse)
-     - 3.5.2) [Math for Quaternion Inverse](#352-math-for-quaternion-inverse)
-   - 3.6) Rotating Vectors
-     - 3.6.1) [Quaternion * Vector3 (or Vector2)](#361-quaternion--vector3-or-vector2)
-     - 3.6.2) [Math for Quaternion/Vector3 Multiplication](#362-math-for-quaternionvector3-multiplication)
-   - 3.7) Comparing Rotations
-     - 3.7.1) [Dot Product / Quaternion.Dot](#371-dot-product--quaterniondot)
-     - 3.7.2) [Quaternion.Angle](#372-quaternionangle)
-     - 3.7.3) [Quaternion == Quaternion](#373-quaternion--quaternion)
-     - 3.7.4) [Math for Quaternion Dot](#374-math-for-quaternion-dot)
+   - 3.2) [Properties of a Quaternion](#32-properties-of-a-quaternion)
+   - 3.3) Creating Quaternions  
+     - 3.3.1) [Quaternion Constructors](#331-quaternion-constructors)
+     - 3.3.2) [Quaternion.LookRotation](#332-quaternionlookrotation)
+     - 3.3.3) [Quaternion.FromToRotation](#333-quaternionfromtorotation)
+     - 3.3.4) [Math for Creating Quaternions](#334-math-for-creating-quaternions)
+   - 3.4) Interpolating Rotations
+     - 3.4.2) [Quaternion.Slerp](#341-quaternionSlerp)
+     - 3.4.1) [Quaternion.Lerp](#342-quaternionLerp)
+     - 3.4.3) [Quaternion.RotateTowards](#343-quaternionrotatetowards)
+     - 3.4.4) [Math for Quaternion Lerp](#344-math-for-quaternion-Lerp)
+   - 3.5) Combining Rotations
+     - 3.5.1) [Quaternion * Quaternion](#351-quaternion--quaternion)
+     - 3.5.2) [Math for Quaternion/Quaternion Multiplication](#352-math-for-quaternionquaternion-multiplication)
+   - 3.6) Inverse Rotation
+     - 3.6.1) [Quaternion.Inverse](#361-quaternioninverse)
+     - 3.6.2) [Math for Quaternion Inverse](#362-math-for-quaternion-inverse)
+   - 3.7) Rotating Vectors
+     - 3.7.1) [Quaternion * Vector3 (or Vector2)](#371-quaternion--vector3-or-vector2)
+     - 3.7.2) [Math for Quaternion/Vector3 Multiplication](#372-math-for-quaternionvector3-multiplication)
+   - 3.8) Comparing Rotations
+     - 3.8.1) [Dot Product / Quaternion.Dot](#381-dot-product--quaterniondot)
+     - 3.8.2) [Quaternion.Angle](#382-quaternionangle)
+     - 3.8.3) [Quaternion == Quaternion](#383-quaternion--quaternion)
+     - 3.8.4) [Math for Quaternion Dot](#384-math-for-quaternion-dot)
 
 ## 1) Euler Rotations
 
@@ -140,9 +141,9 @@ Knowing the Quaternion rotations are normalized simplifies some of the math for 
 
 The performance Quaternions offer comes with a small cost in terms of storage.  A rotation technically has 3 degrees of freedom, which means that it may be represented with 3 floats (like an Euler); however, a Quaternion requires 4 floats.  This tradeoff has been deemed worthwhile by the industry for the performance when a game is running.  If size matters, such as for network communication, quaternions may be compressed as well as an Euler could be.
 
-### 3.2) Creating Quaternions
+### 3.3) Creating Quaternions
 
-#### 3.2.1) Quaternion Constructors
+#### 3.3.1) Quaternion Constructors
 
 In Unity, rotations are stored as Quaternions. You can construct a Quaternion from the calculated components.
 
@@ -168,7 +169,7 @@ Quaternion invalidQuaternion = default(Quaternion);
 // This is not normalized, therefore not a valid quaternion
 ```
 
-#### 3.2.2) Quaternion.LookRotation
+#### 3.3.2) Quaternion.LookRotation
 
 LookRotation creates a rotation which will orient an object so that its forward will face the target forward direction. Its up will face the target up direction as best it can while maintaining the target forward.  The up direction defaults to the world's positive Y direction, but you could change this; for example, making it the negative Y direction to rotate an object upside down.
 
@@ -187,7 +188,7 @@ Note that the input directions do not need to be normalized.
 
 [View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/LookRotation.cs).
 
-#### 3.2.3) Quaternion.FromToRotation
+#### 3.3.3) Quaternion.FromToRotation
 
 FromToRotation creates a rotation which would modify a Vector's direction so that after the rotation the Vector is facing the given target direction.  In the following example, we rotate an object so that its 'back' direction faces the camera (creating the same effect as the example above).
 
@@ -200,7 +201,7 @@ transform.rotation = Quaternion.FromToRotation(
 
 Note that the input directions do not need to be normalized.  
 
-#### 3.2.4) Math for Creating Quaternions
+#### 3.3.4) Math for Creating Quaternions
 
 Here is the formula for Quaternion, given an axis-angle rotation.  You don't need to know this when working in Unity.
 
@@ -223,9 +224,9 @@ Quaternion rotation = new Quaternion(
   scalarComponent);
 ```
 
-### 3.3) Interpolating Rotations
+### 3.4) Interpolating Rotations
 
-#### 3.3.2) Quaternion.Slerp
+#### 3.4.1) Quaternion.Slerp
 
 Slerp, or **s**pherical **l**inear int**erp**olation, is a fancy term for a simple concept.  If you were to smoothly/evenly rotate from rotation A to B, Slerp is the formula that calculates the interim rotation given a percent progress from 0 to 1, named 't'.  For example:
 
@@ -253,7 +254,7 @@ The following is an example of the two different ways of leveraging 't' in Slerp
 
 The performance of Slerp is almost on-par with Lerp.  We tested running Slerp or Lerp 10k times per frame in Unity and there was no measurable difference between them.
 
-#### 3.3.1) Quaternion.Lerp
+#### 3.4.2) Quaternion.Lerp
 
 Lerp, or **l**inear int**erp**olation, for rotations is very similar to Slerp.  It follows a straight line between rotations instead of curving to ensure a constant angular velocity like Slerp does.
 
@@ -272,7 +273,7 @@ The following example shows two objects, one which is rotating with Lerp (blue) 
 
 See also [Higeneko's Slerp vs Lerp visualization]( https://www.youtube.com/watch?v=uNHIPVOnt-Y).
 
-#### 3.3.3) Quaternion.RotateTowards
+#### 3.4.3) Quaternion.RotateTowards
 
 RotateTowards is an alternative to Slerp/Lerp for selecting a rotation between two other rotations.  RotateTowards uses a fixed rotation speed instead of rotating by percent (like Slerp and Lerp).
 
@@ -292,7 +293,7 @@ To help clarify some use case differences between each of these interpolation op
  - Use Slerp with t = constant when you want the rotation to start fast and slow down as it approaches the target rotation.
  - Consider using Lerp over Slerp when you need some acceleration and deceleration at the start/end to smooth the experience Slerp offers.   
 
-#### 3.3.4) Math for Quaternion Lerp
+#### 3.4.4) Math for Quaternion Lerp
 
 In Unity, you should use the method above.  However, for the interested, below is how the Lerp may be calculated.
 
@@ -323,9 +324,9 @@ transform.rotation = new Quaternion(
 
 When a Lerp calculation is performed, the values need to be normalized so that the resulting Quaternion is normalized.
 
-### 3.4) Combining Rotations 
+### 3.5) Combining Rotations 
 
-#### 3.4.1) Quaternion * Quaternion
+#### 3.5.1) Quaternion * Quaternion
 
 Often you need to combine rotations.  With Quaternions this is done with multiplication.
 
@@ -341,7 +342,7 @@ When combining rotations, a parent GameObject may rotate the parent and a child,
 
 [View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/MirrorRotation.cs) and the next.
 
-#### 3.4.2) Math for Quaternion/Quaternion Multiplication
+#### 3.5.2) Math for Quaternion/Quaternion Multiplication
 
 In Unity, you should use the method above.  However, for the interested, below is how multiplication may be calculated.
 
@@ -367,9 +368,9 @@ Quaternion targetRotation = new Quaternion(
   targetVector.x, targetVector.y, targetVector.z, targetScalar);
 ```
 
-### 3.5) Inverse Rotation
+### 3.6) Inverse Rotation
 
-#### 3.5.1) Quaternion.Inverse
+#### 3.6.1) Quaternion.Inverse
 
 The inverse of a rotation is the opposite rotation; if you apply a rotation and then apply the inverse of that rotation, it results in no change.
 
@@ -379,7 +380,7 @@ The inverse of a rotation is the opposite rotation; if you apply a rotation and 
 Quaternion inverseRotation = Quaternion.Inverse(rotation);
 ```
 
-#### 3.5.2) Math for Quaternion Inverse 
+#### 3.6.2) Math for Quaternion Inverse 
 
 In Unity, you should use the method above.  However, for the interested, below is how the inverse may be calculated.
 
@@ -397,9 +398,9 @@ Quaternion inverseRotation = new Quaternion(
   vector.x, vector.y, vector.z, scalar);
 ```
 
-### 3.6) Rotating Vectors
+### 3.7) Rotating Vectors
 
-#### 3.6.1) Quaternion * Vector3 (or Vector2)
+#### 3.7.1) Quaternion * Vector3 (or Vector2)
 
 Given a vector, you can calculate its position after a rotation has been applied.  For example, given an offset from the center, you can rotate to orbit around that center point.
 
@@ -419,7 +420,7 @@ You must have the Quaternion before the Vector for multiplication (i.e., offsetP
 
 [View source for this example](https://github.com/hardlydifficult/EduQuaternions/blob/master/Assets/RotateVertex.cs). 
 
-#### 3.6.2) Math for Quaternion/Vector3 Multiplication
+#### 3.7.2) Math for Quaternion/Vector3 Multiplication
 
 In Unity, you should use the method above.  However, for the interested, below is how multiplication may be calculated.
 
@@ -441,9 +442,9 @@ Vector3 newPosition = new Vector3(
 The approach above creates a Quaternion for the position simply to enable the multiplication operations required.  It's possible to implement this algorithm without reusing the Quaternion data structure in this way.
 
 
-### 3.7) Comparing Rotations
+### 3.8) Comparing Rotations
 
-#### 3.7.1) Dot Product / Quaternion.Dot
+#### 3.8.1) Dot Product / Quaternion.Dot
 
 Dot product is a fast operation which informs you how well-aligned two rotations are to each other.  A dot product of 1 means the two rotations are identical, and -1 means they are oriented in opposite directions.  
 
@@ -453,7 +454,7 @@ The dot product does not include direction.  For example, a value of .9 tells yo
 float dot = Quaternion.Dot(a, b);
 ```
 
-#### 3.7.2) Quaternion.Angle
+#### 3.8.2) Quaternion.Angle
 
 Angle returns the difference between two rotations in degrees.  This is very similar to the information you get from the Dot product, but returned in degrees, which may be useful for some scenarios.
 
@@ -461,7 +462,7 @@ Angle returns the difference between two rotations in degrees.  This is very sim
 float angle = Quaternion.Angle(a, b);
 ```
 
-#### 3.7.3) Quaternion == Quaternion
+#### 3.8.3) Quaternion == Quaternion
 
 The equals operator (operator==) uses the dot product to test if two rotations are nearly identical.  
 
@@ -472,7 +473,7 @@ if(transform.rotation == Quaternion.identity)
 
 Note that in general, using "==" is not recommended when floats are involved as tiny rounding issues may result in differences which have no impact on the game.  Unity has addressed this concern in a custom operator== method for Quaternions, so that "==" is safe to use.
 
-#### 3.7.4) Math for Quaternion Dot
+#### 3.8.4) Math for Quaternion Dot
 
 In Unity, you should use the method above.  However, for the interested, below is how the dot product may be calculated.
 
