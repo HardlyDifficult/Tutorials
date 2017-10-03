@@ -23,4 +23,6 @@ Optionally you can:
 
 NiceHash is selling your computer's time to other miners.  So the pay out is per hour and not the usual miner reward (which is more like winning a lottery).
 
+Anyone can view stats and contributors here: [nicehash.com/miner/3KS9rE6YqGYZyh2wdM5dzNWVP6k2ht7CZy](https://www.nicehash.com/miner/3KS9rE6YqGYZyh2wdM5dzNWVP6k2ht7CZy)
+
 You can also support on [Patreon](https://www.patreon.com/HardlyDifficult), with [Paypal](https://u.muxy.io/tip/HardlyDifficult), or by subscribing on [Twitch](https://www.twitch.tv/HardlyDifficult/subscribe) (free with Amazon Prime).
