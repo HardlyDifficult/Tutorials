@@ -12,7 +12,7 @@ You can support me by running NiceHash while your computer is idle!  This costs 
 3KS9rE6YqGYZyh2wdM5dzNWVP6k2ht7CZy
 ```
 
-That's it!  You can see stats while it runs, and online.  It pays  I'll also get a view showing contributions.
+That's it!  You can see stats while it runs, and online.  It pays out a penny every few minutes. I'll also get a view showing contributions.
 
 Optionally you can:
 
@@ -21,6 +21,6 @@ Optionally you can:
  - Add NiceHash to startup.  
    - Run "shell:startup" which opens a folder, add a copy of the NiceHash shortcut.
 
-That's
+NiceHash is selling your computer's time to other miners.  So the pay out is per hour and not the usual miner reward (which is more like winning a lottery).
 
 You can also support on [Patreon](https://www.patreon.com/HardlyDifficult), with [Paypal](https://u.muxy.io/tip/HardlyDifficult), or by subscribing on [Twitch](https://www.twitch.tv/HardlyDifficult/subscribe) (free with Amazon Prime).
