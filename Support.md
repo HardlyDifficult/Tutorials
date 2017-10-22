@@ -2,17 +2,17 @@
 
 # Supporting Hardly Difficult by Mining BitCoin
 
-You can support me by running NiceHash while your computer is idle!  This costs you nothing and could add up if a few chip in.
+You can support me by running NiceHash while your computer is idle!  This costs you nothing (except power) and could add up if a few chip in.
 
  - Download NiceHash Miner: [miner.nicehash.com](https://miner.nicehash.com/)
    - The 'NVIDIA' works with the CPU even if your GPU is not supported.
  - Click 'Wallet' and enter:
 
 ```
-3KS9rE6YqGYZyh2wdM5dzNWVP6k2ht7CZy
+14VzFa1eQjcmHp7i3tSTCK3TcWP8kHWhLE
 ```
 
-That's it!  It adds a penny to my account every few minutes. You can see stats while it runs, and on [this dashboard](https://www.nicehash.com/miner/3KS9rE6YqGYZyh2wdM5dzNWVP6k2ht7CZy).  
+That's it!  It adds a penny to my account every few minutes. You can see stats while it runs, and on [this dashboard](https://www.nicehash.com/miner/14VzFa1eQjcmHp7i3tSTCK3TcWP8kHWhLE).  
 
 Optionally you can:
 
